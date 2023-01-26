@@ -1,10 +1,10 @@
 {
   "schemaVersion": 1,
-  "id": "modid",
+  "id": "trimmed",
   "version": "${version}",
 
-  "name": "Example Mod",
-  "description": "This is an example description! Tell everyone what your mod is about!",
+  "name": "Trimmed",
+  "description": "Adding more armor trims",
   "authors": [
     "Me!"
   ],
@@ -14,25 +14,27 @@
   },
 
   "license": "CC0-1.0",
-  "icon": "assets/modid/icon.png",
+  "icon": "assets/trimmed/icon.png",
 
   "environment": "*",
   "entrypoints": {
     "main": [
-      "net.fabricmc.example.ExampleMod"
+      "dhyces.trimmed.Trimmed"
+    ],
+    "fabric-datagen": [
+      "dhyces.trimmed.data.TrimmedDatagen"
     ]
   },
   "mixins": [
-    "modid.mixins.json"
+    "trimmed.mixins.json"
   ],
 
+  "accessWidener" : "trimmed.accesswidener",
+
   "depends": {
-    "fabricloader": ">=0.14.11",
+    "fabricloader": ">=0.14.13",
     "fabric-api": "*",
     "minecraft": "~1.19.3",
     "java": ">=17"
-  },
-  "suggests": {
-    "another-mod": "*"
   }
 }
