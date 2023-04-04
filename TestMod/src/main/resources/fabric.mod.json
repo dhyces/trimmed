@@ -4,9 +4,9 @@
   "version": "${version}",
 
   "name": "Trimmed",
-  "description": "Better item overrides! Override it all!",
+  "description": "Adding more armor trims",
   "authors": [
-    "Dhyces"
+    "Me!"
   ],
   "contact": {
     "homepage": "https://fabricmc.net/",
@@ -14,17 +14,18 @@
   },
 
   "license": "CC0-1.0",
-  "icon": "icon.png",
 
   "environment": "*",
   "entrypoints": {
-    "client": [
-      "dhyces.trimmed.TrimmedClient"
+    "main": [
+      "dhyces.testmod.TrimmedTest"
+    ],
+    "fabric-datagen": [
+      "dhyces.testmod.data.TrimmedDatagen"
     ]
   },
-  "mixins": [
-    "trimmed.mixins.json"
-  ],
+
+  "accessWidener" : "trimmed.accesswidener",
 
   "depends": {
     "fabricloader": ">=0.14.13",

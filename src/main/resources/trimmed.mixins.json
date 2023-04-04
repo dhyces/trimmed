@@ -6,6 +6,7 @@
   "mixins": [
   ],
   "client": [
+    "ModelOverrideListMixin"
   ],
   "injectors": {
     "defaultRequire": 1

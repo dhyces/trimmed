@@ -1,0 +1,9 @@
+{
+  "values": [
+    {
+      "type": "trimmed:armor_trim",
+      "material": "trimmed:blaze",
+      "model": "trimmed:iron_helmet_blaze_trim"
+    }
+  ]
+}
