@@ -26,6 +26,6 @@ public final class CodecUtil {
                 }
                 return DataResult.success(new ModelIdentifier(new Identifier(s), "inventory"));
             },
-            ModelIdentifier::toString
+            modelId -> modelId.getVariant().equals("inventory") ? modelId.getNamespace() + ":" + modelId.getPath() : modelId.toString()
     );
 }
