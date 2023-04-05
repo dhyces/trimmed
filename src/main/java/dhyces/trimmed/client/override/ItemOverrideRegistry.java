@@ -18,6 +18,10 @@ public class ItemOverrideRegistry {
 
     public static Optional<ModelIdentifier> getOverrideModel(ItemStack itemStack, @Nullable ClientWorld world, @Nullable LivingEntity entity, int seed) {
         Set<ItemOverrideProvider> providers = OVERRIDE_SET_MAP.get(Util.getItemModelId(itemStack));
+        if (providers == null) {
+            return Optional.empty();
+        }
+
         for (ItemOverrideProvider provider : providers) {
             Optional<ModelIdentifier> identifier = provider.getModel(itemStack, world, entity, seed);
             if (identifier.isPresent()) {
