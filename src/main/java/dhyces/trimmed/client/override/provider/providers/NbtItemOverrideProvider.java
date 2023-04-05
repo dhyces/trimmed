@@ -13,6 +13,7 @@ import net.minecraft.nbt.NbtCompound;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
+import java.util.stream.Stream;
 
 public class NbtItemOverrideProvider implements ItemOverrideProvider {
     public static final Codec<NbtItemOverrideProvider> CODEC = RecordCodecBuilder.create(instance ->
@@ -42,6 +43,11 @@ public class NbtItemOverrideProvider implements ItemOverrideProvider {
             return Optional.of(model);
         }
         return Optional.empty();
+    }
+
+    @Override
+    public Stream<ModelIdentifier> getModelsToBake() {
+        return Stream.of(model);
     }
 
     @Override
