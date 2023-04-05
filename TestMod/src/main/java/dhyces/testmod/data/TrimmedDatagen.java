@@ -37,6 +37,7 @@ public class TrimmedDatagen implements DataGeneratorEntrypoint {
         pack.addProvider((FabricDataGenerator.Pack.Factory<TrimmedAtlasProvider>) TrimmedAtlasProvider::new);
         pack.addProvider(TrimmedLangProvider::new);
         pack.addProvider(TrimmedModelProvider::new);
+        pack.addProvider(TestItemOverrideProvider::new);
     }
 
     private static void bootstrapMaterials(Registerable<ArmorTrimMaterial> context) {

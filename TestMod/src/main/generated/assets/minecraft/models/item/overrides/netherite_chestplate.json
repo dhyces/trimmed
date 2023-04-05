@@ -1,0 +1,29 @@
+{
+  "values": [
+    {
+      "type": "trimmed:trim",
+      "material": "testmod:blaze",
+      "model": "testmod:netherite_chestplate_blaze_trim"
+    },
+    {
+      "type": "trimmed:trim",
+      "material": "testmod:echo",
+      "model": "testmod:netherite_chestplate_echo_trim"
+    },
+    {
+      "type": "trimmed:trim",
+      "material": "testmod:glow",
+      "model": "testmod:netherite_chestplate_glow_trim"
+    },
+    {
+      "type": "trimmed:trim",
+      "material": "testmod:prismarine",
+      "model": "testmod:netherite_chestplate_prismarine_trim"
+    },
+    {
+      "type": "trimmed:trim",
+      "material": "testmod:shell",
+      "model": "testmod:netherite_chestplate_shell_trim"
+    }
+  ]
+}

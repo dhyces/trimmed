@@ -7,8 +7,7 @@ import org.slf4j.LoggerFactory;
 
 public class TrimmedTest implements ModInitializer {
 
-    public static final String MODID = "trimmed";
-    public static final Logger LOGGER = LoggerFactory.getLogger("Trimmed");
+    public static final String MODID = "testmod";
 
     public static Identifier id(String id) {
         return new Identifier(MODID, id);

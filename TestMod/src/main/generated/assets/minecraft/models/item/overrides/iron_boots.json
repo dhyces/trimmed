@@ -1,0 +1,29 @@
+{
+  "values": [
+    {
+      "type": "trimmed:trim",
+      "material": "testmod:blaze",
+      "model": "testmod:iron_boots_blaze_trim"
+    },
+    {
+      "type": "trimmed:trim",
+      "material": "testmod:echo",
+      "model": "testmod:iron_boots_echo_trim"
+    },
+    {
+      "type": "trimmed:trim",
+      "material": "testmod:glow",
+      "model": "testmod:iron_boots_glow_trim"
+    },
+    {
+      "type": "trimmed:trim",
+      "material": "testmod:prismarine",
+      "model": "testmod:iron_boots_prismarine_trim"
+    },
+    {
+      "type": "trimmed:trim",
+      "material": "testmod:shell",
+      "model": "testmod:iron_boots_shell_trim"
+    }
+  ]
+}
