@@ -21,7 +21,7 @@ public interface ItemOverrideProvider {
      * @return Any models that need to be baked
      */
     default Stream<ModelIdentifier> getModelsToBake() {
-        return Stream.of(ModelLoader.MISSING_ID);
+        return Stream.of();
     }
 
     ItemOverrideProviderType<?> getType();
