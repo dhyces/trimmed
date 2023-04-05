@@ -37,15 +37,15 @@ public class ItemOverrideReloadListener implements IdentifiableResourceReloadLis
                 .thenCompose(identifierListMap -> parseAll(identifierListMap, prepareExecutor)).thenCompose(synchronizer::whenPrepared).thenAccept(pairs -> pairs.forEach(pair -> ItemOverrideRegistry.addOverrideSet(pair.getFirst(), pair.getSecond())));
     }
 
-    private CompletableFuture<List<Pair<ModelIdentifier, OverrideSet>>> parseAll(final Map<Identifier, List<Resource>> map, Executor prepareExecutor) {
-        List<CompletableFuture<Pair<ModelIdentifier, OverrideSet>>> futures = new ArrayList<>();
+    private CompletableFuture<List<Pair<ModelIdentifier, Set<ItemOverrideProvider>>>> parseAll(final Map<Identifier, List<Resource>> map, Executor prepareExecutor) {
+        List<CompletableFuture<Pair<ModelIdentifier, Set<ItemOverrideProvider>>>> futures = new ArrayList<>();
         for (Map.Entry<Identifier, List<Resource>> entry : map.entrySet()) {
             futures.add(CompletableFuture.supplyAsync(() -> {
                 Identifier cleanId = new Identifier(entry.getKey().getNamespace(), entry.getKey().getPath()
                         .replace("models/item/overrides/", "")
                         .replace(".json", ""));
                 ModelIdentifier id = new ModelIdentifier(cleanId, "inventory");
-                OverrideSet overrideSet = new OverrideSet(id);
+                Set<ItemOverrideProvider> providers = new LinkedHashSet<>();
                 for (Resource resource : entry.getValue()) {
                     try (BufferedReader reader = resource.getReader()) {
                         JsonObject jsonObject = JsonHelper.deserialize(reader, true);
@@ -54,13 +54,13 @@ public class ItemOverrideReloadListener implements IdentifiableResourceReloadLis
                             TrimmedClient.LOGGER.error(providerResult.error().get().message());
                             continue;
                         }
-                        overrideSet.addProviders(providerResult.result().get());
+                        providers.addAll(providerResult.result().get());
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }
                 }
-                overrideSet.getModelsToBake().forEachOrdered(MODELS_TO_ADD::add);
-                return Pair.of(id, overrideSet);
+                providers.stream().flatMap(ItemOverrideProvider::getModelsToBake).forEachOrdered(MODELS_TO_ADD::add);
+                return Pair.of(id, providers);
             }, prepareExecutor));
         }
         return Util.combineSafe(futures);
