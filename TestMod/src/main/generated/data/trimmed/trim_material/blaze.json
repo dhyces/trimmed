@@ -1,0 +1,9 @@
+{
+  "asset_name": "blaze",
+  "description": {
+    "color": "#FCA100",
+    "translate": "trimmed.trim_material.blaze"
+  },
+  "ingredient": "minecraft:blaze_powder",
+  "item_model_index": 0.92
+}

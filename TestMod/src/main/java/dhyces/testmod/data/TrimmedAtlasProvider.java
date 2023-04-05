@@ -52,7 +52,17 @@ public class TrimmedAtlasProvider implements DataProvider {
                                 new Identifier("trims/models/armor/rib"),
                                 new Identifier("trims/models/armor/rib_leggings"),
                                 new Identifier("trims/models/armor/spire"),
-                                new Identifier("trims/models/armor/spire_leggings")
+                                new Identifier("trims/models/armor/spire_leggings"),
+                                new Identifier("trims/models/armor/wayfinder"),
+                                new Identifier("trims/models/armor/wayfinder_leggings"),
+                                new Identifier("trims/models/armor/shaper"),
+                                new Identifier("trims/models/armor/shaper_leggings"),
+                                new Identifier("trims/models/armor/silence"),
+                                new Identifier("trims/models/armor/silence_leggings"),
+                                new Identifier("trims/models/armor/raiser"),
+                                new Identifier("trims/models/armor/raiser_leggings"),
+                                new Identifier("trims/models/armor/host"),
+                                new Identifier("trims/models/armor/host_leggings")
                         ), new Identifier("trims/color_palettes/trim_palette"),
                         Util.make(new HashMap<>(), map -> {
                                     map.put("echo", new Identifier(TrimmedTest.MODID, "trim/color_palettes/echo"));

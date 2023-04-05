@@ -1,0 +1,29 @@
+{
+  "values": [
+    {
+      "type": "trimmed:armor_trim",
+      "material": "trimmed:blaze",
+      "model": "trimmed:leather_boots_blaze_trim"
+    },
+    {
+      "type": "trimmed:armor_trim",
+      "material": "trimmed:echo",
+      "model": "trimmed:leather_boots_echo_trim"
+    },
+    {
+      "type": "trimmed:armor_trim",
+      "material": "trimmed:glow",
+      "model": "trimmed:leather_boots_glow_trim"
+    },
+    {
+      "type": "trimmed:armor_trim",
+      "material": "trimmed:prismarine",
+      "model": "trimmed:leather_boots_prismarine_trim"
+    },
+    {
+      "type": "trimmed:armor_trim",
+      "material": "trimmed:shell",
+      "model": "trimmed:leather_boots_shell_trim"
+    }
+  ]
+}

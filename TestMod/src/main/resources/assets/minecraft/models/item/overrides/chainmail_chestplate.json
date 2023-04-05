@@ -1,0 +1,30 @@
+
+{
+  "values": [
+    {
+      "type": "trimmed:armor_trim",
+      "material": "trimmed:blaze",
+      "model": "trimmed:chainmail_chestplate_blaze_trim"
+    },
+    {
+      "type": "trimmed:armor_trim",
+      "material": "trimmed:echo",
+      "model": "trimmed:chainmail_chestplate_echo_trim"
+    },
+    {
+      "type": "trimmed:armor_trim",
+      "material": "trimmed:glow",
+      "model": "trimmed:chainmail_chestplate_glow_trim"
+    },
+    {
+      "type": "trimmed:armor_trim",
+      "material": "trimmed:prismarine",
+      "model": "trimmed:chainmail_chestplate_prismarine_trim"
+    },
+    {
+      "type": "trimmed:armor_trim",
+      "material": "trimmed:shell",
+      "model": "trimmed:chainmail_chestplate_shell_trim"
+    }
+  ]
+}

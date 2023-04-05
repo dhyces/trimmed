@@ -1,12 +1,12 @@
 {
   "schemaVersion": 1,
-  "id": "trimmed",
+  "id": "testmod",
   "version": "${version}",
 
-  "name": "Trimmed",
-  "description": "Adding more armor trims",
+  "name": "TestMod",
+  "description": "Adding more armor trims to test!",
   "authors": [
-    "Me!"
+    "dhyces"
   ],
   "contact": {
     "homepage": "https://fabricmc.net/",

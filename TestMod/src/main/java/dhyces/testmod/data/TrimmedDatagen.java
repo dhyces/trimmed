@@ -1,5 +1,7 @@
 package dhyces.testmod.data;
 
+import dhyces.testmod.ModTrimMaterials;
+import dhyces.testmod.ModTrimPatterns;
 import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.minecraft.data.report.DynamicRegistriesProvider;
@@ -34,17 +36,20 @@ public class TrimmedDatagen implements DataGeneratorEntrypoint {
 
         pack.addProvider((FabricDataGenerator.Pack.Factory<TrimmedAtlasProvider>) TrimmedAtlasProvider::new);
         pack.addProvider(TrimmedLangProvider::new);
+        pack.addProvider(TrimmedModelProvider::new);
     }
 
     private static void bootstrapMaterials(Registerable<ArmorTrimMaterial> context) {
         for (Map.Entry<RegistryKey<ArmorTrimMaterial>, ArmorTrimMaterial> entry : MATERIALS.entrySet()) {
             context.register(entry.getKey(), entry.getValue());
         }
+        ModTrimMaterials.bootstrap(context);
     }
 
     private static void bootstrapPatterns(Registerable<ArmorTrimPattern> context) {
         for (Map.Entry<RegistryKey<ArmorTrimPattern>, ArmorTrimPattern> entry : PATTERNS.entrySet()) {
             context.register(entry.getKey(), entry.getValue());
         }
+        ModTrimPatterns.bootstrap(context);
     }
 }

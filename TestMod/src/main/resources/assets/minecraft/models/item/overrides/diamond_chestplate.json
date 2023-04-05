@@ -1,0 +1,29 @@
+{
+  "values": [
+    {
+      "type": "trimmed:armor_trim",
+      "material": "trimmed:blaze",
+      "model": "trimmed:diamond_chestplate_blaze_trim"
+    },
+    {
+      "type": "trimmed:armor_trim",
+      "material": "trimmed:echo",
+      "model": "trimmed:diamond_chestplate_echo_trim"
+    },
+    {
+      "type": "trimmed:armor_trim",
+      "material": "trimmed:glow",
+      "model": "trimmed:diamond_chestplate_glow_trim"
+    },
+    {
+      "type": "trimmed:armor_trim",
+      "material": "trimmed:prismarine",
+      "model": "trimmed:diamond_chestplate_prismarine_trim"
+    },
+    {
+      "type": "trimmed:armor_trim",
+      "material": "trimmed:shell",
+      "model": "trimmed:diamond_chestplate_shell_trim"
+    }
+  ]
+}

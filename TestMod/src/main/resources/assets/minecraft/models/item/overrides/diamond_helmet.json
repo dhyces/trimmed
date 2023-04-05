@@ -1,0 +1,29 @@
+{
+  "values": [
+    {
+      "type": "trimmed:armor_trim",
+      "material": "trimmed:blaze",
+      "model": "trimmed:diamond_helmet_blaze_trim"
+    },
+    {
+      "type": "trimmed:armor_trim",
+      "material": "trimmed:echo",
+      "model": "trimmed:diamond_helmet_echo_trim"
+    },
+    {
+      "type": "trimmed:armor_trim",
+      "material": "trimmed:glow",
+      "model": "trimmed:diamond_helmet_glow_trim"
+    },
+    {
+      "type": "trimmed:armor_trim",
+      "material": "trimmed:prismarine",
+      "model": "trimmed:diamond_helmet_prismarine_trim"
+    },
+    {
+      "type": "trimmed:armor_trim",
+      "material": "trimmed:shell",
+      "model": "trimmed:diamond_helmet_shell_trim"
+    }
+  ]
+}

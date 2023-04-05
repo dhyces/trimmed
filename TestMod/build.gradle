@@ -11,34 +11,36 @@ version = "1.0.0"
 group = "dhyces"
 
 loom {
+	mods {
+		trimmed {
+			sourceSet getRootProject().sourceSets.main
+		}
+		testmod {
+			sourceSet sourceSets.main
+		}
+	}
 	runs {
 		testClient {
 			inherit client
 			name "TestClient"
+			ideConfigGenerated = true
 		}
 		datagenClient {
 			inherit client
 			name "TestData"
 			vmArg "-Dfabric-api.datagen"
 			vmArg "-Dfabric-api.datagen.output-dir=${file("src/main/generated")}"
-			vmArg "-Dfabric-api.datagen.modid=${archives_base_name}"
+			vmArg "-Dfabric-api.datagen.modid=testmod"
 
 			runDir "build/datagen"
+			ideConfigGenerated = true
 		}
 	}
 	
 	accessWidenerPath = file("src/main/resources/trimmed.accesswidener")
 }
 
-sourceSets {
-	main {
-		resources {
-			srcDirs += [
-					'src/main/generated'
-			]
-		}
-	}
-}
+sourceSets.main.resources.srcDirs("src/main/generated")
 
 dependencies {
 	minecraft "com.mojang:minecraft:${project.minecraft_version}"
