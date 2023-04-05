@@ -1,5 +1,6 @@
 package dhyces.testmod;
 
+import dhyces.testmod.client.providers.MyProviderTypes;
 import net.fabricmc.api.ModInitializer;
 import net.minecraft.util.Identifier;
 import org.slf4j.Logger;
@@ -15,6 +16,6 @@ public class TrimmedTest implements ModInitializer {
 
     @Override
     public void onInitialize() {
-
+        MyProviderTypes.init();
     }
 }

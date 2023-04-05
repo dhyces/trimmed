@@ -1,6 +1,7 @@
 package dhyces.testmod.data;
 
 import dhyces.testmod.ModTrimMaterials;
+import dhyces.testmod.client.providers.BlockStateItemOverrideProvider;
 import dhyces.trimmed.data.ItemOverrideDataProvider;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.minecraft.block.BlockState;
@@ -64,5 +65,6 @@ public class TestItemOverrideProvider extends ItemOverrideDataProvider {
         states.putString("snowy", "true");
         nbt.put(BlockItem.BLOCK_STATE_TAG_KEY, states);
         addNbtOverride(Blocks.GRASS_BLOCK, nbt, new ModelIdentifier("minecraft", "grass_block", "snowy=true"));
+        addItemOverrides(Blocks.BAMBOO_STAIRS, new BlockStateItemOverrideProvider());
     }
 }

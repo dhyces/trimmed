@@ -1,6 +1,5 @@
 package dhyces.trimmed.data;
 
-import com.google.common.collect.HashMultimap;
 import com.google.gson.JsonElement;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.JsonOps;
