@@ -2,11 +2,11 @@ package dhyces.trimmed.client.override.provider;
 
 import com.mojang.serialization.Codec;
 import dhyces.trimmed.TrimmedClient;
-import dhyces.trimmed.client.override.provider.providers.ArmorTrimItemOverrideProvider;
+import dhyces.trimmed.client.override.provider.providers.TrimItemOverrideProvider;
 import dhyces.trimmed.client.override.provider.providers.NbtItemOverrideProvider;
 
 public interface ItemOverrideProviderType<T extends ItemOverrideProvider> {
-    ItemOverrideProviderType<ArmorTrimItemOverrideProvider> ARMOR_TRIM = register("armor_trim", ArmorTrimItemOverrideProvider.CODEC);
+    ItemOverrideProviderType<TrimItemOverrideProvider> ARMOR_TRIM = register("trim", TrimItemOverrideProvider.CODEC);
     ItemOverrideProviderType<NbtItemOverrideProvider> NBT = register("nbt", NbtItemOverrideProvider.CODEC);
 
     Codec<T> getCodec();
