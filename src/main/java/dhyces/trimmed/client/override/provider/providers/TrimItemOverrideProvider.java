@@ -4,6 +4,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dhyces.trimmed.client.override.provider.ItemOverrideProvider;
 import dhyces.trimmed.client.override.provider.ItemOverrideProviderType;
+import dhyces.trimmed.util.CodecUtil;
 import net.minecraft.client.util.ModelIdentifier;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.LivingEntity;
@@ -17,20 +18,20 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-public class ArmorTrimItemOverrideProvider implements ItemOverrideProvider {
-    public static final Codec<ArmorTrimItemOverrideProvider> CODEC = RecordCodecBuilder.create(instance ->
+public class TrimItemOverrideProvider implements ItemOverrideProvider {
+    public static final Codec<TrimItemOverrideProvider> CODEC = RecordCodecBuilder.create(instance ->
             instance.group(
                     Identifier.CODEC.fieldOf("material").forGetter(provider -> provider.material),
-                    Identifier.CODEC.fieldOf("model").forGetter(provider -> provider.model)
-            ).apply(instance, ArmorTrimItemOverrideProvider::new)
+                    CodecUtil.MODEL_IDENTIFIER_CODEC.fieldOf("model").forGetter(provider -> provider.model)
+            ).apply(instance, TrimItemOverrideProvider::new)
     );
 
     private final Identifier material;
     private final ModelIdentifier model;
 
-    public ArmorTrimItemOverrideProvider(Identifier material, Identifier model) {
+    public TrimItemOverrideProvider(Identifier material, ModelIdentifier model) {
         this.material = material;
-        this.model = new ModelIdentifier(model, "inventory");
+        this.model = model;
     }
 
     @Override
