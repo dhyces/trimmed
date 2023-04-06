@@ -6,8 +6,10 @@ import dhyces.trimmed.TrimmedClient;
 import net.minecraft.client.util.ModelIdentifier;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.InvalidIdentifierException;
+import org.jetbrains.annotations.ApiStatus;
 
 public final class CodecUtil {
+    @ApiStatus.Internal
     public static final Codec<Identifier> TRIMMED_IDENTIFIER = Codec.STRING.xmap(
             s -> Identifier.tryParse(s.contains(":") ? s : TrimmedClient.MODID + ":" + s),
             Identifier::toString
