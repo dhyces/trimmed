@@ -2,11 +2,10 @@ package dhyces.testmod.client.providers;
 
 import com.google.common.base.Suppliers;
 import com.mojang.serialization.Codec;
-import dhyces.trimmed.client.override.provider.ItemOverrideProvider;
-import dhyces.trimmed.client.override.provider.ItemOverrideProviderType;
+import dhyces.trimmed.api.client.override.provider.ItemOverrideProvider;
+import dhyces.trimmed.api.client.override.provider.ItemOverrideProviderType;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.block.BlockModels;
 import net.minecraft.client.util.ModelIdentifier;
 import net.minecraft.client.world.ClientWorld;

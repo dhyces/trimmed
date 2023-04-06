@@ -1,9 +1,8 @@
 package dhyces.trimmed.api;
 
-import dhyces.trimmed.client.override.provider.ItemOverrideProvider;
-import dhyces.trimmed.client.override.provider.ItemOverrideProviderType;
+import dhyces.trimmed.api.client.override.provider.ItemOverrideProvider;
+import dhyces.trimmed.api.client.override.provider.ItemOverrideProviderType;
 import dhyces.trimmed.impl.TrimmedApiImpl;
-import net.minecraft.item.trim.ArmorTrimMaterial;
 import net.minecraft.util.Identifier;
 
 public interface TrimmedApi {

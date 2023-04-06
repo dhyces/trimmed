@@ -1,13 +1,13 @@
-package dhyces.trimmed.data;
+package dhyces.trimmed.api.data;
 
 import com.google.gson.JsonElement;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.JsonOps;
 import dhyces.trimmed.TrimmedClient;
-import dhyces.trimmed.client.override.ItemOverrideReloadListener;
-import dhyces.trimmed.client.override.provider.ItemOverrideProvider;
-import dhyces.trimmed.client.override.provider.providers.NbtItemOverrideProvider;
-import dhyces.trimmed.client.override.provider.providers.TrimItemOverrideProvider;
+import dhyces.trimmed.api.client.override.provider.ItemOverrideProvider;
+import dhyces.trimmed.api.client.override.provider.providers.NbtItemOverrideProvider;
+import dhyces.trimmed.api.client.override.provider.providers.TrimItemOverrideProvider;
+import dhyces.trimmed.impl.client.override.ItemOverrideReloadListener;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.minecraft.client.util.ModelIdentifier;
 import net.minecraft.data.DataOutput;

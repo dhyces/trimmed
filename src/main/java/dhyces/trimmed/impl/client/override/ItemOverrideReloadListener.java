@@ -1,4 +1,4 @@
-package dhyces.trimmed.client.override;
+package dhyces.trimmed.impl.client.override;
 
 import com.google.gson.JsonObject;
 import com.mojang.datafixers.util.Pair;
@@ -6,7 +6,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.JsonOps;
 import dhyces.trimmed.TrimmedClient;
-import dhyces.trimmed.client.override.provider.ItemOverrideProvider;
+import dhyces.trimmed.api.client.override.provider.ItemOverrideProvider;
 import net.fabricmc.fabric.api.resource.IdentifiableResourceReloadListener;
 import net.minecraft.client.util.ModelIdentifier;
 import net.minecraft.resource.Resource;

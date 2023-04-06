@@ -1,7 +1,7 @@
 package dhyces.trimmed;
 
-import dhyces.trimmed.client.override.provider.ItemOverrideProviderRegistry;
-import dhyces.trimmed.client.override.ItemOverrideReloadListener;
+import dhyces.trimmed.impl.client.override.ItemOverrideReloadListener;
+import dhyces.trimmed.impl.client.override.provider.ItemOverrideProviderRegistry;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.model.ModelLoadingRegistry;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;

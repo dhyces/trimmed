@@ -1,6 +1,6 @@
-package dhyces.trimmed.mixin;
+package dhyces.trimmed.impl.mixin;
 
-import dhyces.trimmed.client.override.ItemOverrideRegistry;
+import dhyces.trimmed.impl.client.override.ItemOverrideRegistry;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.model.BakedModel;
 import net.minecraft.client.render.model.json.ModelOverrideList;

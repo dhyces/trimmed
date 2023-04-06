@@ -1,7 +1,7 @@
-package dhyces.trimmed.client.override;
+package dhyces.trimmed.impl.client.override;
 
-import dhyces.trimmed.client.override.provider.ItemOverrideProvider;
-import dhyces.trimmed.util.Util;
+import dhyces.trimmed.api.client.override.provider.ItemOverrideProvider;
+import dhyces.trimmed.api.util.Util;
 import net.minecraft.client.util.ModelIdentifier;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.LivingEntity;

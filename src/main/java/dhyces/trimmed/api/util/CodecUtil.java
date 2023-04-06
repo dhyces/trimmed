@@ -1,4 +1,4 @@
-package dhyces.trimmed.util;
+package dhyces.trimmed.api.util;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;

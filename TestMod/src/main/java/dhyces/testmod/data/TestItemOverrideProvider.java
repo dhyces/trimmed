@@ -2,16 +2,14 @@ package dhyces.testmod.data;
 
 import dhyces.testmod.ModTrimMaterials;
 import dhyces.testmod.client.providers.BlockStateItemOverrideProvider;
-import dhyces.trimmed.data.ItemOverrideDataProvider;
+import dhyces.trimmed.api.data.ItemOverrideDataProvider;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
-import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.util.ModelIdentifier;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.state.property.Properties;
 import net.minecraft.util.Util;
 
 import java.util.LinkedList;

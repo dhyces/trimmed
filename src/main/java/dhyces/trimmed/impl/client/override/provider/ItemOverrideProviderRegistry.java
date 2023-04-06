@@ -1,9 +1,10 @@
-package dhyces.trimmed.client.override.provider;
+package dhyces.trimmed.impl.client.override.provider;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import com.mojang.serialization.Codec;
-import dhyces.trimmed.util.CodecUtil;
+import dhyces.trimmed.api.client.override.provider.ItemOverrideProviderType;
+import dhyces.trimmed.api.util.CodecUtil;
 import net.minecraft.util.Identifier;
 
 public class ItemOverrideProviderRegistry {

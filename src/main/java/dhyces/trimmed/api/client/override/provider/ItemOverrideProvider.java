@@ -1,7 +1,7 @@
-package dhyces.trimmed.client.override.provider;
+package dhyces.trimmed.api.client.override.provider;
 
 import com.mojang.serialization.Codec;
-import net.minecraft.client.render.model.ModelLoader;
+import dhyces.trimmed.impl.client.override.provider.ItemOverrideProviderRegistry;
 import net.minecraft.client.util.ModelIdentifier;
 import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.LivingEntity;
