@@ -20,11 +20,11 @@ public class ModTrimMaterials {
     public static final ResourceKey<TrimMaterial> GLOW = registryKey("glow");
 
     public static void bootstrap(BootstapContext<TrimMaterial> context) {
-        context.register(ECHO, TrimMaterial.create("echo", Items.ECHO_SHARD, 0.91f, Component.translatable("trimmed.trim_material.echo").setStyle(Style.EMPTY.withColor(0x0A4F5F)), new HashMap<>()));
-        context.register(BLAZE, TrimMaterial.create("blaze", Items.BLAZE_POWDER, 0.92f, Component.translatable("trimmed.trim_material.blaze").setStyle(Style.EMPTY.withColor(0xFCA100)), new HashMap<>()));
-        context.register(SHELL, TrimMaterial.create("shell", Items.NAUTILUS_SHELL, 0.93f, Component.translatable("trimmed.trim_material.shell").setStyle(Style.EMPTY.withColor(0xD17E7E)), new HashMap<>()));
-        context.register(PRISMARINE, TrimMaterial.create("prismarine", Items.PRISMARINE_CRYSTALS, 0.94f, Component.translatable("trimmed.trim_material.prismarine").setStyle(Style.EMPTY.withColor(0xB2D5C8)), new HashMap<>()));
-        context.register(GLOW, TrimMaterial.create("glow", Items.GLOW_INK_SAC, 0.95f, Component.translatable("trimmed.trim_material.glow").setStyle(Style.EMPTY.withColor(0x7EFCBE)), new HashMap<>()));
+        context.register(ECHO, new TrimMaterial("echo", Items.ECHO_SHARD.builtInRegistryHolder(), -1, new HashMap<>(), Component.translatable("trimmed.trim_material.echo").setStyle(Style.EMPTY.withColor(0x0A4F5F))));
+        context.register(BLAZE, new TrimMaterial("blaze", Items.BLAZE_POWDER.builtInRegistryHolder(), -1, new HashMap<>(), Component.translatable("trimmed.trim_material.blaze").setStyle(Style.EMPTY.withColor(0xFCA100))));
+        context.register(SHELL, new TrimMaterial("shell", Items.NAUTILUS_SHELL.builtInRegistryHolder(), -1, new HashMap<>(), Component.translatable("trimmed.trim_material.shell").setStyle(Style.EMPTY.withColor(0xD17E7E))));
+        context.register(PRISMARINE, new TrimMaterial("prismarine", Items.PRISMARINE_CRYSTALS.builtInRegistryHolder(), -1, new HashMap<>(), Component.translatable("trimmed.trim_material.prismarine").setStyle(Style.EMPTY.withColor(0xB2D5C8))));
+        context.register(GLOW, new TrimMaterial("glow", Items.GLOW_INK_SAC.builtInRegistryHolder(), -1, new HashMap<>(), Component.translatable("trimmed.trim_material.glow").setStyle(Style.EMPTY.withColor(0x7EFCBE))));
     }
 
     private static ResourceKey<TrimMaterial> registryKey(String id) {

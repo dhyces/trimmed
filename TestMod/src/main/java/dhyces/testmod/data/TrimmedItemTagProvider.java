@@ -1,5 +1,6 @@
 package dhyces.testmod.data;
 
+import dhyces.testmod.ModItems;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
@@ -27,5 +28,6 @@ public class TrimmedItemTagProvider extends IntrinsicHolderTagsProvider<Item> {
                 .add(Items.BLAZE_POWDER)
                 .add(Items.PRISMARINE_CRYSTALS)
                 .add(Items.GLOW_INK_SAC);
+        tag(ItemTags.TRIM_TEMPLATES).add(ModItems.SPIRAL_PATTERN.get());
     }
 }

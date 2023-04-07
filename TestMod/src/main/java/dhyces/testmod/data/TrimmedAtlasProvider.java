@@ -62,14 +62,17 @@ public class TrimmedAtlasProvider implements DataProvider {
                                 new ResourceLocation("trims/models/armor/raiser"),
                                 new ResourceLocation("trims/models/armor/raiser_leggings"),
                                 new ResourceLocation("trims/models/armor/host"),
-                                new ResourceLocation("trims/models/armor/host_leggings")
+                                new ResourceLocation("trims/models/armor/host_leggings"),
+
+                                new ResourceLocation(TrimmedTest.MODID, "trims/models/armor/spiral"),
+                                new ResourceLocation(TrimmedTest.MODID, "trims/models/armor/spiral_leggings")
                         ), new ResourceLocation("trims/color_palettes/trim_palette"),
                         Util.make(new HashMap<>(), map -> {
-                                    map.put("echo", new ResourceLocation(TrimmedTest.MODID, "trim/color_palettes/echo"));
-                                    map.put("blaze", new ResourceLocation(TrimmedTest.MODID, "trim/color_palettes/blaze"));
-                                    map.put("shell", new ResourceLocation(TrimmedTest.MODID, "trim/color_palettes/shell"));
-                                    map.put("prismarine", new ResourceLocation(TrimmedTest.MODID, "trim/color_palettes/prismarine"));
-                                    map.put("glow", new ResourceLocation(TrimmedTest.MODID, "trim/color_palettes/glow"));
+                                    map.put("echo", new ResourceLocation(TrimmedTest.MODID, "trims/color_palettes/echo"));
+                                    map.put("blaze", new ResourceLocation(TrimmedTest.MODID, "trims/color_palettes/blaze"));
+                                    map.put("shell", new ResourceLocation(TrimmedTest.MODID, "trims/color_palettes/shell"));
+                                    map.put("prismarine", new ResourceLocation(TrimmedTest.MODID, "trims/color_palettes/prismarine"));
+                                    map.put("glow", new ResourceLocation(TrimmedTest.MODID, "trims/color_palettes/glow"));
                                 }
                         )
                 )).finish();
@@ -82,11 +85,11 @@ public class TrimmedAtlasProvider implements DataProvider {
                                 new ResourceLocation("trims/items/boots_trim")
                         ), new ResourceLocation("trims/color_palettes/trim_palette"),
                         Util.make(new HashMap<>(), map -> {
-                                    map.put("echo", new ResourceLocation(TrimmedTest.MODID, "trim/color_palettes/echo"));
-                                    map.put("blaze", new ResourceLocation(TrimmedTest.MODID, "trim/color_palettes/blaze"));
-                                    map.put("shell", new ResourceLocation(TrimmedTest.MODID, "trim/color_palettes/shell"));
-                                    map.put("prismarine", new ResourceLocation(TrimmedTest.MODID, "trim/color_palettes/prismarine"));
-                                    map.put("glow", new ResourceLocation(TrimmedTest.MODID, "trim/color_palettes/glow"));
+                                    map.put("echo", new ResourceLocation(TrimmedTest.MODID, "trims/color_palettes/echo"));
+                                    map.put("blaze", new ResourceLocation(TrimmedTest.MODID, "trims/color_palettes/blaze"));
+                                    map.put("shell", new ResourceLocation(TrimmedTest.MODID, "trims/color_palettes/shell"));
+                                    map.put("prismarine", new ResourceLocation(TrimmedTest.MODID, "trims/color_palettes/prismarine"));
+                                    map.put("glow", new ResourceLocation(TrimmedTest.MODID, "trims/color_palettes/glow"));
                                 }
                         )
                 )).finish();

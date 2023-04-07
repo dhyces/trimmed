@@ -1,5 +1,6 @@
 package dhyces.testmod.data;
 
+import dhyces.testmod.ModItems;
 import dhyces.testmod.TrimmedTest;
 import net.minecraft.Util;
 import net.minecraft.data.PackOutput;
@@ -36,6 +37,8 @@ public class TrimmedModelProvider extends ItemModelProvider {
         createArmors(TrimmedTest.id("glow"), armorMaterials);
         createArmors(TrimmedTest.id("prismarine"), armorMaterials);
         createArmors(TrimmedTest.id("shell"), armorMaterials);
+
+        basicItem(ModItems.SPIRAL_PATTERN.get());
     }
 
     private void createArmors(ResourceLocation trimMaterial, Set<ArmorMaterial> materials) {
