@@ -28,8 +28,6 @@ bin/
 
 *.DS_Store
 
-# fabric
-
 run/
 
 # java

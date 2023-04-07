@@ -1,0 +1,29 @@
+{
+  "values": [
+    {
+      "type": "trimmed:trim",
+      "material": "testmod:blaze",
+      "model": "testmod:netherite_leggings_blaze_trim"
+    },
+    {
+      "type": "trimmed:trim",
+      "material": "testmod:echo",
+      "model": "testmod:netherite_leggings_echo_trim"
+    },
+    {
+      "type": "trimmed:trim",
+      "material": "testmod:glow",
+      "model": "testmod:netherite_leggings_glow_trim"
+    },
+    {
+      "type": "trimmed:trim",
+      "material": "testmod:prismarine",
+      "model": "testmod:netherite_leggings_prismarine_trim"
+    },
+    {
+      "type": "trimmed:trim",
+      "material": "testmod:shell",
+      "model": "testmod:netherite_leggings_shell_trim"
+    }
+  ]
+}

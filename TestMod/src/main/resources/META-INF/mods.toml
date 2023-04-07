@@ -1,0 +1,13 @@
+modLoader="javafml"
+loaderVersion="[45,)"
+license="MIT"
+#issueTrackerURL="https://change.me.to.your.issue.tracker.example.invalid/"
+[[mods]]
+modId="testmod"
+version="${file.jarVersion}"
+displayName="TestMod"
+#displayURL="https://change.me.to.your.mods.homepage.example.invalid/"
+logoFile="icon.png"
+credits=""
+authors="Dhyces"
+description='''Adding more armor trims to test!'''

@@ -1,20 +1,20 @@
 package dhyces.testmod.data;
 
 import dhyces.testmod.TrimmedTest;
-import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
-import net.fabricmc.fabric.api.datagen.v1.provider.FabricModelProvider;
-import net.minecraft.data.client.BlockStateModelGenerator;
-import net.minecraft.data.client.ItemModelGenerator;
-import net.minecraft.item.ArmorItem;
-import net.minecraft.item.ArmorMaterial;
-import net.minecraft.item.ArmorMaterials;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.Util;
+import net.minecraft.Util;
+import net.minecraft.data.PackOutput;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ArmorItem;
+import net.minecraft.world.item.ArmorMaterial;
+import net.minecraft.world.item.ArmorMaterials;
+import net.minecraftforge.client.model.generators.ItemModelProvider;
+import net.minecraftforge.client.model.generators.ModelFile;
+import net.minecraftforge.common.data.ExistingFileHelper;
 
 import java.util.HashSet;
 import java.util.Set;
 
-public class TrimmedModelProvider extends FabricModelProvider {
+public class TrimmedModelProvider extends ItemModelProvider {
     static Set<ArmorMaterial> armorMaterials = Util.make(new HashSet<>(), set -> {
         set.add(ArmorMaterials.LEATHER);
         set.add(ArmorMaterials.IRON);
@@ -24,63 +24,65 @@ public class TrimmedModelProvider extends FabricModelProvider {
         set.add(ArmorMaterials.CHAIN);
         set.add(ArmorMaterials.TURTLE);
     });
-    public TrimmedModelProvider(FabricDataOutput output) {
-        super(output);
+
+    public TrimmedModelProvider(PackOutput output, String modid, ExistingFileHelper existingFileHelper) {
+        super(output, modid, existingFileHelper);
     }
 
     @Override
-    public void generateBlockStateModels(BlockStateModelGenerator blockStateModelGenerator) {
-
+    protected void registerModels() {
+        createArmors(TrimmedTest.id("blaze"), armorMaterials);
+        createArmors(TrimmedTest.id("echo"), armorMaterials);
+        createArmors(TrimmedTest.id("glow"), armorMaterials);
+        createArmors(TrimmedTest.id("prismarine"), armorMaterials);
+        createArmors(TrimmedTest.id("shell"), armorMaterials);
     }
 
-    @Override
-    public void generateItemModels(ItemModelGenerator itemModelGenerator) {
-        createArmors(itemModelGenerator, TrimmedTest.id("blaze"), armorMaterials);
-        createArmors(itemModelGenerator, TrimmedTest.id("echo"), armorMaterials);
-        createArmors(itemModelGenerator, TrimmedTest.id("glow"), armorMaterials);
-        createArmors(itemModelGenerator, TrimmedTest.id("prismarine"), armorMaterials);
-        createArmors(itemModelGenerator, TrimmedTest.id("shell"), armorMaterials);
-    }
-
-    private void createArmors(ItemModelGenerator generator, Identifier trimMaterial, Set<ArmorMaterial> materials) {
+    private void createArmors(ResourceLocation trimMaterial, Set<ArmorMaterial> materials) {
         for (ArmorMaterial material : materials) {
             if (!(material == ArmorMaterials.LEATHER)) {
-                createTwoLayerArmor(generator, material, trimMaterial);
+                createTwoLayerArmor(material, trimMaterial);
             } else {
-                createThreeLayerArmor(generator, material, trimMaterial);
+                createThreeLayerArmor(material, trimMaterial);
             }
         }
     }
 
-    private void createTwoLayerArmor(ItemModelGenerator generator, ArmorMaterial material, Identifier trimMaterial) {
-        uploadTwoLayerArmor(generator, material, ArmorItem.Type.BOOTS, trimMaterial);
-        uploadTwoLayerArmor(generator, material, ArmorItem.Type.LEGGINGS, trimMaterial);
-        uploadTwoLayerArmor(generator, material, ArmorItem.Type.CHESTPLATE, trimMaterial);
-        uploadTwoLayerArmor(generator, material, ArmorItem.Type.HELMET, trimMaterial);
+    private void createTwoLayerArmor(ArmorMaterial material, ResourceLocation trimMaterial) {
+        uploadTwoLayerArmor(material, ArmorItem.Type.BOOTS, trimMaterial);
+        uploadTwoLayerArmor(material, ArmorItem.Type.LEGGINGS, trimMaterial);
+        uploadTwoLayerArmor(material, ArmorItem.Type.CHESTPLATE, trimMaterial);
+        uploadTwoLayerArmor(material, ArmorItem.Type.HELMET, trimMaterial);
     }
 
 
-    private void uploadTwoLayerArmor(ItemModelGenerator generator, ArmorMaterial material, ArmorItem.Type type, Identifier trimMaterial) {
+    private void uploadTwoLayerArmor(ArmorMaterial material, ArmorItem.Type type, ResourceLocation trimMaterial) {
         String armorMaterialName = material == ArmorMaterials.GOLD ? "golden" : material.getName();
-        Identifier id = new Identifier(trimMaterial.getNamespace(), "item/%s_%s_%s_trim".formatted(armorMaterialName, type.getName(), trimMaterial.getPath()));
-        Identifier layer0Id = new Identifier("item/%s_%s".formatted(armorMaterialName, type.getName()));
-        Identifier layer1Id = new Identifier("trims/items/%s_trim_%s".formatted(type.getName(), trimMaterial.getPath()));
-        generator.uploadArmor(id, layer0Id, layer1Id);
+        ResourceLocation id = new ResourceLocation(trimMaterial.getNamespace(), "item/%s_%s_%s_trim".formatted(armorMaterialName, type.getName(), trimMaterial.getPath()));
+        ResourceLocation layer0Id = new ResourceLocation("item/%s_%s".formatted(armorMaterialName, type.getName()));
+        ResourceLocation layer1Id = new ResourceLocation("trims/items/%s_trim_%s".formatted(type.getName(), trimMaterial.getPath()));
+        withExistingParent(id.getPath(), "item/generated")
+                .texture("layer0", layer0Id.toString())
+                .texture("layer1", layer1Id.toString());
+
     }
 
-    private void createThreeLayerArmor(ItemModelGenerator generator, ArmorMaterial material, Identifier trimMaterial) {
-        uploadThreeLayerArmor(generator, material, ArmorItem.Type.BOOTS, trimMaterial);
-        uploadThreeLayerArmor(generator, material, ArmorItem.Type.LEGGINGS, trimMaterial);
-        uploadThreeLayerArmor(generator, material, ArmorItem.Type.CHESTPLATE, trimMaterial);
-        uploadThreeLayerArmor(generator, material, ArmorItem.Type.HELMET, trimMaterial);
+    private void createThreeLayerArmor(ArmorMaterial material, ResourceLocation trimMaterial) {
+        uploadThreeLayerArmor(material, ArmorItem.Type.BOOTS, trimMaterial);
+        uploadThreeLayerArmor(material, ArmorItem.Type.LEGGINGS, trimMaterial);
+        uploadThreeLayerArmor(material, ArmorItem.Type.CHESTPLATE, trimMaterial);
+        uploadThreeLayerArmor(material, ArmorItem.Type.HELMET, trimMaterial);
     }
 
 
-    private void uploadThreeLayerArmor(ItemModelGenerator generator, ArmorMaterial material, ArmorItem.Type type, Identifier trimMaterial) {
-        Identifier id = new Identifier(trimMaterial.getNamespace(), "item/%s_%s_%s_trim".formatted(material.getName(), type.getName(), trimMaterial.getPath()));
-        Identifier layer0Id = new Identifier("item/%s_%s".formatted(material.getName(), type.getName()));
-        Identifier layer1Id = new Identifier("item/%s_%s_overlay".formatted(material.getName(), type.getName()));
-        Identifier layer2Id = new Identifier("trims/items/%s_trim_%s".formatted(type.getName(), trimMaterial.getPath()));
-        generator.uploadArmor(id, layer0Id, layer1Id, layer2Id);
+    private void uploadThreeLayerArmor(ArmorMaterial material, ArmorItem.Type type, ResourceLocation trimMaterial) {
+        ResourceLocation id = new ResourceLocation(trimMaterial.getNamespace(), "item/%s_%s_%s_trim".formatted(material.getName(), type.getName(), trimMaterial.getPath()));
+        ResourceLocation layer0Id = new ResourceLocation("item/%s_%s".formatted(material.getName(), type.getName()));
+        ResourceLocation layer1Id = new ResourceLocation("item/%s_%s_overlay".formatted(material.getName(), type.getName()));
+        ResourceLocation layer2Id = new ResourceLocation("trims/items/%s_trim_%s".formatted(type.getName(), trimMaterial.getPath()));
+        withExistingParent(id.getPath(), "item/generated")
+                .texture("layer0", layer0Id.toString())
+                .texture("layer1", layer1Id.toString())
+                .texture("layer2", layer2Id.toString());
     }
 }

@@ -1,0 +1,13 @@
+{
+  "values": [
+    {
+      "type": "trimmed:nbt",
+      "model": "minecraft:grass_block#snowy=true",
+      "nbt": {
+        "BlockStateTag": {
+          "snowy": "true"
+        }
+      }
+    }
+  ]
+}

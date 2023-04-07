@@ -1,0 +1,29 @@
+{
+  "values": [
+    {
+      "type": "trimmed:trim",
+      "material": "testmod:blaze",
+      "model": "testmod:diamond_helmet_blaze_trim"
+    },
+    {
+      "type": "trimmed:trim",
+      "material": "testmod:echo",
+      "model": "testmod:diamond_helmet_echo_trim"
+    },
+    {
+      "type": "trimmed:trim",
+      "material": "testmod:glow",
+      "model": "testmod:diamond_helmet_glow_trim"
+    },
+    {
+      "type": "trimmed:trim",
+      "material": "testmod:prismarine",
+      "model": "testmod:diamond_helmet_prismarine_trim"
+    },
+    {
+      "type": "trimmed:trim",
+      "material": "testmod:shell",
+      "model": "testmod:diamond_helmet_shell_trim"
+    }
+  ]
+}

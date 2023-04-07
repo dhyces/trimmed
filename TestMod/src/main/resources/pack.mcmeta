@@ -1,5 +1,6 @@
 {
   "pack": {
-    "description": "trimmed testmod resources"
+    "description": "trimmed testmod resources",
+    "pack_format": 13
   }
 }

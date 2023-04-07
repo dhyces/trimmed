@@ -1,12 +1,13 @@
 package dhyces.trimmed.api.util;
 
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.util.ModelIdentifier;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.resources.model.ModelResourceLocation;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.client.model.ForgeItemModelShaper;
 
 public final class Util {
-    public static ModelIdentifier getItemModelId(ItemStack stack) {
-        return MinecraftClient.getInstance().getItemRenderer().getModels().modelIds.get(Item.getRawId(stack.getItem()));
+    public static ModelResourceLocation getItemModelId(ItemStack stack) {
+        return ((ForgeItemModelShaper)Minecraft.getInstance().getItemRenderer().getItemModelShaper()).getLocation(stack);
     }
 }

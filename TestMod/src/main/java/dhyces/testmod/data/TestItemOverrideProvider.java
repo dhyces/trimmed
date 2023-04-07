@@ -3,22 +3,22 @@ package dhyces.testmod.data;
 import dhyces.testmod.ModTrimMaterials;
 import dhyces.testmod.client.providers.BlockStateItemOverrideProvider;
 import dhyces.trimmed.api.data.ItemOverrideDataProvider;
-import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
-import net.minecraft.block.Blocks;
-import net.minecraft.client.util.ModelIdentifier;
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.Item;
-import net.minecraft.item.Items;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.util.Util;
+import net.minecraft.Util;
+import net.minecraft.client.resources.model.ModelResourceLocation;
+import net.minecraft.data.PackOutput;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.block.Blocks;
 
 import java.util.LinkedList;
 import java.util.List;
 
 public class TestItemOverrideProvider extends ItemOverrideDataProvider {
 
-    public TestItemOverrideProvider(FabricDataOutput output) {
-        super(output);
+    public TestItemOverrideProvider(PackOutput output) {
+        super(output, "testmod");
     }
 
     @Override
@@ -58,11 +58,11 @@ public class TestItemOverrideProvider extends ItemOverrideDataProvider {
             addTrimOverride(item, ModTrimMaterials.SHELL);
         }
 
-        NbtCompound nbt = new NbtCompound();
-        NbtCompound states = new NbtCompound();
+        CompoundTag nbt = new CompoundTag();
+        CompoundTag states = new CompoundTag();
         states.putString("snowy", "true");
-        nbt.put(BlockItem.BLOCK_STATE_TAG_KEY, states);
-        addNbtOverride(Blocks.GRASS_BLOCK, nbt, new ModelIdentifier("minecraft", "grass_block", "snowy=true"));
+        nbt.put(BlockItem.BLOCK_STATE_TAG, states);
+        addNbtOverride(Blocks.GRASS_BLOCK, nbt, new ModelResourceLocation("minecraft", "grass_block", "snowy=true"));
         addItemOverrides(Blocks.BAMBOO_STAIRS, new BlockStateItemOverrideProvider());
     }
 }

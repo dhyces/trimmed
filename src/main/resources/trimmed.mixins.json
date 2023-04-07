@@ -3,6 +3,7 @@
   "minVersion": "0.8",
   "package": "dhyces.trimmed.impl.mixin",
   "compatibilityLevel": "JAVA_17",
+  "refmap": "trimmed.refmap.json",
   "mixins": [
   ],
   "client": [

@@ -1,11 +1,11 @@
 package dhyces.testmod;
 
-import net.minecraft.item.trim.ArmorTrimPattern;
-import net.minecraft.registry.Registerable;
+import net.minecraft.data.worldgen.BootstapContext;
+import net.minecraft.world.item.armortrim.TrimPattern;
 
 public class ModTrimPatterns {
 
-    public static void bootstrap(Registerable<ArmorTrimPattern> context) {
+    public static void bootstrap(BootstapContext<TrimPattern> context) {
 
     }
 }

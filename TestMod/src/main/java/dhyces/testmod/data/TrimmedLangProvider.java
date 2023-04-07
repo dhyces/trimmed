@@ -1,21 +1,22 @@
 package dhyces.testmod.data;
 
-import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
-import net.fabricmc.fabric.api.datagen.v1.provider.FabricLanguageProvider;
+import net.minecraft.data.PackOutput;
+import net.minecraftforge.common.data.LanguageProvider;
 
-public class TrimmedLangProvider extends FabricLanguageProvider {
+public class TrimmedLangProvider extends LanguageProvider {
 
-    protected TrimmedLangProvider(FabricDataOutput dataOutput) {
-        super(dataOutput);
+
+    public TrimmedLangProvider(PackOutput output) {
+        super(output, "testmod", "en_us");
     }
 
     @Override
-    public void generateTranslations(TranslationBuilder translationBuilder) {
-        translationBuilder.add("trimmed.trim_material.echo", "Echo");
-        translationBuilder.add("trimmed.trim_material.blaze", "Blaze");
-        translationBuilder.add("trimmed.trim_material.shell", "Shell");
-        translationBuilder.add("trimmed.trim_material.prismarine", "Prismarine");
-        translationBuilder.add("trimmed.trim_material.glow", "Glow");
+    public void addTranslations() {
+        add("trimmed.trim_material.echo", "Echo");
+        add("trimmed.trim_material.blaze", "Blaze");
+        add("trimmed.trim_material.shell", "Shell");
+        add("trimmed.trim_material.prismarine", "Prismarine");
+        add("trimmed.trim_material.glow", "Glow");
 
     }
 }

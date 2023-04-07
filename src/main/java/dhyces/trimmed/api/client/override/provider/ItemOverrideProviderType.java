@@ -1,7 +1,7 @@
 package dhyces.trimmed.api.client.override.provider;
 
 import com.mojang.serialization.Codec;
-import dhyces.trimmed.TrimmedClient;
+import dhyces.trimmed.Trimmed;
 import dhyces.trimmed.api.client.override.provider.providers.NbtItemOverrideProvider;
 import dhyces.trimmed.api.client.override.provider.providers.TrimItemOverrideProvider;
 import dhyces.trimmed.impl.client.override.provider.ItemOverrideProviderRegistry;
@@ -16,7 +16,7 @@ public interface ItemOverrideProviderType<T extends ItemOverrideProvider> {
 
     private static <T extends ItemOverrideProvider> ItemOverrideProviderType<T> register(String id, Codec<T> codec) {
         ItemOverrideProviderType<T> type = () -> codec;
-        ItemOverrideProviderRegistry.register(TrimmedClient.id(id), type);
+        ItemOverrideProviderRegistry.register(Trimmed.id(id), type);
         return type;
     }
 }

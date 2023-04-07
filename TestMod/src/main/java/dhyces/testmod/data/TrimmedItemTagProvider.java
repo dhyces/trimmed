@@ -1,20 +1,27 @@
 package dhyces.testmod.data;
 
-import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
-import net.fabricmc.fabric.api.datagen.v1.provider.FabricTagProvider;
-import net.minecraft.item.Items;
-import net.minecraft.registry.RegistryWrapper;
-import net.minecraft.registry.tag.ItemTags;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.data.PackOutput;
+import net.minecraft.data.tags.IntrinsicHolderTagsProvider;
+import net.minecraft.tags.ItemTags;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
+import net.minecraftforge.common.data.ExistingFileHelper;
+import org.jetbrains.annotations.Nullable;
+
 import java.util.concurrent.CompletableFuture;
 
-public class TrimmedItemTagProvider extends FabricTagProvider.ItemTagProvider {
-    public TrimmedItemTagProvider(FabricDataOutput output, CompletableFuture<RegistryWrapper.WrapperLookup> completableFuture) {
-        super(output, completableFuture);
+public class TrimmedItemTagProvider extends IntrinsicHolderTagsProvider<Item> {
+
+
+    public TrimmedItemTagProvider(PackOutput p_256164_, CompletableFuture<HolderLookup.Provider> p_256488_, String modId, @Nullable ExistingFileHelper existingFileHelper) {
+        super(p_256164_, Registries.ITEM, p_256488_, item -> item.builtInRegistryHolder().key(), modId, existingFileHelper);
     }
 
     @Override
-    protected void configure(RegistryWrapper.WrapperLookup arg) {
-        getOrCreateTagBuilder(ItemTags.TRIM_MATERIALS)
+    protected void addTags(HolderLookup.Provider pProvider) {
+        tag(ItemTags.TRIM_MATERIALS)
                 .add(Items.ECHO_SHARD)
                 .add(Items.NAUTILUS_SHELL)
                 .add(Items.BLAZE_POWDER)

@@ -2,55 +2,39 @@ package dhyces.testmod.data;
 
 import dhyces.testmod.ModTrimMaterials;
 import dhyces.testmod.ModTrimPatterns;
-import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint;
-import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
-import net.minecraft.data.report.DynamicRegistriesProvider;
-import net.minecraft.item.trim.ArmorTrimMaterial;
-import net.minecraft.item.trim.ArmorTrimPattern;
-import net.minecraft.registry.DynamicRegistryManager;
-import net.minecraft.registry.Registerable;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.RegistryBuilder;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.registry.RegistryKeys;
-import net.minecraft.registry.RegistryWrapper;
-import java.util.HashMap;
-import java.util.Map;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.RegistrySetBuilder;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.data.DataGenerator;
+import net.minecraft.data.DataProvider;
+import net.minecraft.data.PackOutput;
+import net.minecraftforge.common.data.ExistingFileHelper;
+import net.minecraftforge.data.event.GatherDataEvent;
+import net.minecraftforge.eventbus.api.IEventBus;
+
+import java.util.Collections;
 import java.util.concurrent.CompletableFuture;
 
-public class TrimmedDatagen implements DataGeneratorEntrypoint {
+public class TrimmedDatagen {
 
-    private static final RegistryBuilder BUILDER = new RegistryBuilder()
-            .addRegistry(RegistryKeys.TRIM_MATERIAL, TrimmedDatagen::bootstrapMaterials)
-            .addRegistry(RegistryKeys.TRIM_PATTERN, TrimmedDatagen::bootstrapPatterns);
+    private static final RegistrySetBuilder BUILDER = new RegistrySetBuilder()
+            .add(Registries.TRIM_MATERIAL, ModTrimMaterials::bootstrap)
+            .add(Registries.TRIM_PATTERN, ModTrimPatterns::bootstrap);
 
-    private static final Map<RegistryKey<ArmorTrimMaterial>, ArmorTrimMaterial> MATERIALS = new HashMap<>();
-    private static final Map<RegistryKey<ArmorTrimPattern>, ArmorTrimPattern> PATTERNS = new HashMap<>();
-
-    @Override
-    public void onInitializeDataGenerator(FabricDataGenerator fabricDataGenerator) {
-        FabricDataGenerator.Pack pack = fabricDataGenerator.createPack();
-        CompletableFuture<RegistryWrapper.WrapperLookup> future = CompletableFuture.supplyAsync(() -> BUILDER.createWrapperLookup(DynamicRegistryManager.of(Registries.REGISTRIES)));
-        pack.addProvider((FabricDataGenerator.Pack.Factory<DynamicRegistriesProvider>) packOutput -> new DynamicRegistriesProvider(packOutput, future));
-        pack.addProvider(TrimmedItemTagProvider::new);
-
-        pack.addProvider((FabricDataGenerator.Pack.Factory<TrimmedAtlasProvider>) TrimmedAtlasProvider::new);
-        pack.addProvider(TrimmedLangProvider::new);
-        pack.addProvider(TrimmedModelProvider::new);
-        pack.addProvider(TestItemOverrideProvider::new);
+    public static void init(IEventBus modBus) {
+        modBus.addListener(TrimmedDatagen::gatherDataEvent);
     }
 
-    private static void bootstrapMaterials(Registerable<ArmorTrimMaterial> context) {
-        for (Map.Entry<RegistryKey<ArmorTrimMaterial>, ArmorTrimMaterial> entry : MATERIALS.entrySet()) {
-            context.register(entry.getKey(), entry.getValue());
-        }
-        ModTrimMaterials.bootstrap(context);
-    }
+    private static void gatherDataEvent(GatherDataEvent event) {
+        DataGenerator generator = event.getGenerator();
+        CompletableFuture<HolderLookup.Provider> future = CompletableFuture.supplyAsync(() -> BUILDER.build(RegistryAccess.fromRegistryOfRegistries(BuiltInRegistries.REGISTRY)));
+        generator.addProvider(event.includeServer(), (DataProvider.Factory<TrimmedItemTagProvider>) (PackOutput packOutput) -> new TrimmedItemTagProvider(packOutput, future, "testmod", event.getExistingFileHelper()));
 
-    private static void bootstrapPatterns(Registerable<ArmorTrimPattern> context) {
-        for (Map.Entry<RegistryKey<ArmorTrimPattern>, ArmorTrimPattern> entry : PATTERNS.entrySet()) {
-            context.register(entry.getKey(), entry.getValue());
-        }
-        ModTrimPatterns.bootstrap(context);
+        generator.addProvider(event.includeClient(), (DataProvider.Factory<TrimmedAtlasProvider>) TrimmedAtlasProvider::new);
+        generator.addProvider(event.includeClient(), (DataProvider.Factory<TrimmedLangProvider>) TrimmedLangProvider::new);
+        generator.addProvider(event.includeClient(), (DataProvider.Factory<TrimmedModelProvider>) (PackOutput packOutput) -> new TrimmedModelProvider(packOutput, "testmod", new ExistingFileHelper(Collections.emptyList(), Collections.EMPTY_SET, false, null, null)));
+        generator.addProvider(event.includeClient(), (DataProvider.Factory<TestItemOverrideProvider>) TestItemOverrideProvider::new);
     }
 }

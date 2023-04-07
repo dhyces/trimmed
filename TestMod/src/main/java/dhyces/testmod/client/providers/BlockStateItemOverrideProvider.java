@@ -4,17 +4,17 @@ import com.google.common.base.Suppliers;
 import com.mojang.serialization.Codec;
 import dhyces.trimmed.api.client.override.provider.ItemOverrideProvider;
 import dhyces.trimmed.api.client.override.provider.ItemOverrideProviderType;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.client.render.block.BlockModels;
-import net.minecraft.client.util.ModelIdentifier;
-import net.minecraft.client.world.ClientWorld;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.state.StateManager;
-import net.minecraft.state.property.Property;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.renderer.block.BlockModelShaper;
+import net.minecraft.client.resources.model.ModelResourceLocation;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.Property;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
@@ -27,24 +27,24 @@ public class BlockStateItemOverrideProvider implements ItemOverrideProvider {
     public BlockStateItemOverrideProvider() {}
 
     @Override
-    public Optional<ModelIdentifier> getModel(ItemStack itemStack, @Nullable ClientWorld world, @Nullable LivingEntity entity, int seed) {
-        if (itemStack.hasNbt() && itemStack.getNbt().contains(BlockItem.BLOCK_STATE_TAG_KEY) && itemStack.getItem() instanceof BlockItem blockItem) {
-            NbtCompound nbt = itemStack.getNbt().getCompound(BlockItem.BLOCK_STATE_TAG_KEY);
-            BlockState state = blockItem.getBlock().getDefaultState();
-            StateManager<Block, BlockState> stateManager = blockItem.getBlock().getStateManager();
-            for (String key : nbt.getKeys()) {
+    public Optional<ModelResourceLocation> getModel(ItemStack itemStack, @Nullable ClientLevel world, @Nullable LivingEntity entity, int seed) {
+        if (itemStack.hasTag() && itemStack.getTag().contains(BlockItem.BLOCK_STATE_TAG) && itemStack.getItem() instanceof BlockItem blockItem) {
+            CompoundTag nbt = itemStack.getTag().getCompound(BlockItem.BLOCK_STATE_TAG);
+            BlockState state = blockItem.getBlock().defaultBlockState();
+            StateDefinition<Block, BlockState> stateManager = blockItem.getBlock().getStateDefinition();
+            for (String key : nbt.getAllKeys()) {
                 Property<?> property = stateManager.getProperty(key);
                 if (property != null) {
-                    state = with(state, property, nbt.get(key).asString());
+                    state = with(state, property, nbt.get(key).getAsString());
                 }
             }
-            return Optional.of(BlockModels.getModelId(state));
+            return Optional.of(BlockModelShaper.stateToModelLocation(state));
         }
         return Optional.empty();
     }
 
     private <T extends Comparable<T>> BlockState with(BlockState state, Property<T> property, String value) {
-        return property.parse(value).map(comparable -> state.with(property, comparable)).orElse(state);
+        return property.getValue(value).map(comparable -> state.setValue(property, comparable)).orElse(state);
     }
 
     @Override

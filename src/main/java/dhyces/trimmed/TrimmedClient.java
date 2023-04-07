@@ -2,28 +2,23 @@ package dhyces.trimmed;
 
 import dhyces.trimmed.impl.client.override.ItemOverrideReloadListener;
 import dhyces.trimmed.impl.client.override.provider.ItemOverrideProviderRegistry;
-import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.fabric.api.client.model.ModelLoadingRegistry;
-import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
-import net.minecraft.resource.ResourceType;
-import net.minecraft.util.Identifier;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import net.minecraftforge.client.event.ModelEvent;
+import net.minecraftforge.client.event.RegisterClientReloadListenersEvent;
+import net.minecraftforge.eventbus.api.IEventBus;
 
-public class TrimmedClient implements ClientModInitializer {
-    public static final String MODID = "trimmed";
-    public static Identifier id(String id) {
-        return new Identifier(MODID, id);
+public class TrimmedClient {
+
+    static void init(IEventBus modBus) {
+        ItemOverrideProviderRegistry.init();
+        modBus.addListener(TrimmedClient::registerClientReloadListener);
+        modBus.addListener(TrimmedClient::addModels);
     }
 
-    public static final Logger LOGGER = LoggerFactory.getLogger("Trimmed");
+    private static void registerClientReloadListener(final RegisterClientReloadListenersEvent event) {
+        event.registerReloadListener(new ItemOverrideReloadListener());
+    }
 
-    @Override
-    public void onInitializeClient() {
-        ItemOverrideProviderRegistry.init();
-        ResourceManagerHelper.get(ResourceType.CLIENT_RESOURCES).registerReloadListener(new ItemOverrideReloadListener());
-        ModelLoadingRegistry.INSTANCE.registerModelProvider((manager, out) -> {
-            ItemOverrideReloadListener.getModelsToBake().forEach(out);
-        });
+    private static void addModels(final ModelEvent.RegisterAdditional event) {
+        ItemOverrideReloadListener.getModelsToBake().forEach(event::register);
     }
 }

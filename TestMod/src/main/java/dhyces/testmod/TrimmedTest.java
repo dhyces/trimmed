@@ -1,21 +1,25 @@
 package dhyces.testmod;
 
 import dhyces.testmod.client.providers.MyProviderTypes;
-import net.fabricmc.api.ModInitializer;
-import net.minecraft.util.Identifier;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import dhyces.testmod.data.TrimmedDatagen;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraftforge.data.loading.DatagenModLoader;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
-public class TrimmedTest implements ModInitializer {
+@Mod(TrimmedTest.MODID)
+public class TrimmedTest {
 
     public static final String MODID = "testmod";
 
-    public static Identifier id(String id) {
-        return new Identifier(MODID, id);
+    public static ResourceLocation id(String id) {
+        return new ResourceLocation(MODID, id);
     }
 
-    @Override
-    public void onInitialize() {
+    public TrimmedTest() {
         MyProviderTypes.init();
+        if (DatagenModLoader.isRunningDataGen()) {
+            TrimmedDatagen.init(FMLJavaModLoadingContext.get().getModEventBus());
+        }
     }
 }

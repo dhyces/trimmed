@@ -5,14 +5,14 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dhyces.trimmed.api.client.override.provider.ItemOverrideProvider;
 import dhyces.trimmed.api.client.override.provider.ItemOverrideProviderType;
 import dhyces.trimmed.api.util.CodecUtil;
-import net.minecraft.client.util.ModelIdentifier;
-import net.minecraft.client.world.ClientWorld;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.trim.ArmorTrim;
-import net.minecraft.registry.RegistryKey;
-import net.minecraft.registry.entry.RegistryEntry;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.resources.model.ModelResourceLocation;
+import net.minecraft.core.Holder;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.armortrim.ArmorTrim;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
@@ -21,36 +21,36 @@ import java.util.stream.Stream;
 public final class TrimItemOverrideProvider implements ItemOverrideProvider {
     public static final Codec<TrimItemOverrideProvider> CODEC = RecordCodecBuilder.create(instance ->
             instance.group(
-                    Identifier.CODEC.fieldOf("material").forGetter(provider -> provider.material),
+                    ResourceLocation.CODEC.fieldOf("material").forGetter(provider -> provider.material),
                     CodecUtil.MODEL_IDENTIFIER_CODEC.fieldOf("model").forGetter(provider -> provider.model)
             ).apply(instance, TrimItemOverrideProvider::new)
     );
 
-    private final Identifier material;
-    private final ModelIdentifier model;
+    private final ResourceLocation material;
+    private final ModelResourceLocation model;
 
-    public TrimItemOverrideProvider(Identifier material, ModelIdentifier model) {
+    public TrimItemOverrideProvider(ResourceLocation material, ModelResourceLocation model) {
         this.material = material;
         this.model = model;
     }
 
     @Override
-    public Optional<ModelIdentifier> getModel(ItemStack itemStack, @Nullable ClientWorld world, @Nullable LivingEntity entity, int seed) {
+    public Optional<ModelResourceLocation> getModel(ItemStack itemStack, @Nullable ClientLevel world, @Nullable LivingEntity entity, int seed) {
         if (world == null) {
             return Optional.empty();
         }
-        boolean isMaterial = ArmorTrim.getTrim(world.getRegistryManager(), itemStack)
-                .map(ArmorTrim::getMaterial)
-                .map(RegistryEntry::getKey)
+        boolean isMaterial = ArmorTrim.getTrim(world.registryAccess(), itemStack)
+                .map(ArmorTrim::material)
+                .map(Holder::unwrapKey)
                 .orElse(Optional.empty())
-                .map(RegistryKey::getValue)
+                .map(ResourceKey::location)
                 .map(material::equals)
                 .orElse(false);
         return isMaterial ? Optional.of(model) : Optional.empty();
     }
 
     @Override
-    public Stream<ModelIdentifier> getModelsToBake() {
+    public Stream<ModelResourceLocation> getModelsToBake() {
         return Stream.of(model);
     }
 

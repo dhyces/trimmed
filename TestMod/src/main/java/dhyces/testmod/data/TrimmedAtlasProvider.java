@@ -4,14 +4,14 @@ import com.google.gson.JsonElement;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.JsonOps;
 import dhyces.testmod.TrimmedTest;
-import net.minecraft.client.texture.atlas.AtlasSource;
-import net.minecraft.client.texture.atlas.AtlasSourceManager;
-import net.minecraft.client.texture.atlas.PalettedPermutationsAtlasSource;
-import net.minecraft.data.DataOutput;
+import net.minecraft.Util;
+import net.minecraft.client.renderer.texture.atlas.SpriteSource;
+import net.minecraft.client.renderer.texture.atlas.SpriteSources;
+import net.minecraft.client.renderer.texture.atlas.sources.PalettedPermutations;
+import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
-import net.minecraft.data.DataWriter;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.Util;
+import net.minecraft.data.PackOutput;
+import net.minecraft.resources.ResourceLocation;
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -21,88 +21,88 @@ import java.util.concurrent.CompletableFuture;
 
 public class TrimmedAtlasProvider implements DataProvider {
 
-    private final DataOutput.PathResolver pathProvider;
+    private final PackOutput.PathProvider pathProvider;
 
-    public TrimmedAtlasProvider(DataOutput output) {
-        this.pathProvider = output.getResolver(DataOutput.OutputType.RESOURCE_PACK, "atlases");
+    public TrimmedAtlasProvider(PackOutput output) {
+        this.pathProvider = output.createPathProvider(PackOutput.Target.RESOURCE_PACK, "atlases");
     }
 
     protected void gatherSpriteSources(Gatherer gatherer) {
-        gatherer.addAtlas(new Identifier("armor_trims"))
-                .addSource(new PalettedPermutationsAtlasSource(
+        gatherer.addAtlas(new ResourceLocation("armor_trims"))
+                .addSource(new PalettedPermutations(
                         List.of(
-                                new Identifier("trims/models/armor/coast"),
-                                new Identifier("trims/models/armor/coast_leggings"),
-                                new Identifier("trims/models/armor/sentry"),
-                                new Identifier("trims/models/armor/sentry_leggings"),
-                                new Identifier("trims/models/armor/dune"),
-                                new Identifier("trims/models/armor/dune_leggings"),
-                                new Identifier("trims/models/armor/wild"),
-                                new Identifier("trims/models/armor/wild_leggings"),
-                                new Identifier("trims/models/armor/ward"),
-                                new Identifier("trims/models/armor/ward_leggings"),
-                                new Identifier("trims/models/armor/eye"),
-                                new Identifier("trims/models/armor/eye_leggings"),
-                                new Identifier("trims/models/armor/vex"),
-                                new Identifier("trims/models/armor/vex_leggings"),
-                                new Identifier("trims/models/armor/tide"),
-                                new Identifier("trims/models/armor/tide_leggings"),
-                                new Identifier("trims/models/armor/snout"),
-                                new Identifier("trims/models/armor/snout_leggings"),
-                                new Identifier("trims/models/armor/rib"),
-                                new Identifier("trims/models/armor/rib_leggings"),
-                                new Identifier("trims/models/armor/spire"),
-                                new Identifier("trims/models/armor/spire_leggings"),
-                                new Identifier("trims/models/armor/wayfinder"),
-                                new Identifier("trims/models/armor/wayfinder_leggings"),
-                                new Identifier("trims/models/armor/shaper"),
-                                new Identifier("trims/models/armor/shaper_leggings"),
-                                new Identifier("trims/models/armor/silence"),
-                                new Identifier("trims/models/armor/silence_leggings"),
-                                new Identifier("trims/models/armor/raiser"),
-                                new Identifier("trims/models/armor/raiser_leggings"),
-                                new Identifier("trims/models/armor/host"),
-                                new Identifier("trims/models/armor/host_leggings")
-                        ), new Identifier("trims/color_palettes/trim_palette"),
+                                new ResourceLocation("trims/models/armor/coast"),
+                                new ResourceLocation("trims/models/armor/coast_leggings"),
+                                new ResourceLocation("trims/models/armor/sentry"),
+                                new ResourceLocation("trims/models/armor/sentry_leggings"),
+                                new ResourceLocation("trims/models/armor/dune"),
+                                new ResourceLocation("trims/models/armor/dune_leggings"),
+                                new ResourceLocation("trims/models/armor/wild"),
+                                new ResourceLocation("trims/models/armor/wild_leggings"),
+                                new ResourceLocation("trims/models/armor/ward"),
+                                new ResourceLocation("trims/models/armor/ward_leggings"),
+                                new ResourceLocation("trims/models/armor/eye"),
+                                new ResourceLocation("trims/models/armor/eye_leggings"),
+                                new ResourceLocation("trims/models/armor/vex"),
+                                new ResourceLocation("trims/models/armor/vex_leggings"),
+                                new ResourceLocation("trims/models/armor/tide"),
+                                new ResourceLocation("trims/models/armor/tide_leggings"),
+                                new ResourceLocation("trims/models/armor/snout"),
+                                new ResourceLocation("trims/models/armor/snout_leggings"),
+                                new ResourceLocation("trims/models/armor/rib"),
+                                new ResourceLocation("trims/models/armor/rib_leggings"),
+                                new ResourceLocation("trims/models/armor/spire"),
+                                new ResourceLocation("trims/models/armor/spire_leggings"),
+                                new ResourceLocation("trims/models/armor/wayfinder"),
+                                new ResourceLocation("trims/models/armor/wayfinder_leggings"),
+                                new ResourceLocation("trims/models/armor/shaper"),
+                                new ResourceLocation("trims/models/armor/shaper_leggings"),
+                                new ResourceLocation("trims/models/armor/silence"),
+                                new ResourceLocation("trims/models/armor/silence_leggings"),
+                                new ResourceLocation("trims/models/armor/raiser"),
+                                new ResourceLocation("trims/models/armor/raiser_leggings"),
+                                new ResourceLocation("trims/models/armor/host"),
+                                new ResourceLocation("trims/models/armor/host_leggings")
+                        ), new ResourceLocation("trims/color_palettes/trim_palette"),
                         Util.make(new HashMap<>(), map -> {
-                                    map.put("echo", new Identifier(TrimmedTest.MODID, "trim/color_palettes/echo"));
-                                    map.put("blaze", new Identifier(TrimmedTest.MODID, "trim/color_palettes/blaze"));
-                                    map.put("shell", new Identifier(TrimmedTest.MODID, "trim/color_palettes/shell"));
-                                    map.put("prismarine", new Identifier(TrimmedTest.MODID, "trim/color_palettes/prismarine"));
-                                    map.put("glow", new Identifier(TrimmedTest.MODID, "trim/color_palettes/glow"));
+                                    map.put("echo", new ResourceLocation(TrimmedTest.MODID, "trim/color_palettes/echo"));
+                                    map.put("blaze", new ResourceLocation(TrimmedTest.MODID, "trim/color_palettes/blaze"));
+                                    map.put("shell", new ResourceLocation(TrimmedTest.MODID, "trim/color_palettes/shell"));
+                                    map.put("prismarine", new ResourceLocation(TrimmedTest.MODID, "trim/color_palettes/prismarine"));
+                                    map.put("glow", new ResourceLocation(TrimmedTest.MODID, "trim/color_palettes/glow"));
                                 }
                         )
                 )).finish();
-        gatherer.addAtlas(new Identifier("blocks"))
-                .addSource(new PalettedPermutationsAtlasSource(
+        gatherer.addAtlas(new ResourceLocation("blocks"))
+                .addSource(new PalettedPermutations(
                         List.of(
-                                new Identifier("trims/items/leggings_trim"),
-                                new Identifier("trims/items/chestplate_trim"),
-                                new Identifier("trims/items/helmet_trim"),
-                                new Identifier("trims/items/boots_trim")
-                        ), new Identifier("trims/color_palettes/trim_palette"),
+                                new ResourceLocation("trims/items/leggings_trim"),
+                                new ResourceLocation("trims/items/chestplate_trim"),
+                                new ResourceLocation("trims/items/helmet_trim"),
+                                new ResourceLocation("trims/items/boots_trim")
+                        ), new ResourceLocation("trims/color_palettes/trim_palette"),
                         Util.make(new HashMap<>(), map -> {
-                                    map.put("echo", new Identifier(TrimmedTest.MODID, "trim/color_palettes/echo"));
-                                    map.put("blaze", new Identifier(TrimmedTest.MODID, "trim/color_palettes/blaze"));
-                                    map.put("shell", new Identifier(TrimmedTest.MODID, "trim/color_palettes/shell"));
-                                    map.put("prismarine", new Identifier(TrimmedTest.MODID, "trim/color_palettes/prismarine"));
-                                    map.put("glow", new Identifier(TrimmedTest.MODID, "trim/color_palettes/glow"));
+                                    map.put("echo", new ResourceLocation(TrimmedTest.MODID, "trim/color_palettes/echo"));
+                                    map.put("blaze", new ResourceLocation(TrimmedTest.MODID, "trim/color_palettes/blaze"));
+                                    map.put("shell", new ResourceLocation(TrimmedTest.MODID, "trim/color_palettes/shell"));
+                                    map.put("prismarine", new ResourceLocation(TrimmedTest.MODID, "trim/color_palettes/prismarine"));
+                                    map.put("glow", new ResourceLocation(TrimmedTest.MODID, "trim/color_palettes/glow"));
                                 }
                         )
                 )).finish();
     }
 
     @Override
-    public CompletableFuture<?> run(DataWriter cachedOutput) {
+    public CompletableFuture<?> run(CachedOutput cachedOutput) {
         Gatherer gatherer = new Gatherer();
         gatherSpriteSources(gatherer);
         return CompletableFuture.allOf(gatherer.map.entrySet().stream().map(resourceLocationListEntry -> {
-            DataResult<JsonElement> element = AtlasSourceManager.LIST_CODEC.encodeStart(JsonOps.INSTANCE, resourceLocationListEntry.getValue());
+            DataResult<JsonElement> element = SpriteSources.FILE_CODEC.encodeStart(JsonOps.INSTANCE, resourceLocationListEntry.getValue());
             if (element.result().isEmpty()) {
                 throw new IllegalStateException("invalid atlas: %s".formatted(resourceLocationListEntry.getKey()));
             }
-            Path path = pathProvider.resolveJson(resourceLocationListEntry.getKey());
-            return DataProvider.writeToPath(cachedOutput, element.get().left().get(), path);
+            Path path = pathProvider.json(resourceLocationListEntry.getKey());
+            return DataProvider.saveStable(cachedOutput, element.get().left().get(), path);
         }).toArray(CompletableFuture[]::new));
     }
 
@@ -112,24 +112,24 @@ public class TrimmedAtlasProvider implements DataProvider {
     }
 
     public class Gatherer {
-        private Map<Identifier, List<AtlasSource>> map = new HashMap<>();
+        private Map<ResourceLocation, List<SpriteSource>> map = new HashMap<>();
 
-        public Builder addAtlas(Identifier location) {
+        public Builder addAtlas(ResourceLocation location) {
             return new Builder(this, location);
         }
     }
 
     public class Builder {
         Gatherer parent;
-        Identifier resourceLocation;
-        List<AtlasSource> sources = new LinkedList<>();
+        ResourceLocation resourceLocation;
+        List<SpriteSource> sources = new LinkedList<>();
 
-        Builder(Gatherer parent, Identifier resourceLocation) {
+        Builder(Gatherer parent, ResourceLocation resourceLocation) {
             this.parent = parent;
             this.resourceLocation = resourceLocation;
         }
 
-        public Builder addSource(AtlasSource source) {
+        public Builder addSource(SpriteSource source) {
             sources.add(source);
             return this;
         }
