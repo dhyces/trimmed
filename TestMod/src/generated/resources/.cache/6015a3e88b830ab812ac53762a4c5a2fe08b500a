@@ -1,4 +1,4 @@
-// 1.19.4	2023-04-07T04:40:41.4199734	Item Models: testmod
+// 1.19.4	2023-04-07T14:45:36.2661494	Item Models: testmod
 b05a5c64c9b91d7b1c788180794ff6acc410c2af assets/testmod/models/item/chainmail_boots_blaze_trim.json
 da9a1d575ff9acd4c9aae11de9e0191196d26bc5 assets/testmod/models/item/chainmail_boots_echo_trim.json
 c6fb8439f9aa84d57fe2df3bf16ac2e830ded304 assets/testmod/models/item/chainmail_boots_glow_trim.json
@@ -119,6 +119,7 @@ c1928dcee7f1a2ecf5f2d677d4191d8cee1b0182 assets/testmod/models/item/netherite_he
 b7ecaae26a4c472b9ed93af06eb68a0e44af1cee assets/testmod/models/item/netherite_leggings_glow_trim.json
 9ffb5ff2037d509b6095e11b3f648540eb19b188 assets/testmod/models/item/netherite_leggings_prismarine_trim.json
 767a8a2a7600f0ab634abb752753cf2ba5f0be02 assets/testmod/models/item/netherite_leggings_shell_trim.json
+6745fd324be3925f52c9d172413879a81a4505c6 assets/testmod/models/item/spiral_armor_trim_smithing_template.json
 396f00d813f1c839a06af564b52ee3c35f0effde assets/testmod/models/item/turtle_boots_blaze_trim.json
 611aaa43b2fb92fd348a63fddaf4de40059a2854 assets/testmod/models/item/turtle_boots_echo_trim.json
 3c23e2ec20735d1286b27ca4fc45271095f639c5 assets/testmod/models/item/turtle_boots_glow_trim.json

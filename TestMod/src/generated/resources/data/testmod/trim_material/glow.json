@@ -1,0 +1,9 @@
+{
+  "asset_name": "glow",
+  "description": {
+    "color": "#7EFCBE",
+    "translate": "trimmed.trim_material.glow"
+  },
+  "ingredient": "minecraft:glow_ink_sac",
+  "item_model_index": -1.0
+}

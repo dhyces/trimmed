@@ -4,11 +4,11 @@
       "type": "minecraft:paletted_permutations",
       "palette_key": "minecraft:trims/color_palettes/trim_palette",
       "permutations": {
-        "blaze": "testmod:trim/color_palettes/blaze",
-        "echo": "testmod:trim/color_palettes/echo",
-        "glow": "testmod:trim/color_palettes/glow",
-        "prismarine": "testmod:trim/color_palettes/prismarine",
-        "shell": "testmod:trim/color_palettes/shell"
+        "blaze": "testmod:trims/color_palettes/blaze",
+        "echo": "testmod:trims/color_palettes/echo",
+        "glow": "testmod:trims/color_palettes/glow",
+        "prismarine": "testmod:trims/color_palettes/prismarine",
+        "shell": "testmod:trims/color_palettes/shell"
       },
       "textures": [
         "minecraft:trims/items/leggings_trim",

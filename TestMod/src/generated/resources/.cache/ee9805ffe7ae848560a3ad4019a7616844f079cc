@@ -1,2 +1,3 @@
-// 1.19.4	2023-04-07T04:40:41.4149721	Tags for minecraft:item mod id testmod
+// 1.19.4	2023-04-07T14:45:36.2621473	Tags for minecraft:item mod id testmod
 ad3ee0bd44429ce6b068dc64d9f9ddc39ea74fc7 data/minecraft/tags/items/trim_materials.json
+41e0494870e2222efeb0ac3aa6de0127fb149999 data/minecraft/tags/items/trim_templates.json
