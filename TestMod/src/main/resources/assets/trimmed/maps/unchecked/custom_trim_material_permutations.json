@@ -1,4 +1,5 @@
 {
+  "__comment": "Map of palette texture location to suffix for generated textures",
   "pairs": {
     "testmod:trims/color_palettes/blaze": "blaze",
     "testmod:trims/color_palettes/echo": "echo",

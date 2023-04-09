@@ -1,4 +1,5 @@
 {
+  "__comment": "Map of palette texture location to suffix for generated textures",
   "pairs": {
     "minecraft:trims/color_palettes/quartz": "quartz",
     "minecraft:trims/color_palettes/iron": "iron",

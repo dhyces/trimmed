@@ -1,4 +1,5 @@
 {
+  "__comment": "Set of item texture locations to permute with trim materials",
   "values": [
     "minecraft:trims/items/leggings_trim",
     "minecraft:trims/items/chestplate_trim",
