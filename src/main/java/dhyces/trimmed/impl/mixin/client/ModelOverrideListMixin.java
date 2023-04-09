@@ -1,4 +1,4 @@
-package dhyces.trimmed.impl.mixin;
+package dhyces.trimmed.impl.mixin.client;
 
 import dhyces.trimmed.impl.client.override.ItemOverrideRegistry;
 import net.minecraft.client.Minecraft;

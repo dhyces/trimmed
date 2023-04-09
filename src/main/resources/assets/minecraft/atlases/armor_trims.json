@@ -1,0 +1,22 @@
+{
+  "sources": [
+    {
+      "type": "trimmed:open_paletted_permutations",
+      "palette_key": "minecraft:trims/color_palettes/trim_palette",
+      "permutations": "trimmed:vanilla_trim_material_textures",
+      "textures": "trimmed:custom_trim_pattern_textures"
+    },
+    {
+      "type": "trimmed:open_paletted_permutations",
+      "palette_key": "minecraft:trims/color_palettes/trim_palette",
+      "permutations": "trimmed:custom_trim_material_textures",
+      "textures": "trimmed:vanilla_trim_pattern_textures"
+    },
+    {
+      "type": "trimmed:open_paletted_permutations",
+      "palette_key": "minecraft:trims/color_palettes/trim_palette",
+      "permutations": "trimmed:custom_trim_material_textures",
+      "textures": "trimmed:custom_trim_pattern_textures"
+    }
+  ]
+}

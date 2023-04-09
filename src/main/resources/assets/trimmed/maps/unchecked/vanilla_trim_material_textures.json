@@ -1,0 +1,18 @@
+{
+  "pairs": {
+    "minecraft:trims/color_palettes/quartz": "quartz",
+    "minecraft:trims/color_palettes/iron": "iron",
+    "minecraft:trims/color_palettes/gold": "gold",
+    "minecraft:trims/color_palettes/diamond": "diamond",
+    "minecraft:trims/color_palettes/netherite": "netherite",
+    "minecraft:trims/color_palettes/redstone": "redstone",
+    "minecraft:trims/color_palettes/copper": "copper",
+    "minecraft:trims/color_palettes/emerald": "emerald",
+    "minecraft:trims/color_palettes/lapis": "lapis",
+    "minecraft:trims/color_palettes/amethyst": "amethyst",
+    "minecraft:trims/color_palettes/iron_darker": "iron_darker",
+    "minecraft:trims/color_palettes/gold_darker": "gold_darker",
+    "minecraft:trims/color_palettes/diamond_darker": "diamond_darker",
+    "minecraft:trims/color_palettes/netherite_darker": "netherite_darker"
+  }
+}

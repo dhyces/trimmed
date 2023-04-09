@@ -1,7 +1,7 @@
 package dhyces.trimmed.impl.client.override;
 
+import dhyces.trimmed.api.client.util.ClientUtil;
 import dhyces.trimmed.api.client.override.provider.ItemOverrideProvider;
-import dhyces.trimmed.api.util.Util;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.world.entity.LivingEntity;
@@ -17,7 +17,7 @@ public class ItemOverrideRegistry {
     private static final Map<ModelResourceLocation, Set<ItemOverrideProvider>> OVERRIDE_SET_MAP = new HashMap<>();
 
     public static Optional<ModelResourceLocation> getOverrideModel(ItemStack itemStack, @Nullable ClientLevel world, @Nullable LivingEntity entity, int seed) {
-        Set<ItemOverrideProvider> providers = OVERRIDE_SET_MAP.get(Util.getItemModelId(itemStack));
+        Set<ItemOverrideProvider> providers = OVERRIDE_SET_MAP.get(ClientUtil.getItemModelId(itemStack));
         if (providers == null) {
             return Optional.empty();
         }

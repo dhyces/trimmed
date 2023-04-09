@@ -1,0 +1,9 @@
+{
+  "pairs": {
+    "testmod:trims/color_palettes/blaze": "blaze",
+    "testmod:trims/color_palettes/echo": "echo",
+    "testmod:trims/color_palettes/glow": "glow",
+    "testmod:trims/color_palettes/prismarine": "prismarine",
+    "testmod:trims/color_palettes/shell": "shell"
+  }
+}

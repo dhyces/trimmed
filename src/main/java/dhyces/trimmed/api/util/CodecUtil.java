@@ -1,12 +1,19 @@
 package dhyces.trimmed.api.util;
 
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.DataResult;
+import com.google.common.collect.ImmutableSet;
+import com.mojang.datafixers.util.Pair;
+import com.mojang.datafixers.util.Unit;
+import com.mojang.serialization.*;
 import dhyces.trimmed.Trimmed;
+import dhyces.trimmed.api.codec.SetCodec;
 import net.minecraft.ResourceLocationException;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.ApiStatus;
+
+import java.util.Set;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.stream.Stream;
 
 public final class CodecUtil {
     @ApiStatus.Internal
@@ -30,4 +37,8 @@ public final class CodecUtil {
             },
             modelId -> modelId.getVariant().equals("inventory") ? modelId.getNamespace() + ":" + modelId.getPath() : modelId.toString()
     );
+
+    public static <T> SetCodec<T> setOf(Codec<T> elementCodec) {
+        return new SetCodec<>(elementCodec);
+    }
 }
