@@ -9,13 +9,12 @@ import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.world.item.ArmorMaterials;
 import net.minecraftforge.client.model.generators.ItemModelProvider;
-import net.minecraftforge.client.model.generators.ModelFile;
 import net.minecraftforge.common.data.ExistingFileHelper;
 
 import java.util.HashSet;
 import java.util.Set;
 
-public class TrimmedModelProvider extends ItemModelProvider {
+public class TestModelProvider extends ItemModelProvider {
     static Set<ArmorMaterial> armorMaterials = Util.make(new HashSet<>(), set -> {
         set.add(ArmorMaterials.LEATHER);
         set.add(ArmorMaterials.IRON);
@@ -26,7 +25,7 @@ public class TrimmedModelProvider extends ItemModelProvider {
         set.add(ArmorMaterials.TURTLE);
     });
 
-    public TrimmedModelProvider(PackOutput output, String modid, ExistingFileHelper existingFileHelper) {
+    public TestModelProvider(PackOutput output, String modid, ExistingFileHelper existingFileHelper) {
         super(output, modid, existingFileHelper);
     }
 

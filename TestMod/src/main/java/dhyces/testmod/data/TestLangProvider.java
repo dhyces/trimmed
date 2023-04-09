@@ -3,10 +3,10 @@ package dhyces.testmod.data;
 import net.minecraft.data.PackOutput;
 import net.minecraftforge.common.data.LanguageProvider;
 
-public class TrimmedLangProvider extends LanguageProvider {
+public class TestLangProvider extends LanguageProvider {
 
 
-    public TrimmedLangProvider(PackOutput output) {
+    public TestLangProvider(PackOutput output) {
         super(output, "testmod", "en_us");
     }
 

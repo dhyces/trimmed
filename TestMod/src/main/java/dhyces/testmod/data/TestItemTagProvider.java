@@ -13,10 +13,10 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.concurrent.CompletableFuture;
 
-public class TrimmedItemTagProvider extends IntrinsicHolderTagsProvider<Item> {
+public class TestItemTagProvider extends IntrinsicHolderTagsProvider<Item> {
 
 
-    public TrimmedItemTagProvider(PackOutput p_256164_, CompletableFuture<HolderLookup.Provider> p_256488_, String modId, @Nullable ExistingFileHelper existingFileHelper) {
+    public TestItemTagProvider(PackOutput p_256164_, CompletableFuture<HolderLookup.Provider> p_256488_, String modId, @Nullable ExistingFileHelper existingFileHelper) {
         super(p_256164_, Registries.ITEM, p_256488_, item -> item.builtInRegistryHolder().key(), modId, existingFileHelper);
     }
 

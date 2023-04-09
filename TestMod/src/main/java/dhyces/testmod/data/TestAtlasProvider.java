@@ -19,11 +19,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
-public class TrimmedAtlasProvider implements DataProvider {
+public class TestAtlasProvider implements DataProvider {
 
     private final PackOutput.PathProvider pathProvider;
 
-    public TrimmedAtlasProvider(PackOutput output) {
+    public TestAtlasProvider(PackOutput output) {
         this.pathProvider = output.createPathProvider(PackOutput.Target.RESOURCE_PACK, "atlases");
     }
 

@@ -1,4 +1,4 @@
-package dhyces.testmod.data;
+package dhyces.testmod.data.trimmed;
 
 import dhyces.testmod.ModTrimMaterials;
 import dhyces.testmod.client.providers.BlockStateItemOverrideProvider;
