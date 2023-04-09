@@ -9,15 +9,18 @@ import dhyces.trimmed.impl.mixin.client.ReloadableResourceManagerAccessor;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.client.event.ModelEvent;
 import net.minecraftforge.client.event.RegisterClientReloadListenersEvent;
+import net.minecraftforge.event.TagsUpdatedEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 
 public class TrimmedClient {
 
-    static void init(IEventBus modBus) {
-        ItemOverrideProviderRegistry.init();
+    static void init(IEventBus forgeBus, IEventBus modBus) {
         TrimmedSpriteSourceTypes.bootstrap();
+        ItemOverrideProviderRegistry.init();
         modBus.addListener(TrimmedClient::registerClientReloadListener);
         modBus.addListener(TrimmedClient::addModels);
+
+        forgeBus.addListener(TrimmedClient::tagsSynced);
     }
 
     private static void registerClientReloadListener(final RegisterClientReloadListenersEvent event) {
@@ -28,5 +31,12 @@ public class TrimmedClient {
 
     private static void addModels(final ModelEvent.RegisterAdditional event) {
         ItemOverrideReloadListener.getModelsToBake().forEach(event::register);
+    }
+
+    private static void tagsSynced(final TagsUpdatedEvent event) {
+        if (event.shouldUpdateStaticData()) {
+            ClientTagManager.updateDatapacksSynced(event.getRegistryAccess());
+            ClientMapManager.updateDatapacksSynced(event.getRegistryAccess());
+        }
     }
 }

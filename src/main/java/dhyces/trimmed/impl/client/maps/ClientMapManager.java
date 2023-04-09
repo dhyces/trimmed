@@ -8,9 +8,12 @@ import com.mojang.serialization.JsonOps;
 import com.mojang.serialization.codecs.UnboundedMapCodec;
 import dhyces.trimmed.Trimmed;
 import dhyces.trimmed.api.util.ResourcePath;
-import dhyces.trimmed.api.util.Utils;
 import net.minecraft.client.Minecraft;
+import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.FileToIdConverter;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -20,6 +23,7 @@ import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.util.Unit;
 import net.minecraft.util.profiling.ProfilerFiller;
+import net.minecraftforge.fml.ModList;
 import net.minecraftforge.registries.ForgeRegistry;
 import net.minecraftforge.registries.RegistryManager;
 
@@ -32,11 +36,14 @@ import java.util.concurrent.Executor;
 public class ClientMapManager implements PreparableReloadListener {
     private static final Map<ClientMapKey, Map<ResourceLocation, String>> UNCHECKED_MAPS = new HashMap<>();
     private static final Map<ClientRegistryMapKey<?>, Map<?, String>> CHECKED_MAPS = new HashMap<>();
-    private static final Map<ClientRegistryMapKey<?>, Map<?, String>> LAZY_CHECKED_MAPS = new HashMap<>();
-    private static final Map<ClientRegistryMapKey<?>, Map<ResourceLocation, String>> LAZY_TO_CHECK_MAPS = new HashMap<>();
+    private static final Map<ClientRegistryMapKey<?>, Map<Holder.Reference<?>, String>> LAZY_CHECKED_MAPS = new HashMap<>();
+    private static final Map<ClientRegistryMapKey<?>, Map<ResourceKey<?>, String>> LAZY_TO_CHECK_MAPS = new HashMap<>();
 
     public static final UnboundedMapCodec<ResourceLocation, String> UNCHECKED_CODEC = Codec.unboundedMap(ResourceLocation.CODEC, Codec.STRING);
     private static final Map<ForgeRegistry<?>, UnboundedMapCodec<?, String>> USED_MAP_CODECS = new HashMap<>();
+    private static final Map<ResourceLocation, UnboundedMapCodec<ResourceKey<?>, String>> USED_DATAPACK_MAP_CODECS = new HashMap<>();
+
+    private static boolean datapacksSynced;
 
     private static final FileToIdConverter FILE_TO_ID_CONVERTER = FileToIdConverter.json("maps");
 
@@ -48,25 +55,43 @@ public class ClientMapManager implements PreparableReloadListener {
         return Optional.ofNullable(UNCHECKED_MAPS.get(clientMapKey));
     }
 
-    public static <T> Optional<Map<T, String>> getChecked(ClientRegistryMapKey<T> checkedClientRegistryMapKey) {
+    public static <T> Optional<Map<T, String>> getChecked(ClientRegistryMapKey<T> clientRegistryMapKey) {
         if (CHECKED_MAPS.isEmpty()) {
-            Trimmed.LOGGER.error("Maps have not been loaded or are empty! Tried to get: " + checkedClientRegistryMapKey);
+            Trimmed.LOGGER.error("Maps have not been loaded or are empty! Tried to get: " + clientRegistryMapKey);
             return Optional.empty();
         }
-        if (RegistryManager.ACTIVE.getRegistry(checkedClientRegistryMapKey.getRegistryKey()) == null) {
-            if (LAZY_CHECKED_MAPS.isEmpty()) {
-                Trimmed.LOGGER.error("Datapacks are not yet loaded! Tried to get: " + checkedClientRegistryMapKey);
-                return Optional.empty();
-            }
-            // TODO: Probably move this to the datapack sync method
-            Optional<Registry<T>> registryOptional = Minecraft.getInstance().level.registryAccess().registry(checkedClientRegistryMapKey.getRegistryKey());
-            if (registryOptional.isEmpty() || registryOptional.get().keySet().isEmpty()) {
-                Trimmed.LOGGER.error("Datapack does not exist or is not synced to client! Tried to get: " + checkedClientRegistryMapKey);
-                return Optional.empty();
-            }
-            return Optional.ofNullable((Map<T, String>) LAZY_CHECKED_MAPS.get(checkedClientRegistryMapKey.getRegistryKey()));
+        return Optional.ofNullable((Map<T, String>) CHECKED_MAPS.get(clientRegistryMapKey));
+    }
+
+    public static <T> Optional<Map<Holder.Reference<T>, String>> getDatapacked(ClientRegistryMapKey<T> clientRegistryMapKey) {
+        if (!datapacksSynced) {
+            Trimmed.LOGGER.error("Datapacks are not yet loaded! Tried to get: " + clientRegistryMapKey);
+            return Optional.empty();
         }
-        return Optional.ofNullable((Map<T, String>) CHECKED_MAPS.get(checkedClientRegistryMapKey));
+        return Optional.ofNullable(cast(LAZY_CHECKED_MAPS.get(clientRegistryMapKey)));
+    }
+
+    public static void updateDatapacksSynced(RegistryAccess registryAccess) {
+        if (datapacksSynced) {
+            Trimmed.LOGGER.info("Datapacks have been updated! Client may need to reload...");
+            Minecraft.getInstance().player.displayClientMessage(Component.translatable("trimmed.info.datapacksReloaded"), true);
+            return;
+        }
+
+        for (Map.Entry<ClientRegistryMapKey<?>, Map<ResourceKey<?>, String>> entry : LAZY_TO_CHECK_MAPS.entrySet()) {
+            Optional<? extends Registry<?>> datapackRegistryOptional = registryAccess.registry(entry.getKey().getRegistryKey());
+            if (datapackRegistryOptional.isEmpty()) {
+                Trimmed.LOGGER.error("Datapack registry " + entry.getKey().getRegistryKey().location() + " does not exist or is not synced to client!");
+            } else {
+                ImmutableMap.Builder<Object, String> mapBuilder = ImmutableMap.builder();
+                for (Map.Entry<ResourceKey<?>, String> entryTransform : entry.getValue().entrySet()) {
+                    datapackRegistryOptional.get().getHolder(cast(entryTransform.getKey())).ifPresent(o -> mapBuilder.put(o, entryTransform.getValue()));
+                }
+                LAZY_CHECKED_MAPS.put(entry.getKey(), cast(mapBuilder.build()));
+            }
+        }
+        LAZY_TO_CHECK_MAPS.clear();
+        datapacksSynced = true;
     }
 
     @Override
@@ -76,6 +101,7 @@ public class ClientMapManager implements PreparableReloadListener {
 
     @SuppressWarnings("UnstableApiUsage")
     private CompletableFuture<Unit> load(ResourceManager resourceManager, Executor backgroundExecutor) {
+        datapacksSynced = false;
         UNCHECKED_MAPS.clear();
         CHECKED_MAPS.clear();
         LAZY_CHECKED_MAPS.clear();
@@ -86,21 +112,27 @@ public class ClientMapManager implements PreparableReloadListener {
                 ClientMapKey mapKey = ClientMapKey.of(idPath.getFileNameOnly(5).asResourceLocation());
                 UNCHECKED_MAPS.put(mapKey, readMap);
             } else {
-                String[] registryDirectories = idPath.getDirectoryStringFrom("maps").split("/");
+                String registryDirectoryPath = idPath.getDirectoryStringFrom("maps");
+                String[] registryDirectories = registryDirectoryPath.split("/");
                 ResourceLocation registryId;
-                if (registryDirectories.length == 1) {
-                    registryId = new ResourceLocation(registryDirectories[0]);
+                final boolean isModded;
+                if (registryDirectories.length > 1 && ModList.get().isLoaded(registryDirectories[0])) {
+                    registryId = new ResourceLocation(registryDirectories[0], idPath.getDirectoryStringFrom(registryDirectories[0])); // TODO: test this
+                    isModded = true;
                 } else {
-                    registryId = new ResourceLocation(registryDirectories[0], registryDirectories[1]);
+                    registryId = new ResourceLocation(registryDirectoryPath);
+                    isModded = false;
                 }
-                if (RegistryManager.ACTIVE.getRegistry(registryId) != null) {
+
+                if (BuiltInRegistries.REGISTRY.get(registryId) != null || (isModded && RegistryManager.ACTIVE.getRegistry(registryId) != null)) {
                     ForgeRegistry<?> registry = RegistryManager.ACTIVE.getRegistry(registryId);
                     UnboundedMapCodec<?, String> mapCodec = USED_MAP_CODECS.computeIfAbsent(registry, reg -> Codec.unboundedMap(reg.getCodec(), Codec.STRING));
                     Map<?, String> readMap = readResources(entry.getValue(), mapCodec);
                     ClientRegistryMapKey<?> clientRegistryMapKey = ClientRegistryMapKey.of(registry.getRegistryKey(), idPath.getFileNameOnly(5).asResourceLocation());
                     CHECKED_MAPS.put(clientRegistryMapKey, readMap);
                 } else {
-                    Map<ResourceLocation, String> readMap = readResources(entry.getValue(), UNCHECKED_CODEC);
+                    UnboundedMapCodec<ResourceKey<?>, String> codec = USED_DATAPACK_MAP_CODECS.computeIfAbsent(registryId, resourceLocation -> Codec.unboundedMap(cast(ResourceKey.codec(ResourceKey.createRegistryKey(resourceLocation))), Codec.STRING));
+                    Map<ResourceKey<?>, String> readMap = readResources(entry.getValue(), codec);
                     ClientRegistryMapKey<?> clientRegistryMapKey = ClientRegistryMapKey.of(ResourceKey.createRegistryKey(registryId), idPath.getFileNameOnly(5).asResourceLocation());
                     LAZY_TO_CHECK_MAPS.put(clientRegistryMapKey, readMap);
                 }
@@ -126,5 +158,9 @@ public class ClientMapManager implements PreparableReloadListener {
             }
         }
         return mapBuilder.build();
+    }
+
+    private static <T> T cast(Object o) {
+        return (T) o;
     }
 }

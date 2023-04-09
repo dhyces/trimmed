@@ -4,14 +4,13 @@ import com.google.common.collect.ImmutableSet;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.datafixers.util.Unit;
 import com.mojang.serialization.*;
+import it.unimi.dsi.fastutil.objects.ObjectLinkedOpenHashSet;
 
+import java.util.Collections;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Stream;
 
-/**
- * Do not use for serialization, does not preserve order and will cause the cache to update every time datagen is run
- */
 public class SetCodec<A> implements Codec<Set<A>> {
     private final Codec<A> elementCodec;
 
@@ -22,7 +21,7 @@ public class SetCodec<A> implements Codec<Set<A>> {
     @Override
     public <T> DataResult<Pair<Set<A>, T>> decode(DynamicOps<T> ops, T input) {
         return ops.getList(input).setLifecycle(Lifecycle.stable()).flatMap(consumerConsumer -> {
-            ImmutableSet.Builder<A> builder = new ImmutableSet.Builder<>();
+            Set<A> linkedSet = new ObjectLinkedOpenHashSet<>(); // Preserve order
             Stream.Builder<T> failed = Stream.builder();
             AtomicReference<DataResult<Unit>> ref = new AtomicReference<>(DataResult.success(Unit.INSTANCE, Lifecycle.stable()));
 
@@ -30,12 +29,12 @@ public class SetCodec<A> implements Codec<Set<A>> {
                 DataResult<Pair<A, T>> result = elementCodec.decode(ops, t);
                 result.error().ifPresent(e -> failed.add(t));
                 ref.setPlain(ref.getPlain().apply2stable((unit, o) -> {
-                    builder.add(o.getFirst());
+                    linkedSet.add(o.getFirst());
                     return unit;
                 }, result));
             });
 
-            Pair<Set<A>, T> pair = Pair.of(builder.build(), ops.createList(failed.build()));
+            Pair<Set<A>, T> pair = Pair.of(Collections.unmodifiableSet(linkedSet), ops.createList(failed.build()));
             return ref.getPlain().map(unit -> pair).setPartial(pair);
         });
     }

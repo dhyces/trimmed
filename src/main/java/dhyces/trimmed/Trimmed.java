@@ -1,6 +1,7 @@
 package dhyces.trimmed;
 
 import net.minecraft.resources.ResourceLocation;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLLoader;
@@ -18,7 +19,7 @@ public class Trimmed {
 
     public Trimmed() {
         if (FMLLoader.getDist().isClient()) {
-            TrimmedClient.init(FMLJavaModLoadingContext.get().getModEventBus());
+            TrimmedClient.init(MinecraftForge.EVENT_BUS, FMLJavaModLoadingContext.get().getModEventBus());
         }
     }
 }

@@ -62,7 +62,7 @@ public class ResourcePath {
         for (int i = 0; i < path.length; i++) {
             String pathElement = path[i];
             if (pathElement.equals(beginningDirectory)) {
-                return ofElements(i+1, !path[path.length - 1].contains(".") ? path.length-1 : path.length-2);
+                return ofElements(i+1, !path[path.length - 1].contains(".") ? path.length : path.length-1);
             }
         }
         return "";
@@ -98,7 +98,10 @@ public class ResourcePath {
         }
         StringBuilder builder = new StringBuilder();
         for (int i = startIndexInclusive; i < endIndexExclusive; i++) {
-            builder.append(path[i]).append("/");
+            builder.append(path[i]);
+            if (i+1 != endIndexExclusive) {
+                builder.append("/");
+            }
         }
         return builder.toString();
     }
