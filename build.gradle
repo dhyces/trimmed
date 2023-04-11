@@ -141,7 +141,12 @@ publishing {
 			groupId project.maven_group
 			artifactId project.archivesBaseName
 			version project.mod_version
-			from(components.java)
+			from components.java
+			pom.withXml {
+				asNode().dependencies.dependency.each { dep ->
+					dep.parent().remove(dep)
+				}
+			}
 		}
 	}
 }
