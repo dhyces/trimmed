@@ -119,25 +119,11 @@ jar {
 publishing {
 	repositories {
 		maven {
-			name = "GitHubPackages"
-			url = uri("https://maven.pkg.github.com/dhyces/trimmed")
-			credentials {
-				username = project.findProperty("gpr.user") ?: System.getenv("USERNAME")
-				password = project.findProperty("gpr.key") ?: System.getenv("TOKEN")
-			}
-		}
-		maven {
-			url "file://" + System.getenv("local_maven")
+			url "file://" + findProperty("local_maven")
 		}
 	}
 	publications {
 		mavenJava(MavenPublication) {
-			groupId project.maven_group
-			artifactId project.archivesBaseName
-			version project.mod_version
-			artifact jar
-		}
-		gpr(MavenPublication) {
 			groupId project.maven_group
 			artifactId project.archivesBaseName
 			version project.mod_version
