@@ -80,7 +80,7 @@ public abstract class ClientRegistryTagDataProvider<T> extends BaseClientTagData
                     return CompletableFuture.allOf(builders.entrySet().stream().map(entry -> {
                         List<TagEntry> tagEntries = entry.getValue().build();
                         List<TagEntry> errors = tagEntries.stream().filter(tagEntry -> {
-                            return !elementPredicate.test(tagEntry.getId()) && !doesTagExist(tagEntry.getId());
+                            return !tagEntry.verifyIfPresent(elementPredicate, this::doesTagExist);
                         }).toList();
                         if (!errors.isEmpty()) {
                             throw new IllegalStateException("Tag entries [%s] were not found for registry %s".formatted(errors.stream().map(Object::toString).collect(Collectors.joining(",")), registryResourceKey));

@@ -58,6 +58,10 @@ public class ResourcePath {
         return new ResourcePath(namespace, parentPath);
     }
 
+    public String getParentElement() {
+        return path[path.length-2];
+    }
+
     public String getDirectoryStringFrom(String beginningDirectory) {
         for (int i = 0; i < path.length; i++) {
             String pathElement = path[i];

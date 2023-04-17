@@ -119,7 +119,16 @@ jar {
 publishing {
 	repositories {
 		maven {
+			name "Local"
 			url "file://" + findProperty("local_maven")
+		}
+		maven {
+			name "Maven"
+			url findProperty("mavenUrl")
+			credentials(PasswordCredentials) {
+				username = findProperty("mavenUsername")
+				password = findProperty("mavenPassword")
+			}
 		}
 	}
 	publications {
@@ -129,9 +138,7 @@ publishing {
 			version project.mod_version
 			from components.java
 			pom.withXml {
-				asNode().dependencies.dependency.each { dep ->
-					dep.parent().remove(dep)
-				}
+				asNode().remove(asNode().dependencies)
 			}
 		}
 	}

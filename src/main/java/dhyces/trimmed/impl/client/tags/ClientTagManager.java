@@ -1,51 +1,55 @@
 package dhyces.trimmed.impl.client.tags;
 
 import com.google.common.collect.ImmutableSet;
-import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.mojang.serialization.Codec;
-import com.mojang.serialization.DataResult;
 import com.mojang.serialization.JsonOps;
 import dhyces.trimmed.Trimmed;
 import dhyces.trimmed.api.codec.SetCodec;
 import dhyces.trimmed.api.util.CodecUtil;
 import dhyces.trimmed.api.util.ResourcePath;
-import dhyces.trimmed.api.util.Utils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.FileToIdConverter;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.PreparableReloadListener;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.tags.TagEntry;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.util.Unit;
 import net.minecraft.util.profiling.ProfilerFiller;
+import net.minecraftforge.common.crafting.CraftingHelper;
+import net.minecraftforge.common.crafting.conditions.ICondition;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.registries.ForgeRegistry;
 import net.minecraftforge.registries.RegistryManager;
+import org.codehaus.plexus.util.dag.CycleDetectedException;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
+import java.util.function.Function;
 
 public class ClientTagManager implements PreparableReloadListener {
     private static final Map<ClientTagKey, Set<ResourceLocation>> UNCHECKED_SETS = new HashMap<>();
-    private static final Map<ClientRegistryTagKey<?>, Set<?>> CHECKED_SETS = new HashMap<>();
-    private static final Map<ClientRegistryTagKey<?>, Set<Holder.Reference<?>>> LAZY_CHECKED_SETS = new HashMap<>();
-    private static final Map<ClientRegistryTagKey<?>, Set<ResourceKey<?>>> LAZY_TO_CHECK_SETS = new HashMap<>();
+    private static final Map<ClientRegistryTagKey<?>, Set<?>> REGISTRY_SETS = new HashMap<>();
+    private static final Map<ClientRegistryTagKey<?>, Set<Holder.Reference<?>>> DATAPACKED_SETS = new HashMap<>();
+    private static final Map<ClientRegistryTagKey<?>, Set<ResourceKey<?>>> DATAPACKED_KEYS_TO_RESOLVE = new HashMap<>();
 
     private static boolean datapacksSynced;
 
-    public static final SetCodec<ResourceLocation> UNCHECKED_CODEC = CodecUtil.setOf(ResourceLocation.CODEC);
     private static final Map<ForgeRegistry<?>, SetCodec<?>> USED_SET_CODECS = new HashMap<>();
     private static final Map<ResourceLocation, SetCodec<ResourceKey<?>>> USED_DATAPACK_SET_CODECS = new HashMap<>();
+
+    public static final FileToIdConverter FILE_TO_ID_CONVERTER = FileToIdConverter.json("tags");
 
     public static Optional<Set<ResourceLocation>> getUnchecked(ClientTagKey clientTagKey) {
         if (UNCHECKED_SETS.isEmpty()) {
@@ -56,11 +60,11 @@ public class ClientTagManager implements PreparableReloadListener {
     }
 
     public static <T> Optional<Set<T>> getChecked(ClientRegistryTagKey<T> clientRegistryTagKey) {
-        if (CHECKED_SETS.isEmpty()) {
+        if (REGISTRY_SETS.isEmpty()) {
             Trimmed.LOGGER.error("Client tags aren't loaded yet or are empty! Tried to get " + clientRegistryTagKey);
             return Optional.empty();
         }
-        return Optional.ofNullable((Set<T>) CHECKED_SETS.get(clientRegistryTagKey));
+        return Optional.ofNullable((Set<T>) REGISTRY_SETS.get(clientRegistryTagKey));
     }
 
     public static <T> Optional<Set<Holder.Reference<T>>> getDatapacked(ClientRegistryTagKey<T> clientRegistryTagKey) {
@@ -68,7 +72,7 @@ public class ClientTagManager implements PreparableReloadListener {
             Trimmed.LOGGER.error("Datapacks are not yet loaded! Tried to get: " + clientRegistryTagKey);
             return Optional.empty();
         }
-        return Optional.ofNullable(cast(LAZY_CHECKED_SETS.get(clientRegistryTagKey)));
+        return Optional.ofNullable(cast(DATAPACKED_SETS.get(clientRegistryTagKey)));
     }
 
     public static void updateDatapacksSynced(RegistryAccess registryAccess) {
@@ -80,7 +84,7 @@ public class ClientTagManager implements PreparableReloadListener {
             return;
         }
 
-        for (Map.Entry<ClientRegistryTagKey<?>, Set<ResourceKey<?>>> entry : LAZY_TO_CHECK_SETS.entrySet()) {
+        for (Map.Entry<ClientRegistryTagKey<?>, Set<ResourceKey<?>>> entry : DATAPACKED_KEYS_TO_RESOLVE.entrySet()) {
             Optional<? extends Registry<?>> datapackRegistryOptional = registryAccess.registry(entry.getKey().getRegistryKey());
             if (datapackRegistryOptional.isEmpty()) {
                 Trimmed.LOGGER.error("Datapack registry " + entry.getKey().getRegistryKey().location() + " does not exist or is not synced to client!");
@@ -89,10 +93,10 @@ public class ClientTagManager implements PreparableReloadListener {
                 for (ResourceKey<?> id : entry.getValue()) {
                     datapackRegistryOptional.get().getHolder(cast(id)).ifPresent(linkedSet::add);
                 }
-                LAZY_CHECKED_SETS.put(entry.getKey(), cast(Collections.unmodifiableSet(linkedSet)));
+                DATAPACKED_SETS.put(entry.getKey(), cast(Collections.unmodifiableSet(linkedSet)));
             }
         }
-        LAZY_TO_CHECK_SETS.clear();
+        DATAPACKED_KEYS_TO_RESOLVE.clear();
         datapacksSynced = true;
     }
 
@@ -104,56 +108,99 @@ public class ClientTagManager implements PreparableReloadListener {
     @SuppressWarnings("UnstableApiUsage")
     private CompletableFuture<Unit> load(ResourceManager resourceManager) {
         datapacksSynced = false;
-        CHECKED_SETS.clear();
+        REGISTRY_SETS.clear();
         UNCHECKED_SETS.clear();
-        for (Map.Entry<ResourceLocation, List<Resource>> entry : resourceManager.listResourceStacks("tags", Utils::endsInJson).entrySet()) {
+        DATAPACKED_SETS.clear();
+        final Map<ResourceLocation, Map<ResourceLocation, Set<TagEntry>>> readEntryMap = new HashMap<>();
+        for (Map.Entry<ResourceLocation, List<Resource>> entry : FILE_TO_ID_CONVERTER.listMatchingResourceStacks(resourceManager).entrySet()) {
             ResourcePath idPath = new ResourcePath(entry.getKey());
-            if (entry.getKey().getPath().contains("unchecked")) {
-                Set<ResourceLocation> readSet = readResources(entry.getValue(), UNCHECKED_CODEC);
-                ClientTagKey tagKey = ClientTagKey.of(idPath.getFileNameOnly(5).asResourceLocation());
-                UNCHECKED_SETS.put(tagKey, readSet);
-            } else {
-                String registryDirectoryPath = idPath.getDirectoryStringFrom("tags");
-                String[] registryDirectories = registryDirectoryPath.split("/");
-                ResourceLocation registryId;
-                final boolean isModded;
-                if (registryDirectories.length > 1 && ModList.get().isLoaded(registryDirectories[0])) {
-                    registryId = new ResourceLocation(registryDirectories[0], idPath.getDirectoryStringFrom(registryDirectories[0])); // TODO: test this
-                    isModded = true;
-                } else {
-                    registryId = new ResourceLocation(registryDirectoryPath);
-                    isModded = false;
-                }
+            Set<TagEntry> readEntries = readResources(entry.getKey(), entry.getValue());
 
-                if (BuiltInRegistries.REGISTRY.get(registryId) != null || (isModded && RegistryManager.ACTIVE.getRegistry(registryId) != null)) {
-                    ForgeRegistry<?> registry = RegistryManager.ACTIVE.getRegistry(registryId);
-                    SetCodec<?> setCodec = USED_SET_CODECS.computeIfAbsent(registry, reg -> CodecUtil.setOf(reg.getCodec()));
-                    Set<?> readSet = readResources(entry.getValue(), setCodec);
-                    ClientRegistryTagKey<?> clientRegistryTagKey = ClientRegistryTagKey.of(registry.getRegistryKey(), idPath.getFileNameOnly(5).asResourceLocation());
-                    CHECKED_SETS.put(clientRegistryTagKey, readSet);
+            String registryDirectoryPath = idPath.getDirectoryStringFrom("tags");
+            String[] registryDirectories = registryDirectoryPath.split("/");
+            ResourceLocation registryId;
+            if (registryDirectories.length > 1 && ModList.get().isLoaded(registryDirectories[0])) {
+                registryId = new ResourceLocation(registryDirectories[0], idPath.getDirectoryStringFrom(registryDirectories[0])); // TODO: test this
+            } else {
+                registryId = new ResourceLocation(registryDirectoryPath);
+            }
+            ResourceLocation truncated = idPath.getFileNameOnly(5).asResourceLocation();
+            readEntryMap.computeIfAbsent(registryId, resourceLocation -> new HashMap<>()).put(truncated, readEntries);
+        }
+
+        for (Map.Entry<ResourceLocation, Map<ResourceLocation, Set<TagEntry>>> entry : readEntryMap.entrySet()) {
+            ResourceLocation directoryPath = entry.getKey();
+            Map<ResourceLocation, Set<TagEntry>> unresolved = entry.getValue();
+
+            try {
+                if (directoryPath.getPath().equals("unchecked")) {
+                    for (Map.Entry<ResourceLocation, Set<TagEntry>> tagEntry : unresolved.entrySet()) {
+                        resolveTag(unresolved, cast(UNCHECKED_SETS), ClientTagKey::of, Function.identity(), tagEntry.getKey(), new LinkedHashSet<>());
+                    }
                 } else {
-                    SetCodec<ResourceKey<?>> codec = USED_DATAPACK_SET_CODECS.computeIfAbsent(registryId, resourceLocation -> CodecUtil.setOf(cast(ResourceKey.codec(ResourceKey.createRegistryKey(resourceLocation)))));
-                    Set<ResourceKey<?>> readTag = readResources(entry.getValue(), codec);
-                    ClientRegistryTagKey<?> clientRegistryMapKey = ClientRegistryTagKey.of(ResourceKey.createRegistryKey(registryId), idPath.getFileNameOnly(5).asResourceLocation());
-                    LAZY_TO_CHECK_SETS.put(clientRegistryMapKey, readTag);
+                    final boolean isModded = !directoryPath.getNamespace().equals("minecraft");
+
+                    if (BuiltInRegistries.REGISTRY.get(directoryPath) != null || (isModded && RegistryManager.ACTIVE.getRegistry(directoryPath) != null)) {
+                        ForgeRegistry<?> registry = RegistryManager.ACTIVE.getRegistry(directoryPath);
+                        ResourceKey<?> registryKey = registry.getRegistryKey();
+                        for (Map.Entry<ResourceLocation, Set<TagEntry>> tagEntry : unresolved.entrySet()) {
+                            resolveTag(unresolved, REGISTRY_SETS, id -> ClientRegistryTagKey.of(cast(registryKey), id), registry::getValue, tagEntry.getKey(), new LinkedHashSet<>());
+                        }
+                    } else {
+                        ResourceKey<?> datapackRegistryKey = ResourceKey.createRegistryKey(directoryPath);
+                        for (Map.Entry<ResourceLocation, Set<TagEntry>> tagEntry : unresolved.entrySet()) {
+                            resolveTag(unresolved, cast(DATAPACKED_KEYS_TO_RESOLVE), id -> ClientRegistryTagKey.of(cast(datapackRegistryKey), id), resourceLocation -> ResourceKey.create(cast(datapackRegistryKey), resourceLocation), tagEntry.getKey(), new LinkedHashSet<>());
+                        }
+                    }
                 }
+            } catch (CycleDetectedException e) {
+                Trimmed.LOGGER.error(e.getMessage());
             }
         }
+
         return CompletableFuture.completedFuture(Unit.INSTANCE);
     }
 
-    private <T> Set<T> readResources(List<Resource> resourceStack, SetCodec<T> codec) {
-        ImmutableSet.Builder<T> setBuilder = ImmutableSet.builder();
+    private <K, V> Set<?> resolveTag(Map<ResourceLocation, Set<TagEntry>> unresolvedTags, Map<K, Set<?>> registered, Function<ResourceLocation, K> tagKeyFactory, Function<ResourceLocation, V> valueResolver, ResourceLocation tagId, LinkedHashSet<ResourceLocation> resolutionSet) throws CycleDetectedException {
+        K key = tagKeyFactory.apply(tagId);
+        if (registered.containsKey(key)) {
+            return registered.get(key);
+        }
+
+        if (resolutionSet.contains(tagId)) {
+            throw new CycleDetectedException("ClientTag cycle detected! ", resolutionSet.stream().map(ResourceLocation::toString).toList());
+        }
+
+        resolutionSet.add(tagId);
+
+        ImmutableSet.Builder builder = ImmutableSet.builder();
+
+        for (TagEntry entry : unresolvedTags.get(tagId)) {
+            if (entry.isTag()) {
+                builder.addAll(resolveTag(unresolvedTags, registered, tagKeyFactory, valueResolver, entry.getId(), resolutionSet));
+            } else {
+                builder.add(valueResolver.apply(entry.getId()));
+            }
+        }
+
+        // Adds it to the registered map and returns the set
+        return registered.computeIfAbsent(key, k -> builder.build());
+    }
+
+    private Set<TagEntry> readResources(ResourceLocation resourceLocation, List<Resource> resourceStack) {
+        ImmutableSet.Builder<TagEntry> setBuilder = ImmutableSet.builder();
         for (Resource resource : resourceStack) {
             try (BufferedReader reader = resource.openAsReader()) {
                 JsonObject json = GsonHelper.parse(reader);
-                boolean isReplace = json.get("replace") != null && json.get("replace").getAsBoolean();
-                JsonArray pairs = json.getAsJsonArray("values");
-                DataResult<Set<T>> result = codec.parse(JsonOps.INSTANCE, pairs);
-                if (isReplace) {
+                if (!CraftingHelper.processConditions(json, "conditions", ICondition.IContext.TAGS_INVALID)) {
+                    Trimmed.LOGGER.debug("Skipping loading recipe {} as it's conditions were not met", resourceLocation);
+                    continue;
+                }
+                ClientTagFile result = ClientTagFile.CODEC.parse(JsonOps.INSTANCE, json).getOrThrow(false, Trimmed.LOGGER::error);
+                if (result.isReplace()) {
                     setBuilder = ImmutableSet.builder();
                 }
-                setBuilder.addAll(result.getOrThrow(false, Trimmed.LOGGER::error));
+                setBuilder.addAll(result.tags());
             } catch (IOException e) {
                 throw new RuntimeException(e); // TODO
             }

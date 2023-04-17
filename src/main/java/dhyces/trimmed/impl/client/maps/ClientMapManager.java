@@ -23,6 +23,8 @@ import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.util.Unit;
 import net.minecraft.util.profiling.ProfilerFiller;
+import net.minecraftforge.common.crafting.CraftingHelper;
+import net.minecraftforge.common.crafting.conditions.ICondition;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.registries.ForgeRegistry;
 import net.minecraftforge.registries.RegistryManager;
@@ -74,7 +76,9 @@ public class ClientMapManager implements PreparableReloadListener {
     public static void updateDatapacksSynced(RegistryAccess registryAccess) {
         if (datapacksSynced) {
             Trimmed.LOGGER.info("Datapacks have been updated! Client may need to reload...");
-            Minecraft.getInstance().player.displayClientMessage(Component.translatable("trimmed.info.datapacksReloaded"), true);
+            if (Minecraft.getInstance().player != null) {
+                Minecraft.getInstance().player.displayClientMessage(Component.translatable("trimmed.info.datapacksReloaded"), true);
+            }
             return;
         }
 
@@ -108,7 +112,7 @@ public class ClientMapManager implements PreparableReloadListener {
         for (Map.Entry<ResourceLocation, List<Resource>> entry : FILE_TO_ID_CONVERTER.listMatchingResourceStacks(resourceManager).entrySet()) {
             ResourcePath idPath = new ResourcePath(entry.getKey());
             if (entry.getKey().getPath().contains("unchecked")) {
-                Map<ResourceLocation, String> readMap = readResources(entry.getValue(), UNCHECKED_CODEC);
+                Map<ResourceLocation, String> readMap = readResources(entry.getKey(), entry.getValue(), UNCHECKED_CODEC);
                 ClientMapKey mapKey = ClientMapKey.of(idPath.getFileNameOnly(5).asResourceLocation());
                 UNCHECKED_MAPS.put(mapKey, readMap);
             } else {
@@ -127,12 +131,12 @@ public class ClientMapManager implements PreparableReloadListener {
                 if (BuiltInRegistries.REGISTRY.get(registryId) != null || (isModded && RegistryManager.ACTIVE.getRegistry(registryId) != null)) {
                     ForgeRegistry<?> registry = RegistryManager.ACTIVE.getRegistry(registryId);
                     UnboundedMapCodec<?, String> mapCodec = USED_MAP_CODECS.computeIfAbsent(registry, reg -> Codec.unboundedMap(reg.getCodec(), Codec.STRING));
-                    Map<?, String> readMap = readResources(entry.getValue(), mapCodec);
+                    Map<?, String> readMap = readResources(entry.getKey(), entry.getValue(), mapCodec);
                     ClientRegistryMapKey<?> clientRegistryMapKey = ClientRegistryMapKey.of(registry.getRegistryKey(), idPath.getFileNameOnly(5).asResourceLocation());
                     CHECKED_MAPS.put(clientRegistryMapKey, readMap);
                 } else {
                     UnboundedMapCodec<ResourceKey<?>, String> codec = USED_DATAPACK_MAP_CODECS.computeIfAbsent(registryId, resourceLocation -> Codec.unboundedMap(cast(ResourceKey.codec(ResourceKey.createRegistryKey(resourceLocation))), Codec.STRING));
-                    Map<ResourceKey<?>, String> readMap = readResources(entry.getValue(), codec);
+                    Map<ResourceKey<?>, String> readMap = readResources(entry.getKey(), entry.getValue(), codec);
                     ClientRegistryMapKey<?> clientRegistryMapKey = ClientRegistryMapKey.of(ResourceKey.createRegistryKey(registryId), idPath.getFileNameOnly(5).asResourceLocation());
                     LAZY_TO_CHECK_MAPS.put(clientRegistryMapKey, readMap);
                 }
@@ -141,11 +145,15 @@ public class ClientMapManager implements PreparableReloadListener {
         return CompletableFuture.completedFuture(Unit.INSTANCE);
     }
 
-    private <T> Map<T, String> readResources(List<Resource> resourceStack, Codec<Map<T, String>> codec) {
+    private <T> Map<T, String> readResources(ResourceLocation resourceLocation, List<Resource> resourceStack, Codec<Map<T, String>> codec) {
         ImmutableMap.Builder<T, String> mapBuilder = ImmutableMap.builder();
         for (Resource resource : resourceStack) {
             try (BufferedReader reader = resource.openAsReader()) {
                 JsonObject json = GsonHelper.parse(reader);
+                if (!CraftingHelper.processConditions(json, "conditions", ICondition.IContext.TAGS_INVALID)) {
+                    Trimmed.LOGGER.debug("Skipping loading recipe {} as it's conditions were not met", resourceLocation);
+                    continue;
+                }
                 boolean isReplace = json.get("replace") != null && json.get("replace").getAsBoolean();
                 JsonObject pairs = json.getAsJsonObject("pairs");
                 DataResult<Map<T, String>> result = codec.parse(JsonOps.INSTANCE, pairs);
