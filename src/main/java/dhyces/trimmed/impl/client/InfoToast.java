@@ -21,8 +21,8 @@ public class InfoToast implements Toast {
 
     public InfoToast(Component title, Component message) {
         this.title = title;
-        this.messageLines = Minecraft.getInstance().font.split(message, this.width());
-        this.height = 13 + messageLines.size() * (Minecraft.getInstance().font.lineHeight+2) + (messageLines.size()-1) * 5;
+        this.messageLines = Minecraft.getInstance().font.split(message, this.width()-8);
+        this.height = 19 + messageLines.size() * (Minecraft.getInstance().font.lineHeight+2);
     }
 
     public static InfoToast reloadClientInfo() {
@@ -37,14 +37,13 @@ public class InfoToast implements Toast {
         } else {
             Gui.blit(pPoseStack, 0, 0, 0, 0, width(), 4);
             int middleAmount = height()-8;
-            int amountToDraw = Math.min(24, middleAmount);
             int yPos = 4;
-            int iterTimes = (int) Math.ceil(height() / 32f);
-            for (int i = 0; i < iterTimes; i++) {
+            int iterTimes = (int) Math.ceil(middleAmount / 28f);
+            for (; iterTimes >= 0; iterTimes--) {
+                int amountToDraw = Math.min(24, middleAmount);
                 Gui.blit(pPoseStack, 0, yPos, 0, 4, width(), amountToDraw);
                 middleAmount -= amountToDraw;
                 yPos += amountToDraw;
-                amountToDraw = Math.min(24, middleAmount);
             }
             Gui.blit(pPoseStack, 0, yPos, 0, 28, width(), 4);
         }
@@ -53,7 +52,7 @@ public class InfoToast implements Toast {
         Gui.drawString(pPoseStack, font, title, 5, 5, 0xFFFFFF);
         int lineNum = 1;
         for (FormattedCharSequence messageLine : messageLines) {
-            Gui.drawString(pPoseStack, font, messageLine, 5, 5 + ((font.lineHeight+2) * lineNum++), 0xFFFFFF);
+            Gui.drawString(pPoseStack, font, messageLine, 5, 7 + ((font.lineHeight+2) * lineNum++), 0xFFFFFF);
         }
 
         return pTimeSinceLastVisible > 5000f * pToastComponent.getNotificationDisplayTimeMultiplier() ? Visibility.HIDE : Visibility.SHOW;

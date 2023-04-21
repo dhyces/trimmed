@@ -8,12 +8,10 @@ import com.mojang.serialization.JsonOps;
 import com.mojang.serialization.codecs.UnboundedMapCodec;
 import dhyces.trimmed.Trimmed;
 import dhyces.trimmed.api.util.ResourcePath;
-import net.minecraft.client.Minecraft;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.network.chat.Component;
 import net.minecraft.resources.FileToIdConverter;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -76,9 +74,6 @@ public class ClientMapManager implements PreparableReloadListener {
     public static void updateDatapacksSynced(RegistryAccess registryAccess) {
         if (datapacksSynced) {
             Trimmed.LOGGER.info("Datapacks have been updated! Client may need to reload...");
-            if (Minecraft.getInstance().player != null) {
-                Minecraft.getInstance().player.displayClientMessage(Component.translatable("trimmed.info.datapacksReloaded"), true);
-            }
             return;
         }
 
