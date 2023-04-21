@@ -7,7 +7,7 @@ import dhyces.trimmed.Trimmed;
 import dhyces.trimmed.impl.client.maps.ClientMapKey;
 import dhyces.trimmed.impl.client.maps.ClientMapManager;
 import dhyces.trimmed.impl.client.tags.ClientTagKey;
-import dhyces.trimmed.impl.client.tags.ClientTagManager;
+import dhyces.trimmed.impl.client.tags.manager.ClientTagManager;
 import net.minecraft.client.renderer.texture.atlas.SpriteSource;
 import net.minecraft.client.renderer.texture.atlas.SpriteSourceType;
 import net.minecraft.client.renderer.texture.atlas.sources.LazyLoadedImage;
@@ -15,7 +15,6 @@ import net.minecraft.client.renderer.texture.atlas.sources.PalettedPermutations;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
-import net.minecraft.world.level.block.state.BlockBehaviour;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -57,7 +56,7 @@ public class OpenPalettedPermutations implements SpriteSource {
             );
         });
 
-        for (ResourceLocation resourceLocation : ClientTagManager.getUnchecked(textures).orElseGet(Set::of)) {
+        ClientTagManager.getUncheckedHandler().streamValues(textures).forEach(resourceLocation -> {
             Optional<Resource> imageOptional = pResourceManager.getResource(TEXTURE_ID_CONVERTER.idToFile(resourceLocation));
             if (imageOptional.isEmpty()) {
                 Trimmed.LOGGER.error("Cannot locate " + resourceLocation);
@@ -69,7 +68,7 @@ public class OpenPalettedPermutations implements SpriteSource {
                     pOutput.add(permutedId, new PalettedPermutations.PalettedSpriteSupplier(lazyloadedimage, entry.getValue(), permutedId));
                 }
             }
-        }
+        });
     }
 
     @Override

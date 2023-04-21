@@ -8,7 +8,7 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 import java.util.List;
 
 @Mixin(ReloadableResourceManager.class)
-public interface ReloadableResourceManagerAccessor {
+public interface ReloadableResourceManagerImplAccessor {
 
     @Accessor
     List<PreparableReloadListener> getListeners();
