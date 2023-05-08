@@ -59,8 +59,14 @@ minecraft {
 
 sourceSets.main.resources.srcDir 'src/generated/resources'
 
+repositories {
+	mavenCentral()
+}
+
 dependencies {
 	minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
+
+	implementation 'org.jetbrains:annotations:24.0.0'
 
 	annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
 }
@@ -128,6 +134,14 @@ publishing {
 			credentials(PasswordCredentials) {
 				username = findProperty("mavenUsername")
 				password = findProperty("mavenPassword")
+			}
+		}
+		maven {
+			name = "GitHubPackages"
+			url = uri("https://maven.pkg.github.com/dhyces/trimmed")
+			credentials {
+				username = project.findProperty("gpr.user") ?: System.getenv("USERNAME")
+				password = project.findProperty("gpr.key") ?: System.getenv("TOKEN")
 			}
 		}
 	}
