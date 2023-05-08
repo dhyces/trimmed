@@ -31,10 +31,10 @@ public class TrimmedTestClient {
     }
 
     private static void loggedIn(final PlayerEvent.PlayerLoggedInEvent event) {
-        TrimmedApi.INSTANCE.getUncheckedTag(TEST_TAG).forEach(id -> TrimmedTest.LOGGER.info(id.toString()));
-        TrimmedApi.INSTANCE.getRegistryTag(TEST_ITEM_TAG).forEach(item -> TrimmedTest.LOGGER.info(item.toString()));
-        TrimmedApi.INSTANCE.getRegistryTag(TestClientCustomObjTagProvider.TEST_CUSTOM_REG_KEY).forEach(item -> TrimmedTest.LOGGER.info(item.toString()));
-        TrimmedApi.INSTANCE.getDatapackedTag(TEST_BIOME_TAG).forEach(biomeHolder -> TrimmedTest.LOGGER.info(biomeHolder.toString()));
+        TrimmedApi.TAG_API.getUncheckedTag(TEST_TAG).forEach(id -> TrimmedTest.LOGGER.info(id.toString()));
+        TrimmedApi.TAG_API.getRegistryTag(TEST_ITEM_TAG).forEach(item -> TrimmedTest.LOGGER.info(item.toString()));
+        TrimmedApi.TAG_API.getRegistryTag(TestClientCustomObjTagProvider.TEST_CUSTOM_REG_KEY).forEach(item -> TrimmedTest.LOGGER.info(item.toString()));
+        TrimmedApi.TAG_API.getDatapackedTag(TEST_BIOME_TAG).forEach(biomeHolder -> TrimmedTest.LOGGER.info(biomeHolder.toString()));
 
         ClientMapManager.getUnchecked(TEST_MAP).ifPresent(map -> TrimmedTest.LOGGER.info("Map present! " + map.get(new ResourceLocation(Trimmed.MODID, "not/a/real/place"))));
         ClientMapManager.getChecked(TEST_ITEM_MAP).ifPresent(itemStringMap -> TrimmedTest.LOGGER.info("Map present! " + itemStringMap.get(Items.IRON_INGOT)));
