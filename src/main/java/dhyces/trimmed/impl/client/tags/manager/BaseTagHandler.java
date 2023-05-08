@@ -14,7 +14,6 @@ import java.util.stream.Stream;
 
 /**
  * Responsible for handling tag maps in the ClientTagManager.
- * K: Key, I: Intermediate, V: Value (parsed, finished, ready, loaded value)
  */
 abstract class BaseTagHandler<K, V> {
     protected final Map<K, Set<V>> registeredTags = new HashMap<>();
@@ -81,12 +80,18 @@ abstract class BaseTagHandler<K, V> {
         for (TagEntry entry : entries) {
             if (entry.isTag()) {
                 DataResult<Set<VAL>> result = resolveTag(unresolvedTags, resolvedTags, entry.getId(), keyFactory, valueFactory, resolutionSet);
-                if (result.error().isPresent()) {
+                if (result.result().isPresent()) {
+                    builder.addAll(result.result().get());
+                } else if (entry.isRequired()) {
                     return result;
                 }
-                result.result().ifPresent(builder::addAll);
             } else {
-                builder.add(valueFactory.apply(entry.getId()));
+                VAL value = valueFactory.apply(entry.getId());
+                if (value != null) {
+                    builder.add(value);
+                } else if (entry.isRequired()) {
+                    return DataResult.error(() -> "Tag entry " + entry.getId() + " is required, yet does not exist!");
+                }
             }
         }
 
