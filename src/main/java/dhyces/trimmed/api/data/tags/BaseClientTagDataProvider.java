@@ -1,13 +1,8 @@
 package dhyces.trimmed.api.data.tags;
 
-import dhyces.trimmed.api.data.tags.appenders.ClientRegistryTagAppender;
-import dhyces.trimmed.api.data.tags.appenders.ClientTagAppender;
-import dhyces.trimmed.impl.client.tags.ClientRegistryTagKey;
-import dhyces.trimmed.impl.client.tags.ClientTagKey;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.packs.PackType;
 import net.minecraft.tags.TagBuilder;
 import net.minecraftforge.common.data.ExistingFileHelper;
 

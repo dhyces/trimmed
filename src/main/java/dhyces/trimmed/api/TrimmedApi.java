@@ -14,6 +14,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 
 import javax.annotation.Nullable;
+import java.util.Set;
 
 public interface TrimmedApi {
     TrimmedApi INSTANCE = new TrimmedApiImpl();
@@ -40,11 +41,12 @@ public interface TrimmedApi {
      */
     <T> boolean datapackedTagContains(ClientRegistryTagKey<T> tagKey, Holder<T> value);
 
-    UncheckedTagHandler getUncheckedTagHandler();
+    @Nullable
+    Set<ResourceLocation> getUncheckedTag(ClientTagKey clientTagKey);
 
     @Nullable
-    <T> RegistryTagHandler<T> getRegistryTagHandler(ResourceKey<Registry<T>> registryKey);
+    <T> Set<T> getRegistryTag(ClientRegistryTagKey<T> clientRegistryTagKey);
 
     @Nullable
-    <T> DatapackTagHandler<T> getDatapackedTagHandler(ResourceKey<Registry<T>> registryKey);
+    <T> Set<Holder<T>> getDatapackedTag(ClientRegistryTagKey<T> clientRegistryTagKey);
 }

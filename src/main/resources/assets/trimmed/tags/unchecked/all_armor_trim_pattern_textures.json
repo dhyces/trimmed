@@ -1,6 +1,6 @@
 {
   "values": [
-    "#trimmed:vanilla_trim_pattern_textures",
-    "#trimmed:custom_trim_pattern_textures"
+    "#trimmed:vanilla_armor_trim_pattern_textures",
+    "#trimmed:custom_armor_trim_pattern_textures"
   ]
 }

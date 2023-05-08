@@ -8,8 +8,6 @@ import dhyces.trimmed.impl.client.override.provider.ItemOverrideProviderRegistry
 import dhyces.trimmed.impl.client.tags.manager.ClientTagManager;
 import dhyces.trimmed.impl.mixin.client.ReloadableResourceManagerImplAccessor;
 import net.minecraft.client.Minecraft;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.Style;
 import net.minecraftforge.client.event.ModelEvent;
 import net.minecraftforge.client.event.RegisterClientReloadListenersEvent;
 import net.minecraftforge.event.TagsUpdatedEvent;

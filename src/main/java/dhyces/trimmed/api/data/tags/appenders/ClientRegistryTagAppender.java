@@ -9,6 +9,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagBuilder;
 
 import java.util.Map;
+import java.util.function.Supplier;
 
 public class ClientRegistryTagAppender<T> {
     private final TagBuilder backed;
@@ -71,6 +72,11 @@ public class ClientRegistryTagAppender<T> {
 
         public RegistryAware<T> add(T element) {
             add(lookup.get(element));
+            return this;
+        }
+
+        public RegistryAware<T> add(Supplier<T> element) {
+            add(element.get());
             return this;
         }
 

@@ -1,5 +1,6 @@
 package dhyces.trimmed.impl.client.tags.manager;
 
+import com.mojang.serialization.DataResult;
 import dhyces.trimmed.Trimmed;
 import dhyces.trimmed.impl.client.tags.ClientRegistryTagKey;
 import net.minecraft.core.Holder;
@@ -7,66 +8,50 @@ import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-import org.jetbrains.annotations.Nullable;
+import net.minecraft.tags.TagEntry;
 
+import javax.annotation.Nullable;
 import java.util.*;
-import java.util.stream.Stream;
+import java.util.function.Function;
 
-public class DatapackTagHandler<V> extends BaseTagHandler<ClientRegistryTagKey<V>, ResourceLocation, Holder<V>> {
+public class DatapackTagHandler<V> extends BaseTagHandler<ClientRegistryTagKey<V>, Holder<V>> {
 
-    private final Map<ClientRegistryTagKey<V>, Set<Holder<V>>> loaded = new HashMap<>();
+    private final Map<ClientRegistryTagKey<V>, Set<ResourceLocation>> intermediate = new HashMap<>();
     private final ResourceKey<Registry<V>> registryKey;
-    private boolean needsClientReload;
+    private RegistryAccess registryAccess;
 
     public DatapackTagHandler(ResourceKey<Registry<V>> registry) {
         this.registryKey = registry;
     }
 
-    @Override
-    public boolean contains(ClientRegistryTagKey<V> tag) {
-        return loaded.containsKey(tag);
-    }
-
-    @Override
-    public boolean doesTagContain(ClientRegistryTagKey<V> tag, Holder<V> value) {
-        return loaded.getOrDefault(tag, Set.of()).contains(value);
-    }
-
-    @Override
-    public Stream<Holder<V>> streamValues(ClientRegistryTagKey<V> tag) {
-        return loaded.getOrDefault(tag, Set.of()).stream();
-    }
-
-    @Nullable
-    @Override
-    public Set<Holder<V>> getSet(ClientRegistryTagKey<V> tag) {
-        return loaded.get(tag);
-    }
-
-    @Override
-    void clear() {
-        super.clear();
-        loaded.clear();
-    }
-
-    public boolean isReliableData() {
-        return !needsClientReload;
-    }
-
     void update(RegistryAccess registryAccess) {
+        this.registryAccess = registryAccess;
+        clear();
         Optional<Registry<V>> datapackRegistryOptional = registryAccess.registry(registryKey);
         if (datapackRegistryOptional.isEmpty()) {
             Trimmed.LOGGER.error("Datapack registry " + registryKey.location() + " does not exist or is not synced to client!");
             return;
         }
-        for (Map.Entry<ClientRegistryTagKey<V>, Set<ResourceLocation>> entry : registeredTags.entrySet()) {
+        for (Map.Entry<ClientRegistryTagKey<V>, Set<ResourceLocation>> entry : intermediate.entrySet()) {
             Set<Holder<V>> linkedSet = new LinkedHashSet<>();
             for (ResourceLocation id : entry.getValue()) {
-                datapackRegistryOptional.get().getHolder(ResourceKey.create(registryKey, id)).ifPresent(linkedSet::add);
+                Holder<V> holder = createValue(id);
+                if (holder == null) {
+                    // TODO: DO SOMETHING, LOG OR THROW
+                }
+                linkedSet.add(holder);
             }
-            loaded.put(entry.getKey(), Collections.unmodifiableSet(linkedSet));
+            registeredTags.put(entry.getKey(), Collections.unmodifiableSet(linkedSet));
         }
-        needsClientReload = true;
+        isLoaded = true;
+    }
+
+    @Override
+    void resolveTags(Map<ResourceLocation, Set<TagEntry>> unresolvedTags) {
+        for (Map.Entry<ResourceLocation, Set<TagEntry>> entry : unresolvedTags.entrySet()) {
+            DataResult<Set<ResourceLocation>> dataResult = resolveTag(unresolvedTags, intermediate, entry.getKey(), this::createTag, Function.identity(), new LinkedHashSet<>());
+            dataResult.error().ifPresent(setPartialResult -> Trimmed.LOGGER.error(setPartialResult.message()));
+        }
     }
 
     @Override
@@ -74,9 +59,9 @@ public class DatapackTagHandler<V> extends BaseTagHandler<ClientRegistryTagKey<V
         return ClientRegistryTagKey.of(registryKey, tagId);
     }
 
+    @Nullable
     @Override
-    protected ResourceLocation createValue(ResourceLocation valueId) {
-        return valueId;
+    protected Holder<V> createValue(ResourceLocation valueId) {
+        return registryAccess.registry(registryKey).flatMap(vs -> vs.getHolder(ResourceKey.create(registryKey, valueId))).orElse(null);
     }
-
 }

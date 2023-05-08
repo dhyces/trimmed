@@ -146,7 +146,7 @@ public class ClientMapManager implements PreparableReloadListener {
             try (BufferedReader reader = resource.openAsReader()) {
                 JsonObject json = GsonHelper.parse(reader);
                 if (!CraftingHelper.processConditions(json, "conditions", ICondition.IContext.TAGS_INVALID)) {
-                    Trimmed.LOGGER.debug("Skipping loading recipe {} as it's conditions were not met", resourceLocation);
+                    Trimmed.LOGGER.debug("Skipping loading client map {} as it's conditions were not met", resourceLocation);
                     continue;
                 }
                 boolean isReplace = json.get("replace") != null && json.get("replace").getAsBoolean();

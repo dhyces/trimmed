@@ -38,10 +38,15 @@ public abstract class ClientRegistryTagDataProvider<T> extends BaseClientTagData
 
 
     public ClientRegistryTagDataProvider(PackOutput packOutput, String modid, CompletableFuture<HolderLookup.Provider> lookupProviderFuture, ResourceKey<? extends Registry<T>> registryResourceKey, ExistingFileHelper existingFileHelper) {
-        super(packOutput, modid, new ExistingFileHelper.ResourceType(PackType.CLIENT_RESOURCES, ".json", "tags/" + registryResourceKey.location().getPath()), existingFileHelper);
+        super(packOutput, modid, new ExistingFileHelper.ResourceType(PackType.CLIENT_RESOURCES, ".json", "tags/" + prefix(registryResourceKey)), existingFileHelper);
         this.lookupProviderFuture = lookupProviderFuture;
         this.completed = new CompletableFuture<>();
         this.registryResourceKey = registryResourceKey;
+    }
+
+    private static <T> String prefix(ResourceKey<? extends Registry<T>> registryResourceKey) {
+        ResourceLocation location = registryResourceKey.location();
+        return location.getNamespace().equals("minecraft") ? location.getPath() : location.getNamespace() + "/" + location.getPath();
     }
 
     protected abstract void addTags(HolderLookup.Provider lookupProvider);

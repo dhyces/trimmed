@@ -12,20 +12,20 @@ import java.util.Objects;
 
 public final class ClientRegistryTagKey<T> {
     private static final Interner<ClientRegistryTagKey<?>> INTERNER = Interners.newWeakInterner();
-    private final ResourceKey<Registry<T>> registryKey;
+    private final ResourceKey<? extends Registry<T>> registryKey;
     private final ResourceLocation id;
 
-    private ClientRegistryTagKey(ResourceKey<Registry<T>> registryKey, ResourceLocation tagId) {
+    private ClientRegistryTagKey(ResourceKey<? extends Registry<T>> registryKey, ResourceLocation tagId) {
         this.registryKey = registryKey;
         this.id = tagId;
     }
 
     @SuppressWarnings("unchecked")
-    public static <T> ClientRegistryTagKey<T> of(ResourceKey<Registry<T>> registryKey, ResourceLocation tagId) {
+    public static <T> ClientRegistryTagKey<T> of(ResourceKey<? extends Registry<T>> registryKey, ResourceLocation tagId) {
         return (ClientRegistryTagKey<T>) INTERNER.intern(new ClientRegistryTagKey<>(registryKey, tagId));
     }
 
-    public ResourceKey<Registry<T>> getRegistryKey() {
+    public ResourceKey<? extends Registry<T>> getRegistryKey() {
         return registryKey;
     }
 

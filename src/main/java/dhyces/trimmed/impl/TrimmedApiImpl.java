@@ -16,6 +16,8 @@ import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 
+import javax.annotation.Nullable;
+import java.util.Set;
 import java.util.function.Function;
 
 public final class TrimmedApiImpl implements TrimmedApi {
@@ -31,25 +33,36 @@ public final class TrimmedApiImpl implements TrimmedApi {
     }
 
     public <T> boolean registryTagContains(ClientRegistryTagKey<T> tagKey, T value) {
-        return ClientTagManager.getRegistryHandler(tagKey.getRegistryKey()).map(handler -> handler.doesTagContain(tagKey, value)).orElse(false);
+        return ClientTagManager.getRegistryHandler(tagKey.getRegistryKey())
+                .map(handler -> handler.doesTagContain(tagKey, value))
+                .orElse(false);
     }
 
     public <T> boolean datapackedTagContains(ClientRegistryTagKey<T> tagKey, Holder<T> value) {
-        return ClientTagManager.getDatapackedHandler(tagKey.getRegistryKey()).map(handler -> handler.doesTagContain(tagKey, value)).orElse(false);
+        return ClientTagManager.getDatapackedHandler(tagKey.getRegistryKey())
+                .map(handler -> handler.doesTagContain(tagKey, value))
+                .orElse(false);
+    }
+
+    @Nullable
+    @Override
+    public Set<ResourceLocation> getUncheckedTag(ClientTagKey clientTagKey) {
+        return ClientTagManager.getUncheckedHandler().getSet(clientTagKey);
     }
 
     @Override
-    public UncheckedTagHandler getUncheckedTagHandler() {
-        return ClientTagManager.getUncheckedHandler();
+    @Nullable
+    public <T> Set<T> getRegistryTag(ClientRegistryTagKey<T> clientRegistryTagKey) {
+        return ClientTagManager.getRegistryHandler(clientRegistryTagKey.getRegistryKey())
+                .map(tRegistryTagHandler -> tRegistryTagHandler.getSet(clientRegistryTagKey))
+                .orElse(null);
     }
 
     @Override
-    public <T> RegistryTagHandler<T> getRegistryTagHandler(ResourceKey<Registry<T>> registryKey) {
-        return ClientTagManager.getRegistryHandler(registryKey).orElse(null);
-    }
-
-    @Override
-    public <T> DatapackTagHandler<T> getDatapackedTagHandler(ResourceKey<Registry<T>> registryKey) {
-        return ClientTagManager.getDatapackedHandler(registryKey).orElse(null);
+    @Nullable
+    public <T> Set<Holder<T>> getDatapackedTag(ClientRegistryTagKey<T> clientRegistryTagKey) {
+        return ClientTagManager.getDatapackedHandler(clientRegistryTagKey.getRegistryKey())
+                .map(tDatapackTagHandler -> tDatapackTagHandler.getSet(clientRegistryTagKey))
+                .orElse(null);
     }
 }
