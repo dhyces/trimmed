@@ -1,4 +1,4 @@
-package dhyces.trimmed.impl.client.maps;
+package dhyces.trimmed.impl.client.maps.manager;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.JsonObject;
@@ -7,7 +7,10 @@ import com.mojang.serialization.DataResult;
 import com.mojang.serialization.JsonOps;
 import com.mojang.serialization.codecs.UnboundedMapCodec;
 import dhyces.trimmed.Trimmed;
+import dhyces.trimmed.api.data.maps.MapEntry;
 import dhyces.trimmed.api.util.ResourcePath;
+import dhyces.trimmed.impl.client.maps.ClientMapKey;
+import dhyces.trimmed.impl.client.maps.ClientRegistryMapKey;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
@@ -18,6 +21,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.PreparableReloadListener;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.tags.TagEntry;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.util.Unit;
 import net.minecraft.util.profiling.ProfilerFiller;
@@ -34,33 +38,27 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 
 public class ClientMapManager implements PreparableReloadListener {
-    private static final Map<ClientMapKey, Map<ResourceLocation, String>> UNCHECKED_MAPS = new HashMap<>();
-    private static final Map<ClientRegistryMapKey<?>, Map<?, String>> CHECKED_MAPS = new HashMap<>();
-    private static final Map<ClientRegistryMapKey<?>, Map<Holder.Reference<?>, String>> LAZY_CHECKED_MAPS = new HashMap<>();
+    private static final UncheckedMapHandler UNCHECKED_HANDLERS = new UncheckedMapHandler();
+    private static final Map<ResourceKey<?>, RegistryMapHandler<?>> REGISTRY_HANDLERS = new HashMap<>();
+    private static final Map<ResourceKey<?>, DatapackMapHandler<?>> DATAPACKED_HANDLERS = new HashMap<>();
     private static final Map<ClientRegistryMapKey<?>, Map<ResourceKey<?>, String>> LAZY_TO_CHECK_MAPS = new HashMap<>();
-
-    public static final UnboundedMapCodec<ResourceLocation, String> UNCHECKED_CODEC = Codec.unboundedMap(ResourceLocation.CODEC, Codec.STRING);
-    private static final Map<ForgeRegistry<?>, UnboundedMapCodec<?, String>> USED_MAP_CODECS = new HashMap<>();
-    private static final Map<ResourceLocation, UnboundedMapCodec<ResourceKey<?>, String>> USED_DATAPACK_MAP_CODECS = new HashMap<>();
-
-    private static boolean datapacksSynced;
 
     private static final FileToIdConverter FILE_TO_ID_CONVERTER = FileToIdConverter.json("maps");
 
-    public static Optional<Map<ResourceLocation, String>> getUnchecked(ClientMapKey clientMapKey) {
-        if (UNCHECKED_MAPS.isEmpty()) {
+    public static UncheckedMapHandler getUnchecked(ClientMapKey clientMapKey) {
+        if (!UNCHECKED_HANDLERS.hasLoaded()) {
             Trimmed.LOGGER.error("Maps have not been loaded or are empty! Tried to get: " + clientMapKey);
             return Optional.empty();
         }
-        return Optional.ofNullable(UNCHECKED_MAPS.get(clientMapKey));
+        return Optional.ofNullable(UNCHECKED_HANDLERS.getMap(clientMapKey));
     }
 
-    public static <T> Optional<Map<T, String>> getChecked(ClientRegistryMapKey<T> clientRegistryMapKey) {
-        if (CHECKED_MAPS.isEmpty()) {
+    public static <T> RegistryMapHandler<T> getChecked(ClientRegistryMapKey<T> clientRegistryMapKey) {
+        if (REGISTRY_HANDLERS.isEmpty()) {
             Trimmed.LOGGER.error("Maps have not been loaded or are empty! Tried to get: " + clientRegistryMapKey);
             return Optional.empty();
         }
-        return Optional.ofNullable((Map<T, String>) CHECKED_MAPS.get(clientRegistryMapKey));
+        return Optional.ofNullable((Map<T, String>) REGISTRY_HANDLERS.get(clientRegistryMapKey));
     }
 
     public static <T> Optional<Map<Holder.Reference<T>, String>> getDatapacked(ClientRegistryMapKey<T> clientRegistryMapKey) {
@@ -68,7 +66,7 @@ public class ClientMapManager implements PreparableReloadListener {
             Trimmed.LOGGER.error("Datapacks are not yet loaded! Tried to get: " + clientRegistryMapKey);
             return Optional.empty();
         }
-        return Optional.ofNullable(cast(LAZY_CHECKED_MAPS.get(clientRegistryMapKey)));
+        return Optional.ofNullable(cast(DATAPACKED_HANDLERS.get(clientRegistryMapKey)));
     }
 
     public static void updateDatapacksSynced(RegistryAccess registryAccess) {
@@ -86,7 +84,7 @@ public class ClientMapManager implements PreparableReloadListener {
                 for (Map.Entry<ResourceKey<?>, String> entryTransform : entry.getValue().entrySet()) {
                     datapackRegistryOptional.get().getHolder(cast(entryTransform.getKey())).ifPresent(o -> mapBuilder.put(o, entryTransform.getValue()));
                 }
-                LAZY_CHECKED_MAPS.put(entry.getKey(), cast(mapBuilder.build()));
+                DATAPACKED_HANDLERS.put(entry.getKey(), cast(mapBuilder.build()));
             }
         }
         LAZY_TO_CHECK_MAPS.clear();
@@ -100,16 +98,16 @@ public class ClientMapManager implements PreparableReloadListener {
 
     @SuppressWarnings("UnstableApiUsage")
     private CompletableFuture<Unit> load(ResourceManager resourceManager, Executor backgroundExecutor) {
-        datapacksSynced = false;
-        UNCHECKED_MAPS.clear();
-        CHECKED_MAPS.clear();
-        LAZY_CHECKED_MAPS.clear();
+        UNCHECKED_HANDLERS.clear();
+        REGISTRY_HANDLERS.clear();
+        DATAPACKED_HANDLERS.clear();
+        final Map<ResourceLocation, Map<ResourceLocation, Map<ResourceLocation, MapEntry>>> readEntryMap = new HashMap<>();
         for (Map.Entry<ResourceLocation, List<Resource>> entry : FILE_TO_ID_CONVERTER.listMatchingResourceStacks(resourceManager).entrySet()) {
             ResourcePath idPath = new ResourcePath(entry.getKey());
             if (entry.getKey().getPath().contains("unchecked")) {
                 Map<ResourceLocation, String> readMap = readResources(entry.getKey(), entry.getValue(), UNCHECKED_CODEC);
                 ClientMapKey mapKey = ClientMapKey.of(idPath.getFileNameOnly(5).asResourceLocation());
-                UNCHECKED_MAPS.put(mapKey, readMap);
+                UNCHECKED_HANDLERS.put(mapKey, readMap);
             } else {
                 String registryDirectoryPath = idPath.getDirectoryStringFrom("maps");
                 String[] registryDirectories = registryDirectoryPath.split("/");
@@ -128,7 +126,7 @@ public class ClientMapManager implements PreparableReloadListener {
                     UnboundedMapCodec<?, String> mapCodec = USED_MAP_CODECS.computeIfAbsent(registry, reg -> Codec.unboundedMap(reg.getCodec(), Codec.STRING));
                     Map<?, String> readMap = readResources(entry.getKey(), entry.getValue(), mapCodec);
                     ClientRegistryMapKey<?> clientRegistryMapKey = ClientRegistryMapKey.of(registry.getRegistryKey(), idPath.getFileNameOnly(5).asResourceLocation());
-                    CHECKED_MAPS.put(clientRegistryMapKey, readMap);
+                    REGISTRY_HANDLERS.put(clientRegistryMapKey, readMap);
                 } else {
                     UnboundedMapCodec<ResourceKey<?>, String> codec = USED_DATAPACK_MAP_CODECS.computeIfAbsent(registryId, resourceLocation -> Codec.unboundedMap(cast(ResourceKey.codec(ResourceKey.createRegistryKey(resourceLocation))), Codec.STRING));
                     Map<ResourceKey<?>, String> readMap = readResources(entry.getKey(), entry.getValue(), codec);
