@@ -12,20 +12,20 @@ import java.util.Objects;
 
 public final class ClientRegistryMapKey<T> {
     private static final Interner<ClientRegistryMapKey<?>> INTERNER = Interners.newWeakInterner();
-    private final ResourceKey<Registry<T>> registryKey;
+    private final ResourceKey<? extends Registry<T>> registryKey;
     private final ResourceLocation id;
 
-    private ClientRegistryMapKey(ResourceKey<Registry<T>> registryKey, ResourceLocation id) {
+    private ClientRegistryMapKey(ResourceKey<? extends Registry<T>> registryKey, ResourceLocation id) {
         this.registryKey = registryKey;
         this.id = id;
     }
 
     @SuppressWarnings("unchecked")
-    public static <T> ClientRegistryMapKey<T> of(ResourceKey<Registry<T>> registryKey, ResourceLocation mapId) {
+    public static <T> ClientRegistryMapKey<T> of(ResourceKey<? extends Registry<T>> registryKey, ResourceLocation mapId) {
         return (ClientRegistryMapKey<T>) INTERNER.intern(new ClientRegistryMapKey<>(registryKey, mapId));
     }
 
-    public ResourceKey<Registry<T>> getRegistryKey() {
+    public ResourceKey<? extends Registry<T>> getRegistryKey() {
         return registryKey;
     }
 
@@ -33,7 +33,7 @@ public final class ClientRegistryMapKey<T> {
         return id;
     }
 
-    public <T> Codec<ClientRegistryMapKey<T>> codec(ResourceKey<Registry<T>> registryKey) {
+    public <T> Codec<ClientRegistryMapKey<T>> codec(ResourceKey<? extends Registry<T>> registryKey) {
         return ResourceLocation.CODEC.xmap(resourceLocation -> of(registryKey, resourceLocation), ClientRegistryMapKey::getMapId);
     }
 

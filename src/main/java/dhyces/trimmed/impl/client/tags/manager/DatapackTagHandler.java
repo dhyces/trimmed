@@ -33,15 +33,19 @@ public class DatapackTagHandler<V> extends BaseTagHandler<ClientRegistryTagKey<V
             return;
         }
         for (Map.Entry<ClientRegistryTagKey<V>, Set<ResourceLocation>> entry : intermediate.entrySet()) {
-            Set<Holder<V>> linkedSet = new LinkedHashSet<>();
-            for (ResourceLocation id : entry.getValue()) {
-                Holder<V> holder = createValue(id);
-                if (holder == null) {
-                    // TODO: DO SOMETHING, LOG OR THROW
+            try {
+                Set<Holder<V>> linkedSet = new LinkedHashSet<>();
+                for (ResourceLocation id : entry.getValue()) {
+                    Holder<V> holder = createValue(id);
+                    if (holder == null) {
+                        throw new RuntimeException("Datapack element %s does not exist! Failed to load %s".formatted(id, entry.getKey()));
+                    }
+                    linkedSet.add(holder);
                 }
-                linkedSet.add(holder);
+                registeredTags.put(entry.getKey(), Collections.unmodifiableSet(linkedSet));
+            } catch (RuntimeException e) {
+                Trimmed.LOGGER.error(e.getMessage());
             }
-            registeredTags.put(entry.getKey(), Collections.unmodifiableSet(linkedSet));
         }
         isLoaded = true;
     }

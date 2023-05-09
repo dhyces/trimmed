@@ -6,6 +6,7 @@ import com.mojang.serialization.JsonOps;
 import dhyces.trimmed.Trimmed;
 import dhyces.trimmed.api.util.ResourcePath;
 import dhyces.trimmed.impl.client.tags.ClientTagFile;
+import dhyces.trimmed.impl.util.UnresolvedMap;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -112,20 +113,23 @@ public class ClientTagManager implements PreparableReloadListener {
         return CompletableFuture.completedFuture(Unit.INSTANCE);
     }
 
-    private Set<TagEntry> readResources(ResourceLocation resourceLocation, List<Resource> resourceStack) {
+    private Set<TagEntry> readResources(ResourceLocation fileName, List<Resource> resourceStack) {
         ImmutableSet.Builder<TagEntry> setBuilder = ImmutableSet.builder();
         for (Resource resource : resourceStack) {
             try (BufferedReader reader = resource.openAsReader()) {
                 JsonObject json = GsonHelper.parse(reader);
                 if (!CraftingHelper.processConditions(json, "conditions", ICondition.IContext.TAGS_INVALID)) {
-                    Trimmed.LOGGER.debug("Skipping loading client tag {} as it's conditions were not met", resourceLocation);
+                    Trimmed.LOGGER.debug("Skipping loading client tag {} as it's conditions were not met", fileName);
                     continue;
                 }
-                ClientTagFile result = ClientTagFile.CODEC.parse(JsonOps.INSTANCE, json).getOrThrow(false, Trimmed.LOGGER::error);
-                if (result.isReplace()) {
-                    setBuilder = ImmutableSet.builder();
+                Optional<ClientTagFile> result = ClientTagFile.CODEC.parse(JsonOps.INSTANCE, json).resultOrPartial(Trimmed.LOGGER::error);
+                if (result.isPresent()) {
+                    ClientTagFile tagFile = result.get();
+                    if (tagFile.isReplace()) {
+                        setBuilder = ImmutableSet.builder();
+                    }
+                    setBuilder.addAll(tagFile.tags());
                 }
-                setBuilder.addAll(result.tags());
             } catch (IOException e) {
                 throw new RuntimeException(e); // TODO
             }
@@ -135,20 +139,5 @@ public class ClientTagManager implements PreparableReloadListener {
 
     private static <T> T cast(Object o) {
         return (T) o;
-    }
-
-    public static final class UnresolvedMap<R, T> implements Iterable<Map.Entry<ResourceKey<? extends Registry<R>>, Map<ResourceLocation, T>>> {
-
-        private final Map<ResourceKey<? extends Registry<R>>, Map<ResourceLocation, T>> backing = new HashMap<>();
-
-        public void add(ResourceKey<? extends Registry<R>> handlerKey, ResourceLocation tagId, T data) {
-            backing.computeIfAbsent(handlerKey, rResourceKey -> new HashMap<>()).put(tagId, data);
-        }
-
-        @NotNull
-        @Override
-        public Iterator<Map.Entry<ResourceKey<? extends Registry<R>>, Map<ResourceLocation, T>>> iterator() {
-            return backing.entrySet().iterator();
-        }
     }
 }

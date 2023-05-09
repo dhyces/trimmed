@@ -4,6 +4,7 @@ import com.google.common.base.Suppliers;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dhyces.trimmed.Trimmed;
+import dhyces.trimmed.api.TrimmedApi;
 import dhyces.trimmed.impl.client.maps.ClientMapKey;
 import dhyces.trimmed.impl.client.maps.manager.ClientMapManager;
 import dhyces.trimmed.impl.client.tags.ClientTagKey;
@@ -47,7 +48,7 @@ public class OpenPalettedPermutations implements SpriteSource {
             PalettedPermutations.loadPaletteEntryFromImage(pResourceManager, paletteKey)
         );
         Map<String, Supplier<IntUnaryOperator>> replacePixelsMap = new HashMap<>();
-        ClientMapManager.getUnchecked(permutations).ifPresent(resourceLocationStringMap -> {
+        TrimmedApi.MAP_API.getSafeUncheckedClientMap(permutations).ifPresent(resourceLocationStringMap -> {
             resourceLocationStringMap.forEach((resourceLocation, s) ->
                     replacePixelsMap.put(s, Suppliers.memoize(() ->
                             PalettedPermutations.createPaletteMapping(rawPaletteKeyImage.get(), PalettedPermutations.loadPaletteEntryFromImage(pResourceManager, resourceLocation))

@@ -3,7 +3,6 @@ package dhyces.testmod;
 import dhyces.testmod.data.trimmed.TestClientCustomObjTagProvider;
 import dhyces.trimmed.Trimmed;
 import dhyces.trimmed.api.TrimmedApi;
-import dhyces.trimmed.impl.client.maps.manager.ClientMapManager;
 import dhyces.trimmed.impl.client.maps.ClientRegistryMapKey;
 import dhyces.trimmed.impl.client.maps.ClientMapKey;
 import dhyces.trimmed.impl.client.tags.ClientRegistryTagKey;
@@ -36,8 +35,8 @@ public class TrimmedTestClient {
         TrimmedApi.TAG_API.getRegistryTag(TestClientCustomObjTagProvider.TEST_CUSTOM_REG_KEY).forEach(item -> TrimmedTest.LOGGER.info(item.toString()));
         TrimmedApi.TAG_API.getDatapackedTag(TEST_BIOME_TAG).forEach(biomeHolder -> TrimmedTest.LOGGER.info(biomeHolder.toString()));
 
-        ClientMapManager.getUnchecked(TEST_MAP).ifPresent(map -> TrimmedTest.LOGGER.info("Map present! " + map.get(new ResourceLocation(Trimmed.MODID, "not/a/real/place"))));
-        ClientMapManager.getChecked(TEST_ITEM_MAP).ifPresent(itemStringMap -> TrimmedTest.LOGGER.info("Map present! " + itemStringMap.get(Items.IRON_INGOT)));
-        ClientMapManager.getDatapacked(TEST_BIOME_MAP).ifPresent(biomeStringMap -> biomeStringMap.forEach((biomeReference, s) -> TrimmedTest.LOGGER.info(biomeReference.key().toString())));
+        TrimmedTest.LOGGER.info(TrimmedApi.MAP_API.getUncheckedClientMap(TEST_MAP).get(new ResourceLocation(Trimmed.MODID, "not/a/real/place")));
+        TrimmedTest.LOGGER.info("Map present! " + TrimmedApi.MAP_API.getRegistryClientMap(TEST_ITEM_MAP).get(Items.IRON_INGOT));
+        TrimmedApi.MAP_API.getDatapackedClientMap(TEST_BIOME_MAP).forEach((biomeHolder, s) -> TrimmedTest.LOGGER.info("KEY: " + biomeHolder + " VALUE: " + s));
     }
 }

@@ -8,10 +8,13 @@ import com.mojang.serialization.JsonOps;
 import com.mojang.serialization.codecs.UnboundedMapCodec;
 import dhyces.trimmed.Trimmed;
 import dhyces.trimmed.api.data.maps.MapEntry;
+import dhyces.trimmed.api.data.maps.MapFile;
 import dhyces.trimmed.api.util.ResourcePath;
 import dhyces.trimmed.impl.client.maps.ClientMapKey;
 import dhyces.trimmed.impl.client.maps.ClientRegistryMapKey;
-import net.minecraft.core.Holder;
+import dhyces.trimmed.impl.client.tags.manager.DatapackTagHandler;
+import dhyces.trimmed.impl.client.tags.manager.RegistryTagHandler;
+import dhyces.trimmed.impl.util.UnresolvedMap;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -39,121 +42,99 @@ import java.util.concurrent.Executor;
 
 public class ClientMapManager implements PreparableReloadListener {
     private static final UncheckedMapHandler UNCHECKED_HANDLERS = new UncheckedMapHandler();
-    private static final Map<ResourceKey<?>, RegistryMapHandler<?>> REGISTRY_HANDLERS = new HashMap<>();
-    private static final Map<ResourceKey<?>, DatapackMapHandler<?>> DATAPACKED_HANDLERS = new HashMap<>();
-    private static final Map<ClientRegistryMapKey<?>, Map<ResourceKey<?>, String>> LAZY_TO_CHECK_MAPS = new HashMap<>();
+    private static final Map<ResourceKey<? extends Registry<?>>, RegistryMapHandler<?>> REGISTRY_HANDLERS = new HashMap<>();
+    private static final Map<ResourceKey<? extends Registry<?>>, DatapackMapHandler<?>> DATAPACKED_HANDLERS = new HashMap<>();
 
     private static final FileToIdConverter FILE_TO_ID_CONVERTER = FileToIdConverter.json("maps");
 
-    public static UncheckedMapHandler getUnchecked(ClientMapKey clientMapKey) {
+    public static UncheckedMapHandler getUncheckedHandler() {
         if (!UNCHECKED_HANDLERS.hasLoaded()) {
-            Trimmed.LOGGER.error("Maps have not been loaded or are empty! Tried to get: " + clientMapKey);
-            return Optional.empty();
+            Trimmed.LOGGER.error("Client maps aren't loaded yet! May result in unexpected behavior");
         }
-        return Optional.ofNullable(UNCHECKED_HANDLERS.getMap(clientMapKey));
+        return UNCHECKED_HANDLERS;
     }
 
-    public static <T> RegistryMapHandler<T> getChecked(ClientRegistryMapKey<T> clientRegistryMapKey) {
+    public static <T> Optional<RegistryMapHandler<T>> getRegistryHandler(ResourceKey<? extends Registry<T>> registryKey) {
         if (REGISTRY_HANDLERS.isEmpty()) {
-            Trimmed.LOGGER.error("Maps have not been loaded or are empty! Tried to get: " + clientRegistryMapKey);
-            return Optional.empty();
+            Trimmed.LOGGER.error("Client maps aren't loaded yet! May result in unexpected behavior");
         }
-        return Optional.ofNullable((Map<T, String>) REGISTRY_HANDLERS.get(clientRegistryMapKey));
+        return Optional.ofNullable(cast(REGISTRY_HANDLERS.get(registryKey)));
     }
 
-    public static <T> Optional<Map<Holder.Reference<T>, String>> getDatapacked(ClientRegistryMapKey<T> clientRegistryMapKey) {
-        if (!datapacksSynced) {
-            Trimmed.LOGGER.error("Datapacks are not yet loaded! Tried to get: " + clientRegistryMapKey);
-            return Optional.empty();
+    public static <T> Optional<DatapackMapHandler<T>> getDatapackedHandler(ResourceKey<? extends Registry<T>> registryKey) {
+        if (DATAPACKED_HANDLERS.isEmpty()) {
+            Trimmed.LOGGER.error("Client maps aren't loaded yet! May result in unexpected behavior");
         }
-        return Optional.ofNullable(cast(DATAPACKED_HANDLERS.get(clientRegistryMapKey)));
+        return Optional.ofNullable(cast(DATAPACKED_HANDLERS.get(registryKey)));
     }
 
     public static void updateDatapacksSynced(RegistryAccess registryAccess) {
-        if (datapacksSynced) {
-            Trimmed.LOGGER.info("Datapacks have been updated! Client may need to reload...");
-            return;
-        }
-
-        for (Map.Entry<ClientRegistryMapKey<?>, Map<ResourceKey<?>, String>> entry : LAZY_TO_CHECK_MAPS.entrySet()) {
-            Optional<? extends Registry<?>> datapackRegistryOptional = registryAccess.registry(entry.getKey().getRegistryKey());
-            if (datapackRegistryOptional.isEmpty()) {
-                Trimmed.LOGGER.error("Datapack registry " + entry.getKey().getRegistryKey().location() + " does not exist or is not synced to client!");
-            } else {
-                ImmutableMap.Builder<Object, String> mapBuilder = ImmutableMap.builder();
-                for (Map.Entry<ResourceKey<?>, String> entryTransform : entry.getValue().entrySet()) {
-                    datapackRegistryOptional.get().getHolder(cast(entryTransform.getKey())).ifPresent(o -> mapBuilder.put(o, entryTransform.getValue()));
-                }
-                DATAPACKED_HANDLERS.put(entry.getKey(), cast(mapBuilder.build()));
-            }
-        }
-        LAZY_TO_CHECK_MAPS.clear();
-        datapacksSynced = true;
+        DATAPACKED_HANDLERS.values().forEach(datapackMapHandler -> datapackMapHandler.update(registryAccess));
     }
 
     @Override
     public CompletableFuture<Void> reload(PreparationBarrier pPreparationBarrier, ResourceManager pResourceManager, ProfilerFiller pPreparationsProfiler, ProfilerFiller pReloadProfiler, Executor pBackgroundExecutor, Executor pGameExecutor) {
-        return load(pResourceManager, pBackgroundExecutor).thenCompose(pPreparationBarrier::wait).thenRun(() -> Trimmed.LOGGER.debug("Client maps loaded!"));
+        return load(pResourceManager).thenCompose(pPreparationBarrier::wait).thenRun(() -> Trimmed.LOGGER.debug("Client maps loaded!"));
     }
 
     @SuppressWarnings("UnstableApiUsage")
-    private CompletableFuture<Unit> load(ResourceManager resourceManager, Executor backgroundExecutor) {
+    private <T> CompletableFuture<Unit> load(ResourceManager resourceManager) {
         UNCHECKED_HANDLERS.clear();
         REGISTRY_HANDLERS.clear();
         DATAPACKED_HANDLERS.clear();
-        final Map<ResourceLocation, Map<ResourceLocation, Map<ResourceLocation, MapEntry>>> readEntryMap = new HashMap<>();
+        final UnresolvedMap<T, Map<ResourceLocation, MapEntry>> readMaps = new UnresolvedMap<>();
         for (Map.Entry<ResourceLocation, List<Resource>> entry : FILE_TO_ID_CONVERTER.listMatchingResourceStacks(resourceManager).entrySet()) {
             ResourcePath idPath = new ResourcePath(entry.getKey());
-            if (entry.getKey().getPath().contains("unchecked")) {
-                Map<ResourceLocation, String> readMap = readResources(entry.getKey(), entry.getValue(), UNCHECKED_CODEC);
-                ClientMapKey mapKey = ClientMapKey.of(idPath.getFileNameOnly(5).asResourceLocation());
-                UNCHECKED_HANDLERS.put(mapKey, readMap);
-            } else {
-                String registryDirectoryPath = idPath.getDirectoryStringFrom("maps");
-                String[] registryDirectories = registryDirectoryPath.split("/");
-                ResourceLocation registryId;
-                final boolean isModded;
-                if (registryDirectories.length > 1 && ModList.get().isLoaded(registryDirectories[0])) {
-                    registryId = new ResourceLocation(registryDirectories[0], idPath.getDirectoryStringFrom(registryDirectories[0])); // TODO: test this
-                    isModded = true;
-                } else {
-                    registryId = new ResourceLocation(registryDirectoryPath);
-                    isModded = false;
-                }
+            Map<ResourceLocation, MapEntry> readMap = readResources(entry.getKey(), entry.getValue());
 
-                if (BuiltInRegistries.REGISTRY.get(registryId) != null || (isModded && RegistryManager.ACTIVE.getRegistry(registryId) != null)) {
-                    ForgeRegistry<?> registry = RegistryManager.ACTIVE.getRegistry(registryId);
-                    UnboundedMapCodec<?, String> mapCodec = USED_MAP_CODECS.computeIfAbsent(registry, reg -> Codec.unboundedMap(reg.getCodec(), Codec.STRING));
-                    Map<?, String> readMap = readResources(entry.getKey(), entry.getValue(), mapCodec);
-                    ClientRegistryMapKey<?> clientRegistryMapKey = ClientRegistryMapKey.of(registry.getRegistryKey(), idPath.getFileNameOnly(5).asResourceLocation());
-                    REGISTRY_HANDLERS.put(clientRegistryMapKey, readMap);
+            String registryDirectoryPath = idPath.getDirectoryStringFrom("maps");
+            String[] registryDirectories = registryDirectoryPath.split("/");
+            ResourceKey<? extends Registry<T>> registryId;
+            if (registryDirectories.length > 1 && ModList.get().isLoaded(registryDirectories[0])) {
+                registryId = ResourceKey.createRegistryKey(new ResourceLocation(registryDirectories[0], idPath.getDirectoryStringFrom(registryDirectories[0]))); // TODO: test this
+            } else {
+                registryId = ResourceKey.createRegistryKey(new ResourceLocation(registryDirectoryPath));
+            }
+            ResourceLocation truncated = idPath.getFileNameOnly(5).asResourceLocation();
+            readMaps.add(registryId, truncated, readMap);
+        }
+
+        for (Map.Entry<ResourceKey<? extends Registry<T>>, Map<ResourceLocation, Map<ResourceLocation, MapEntry>>> entry : readMaps) {
+            ResourceKey<? extends Registry<T>> handlerKey = entry.getKey();
+            Map<ResourceLocation, Map<ResourceLocation, MapEntry>> unresolved = entry.getValue();
+
+            if (handlerKey.location().getPath().equals("unchecked")) {
+                UNCHECKED_HANDLERS.resolveMaps(unresolved);
+            } else {
+                final boolean isModded = !handlerKey.location().getNamespace().equals("minecraft");
+
+                if (BuiltInRegistries.REGISTRY.get(handlerKey.location()) != null || (isModded && RegistryManager.ACTIVE.getRegistry(handlerKey) != null)) {
+                    REGISTRY_HANDLERS.computeIfAbsent(handlerKey, resourceKey -> new RegistryMapHandler<>(handlerKey)).resolveMaps(unresolved);
                 } else {
-                    UnboundedMapCodec<ResourceKey<?>, String> codec = USED_DATAPACK_MAP_CODECS.computeIfAbsent(registryId, resourceLocation -> Codec.unboundedMap(cast(ResourceKey.codec(ResourceKey.createRegistryKey(resourceLocation))), Codec.STRING));
-                    Map<ResourceKey<?>, String> readMap = readResources(entry.getKey(), entry.getValue(), codec);
-                    ClientRegistryMapKey<?> clientRegistryMapKey = ClientRegistryMapKey.of(ResourceKey.createRegistryKey(registryId), idPath.getFileNameOnly(5).asResourceLocation());
-                    LAZY_TO_CHECK_MAPS.put(clientRegistryMapKey, readMap);
+                    DATAPACKED_HANDLERS.computeIfAbsent(handlerKey, resourceKey -> new DatapackMapHandler<>(handlerKey)).resolveMaps(unresolved);
                 }
             }
         }
         return CompletableFuture.completedFuture(Unit.INSTANCE);
     }
 
-    private <T> Map<T, String> readResources(ResourceLocation resourceLocation, List<Resource> resourceStack, Codec<Map<T, String>> codec) {
-        ImmutableMap.Builder<T, String> mapBuilder = ImmutableMap.builder();
+    private Map<ResourceLocation, MapEntry> readResources(ResourceLocation fileName, List<Resource> resourceStack) {
+        ImmutableMap.Builder<ResourceLocation, MapEntry> mapBuilder = ImmutableMap.builder();
         for (Resource resource : resourceStack) {
             try (BufferedReader reader = resource.openAsReader()) {
                 JsonObject json = GsonHelper.parse(reader);
                 if (!CraftingHelper.processConditions(json, "conditions", ICondition.IContext.TAGS_INVALID)) {
-                    Trimmed.LOGGER.debug("Skipping loading client map {} as it's conditions were not met", resourceLocation);
+                    Trimmed.LOGGER.debug("Skipping loading client map {} as it's conditions were not met", fileName);
                     continue;
                 }
-                boolean isReplace = json.get("replace") != null && json.get("replace").getAsBoolean();
-                JsonObject pairs = json.getAsJsonObject("pairs");
-                DataResult<Map<T, String>> result = codec.parse(JsonOps.INSTANCE, pairs);
-                if (isReplace) {
-                    mapBuilder = ImmutableMap.builder();
+                Optional<MapFile> mapFileOptional = MapFile.CODEC.parse(JsonOps.INSTANCE, json).resultOrPartial(Trimmed.LOGGER::error);
+                if (mapFileOptional.isPresent()) {
+                    MapFile mapFile = mapFileOptional.get();
+                    if (mapFile.shouldReplace()) {
+                        mapBuilder = ImmutableMap.builder();
+                    }
+                    mapBuilder.putAll(mapFile.map());
                 }
-                mapBuilder.putAll(result.getOrThrow(false, Trimmed.LOGGER::error));
             } catch (IOException e) {
                 throw new RuntimeException(e); // TODO
             }
