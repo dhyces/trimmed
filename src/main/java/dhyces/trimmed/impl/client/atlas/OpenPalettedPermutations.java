@@ -5,7 +5,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dhyces.trimmed.Trimmed;
 import dhyces.trimmed.impl.client.maps.ClientMapKey;
-import dhyces.trimmed.impl.client.maps.ClientMapManager;
+import dhyces.trimmed.impl.client.maps.manager.ClientMapManager;
 import dhyces.trimmed.impl.client.tags.ClientTagKey;
 import dhyces.trimmed.impl.client.tags.manager.ClientTagManager;
 import net.minecraft.client.renderer.texture.atlas.SpriteSource;
@@ -19,7 +19,6 @@ import net.minecraft.server.packs.resources.ResourceManager;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 import java.util.function.IntUnaryOperator;
 import java.util.function.Supplier;
 
