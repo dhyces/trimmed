@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableSet;
 import com.mojang.serialization.DataResult;
 import dhyces.trimmed.Trimmed;
 import dhyces.trimmed.impl.client.tags.ClientTagKey;
+import dhyces.trimmed.impl.util.OptionalTagElement;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagEntry;
 
@@ -42,7 +43,7 @@ abstract class BaseTagHandler<K, V> {
 
     protected abstract K createTag(ResourceLocation tagId);
 
-    protected abstract V createValue(ResourceLocation valueId);
+    protected abstract V createValue(OptionalTagElement value);
 
     void clear() {
         registeredTags.clear();
@@ -57,7 +58,7 @@ abstract class BaseTagHandler<K, V> {
         isLoaded = true;
     }
 
-    static <KEY, VAL> DataResult<Set<VAL>> resolveTag(Map<ResourceLocation, Set<TagEntry>> unresolvedTags, Map<KEY, Set<VAL>> resolvedTags, ResourceLocation tagId, Function<ResourceLocation, KEY> keyFactory, Function<ResourceLocation, VAL> valueFactory, LinkedHashSet<ResourceLocation> resolutionSet) {
+    protected final <KEY, VAL> DataResult<Set<VAL>> resolveTag(Map<ResourceLocation, Set<TagEntry>> unresolvedTags, Map<KEY, Set<VAL>> resolvedTags, ResourceLocation tagId, Function<ResourceLocation, KEY> keyFactory, Function<OptionalTagElement, VAL> valueFactory, LinkedHashSet<ResourceLocation> resolutionSet) {
         KEY key = keyFactory.apply(tagId);
         if (resolvedTags.containsKey(key)) {
             return DataResult.success(resolvedTags.get(key));
@@ -78,24 +79,28 @@ abstract class BaseTagHandler<K, V> {
         }
 
         for (TagEntry entry : entries) {
-            if (entry.isTag()) {
-                DataResult<Set<VAL>> result = resolveTag(unresolvedTags, resolvedTags, entry.getId(), keyFactory, valueFactory, resolutionSet);
-                if (result.result().isPresent()) {
-                    builder.addAll(result.result().get());
-                } else if (entry.isRequired()) {
-                    return result;
-                }
-            } else {
-                VAL value = valueFactory.apply(entry.getId());
-                if (value != null) {
-                    builder.add(value);
-                } else if (entry.isRequired()) {
-                    return DataResult.error(() -> "Tag entry " + entry.getId() + " is required, yet does not exist!");
-                }
+            DataResult<Set<VAL>> entryResult = resolveTagEntry(unresolvedTags, resolvedTags, entry, keyFactory, valueFactory, resolutionSet);
+            if (entryResult.error().isPresent()) {
+                return entryResult;
             }
+            builder.addAll(entryResult.result().get());
         }
 
         // Adds it to the registered map and returns the set
         return DataResult.success(resolvedTags.computeIfAbsent(key, k -> builder.build()));
+    }
+
+    protected <KEY, VAL> DataResult<Set<VAL>> resolveTagEntry(Map<ResourceLocation, Set<TagEntry>> unresolvedTags, Map<KEY, Set<VAL>> resolvedTags, TagEntry tagEntry, Function<ResourceLocation, KEY> keyFactory, Function<OptionalTagElement, VAL> valueFactory, LinkedHashSet<ResourceLocation> resolutionSet) {
+        if (tagEntry.isTag()) {
+            if (!unresolvedTags.containsKey(tagEntry.getId()) && tagEntry.isRequired()) {
+                return DataResult.error(() -> "Tag entry " + tagEntry.getId() + " is required, yet tag does not exist!");
+            }
+            return resolveTag(unresolvedTags, resolvedTags, tagEntry.getId(), keyFactory, valueFactory, resolutionSet);
+        }
+        VAL value = valueFactory.apply(OptionalTagElement.from(tagEntry));
+        if (value == null && tagEntry.isRequired()) {
+            return DataResult.error(() -> "Tag entry " + tagEntry.getId() + " is required, yet element does not exist!");
+        }
+        return DataResult.success(value == null ? Set.of() : Set.of(value));
     }
 }

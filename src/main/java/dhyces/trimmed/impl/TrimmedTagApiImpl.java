@@ -4,8 +4,10 @@ import dhyces.trimmed.api.TrimmedTagApi;
 import dhyces.trimmed.impl.client.tags.ClientRegistryTagKey;
 import dhyces.trimmed.impl.client.tags.ClientTagKey;
 import dhyces.trimmed.impl.client.tags.manager.ClientTagManager;
+import dhyces.trimmed.impl.util.OptionalTagElement;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagEntry;
 
 import javax.annotation.Nullable;
 import java.util.Set;
@@ -13,7 +15,7 @@ import java.util.Set;
 public final class TrimmedTagApiImpl implements TrimmedTagApi {
     @Override
     public boolean uncheckedTagContains(ClientTagKey tagKey, ResourceLocation value) {
-        return ClientTagManager.getUncheckedHandler().doesTagContain(tagKey, value);
+        return OptionalTagElement.checkEither(value, optionalTagElement -> ClientTagManager.getUncheckedHandler().doesTagContain(tagKey, optionalTagElement));
     }
 
     @Override
@@ -32,7 +34,7 @@ public final class TrimmedTagApiImpl implements TrimmedTagApi {
 
     @Override
     @Nullable
-    public Set<ResourceLocation> getUncheckedTag(ClientTagKey clientTagKey) {
+    public Set<OptionalTagElement> getUncheckedTag(ClientTagKey clientTagKey) {
         return ClientTagManager.getUncheckedHandler().getSet(clientTagKey);
     }
 

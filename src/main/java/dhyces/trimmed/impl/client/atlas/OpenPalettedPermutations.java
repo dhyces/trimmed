@@ -6,7 +6,6 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dhyces.trimmed.Trimmed;
 import dhyces.trimmed.api.TrimmedApi;
 import dhyces.trimmed.impl.client.maps.ClientMapKey;
-import dhyces.trimmed.impl.client.maps.manager.ClientMapManager;
 import dhyces.trimmed.impl.client.tags.ClientTagKey;
 import dhyces.trimmed.impl.client.tags.manager.ClientTagManager;
 import net.minecraft.client.renderer.texture.atlas.SpriteSource;
@@ -56,15 +55,15 @@ public class OpenPalettedPermutations implements SpriteSource {
             );
         });
 
-        ClientTagManager.getUncheckedHandler().streamValues(textures).forEach(resourceLocation -> {
-            Optional<Resource> imageOptional = pResourceManager.getResource(TEXTURE_ID_CONVERTER.idToFile(resourceLocation));
-            if (imageOptional.isEmpty()) {
-                Trimmed.LOGGER.error("Cannot locate " + resourceLocation);
-            } else {
-                LazyLoadedImage lazyloadedimage = new LazyLoadedImage(resourceLocation, imageOptional.get(), replacePixelsMap.size());
+        ClientTagManager.getUncheckedHandler().streamValues(textures).forEach(optionalTagElement -> {
+            Optional<Resource> imageOptional = pResourceManager.getResource(TEXTURE_ID_CONVERTER.idToFile(optionalTagElement.elementId()));
+            if (imageOptional.isEmpty() && optionalTagElement.isRequired()) {
+                Trimmed.LOGGER.error("Cannot locate required " + optionalTagElement.elementId());
+            } else if (imageOptional.isPresent()) {
+                LazyLoadedImage lazyloadedimage = new LazyLoadedImage(optionalTagElement.elementId(), imageOptional.get(), replacePixelsMap.size());
 
                 for (Map.Entry<String, Supplier<IntUnaryOperator>> entry : replacePixelsMap.entrySet()) {
-                    ResourceLocation permutedId = resourceLocation.withSuffix("_" + entry.getKey());
+                    ResourceLocation permutedId = optionalTagElement.elementId().withSuffix("_" + entry.getKey());
                     pOutput.add(permutedId, new PalettedPermutations.PalettedSpriteSupplier(lazyloadedimage, entry.getValue(), permutedId));
                 }
             }
