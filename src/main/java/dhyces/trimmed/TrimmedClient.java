@@ -2,7 +2,7 @@ package dhyces.trimmed;
 
 import dhyces.trimmed.impl.client.InfoToast;
 import dhyces.trimmed.impl.client.atlas.TrimmedSpriteSourceTypes;
-import dhyces.trimmed.impl.client.maps.ClientMapManager;
+import dhyces.trimmed.impl.client.maps.manager.ClientMapManager;
 import dhyces.trimmed.impl.client.override.ItemOverrideReloadListener;
 import dhyces.trimmed.impl.client.override.provider.ItemOverrideProviderRegistry;
 import dhyces.trimmed.impl.client.tags.manager.ClientTagManager;

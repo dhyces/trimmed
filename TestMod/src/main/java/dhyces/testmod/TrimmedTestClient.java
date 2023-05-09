@@ -3,7 +3,7 @@ package dhyces.testmod;
 import dhyces.testmod.data.trimmed.TestClientCustomObjTagProvider;
 import dhyces.trimmed.Trimmed;
 import dhyces.trimmed.api.TrimmedApi;
-import dhyces.trimmed.impl.client.maps.ClientMapManager;
+import dhyces.trimmed.impl.client.maps.manager.ClientMapManager;
 import dhyces.trimmed.impl.client.maps.ClientRegistryMapKey;
 import dhyces.trimmed.impl.client.maps.ClientMapKey;
 import dhyces.trimmed.impl.client.tags.ClientRegistryTagKey;
