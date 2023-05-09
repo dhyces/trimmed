@@ -17,10 +17,10 @@ import java.util.function.Function;
 public class DatapackTagHandler<V> extends BaseTagHandler<ClientRegistryTagKey<V>, Holder<V>> {
 
     private final Map<ClientRegistryTagKey<V>, Set<ResourceLocation>> intermediate = new HashMap<>();
-    private final ResourceKey<Registry<V>> registryKey;
+    private final ResourceKey<? extends Registry<V>> registryKey;
     private RegistryAccess registryAccess;
 
-    public DatapackTagHandler(ResourceKey<Registry<V>> registry) {
+    public DatapackTagHandler(ResourceKey<? extends Registry<V>> registry) {
         this.registryKey = registry;
     }
 

@@ -22,8 +22,8 @@ import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.common.crafting.conditions.ICondition;
 import net.minecraftforge.fml.ModList;
-import net.minecraftforge.registries.ForgeRegistry;
 import net.minecraftforge.registries.RegistryManager;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -33,8 +33,8 @@ import java.util.concurrent.Executor;
 
 public class ClientTagManager implements PreparableReloadListener {
     private static final UncheckedTagHandler UNCHECKED_HANDLER = new UncheckedTagHandler();
-    private static final Map<ResourceKey<Registry<?>>, RegistryTagHandler<?>> REGISTRY_HANDLERS = new HashMap<>();
-    private static final Map<ResourceKey<Registry<?>>, DatapackTagHandler<?>> DATAPACKED_HANDLERS = new HashMap<>();
+    private static final Map<ResourceKey<? extends Registry<?>>, RegistryTagHandler<?>> REGISTRY_HANDLERS = new HashMap<>();
+    private static final Map<ResourceKey<? extends Registry<?>>, DatapackTagHandler<?>> DATAPACKED_HANDLERS = new HashMap<>();
 
     public static final FileToIdConverter FILE_TO_ID_CONVERTER = FileToIdConverter.json("tags");
 
@@ -71,43 +71,40 @@ public class ClientTagManager implements PreparableReloadListener {
     }
 
     @SuppressWarnings("UnstableApiUsage")
-    private CompletableFuture<Unit> load(ResourceManager resourceManager) {
+    private <T> CompletableFuture<Unit> load(ResourceManager resourceManager) {
         UNCHECKED_HANDLER.clear();
         REGISTRY_HANDLERS.clear();
         DATAPACKED_HANDLERS.clear();
-        final Map<ResourceLocation, Map<ResourceLocation, Set<TagEntry>>> readEntryMap = new HashMap<>();
+        final UnresolvedMap<T, Set<TagEntry>> readTags = new UnresolvedMap<>();
         for (Map.Entry<ResourceLocation, List<Resource>> entry : FILE_TO_ID_CONVERTER.listMatchingResourceStacks(resourceManager).entrySet()) {
             ResourcePath idPath = new ResourcePath(entry.getKey());
             Set<TagEntry> readEntries = readResources(entry.getKey(), entry.getValue());
 
             String registryDirectoryPath = idPath.getDirectoryStringFrom("tags");
             String[] registryDirectories = registryDirectoryPath.split("/");
-            ResourceLocation registryId;
+            ResourceKey<? extends Registry<T>> registryId;
             if (registryDirectories.length > 1 && ModList.get().isLoaded(registryDirectories[0])) {
-                registryId = new ResourceLocation(registryDirectories[0], idPath.getDirectoryStringFrom(registryDirectories[0])); // TODO: test this
+                registryId = ResourceKey.createRegistryKey(new ResourceLocation(registryDirectories[0], idPath.getDirectoryStringFrom(registryDirectories[0]))); // TODO: test this
             } else {
-                registryId = new ResourceLocation(registryDirectoryPath);
+                registryId = ResourceKey.createRegistryKey(new ResourceLocation(registryDirectoryPath));
             }
             ResourceLocation truncated = idPath.getFileNameOnly(5).asResourceLocation();
-            readEntryMap.computeIfAbsent(registryId, resourceLocation -> new HashMap<>()).put(truncated, readEntries);
+            readTags.add(registryId, truncated, readEntries);
         }
 
-        for (Map.Entry<ResourceLocation, Map<ResourceLocation, Set<TagEntry>>> entry : readEntryMap.entrySet()) {
-            ResourceLocation directoryPath = entry.getKey();
+        for (Map.Entry<ResourceKey<? extends Registry<T>>, Map<ResourceLocation, Set<TagEntry>>> entry : readTags) {
+            ResourceKey<? extends Registry<T>> handlerKey = entry.getKey();
             Map<ResourceLocation, Set<TagEntry>> unresolved = entry.getValue();
 
-            if (directoryPath.getPath().equals("unchecked")) {
+            if (handlerKey.location().getPath().equals("unchecked")) {
                 UNCHECKED_HANDLER.resolveTags(unresolved);
             } else {
-                final boolean isModded = !directoryPath.getNamespace().equals("minecraft");
+                final boolean isModded = !handlerKey.location().getNamespace().equals("minecraft");
 
-                if (BuiltInRegistries.REGISTRY.get(directoryPath) != null || (isModded && RegistryManager.ACTIVE.getRegistry(directoryPath) != null)) {
-                    ForgeRegistry<?> registry = RegistryManager.ACTIVE.getRegistry(directoryPath);
-                    ResourceKey<?> registryKey = registry.getRegistryKey();
-                    REGISTRY_HANDLERS.computeIfAbsent(cast(registryKey), registryResourceKey -> new RegistryTagHandler<>(cast(registryResourceKey))).resolveTags(unresolved);
+                if (BuiltInRegistries.REGISTRY.get(handlerKey.location()) != null || (isModded && RegistryManager.ACTIVE.getRegistry(handlerKey) != null)) {
+                    REGISTRY_HANDLERS.computeIfAbsent(handlerKey, resourceKey -> new RegistryTagHandler<>(handlerKey)).resolveTags(unresolved);
                 } else {
-                    ResourceKey<?> datapackRegistryKey = ResourceKey.createRegistryKey(directoryPath);
-                    DATAPACKED_HANDLERS.computeIfAbsent(cast(datapackRegistryKey), registryResourceKey -> new DatapackTagHandler<>(cast(registryResourceKey))).resolveTags(unresolved);
+                    DATAPACKED_HANDLERS.computeIfAbsent(handlerKey, resourceKey -> new DatapackTagHandler<>(handlerKey)).resolveTags(unresolved);
                 }
             }
         }
@@ -138,5 +135,20 @@ public class ClientTagManager implements PreparableReloadListener {
 
     private static <T> T cast(Object o) {
         return (T) o;
+    }
+
+    public static final class UnresolvedMap<R, T> implements Iterable<Map.Entry<ResourceKey<? extends Registry<R>>, Map<ResourceLocation, T>>> {
+
+        private final Map<ResourceKey<? extends Registry<R>>, Map<ResourceLocation, T>> backing = new HashMap<>();
+
+        public void add(ResourceKey<? extends Registry<R>> handlerKey, ResourceLocation tagId, T data) {
+            backing.computeIfAbsent(handlerKey, rResourceKey -> new HashMap<>()).put(tagId, data);
+        }
+
+        @NotNull
+        @Override
+        public Iterator<Map.Entry<ResourceKey<? extends Registry<R>>, Map<ResourceLocation, T>>> iterator() {
+            return backing.entrySet().iterator();
+        }
     }
 }

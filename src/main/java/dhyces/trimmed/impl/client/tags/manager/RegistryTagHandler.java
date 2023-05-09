@@ -8,9 +8,9 @@ import net.minecraftforge.registries.RegistryManager;
 
 public class RegistryTagHandler<V> extends BaseTagHandler<ClientRegistryTagKey<V>, V> {
 
-    private final ResourceKey<Registry<V>> registry;
+    private final ResourceKey<? extends Registry<V>> registry;
 
-    public RegistryTagHandler(ResourceKey<Registry<V>> registry) {
+    public RegistryTagHandler(ResourceKey<? extends Registry<V>> registry) {
         this.registry = registry;
     }
 
