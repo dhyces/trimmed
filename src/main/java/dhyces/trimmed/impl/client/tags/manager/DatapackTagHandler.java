@@ -3,7 +3,7 @@ package dhyces.trimmed.impl.client.tags.manager;
 import com.mojang.serialization.DataResult;
 import dhyces.trimmed.Trimmed;
 import dhyces.trimmed.impl.client.tags.ClientRegistryTagKey;
-import dhyces.trimmed.impl.util.OptionalTagElement;
+import dhyces.trimmed.impl.util.OptionalId;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
@@ -17,7 +17,7 @@ import java.util.function.Function;
 
 public class DatapackTagHandler<V> extends BaseTagHandler<ClientRegistryTagKey<V>, Holder<V>> {
 
-    private final Map<ClientRegistryTagKey<V>, Set<OptionalTagElement>> intermediate = new HashMap<>();
+    private final Map<ClientRegistryTagKey<V>, Set<OptionalId>> intermediate = new HashMap<>();
     private final ResourceKey<? extends Registry<V>> registryKey;
     private RegistryAccess registryAccess;
 
@@ -33,10 +33,10 @@ public class DatapackTagHandler<V> extends BaseTagHandler<ClientRegistryTagKey<V
             Trimmed.LOGGER.error("Datapack registry " + registryKey.location() + " does not exist or is not synced to client!");
             return;
         }
-        for (Map.Entry<ClientRegistryTagKey<V>, Set<OptionalTagElement>> entry : intermediate.entrySet()) {
+        for (Map.Entry<ClientRegistryTagKey<V>, Set<OptionalId>> entry : intermediate.entrySet()) {
             try {
                 Set<Holder<V>> linkedSet = new LinkedHashSet<>();
-                for (OptionalTagElement tagEntry : entry.getValue()) {
+                for (OptionalId tagEntry : entry.getValue()) {
                     Holder<V> holder = createValue(tagEntry);
                     if (holder == null) {
                         if (tagEntry.isRequired()) {
@@ -57,7 +57,7 @@ public class DatapackTagHandler<V> extends BaseTagHandler<ClientRegistryTagKey<V
     @Override
     void resolveTags(Map<ResourceLocation, Set<TagEntry>> unresolvedTags) {
         for (Map.Entry<ResourceLocation, Set<TagEntry>> entry : unresolvedTags.entrySet()) {
-            DataResult<Set<OptionalTagElement>> dataResult = resolveTag(unresolvedTags, intermediate, entry.getKey(), this::createTag, Function.identity(), new LinkedHashSet<>());
+            DataResult<Set<OptionalId>> dataResult = resolveTag(unresolvedTags, intermediate, entry.getKey(), this::createTag, Function.identity(), new LinkedHashSet<>());
             dataResult.error().ifPresent(setPartialResult -> Trimmed.LOGGER.error(setPartialResult.message()));
         }
     }
@@ -69,7 +69,7 @@ public class DatapackTagHandler<V> extends BaseTagHandler<ClientRegistryTagKey<V
 
     @Nullable
     @Override
-    protected Holder<V> createValue(OptionalTagElement value) {
+    protected Holder<V> createValue(OptionalId value) {
         return registryAccess.registry(registryKey).flatMap(vs -> vs.getHolder(ResourceKey.create(registryKey, value.elementId()))).orElse(null);
     }
 }

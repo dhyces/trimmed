@@ -35,8 +35,8 @@ public class TrimmedTestClient {
         TrimmedApi.TAG_API.getRegistryTag(TestClientCustomObjTagProvider.TEST_CUSTOM_REG_KEY).forEach(item -> TrimmedTest.LOGGER.info(item.toString()));
         TrimmedApi.TAG_API.getDatapackedTag(TEST_BIOME_TAG).forEach(biomeHolder -> TrimmedTest.LOGGER.info(biomeHolder.toString()));
 
-        TrimmedTest.LOGGER.info(TrimmedApi.MAP_API.getUncheckedClientMap(TEST_MAP).get(new ResourceLocation(Trimmed.MODID, "not/a/real/place")));
+        TrimmedApi.MAP_API.getUncheckedClientMap(TEST_MAP).forEach((optionalId, s) -> TrimmedTest.LOGGER.info("KEY: {}, VALUE: {}", optionalId, s));
         TrimmedTest.LOGGER.info("Map present! " + TrimmedApi.MAP_API.getRegistryClientMap(TEST_ITEM_MAP).get(Items.IRON_INGOT));
-        TrimmedApi.MAP_API.getDatapackedClientMap(TEST_BIOME_MAP).forEach((biomeHolder, s) -> TrimmedTest.LOGGER.info("KEY: " + biomeHolder + " VALUE: " + s));
+        TrimmedApi.MAP_API.getDatapackedClientMap(TEST_BIOME_MAP).forEach((biomeHolder, s) -> TrimmedTest.LOGGER.info("KEY: {}, VALUE: {}", biomeHolder, s));
     }
 }

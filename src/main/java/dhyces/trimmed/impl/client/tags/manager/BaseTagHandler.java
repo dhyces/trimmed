@@ -4,7 +4,7 @@ import com.google.common.collect.ImmutableSet;
 import com.mojang.serialization.DataResult;
 import dhyces.trimmed.Trimmed;
 import dhyces.trimmed.impl.client.tags.ClientTagKey;
-import dhyces.trimmed.impl.util.OptionalTagElement;
+import dhyces.trimmed.impl.util.OptionalId;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagEntry;
 
@@ -43,7 +43,7 @@ abstract class BaseTagHandler<K, V> {
 
     protected abstract K createTag(ResourceLocation tagId);
 
-    protected abstract V createValue(OptionalTagElement value);
+    protected abstract V createValue(OptionalId value);
 
     void clear() {
         registeredTags.clear();
@@ -58,7 +58,7 @@ abstract class BaseTagHandler<K, V> {
         isLoaded = true;
     }
 
-    protected final <KEY, VAL> DataResult<Set<VAL>> resolveTag(Map<ResourceLocation, Set<TagEntry>> unresolvedTags, Map<KEY, Set<VAL>> resolvedTags, ResourceLocation tagId, Function<ResourceLocation, KEY> keyFactory, Function<OptionalTagElement, VAL> valueFactory, LinkedHashSet<ResourceLocation> resolutionSet) {
+    protected final <KEY, VAL> DataResult<Set<VAL>> resolveTag(Map<ResourceLocation, Set<TagEntry>> unresolvedTags, Map<KEY, Set<VAL>> resolvedTags, ResourceLocation tagId, Function<ResourceLocation, KEY> keyFactory, Function<OptionalId, VAL> valueFactory, LinkedHashSet<ResourceLocation> resolutionSet) {
         KEY key = keyFactory.apply(tagId);
         if (resolvedTags.containsKey(key)) {
             return DataResult.success(resolvedTags.get(key));
@@ -90,14 +90,14 @@ abstract class BaseTagHandler<K, V> {
         return DataResult.success(resolvedTags.computeIfAbsent(key, k -> builder.build()));
     }
 
-    protected <KEY, VAL> DataResult<Set<VAL>> resolveTagEntry(Map<ResourceLocation, Set<TagEntry>> unresolvedTags, Map<KEY, Set<VAL>> resolvedTags, TagEntry tagEntry, Function<ResourceLocation, KEY> keyFactory, Function<OptionalTagElement, VAL> valueFactory, LinkedHashSet<ResourceLocation> resolutionSet) {
+    protected <KEY, VAL> DataResult<Set<VAL>> resolveTagEntry(Map<ResourceLocation, Set<TagEntry>> unresolvedTags, Map<KEY, Set<VAL>> resolvedTags, TagEntry tagEntry, Function<ResourceLocation, KEY> keyFactory, Function<OptionalId, VAL> valueFactory, LinkedHashSet<ResourceLocation> resolutionSet) {
         if (tagEntry.isTag()) {
             if (!unresolvedTags.containsKey(tagEntry.getId()) && tagEntry.isRequired()) {
                 return DataResult.error(() -> "Tag entry " + tagEntry.getId() + " is required, yet tag does not exist!");
             }
             return resolveTag(unresolvedTags, resolvedTags, tagEntry.getId(), keyFactory, valueFactory, resolutionSet);
         }
-        VAL value = valueFactory.apply(OptionalTagElement.from(tagEntry));
+        VAL value = valueFactory.apply(OptionalId.from(tagEntry));
         if (value == null && tagEntry.isRequired()) {
             return DataResult.error(() -> "Tag entry " + tagEntry.getId() + " is required, yet element does not exist!");
         }

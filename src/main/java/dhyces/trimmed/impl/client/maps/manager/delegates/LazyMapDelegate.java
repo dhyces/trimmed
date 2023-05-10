@@ -14,7 +14,7 @@ public class LazyMapDelegate<K, V> extends BaseMapDelegate<K, V> {
 
     private Map<K, String> reference;
 
-    LazyMapDelegate(Function<String, V> mappingFunction) {
+    LazyMapDelegate(Function<String, DataResult<V>> mappingFunction) {
         super(mappingFunction);
     }
 

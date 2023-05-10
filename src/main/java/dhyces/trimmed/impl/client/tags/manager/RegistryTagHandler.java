@@ -1,11 +1,10 @@
 package dhyces.trimmed.impl.client.tags.manager;
 
 import dhyces.trimmed.impl.client.tags.ClientRegistryTagKey;
-import dhyces.trimmed.impl.util.OptionalTagElement;
+import dhyces.trimmed.impl.util.OptionalId;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.TagEntry;
 import net.minecraftforge.registries.RegistryManager;
 
 public class RegistryTagHandler<V> extends BaseTagHandler<ClientRegistryTagKey<V>, V> {
@@ -22,7 +21,7 @@ public class RegistryTagHandler<V> extends BaseTagHandler<ClientRegistryTagKey<V
     }
 
     @Override
-    protected V createValue(OptionalTagElement value) {
+    protected V createValue(OptionalId value) {
         return RegistryManager.ACTIVE.getRegistry(registry).getValue(value.elementId());
     }
 }

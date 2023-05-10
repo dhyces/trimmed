@@ -2,10 +2,9 @@ package dhyces.trimmed.api;
 
 import dhyces.trimmed.impl.client.tags.ClientRegistryTagKey;
 import dhyces.trimmed.impl.client.tags.ClientTagKey;
-import dhyces.trimmed.impl.util.OptionalTagElement;
+import dhyces.trimmed.impl.util.OptionalId;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.TagEntry;
 
 import javax.annotation.Nullable;
 import java.util.Set;
@@ -27,7 +26,7 @@ public interface TrimmedTagApi {
     <T> boolean datapackedTagContains(ClientRegistryTagKey<T> tagKey, Holder<T> value);
 
     @Nullable
-    Set<OptionalTagElement> getUncheckedTag(ClientTagKey clientTagKey);
+    Set<OptionalId> getUncheckedTag(ClientTagKey clientTagKey);
 
     @Nullable
     <T> Set<T> getRegistryTag(ClientRegistryTagKey<T> clientRegistryTagKey);

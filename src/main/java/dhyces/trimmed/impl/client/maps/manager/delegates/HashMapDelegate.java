@@ -1,5 +1,6 @@
 package dhyces.trimmed.impl.client.maps.manager.delegates;
 
+import com.mojang.serialization.DataResult;
 import dhyces.trimmed.impl.util.ImmutableMap;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.UnmodifiableView;
@@ -12,7 +13,7 @@ public class HashMapDelegate<K, V> extends BaseMapDelegate<K, V> {
 
     private final Map<K, V> delegate = new HashMap<>();
 
-    HashMapDelegate(Function<String, V> mappingFunction) {
+    HashMapDelegate(Function<String, DataResult<V>> mappingFunction) {
         super(mappingFunction);
     }
 

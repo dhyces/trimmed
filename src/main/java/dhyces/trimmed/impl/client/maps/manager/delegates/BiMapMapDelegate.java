@@ -2,6 +2,7 @@ package dhyces.trimmed.impl.client.maps.manager.delegates;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
+import com.mojang.serialization.DataResult;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnmodifiableView;
@@ -15,15 +16,15 @@ import java.util.stream.Collectors;
 public class BiMapMapDelegate<K, V> extends BaseMapDelegate<K, V> implements BiMap<K, V> {
 
     private final BiMap<K, V> delegate;
-    private final Function<String, K> inverseMappingFunction;
+    private final Function<String, DataResult<K>> inverseMappingFunction;
 
-    BiMapMapDelegate(Function<String, V> forwardMappingFunction, Function<String, K> inverseMappingFunction) {
+    BiMapMapDelegate(Function<String, DataResult<V>> forwardMappingFunction, Function<String, DataResult<K>> inverseMappingFunction) {
         super(forwardMappingFunction);
         delegate = HashBiMap.create();
         this.inverseMappingFunction = inverseMappingFunction;
     }
 
-    private BiMapMapDelegate(Function<String, V> forwardMappingFunction, Function<String, K> inverseMappingFunction, BiMap<K, V> map) {
+    private BiMapMapDelegate(Function<String, DataResult<V>> forwardMappingFunction, Function<String, DataResult<K>> inverseMappingFunction, BiMap<K, V> map) {
         super(forwardMappingFunction);
         delegate = map;
         this.inverseMappingFunction = inverseMappingFunction;

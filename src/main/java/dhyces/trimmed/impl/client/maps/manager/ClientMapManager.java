@@ -2,18 +2,11 @@ package dhyces.trimmed.impl.client.maps.manager;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.JsonObject;
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.DataResult;
 import com.mojang.serialization.JsonOps;
-import com.mojang.serialization.codecs.UnboundedMapCodec;
 import dhyces.trimmed.Trimmed;
-import dhyces.trimmed.api.data.maps.MapEntry;
+import dhyces.trimmed.api.data.maps.MapValue;
 import dhyces.trimmed.api.data.maps.MapFile;
 import dhyces.trimmed.api.util.ResourcePath;
-import dhyces.trimmed.impl.client.maps.ClientMapKey;
-import dhyces.trimmed.impl.client.maps.ClientRegistryMapKey;
-import dhyces.trimmed.impl.client.tags.manager.DatapackTagHandler;
-import dhyces.trimmed.impl.client.tags.manager.RegistryTagHandler;
 import dhyces.trimmed.impl.util.UnresolvedMap;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
@@ -24,14 +17,12 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.PreparableReloadListener;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
-import net.minecraft.tags.TagEntry;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.util.Unit;
 import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.common.crafting.conditions.ICondition;
 import net.minecraftforge.fml.ModList;
-import net.minecraftforge.registries.ForgeRegistry;
 import net.minecraftforge.registries.RegistryManager;
 
 import java.io.BufferedReader;
@@ -82,10 +73,10 @@ public class ClientMapManager implements PreparableReloadListener {
         UNCHECKED_HANDLERS.clear();
         REGISTRY_HANDLERS.clear();
         DATAPACKED_HANDLERS.clear();
-        final UnresolvedMap<T, Map<ResourceLocation, MapEntry>> readMaps = new UnresolvedMap<>();
+        final UnresolvedMap<T, Set<Map.Entry<ResourceLocation, MapValue>>> readMaps = new UnresolvedMap<>();
         for (Map.Entry<ResourceLocation, List<Resource>> entry : FILE_TO_ID_CONVERTER.listMatchingResourceStacks(resourceManager).entrySet()) {
             ResourcePath idPath = new ResourcePath(entry.getKey());
-            Map<ResourceLocation, MapEntry> readMap = readResources(entry.getKey(), entry.getValue());
+            Map<ResourceLocation, MapValue> readMap = readResources(entry.getKey(), entry.getValue());
 
             String registryDirectoryPath = idPath.getDirectoryStringFrom("maps");
             String[] registryDirectories = registryDirectoryPath.split("/");
@@ -96,12 +87,12 @@ public class ClientMapManager implements PreparableReloadListener {
                 registryId = ResourceKey.createRegistryKey(new ResourceLocation(registryDirectoryPath));
             }
             ResourceLocation truncated = idPath.getFileNameOnly(5).asResourceLocation();
-            readMaps.add(registryId, truncated, readMap);
+            readMaps.add(registryId, truncated, readMap.entrySet());
         }
 
-        for (Map.Entry<ResourceKey<? extends Registry<T>>, Map<ResourceLocation, Map<ResourceLocation, MapEntry>>> entry : readMaps) {
+        for (Map.Entry<ResourceKey<? extends Registry<T>>, Map<ResourceLocation, Set<Map.Entry<ResourceLocation, MapValue>>>> entry : readMaps) {
             ResourceKey<? extends Registry<T>> handlerKey = entry.getKey();
-            Map<ResourceLocation, Map<ResourceLocation, MapEntry>> unresolved = entry.getValue();
+            Map<ResourceLocation, Set<Map.Entry<ResourceLocation, MapValue>>> unresolved = entry.getValue();
 
             if (handlerKey.location().getPath().equals("unchecked")) {
                 UNCHECKED_HANDLERS.resolveMaps(unresolved);
@@ -118,8 +109,8 @@ public class ClientMapManager implements PreparableReloadListener {
         return CompletableFuture.completedFuture(Unit.INSTANCE);
     }
 
-    private Map<ResourceLocation, MapEntry> readResources(ResourceLocation fileName, List<Resource> resourceStack) {
-        ImmutableMap.Builder<ResourceLocation, MapEntry> mapBuilder = ImmutableMap.builder();
+    private Map<ResourceLocation, MapValue> readResources(ResourceLocation fileName, List<Resource> resourceStack) {
+        ImmutableMap.Builder<ResourceLocation, MapValue> mapBuilder = ImmutableMap.builder();
         for (Resource resource : resourceStack) {
             try (BufferedReader reader = resource.openAsReader()) {
                 JsonObject json = GsonHelper.parse(reader);

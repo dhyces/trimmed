@@ -1,5 +1,6 @@
 package dhyces.trimmed.impl.client.maps.manager;
 
+import dhyces.trimmed.api.data.maps.MapValue;
 import dhyces.trimmed.impl.client.maps.ClientRegistryMapKey;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
@@ -20,7 +21,7 @@ public class RegistryMapHandler<T> extends BaseMapHandler<ClientRegistryMapKey<T
     }
 
     @Override
-    protected T createKey(ResourceLocation keyId) {
-        return RegistryManager.ACTIVE.getRegistry(registryKey).getValue(keyId);
+    protected T createKey(ResourceLocation key, MapValue value) {
+        return RegistryManager.ACTIVE.getRegistry(registryKey).getValue(key);
     }
 }

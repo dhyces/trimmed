@@ -4,15 +4,15 @@ import dhyces.trimmed.api.TrimmedMapApi;
 import dhyces.trimmed.impl.client.maps.ClientMapKey;
 import dhyces.trimmed.impl.client.maps.ClientRegistryMapKey;
 import dhyces.trimmed.impl.client.maps.manager.ClientMapManager;
+import dhyces.trimmed.impl.util.OptionalId;
 import net.minecraft.core.Holder;
-import net.minecraft.resources.ResourceLocation;
 
 import java.util.Map;
 import java.util.Optional;
 
 public class TrimmedMapApiImpl implements TrimmedMapApi {
     @Override
-    public Map<ResourceLocation, String> getUncheckedClientMap(ClientMapKey clientMapKey) {
+    public Map<OptionalId, String> getUncheckedClientMap(ClientMapKey clientMapKey) {
         return ClientMapManager.getUncheckedHandler().getMap(clientMapKey);
     }
 
@@ -27,7 +27,7 @@ public class TrimmedMapApiImpl implements TrimmedMapApi {
     }
 
     @Override
-    public Optional<Map<ResourceLocation, String>> getSafeUncheckedClientMap(ClientMapKey clientMapKey) {
+    public Optional<Map<OptionalId, String>> getSafeUncheckedClientMap(ClientMapKey clientMapKey) {
         return Optional.ofNullable(getUncheckedClientMap(clientMapKey));
     }
 
