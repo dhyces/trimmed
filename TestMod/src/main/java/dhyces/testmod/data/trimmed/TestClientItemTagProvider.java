@@ -23,7 +23,7 @@ public class TestClientItemTagProvider extends ClientRegistryTagDataProvider<Ite
 
     @Override
     protected void addTags(HolderLookup.Provider lookupProvider) {
-        clientRegistryTag(TEST_ITEM_TAG).add(new ResourceLocation("iron_ingot"));
-        clientRegistryTag(TEST_ITEM_TAG, lookupProvider).add(Items.ACACIA_BOAT);
+        tag(TEST_ITEM_TAG).add(new ResourceLocation("iron_ingot"));
+        registryAwareTag(TEST_ITEM_TAG, lookupProvider).add(Items.ACACIA_BOAT);
     }
 }

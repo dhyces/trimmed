@@ -106,6 +106,6 @@ public class BiMapMapDelegate<K, V> extends BaseMapDelegate<K, V> implements BiM
     @UnmodifiableView
     @Override
     public Set<Entry<K, V>> entrySet() {
-        return delegate.entrySet().stream().map(ImmutableEntry.WrapperImpl::new).collect(Collectors.toUnmodifiableSet());
+        return delegate.entrySet().stream().map(kvEntry -> Map.entry(kvEntry.getKey(), kvEntry.getValue())).collect(Collectors.toUnmodifiableSet());
     }
 }

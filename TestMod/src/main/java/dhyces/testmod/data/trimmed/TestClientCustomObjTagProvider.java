@@ -1,5 +1,6 @@
 package dhyces.testmod.data.trimmed;
 
+import dhyces.testmod.TestClientTags;
 import dhyces.testmod.TrimmedTest;
 import dhyces.testmod.registry.CustomObj;
 import dhyces.testmod.registry.CustomRegistration;
@@ -16,10 +17,8 @@ public class TestClientCustomObjTagProvider extends ClientRegistryTagDataProvide
         super(packOutput, TrimmedTest.MODID, lookupProviderFuture, CustomRegistration.CUSTOM_DEFERRED_REGISTRY.getRegistryKey(), existingFileHelper);
     }
 
-    public static final ClientRegistryTagKey<CustomObj> TEST_CUSTOM_REG_KEY = ClientRegistryTagKey.of(CustomRegistration.CUSTOM_DEFERRED_REGISTRY.getRegistryKey(), TrimmedTest.id("test"));
-
     @Override
     protected void addTags(HolderLookup.Provider lookupProvider) {
-        clientRegistryTag(TEST_CUSTOM_REG_KEY, lookupProvider).add(CustomRegistration.OBJ);
+        registryAwareTag(TestClientTags.TEST_CUSTOM_REG_KEY, lookupProvider).add(CustomRegistration.OBJ);
     }
 }

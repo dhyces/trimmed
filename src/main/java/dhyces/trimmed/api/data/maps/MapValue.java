@@ -12,7 +12,7 @@ public record MapValue(String value, boolean isRequired) {
             ).apply(instance, MapValue::new)
     );
     public static final Codec<MapValue> EITHER_CODEC = Codec.either(Codec.STRING, CODEC).xmap(
-            either -> either.map(s -> new MapValue(s, false), mapEntry -> mapEntry),
+            either -> either.map(s -> new MapValue(s, true), mapEntry -> mapEntry),
             mapEntry -> mapEntry.isRequired ? Either.left(mapEntry.value()) : Either.right(mapEntry)
     );
 }

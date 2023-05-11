@@ -27,7 +27,7 @@ public abstract class ClientTagDataProvider extends BaseClientTagDataProvider {
     protected abstract void addTags();
 
     public ClientTagAppender clientTag(ClientTagKey clientTagKey) {
-        return new ClientTagAppender(getOrCreateBuilder(clientTagKey.getTagId()), modid);
+        return new ClientTagAppender(getOrCreateBuilder(clientTagKey.getTagId()));
     }
 
     @Override

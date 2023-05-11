@@ -45,24 +45,4 @@ public interface ImmutableMap<K, V> extends Map<K, V> {
     @UnmodifiableView
     @Override
     Set<Entry<K, V>> entrySet();
-
-    interface ImmutableEntry<K, V> extends Map.Entry<K, V> {
-        @Override
-        default V setValue(V value) {
-            throw new UnsupportedOperationException("Map is immutable");
-        }
-
-        record WrapperImpl<K, V>(Map.Entry<K, V> delegate) implements ImmutableEntry<K, V> {
-
-            @Override
-            public K getKey() {
-                return delegate.getKey();
-            }
-
-            @Override
-            public V getValue() {
-                return delegate.getValue();
-            }
-        }
-    }
 }

@@ -1,23 +1,19 @@
 package dhyces.trimmed.api.data.tags;
 
 import com.google.gson.JsonElement;
-import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.JsonOps;
 import dhyces.trimmed.Trimmed;
 import dhyces.trimmed.api.data.tags.appenders.ClientRegistryTagAppender;
-import dhyces.trimmed.api.data.tags.appenders.ClientTagAppender;
 import dhyces.trimmed.impl.client.tags.ClientRegistryTagKey;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Registry;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
-import net.minecraft.data.tags.TagsProvider;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.PackType;
-import net.minecraft.tags.TagBuilder;
 import net.minecraft.tags.TagEntry;
 import net.minecraft.tags.TagFile;
 import net.minecraft.util.Unit;
@@ -51,11 +47,11 @@ public abstract class ClientRegistryTagDataProvider<T> extends BaseClientTagData
 
     protected abstract void addTags(HolderLookup.Provider lookupProvider);
 
-    public ClientRegistryTagAppender<T> clientRegistryTag(ClientRegistryTagKey<T> clientRegistryTagKey) {
+    public ClientRegistryTagAppender<T> tag(ClientRegistryTagKey<T> clientRegistryTagKey) {
         return new ClientRegistryTagAppender<>(getOrCreateBuilder(clientRegistryTagKey.getTagId()), registryResourceKey);
     }
 
-    public ClientRegistryTagAppender.RegistryAware<T> clientRegistryTag(ClientRegistryTagKey<T> clientRegistryTagKey, HolderLookup.Provider lookupProvider) {
+    public ClientRegistryTagAppender.RegistryAware<T> registryAwareTag(ClientRegistryTagKey<T> clientRegistryTagKey, HolderLookup.Provider lookupProvider) {
         return new ClientRegistryTagAppender.RegistryAware<>(getOrCreateBuilder(clientRegistryTagKey.getTagId()), registryResourceKey, lookupProvider);
     }
 

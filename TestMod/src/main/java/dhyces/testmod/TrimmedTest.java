@@ -31,8 +31,6 @@ public class TrimmedTest {
         return new ResourceLocation(MODID, id);
     }
 
-
-
     public TrimmedTest() {
         MyProviderTypes.init();
         IEventBus modBus = FMLJavaModLoadingContext.get().getModEventBus();

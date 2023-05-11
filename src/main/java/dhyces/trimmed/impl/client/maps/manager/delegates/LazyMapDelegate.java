@@ -88,7 +88,7 @@ public class LazyMapDelegate<K, V> extends BaseMapDelegate<K, V> {
                 Trimmed.LOGGER.error("Delegate failed to map value {%s}. ".formatted(entry.getValue()) + result.error().get().message());
                 return Collections.emptySet();
             }
-            builder.add(new AbstractMap.SimpleImmutableEntry<>(entry.getKey(), result.result().get()));
+            builder.add(Map.entry(entry.getKey(), result.result().get()));
         }
         return builder.build();
     }

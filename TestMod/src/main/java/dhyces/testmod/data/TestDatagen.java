@@ -45,5 +45,8 @@ public class TestDatagen {
         generator.addProvider(event.includeClient(), new TestClientTagProvider(packOutput, event.getExistingFileHelper()));
         generator.addProvider(event.includeClient(), new TestClientItemTagProvider(packOutput, lookupProvider, event.getExistingFileHelper()));
         generator.addProvider(event.includeClient(), new TestClientCustomObjTagProvider(packOutput, lookupProvider, event.getExistingFileHelper()));
+        generator.addProvider(event.includeClient(), new TestClientMapProvider(packOutput, event.getExistingFileHelper()));
+        generator.addProvider(event.includeClient(), new TestClientBlockMapProvider(packOutput, lookupProvider, event.getExistingFileHelper()));
+        generator.addProvider(event.includeClient(), new TestClientDamageTypeMapProvider(packOutput, lookupProvider, event.getExistingFileHelper()));
     }
 }
