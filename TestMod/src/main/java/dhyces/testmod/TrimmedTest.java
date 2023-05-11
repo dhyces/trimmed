@@ -11,10 +11,12 @@ import dhyces.trimmed.impl.client.maps.manager.delegates.BiMapMapDelegate;
 import dhyces.trimmed.impl.client.maps.manager.delegates.HashMapDelegate;
 import dhyces.trimmed.impl.util.OptionalId;
 import net.minecraft.core.Holder;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.damagesource.DamageType;
+import net.minecraft.world.entity.EntityType;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.data.loading.DatagenModLoader;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -42,6 +44,8 @@ public class TrimmedTest {
     }
 
     public static final BiMap<Integer, Holder<DamageType>> TEST_DELEGATE = ClientMapManager.getDatapackedHandler(Registries.DAMAGE_TYPE).biMapDelegate(TestClientMaps.DATAGEN_TEST_DAMAGE_TYPE_MAP, (r, s) -> DataResult.success(Integer.decode(s))).inverse();
+
+    public static final BiMap<EntityType<?>, EntityType<?>> TEST_DELEGATE_2 = ClientMapManager.getRegistryHandler(Registries.ENTITY_TYPE).biMapDelegate(TestClientMaps.DATAGEN_ENTITY_TRANSFORM, s -> DataResult.success(BuiltInRegistries.ENTITY_TYPE.get(new ResourceLocation(s))), s -> DataResult.success(BuiltInRegistries.ENTITY_TYPE.get(new ResourceLocation(s))));
 
     public TrimmedTest() {
         MyProviderTypes.init();

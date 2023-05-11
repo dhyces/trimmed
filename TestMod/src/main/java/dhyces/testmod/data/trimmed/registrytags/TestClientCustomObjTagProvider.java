@@ -1,4 +1,4 @@
-package dhyces.testmod.data.trimmed;
+package dhyces.testmod.data.trimmed.registrytags;
 
 import dhyces.testmod.TestClientTags;
 import dhyces.testmod.TrimmedTest;

@@ -1,4 +1,4 @@
-package dhyces.testmod.data.trimmed;
+package dhyces.testmod.data.trimmed.registrytags;
 
 import dhyces.testmod.TrimmedTest;
 import dhyces.trimmed.api.data.tags.ClientRegistryTagDataProvider;

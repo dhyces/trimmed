@@ -1,4 +1,4 @@
-package dhyces.testmod.data.trimmed;
+package dhyces.testmod.data.trimmed.registrymaps;
 
 import dhyces.testmod.TestClientMaps;
 import dhyces.testmod.TrimmedTest;
@@ -12,8 +12,8 @@ import net.minecraftforge.common.data.ExistingFileHelper;
 
 import java.util.concurrent.CompletableFuture;
 
-public class TestClientBlockMapProvider extends ClientRegistryMapDataProvider<Block> {
-    public TestClientBlockMapProvider(PackOutput packOutput, CompletableFuture<HolderLookup.Provider> lookupProviderFuture, ExistingFileHelper existingFileHelper) {
+public class ClientBlockProvider extends ClientRegistryMapDataProvider<Block> {
+    public ClientBlockProvider(PackOutput packOutput, CompletableFuture<HolderLookup.Provider> lookupProviderFuture, ExistingFileHelper existingFileHelper) {
         super(packOutput, TrimmedTest.MODID, lookupProviderFuture, Registries.BLOCK, existingFileHelper);
     }
 

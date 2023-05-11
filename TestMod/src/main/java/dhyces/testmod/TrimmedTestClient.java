@@ -24,5 +24,9 @@ public class TrimmedTestClient {
         TrimmedTest.TEST_DELEGATE.forEach((damageTypeHolder, integer) -> {
             TrimmedTest.LOGGER.info("KEY: {}, VALUE: {}", damageTypeHolder, integer);
         });
+
+        TrimmedTest.TEST_DELEGATE_2.forEach((entityType1, entityType2) -> {
+            TrimmedTest.LOGGER.info("KEY: {}, VALUE: {}", entityType1, entityType2);
+        });
     }
 }

@@ -3,8 +3,11 @@ package dhyces.testmod.data;
 import dhyces.testmod.ModTrimMaterials;
 import dhyces.testmod.ModTrimPatterns;
 import dhyces.testmod.data.trimmed.*;
-import dhyces.testmod.registry.CustomObj;
-import dhyces.testmod.registry.CustomRegistration;
+import dhyces.testmod.data.trimmed.registrymaps.ClientBlockProvider;
+import dhyces.testmod.data.trimmed.registrymaps.ClientDamageTypeProvider;
+import dhyces.testmod.data.trimmed.registrymaps.EntityToEntityProvider;
+import dhyces.testmod.data.trimmed.registrytags.TestClientCustomObjTagProvider;
+import dhyces.testmod.data.trimmed.registrytags.TestClientItemTagProvider;
 import net.minecraft.core.*;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.DataGenerator;
@@ -17,7 +20,6 @@ import net.minecraftforge.eventbus.api.IEventBus;
 import java.util.Collections;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
-import java.util.stream.Stream;
 
 public class TestDatagen {
 
@@ -46,7 +48,8 @@ public class TestDatagen {
         generator.addProvider(event.includeClient(), new TestClientItemTagProvider(packOutput, lookupProvider, event.getExistingFileHelper()));
         generator.addProvider(event.includeClient(), new TestClientCustomObjTagProvider(packOutput, lookupProvider, event.getExistingFileHelper()));
         generator.addProvider(event.includeClient(), new TestClientMapProvider(packOutput, event.getExistingFileHelper()));
-        generator.addProvider(event.includeClient(), new TestClientBlockMapProvider(packOutput, lookupProvider, event.getExistingFileHelper()));
-        generator.addProvider(event.includeClient(), new TestClientDamageTypeMapProvider(packOutput, lookupProvider, event.getExistingFileHelper()));
+        generator.addProvider(event.includeClient(), new ClientBlockProvider(packOutput, lookupProvider, event.getExistingFileHelper()));
+        generator.addProvider(event.includeClient(), new ClientDamageTypeProvider(packOutput, lookupProvider, event.getExistingFileHelper()));
+        generator.addProvider(event.includeClient(), new EntityToEntityProvider(packOutput, lookupProvider, event.getExistingFileHelper()));
     }
 }
