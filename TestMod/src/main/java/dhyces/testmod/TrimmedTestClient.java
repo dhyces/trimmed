@@ -20,5 +20,9 @@ public class TrimmedTestClient {
         TrimmedApi.MAP_API.getUncheckedClientMap(TestClientMaps.MANUAL_TEST_MAP).forEach((optionalId, s) -> TrimmedTest.LOGGER.info("KEY: {}, VALUE: {}", optionalId, s));
         TrimmedTest.LOGGER.info("Map present! " + TrimmedApi.MAP_API.getRegistryClientMap(TestClientMaps.MANUAL_TEST_ITEM_MAP).get(Items.IRON_INGOT));
         TrimmedApi.MAP_API.getDatapackedClientMap(TestClientMaps.MANUAL_TEST_BIOME_MAP).forEach((biomeHolder, s) -> TrimmedTest.LOGGER.info("KEY: {}, VALUE: {}", biomeHolder, s));
+
+        TrimmedTest.TEST_DELEGATE.forEach((damageTypeHolder, integer) -> {
+            TrimmedTest.LOGGER.info("KEY: {}, VALUE: {}", damageTypeHolder, integer);
+        });
     }
 }

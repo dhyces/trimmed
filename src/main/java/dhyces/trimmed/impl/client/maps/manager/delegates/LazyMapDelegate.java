@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.mojang.serialization.DataResult;
 import dhyces.trimmed.Trimmed;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.UnmodifiableView;
 
@@ -14,12 +15,13 @@ public class LazyMapDelegate<K, V> extends BaseMapDelegate<K, V> {
 
     private Map<K, String> reference;
 
-    LazyMapDelegate(Function<String, DataResult<V>> mappingFunction) {
+    public LazyMapDelegate(Function<String, DataResult<V>> mappingFunction) {
         super(mappingFunction);
     }
 
+    @ApiStatus.Internal
     @Override
-    void onReload(Map<K, String> underlyingMap) {
+    public void onReload(Map<K, String> underlyingMap) {
         this.reference = underlyingMap;
         super.onReload(underlyingMap);
     }

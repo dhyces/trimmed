@@ -39,24 +39,24 @@ public class ClientMapManager implements PreparableReloadListener {
     private static final FileToIdConverter FILE_TO_ID_CONVERTER = FileToIdConverter.json("maps");
 
     public static UncheckedMapHandler getUncheckedHandler() {
-        if (!UNCHECKED_HANDLERS.hasLoaded()) {
-            Trimmed.LOGGER.error("Client maps aren't loaded yet! May result in unexpected behavior");
-        }
+//        if (!UNCHECKED_HANDLERS.hasLoaded()) {
+//            Trimmed.LOGGER.error("Client maps aren't loaded yet! May result in unexpected behavior");
+//        }
         return UNCHECKED_HANDLERS;
     }
 
-    public static <T> Optional<RegistryMapHandler<T>> getRegistryHandler(ResourceKey<? extends Registry<T>> registryKey) {
-        if (REGISTRY_HANDLERS.isEmpty()) {
-            Trimmed.LOGGER.error("Client maps aren't loaded yet! May result in unexpected behavior");
-        }
-        return Optional.ofNullable(cast(REGISTRY_HANDLERS.get(registryKey)));
+    public static <T> RegistryMapHandler<T> getRegistryHandler(ResourceKey<? extends Registry<T>> registryKey) {
+//        if (REGISTRY_HANDLERS.isEmpty()) {
+//            Trimmed.LOGGER.error("Client maps aren't loaded yet! May result in unexpected behavior");
+//        }
+        return cast(REGISTRY_HANDLERS.computeIfAbsent(registryKey, resourceKey -> new RegistryMapHandler<>(registryKey)));
     }
 
-    public static <T> Optional<DatapackMapHandler<T>> getDatapackedHandler(ResourceKey<? extends Registry<T>> registryKey) {
-        if (DATAPACKED_HANDLERS.isEmpty()) {
-            Trimmed.LOGGER.error("Client maps aren't loaded yet! May result in unexpected behavior");
-        }
-        return Optional.ofNullable(cast(DATAPACKED_HANDLERS.get(registryKey)));
+    public static <T> DatapackMapHandler<T> getDatapackedHandler(ResourceKey<? extends Registry<T>> registryKey) {
+//        if (DATAPACKED_HANDLERS.isEmpty()) {
+//            Trimmed.LOGGER.error("Client maps aren't loaded yet! May result in unexpected behavior");
+//        }
+        return cast(DATAPACKED_HANDLERS.computeIfAbsent(registryKey, resourceKey -> new DatapackMapHandler<>(registryKey)));
     }
 
     public static void updateDatapacksSynced(RegistryAccess registryAccess) {
@@ -71,8 +71,8 @@ public class ClientMapManager implements PreparableReloadListener {
     @SuppressWarnings("UnstableApiUsage")
     private <T> CompletableFuture<Unit> load(ResourceManager resourceManager) {
         UNCHECKED_HANDLERS.clear();
-        REGISTRY_HANDLERS.clear();
-        DATAPACKED_HANDLERS.clear();
+        REGISTRY_HANDLERS.values().forEach(BaseMapHandler::clear);
+        DATAPACKED_HANDLERS.values().forEach(BaseMapHandler::clear);
         final UnresolvedMap<T, Set<Map.Entry<ResourceLocation, MapValue>>> readMaps = new UnresolvedMap<>();
         for (Map.Entry<ResourceLocation, List<Resource>> entry : FILE_TO_ID_CONVERTER.listMatchingResourceStacks(resourceManager).entrySet()) {
             ResourcePath idPath = new ResourcePath(entry.getKey());

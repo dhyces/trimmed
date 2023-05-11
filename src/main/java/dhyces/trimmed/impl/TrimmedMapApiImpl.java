@@ -18,12 +18,22 @@ public class TrimmedMapApiImpl implements TrimmedMapApi {
 
     @Override
     public <K> Map<K, String> getRegistryClientMap(ClientRegistryMapKey<K> clientRegistryMapKey) {
-        return ClientMapManager.getRegistryHandler(clientRegistryMapKey.getRegistryKey()).map(handler -> handler.getMap(clientRegistryMapKey)).orElse(null);
+        return ClientMapManager.getRegistryHandler(clientRegistryMapKey.getRegistryKey()).getMap(clientRegistryMapKey);
     }
 
     @Override
     public <K> Map<Holder<K>, String> getDatapackedClientMap(ClientRegistryMapKey<K> clientRegistryMapKey) {
-        return ClientMapManager.getDatapackedHandler(clientRegistryMapKey.getRegistryKey()).map(handler -> handler.getMap(clientRegistryMapKey)).orElse(null);
+        return ClientMapManager.getDatapackedHandler(clientRegistryMapKey.getRegistryKey()).getMap(clientRegistryMapKey);
+    }
+
+    @Override
+    public <K> String getRegistryClientValue(ClientRegistryMapKey<K> clientRegistryMapKey, K key) {
+        return getRegistryClientMap(clientRegistryMapKey).get(key);
+    }
+
+    @Override
+    public <K> String getDatapackedClientValue(ClientRegistryMapKey<K> clientRegistryMapKey, Holder<K> key) {
+        return getDatapackedClientMap(clientRegistryMapKey).get(key);
     }
 
     @Override

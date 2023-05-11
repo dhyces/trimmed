@@ -1,11 +1,16 @@
 package dhyces.trimmed.impl.client.maps.manager;
 
+import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Multimap;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.DataResult;
 import dhyces.trimmed.Trimmed;
 import dhyces.trimmed.api.data.maps.MapValue;
 import dhyces.trimmed.impl.client.maps.manager.delegates.BaseMapDelegate;
+import dhyces.trimmed.impl.client.maps.manager.delegates.BiMapMapDelegate;
+import dhyces.trimmed.impl.client.maps.manager.delegates.HashMapDelegate;
+import dhyces.trimmed.impl.client.maps.manager.delegates.LazyMapDelegate;
 import net.minecraft.resources.ResourceLocation;
 
 import javax.annotation.Nullable;
@@ -16,12 +21,34 @@ import java.util.function.Function;
 
 public abstract class BaseMapHandler<K, V> {
     protected final Map<K, Map<V, String>> registeredMaps = new HashMap<>();
-    private final List<WeakReference<BaseMapDelegate<V, ?>>> listeners = new ArrayList<>();
+    protected final Multimap<K, WeakReference<MapLoadListener<V>>> listeners = HashMultimap.create();
     protected boolean isLoaded = false;
 
     @Nullable
     public Map<V, String> getMap(K mapKey) {
         return registeredMaps.get(mapKey);
+    }
+
+    public <T> HashMapDelegate<V, T> hashMapDelegate(K key, Function<String, DataResult<T>> mappingFunction) {
+        HashMapDelegate<V, T> delegate = new HashMapDelegate<>(mappingFunction);
+        listeners.put(key, new WeakReference<>(delegate));
+        return delegate;
+    }
+
+    public <T> BiMapMapDelegate<V, T> biMapDelegate(K key, Function<String, DataResult<T>> forwardMappingFunction, Function<String, DataResult<V>> inverseMappingFunction) {
+        BiMapMapDelegate<V, T> delegate = new BiMapMapDelegate<>(forwardMappingFunction, inverseMappingFunction);
+        listeners.put(key, new WeakReference<>(delegate));
+        return delegate;
+    }
+
+    public <T> LazyMapDelegate<V, T> lazyMapDelegate(K key, Function<String, DataResult<T>> mappingFunction) {
+        LazyMapDelegate<V, T> delegate = new LazyMapDelegate<>(mappingFunction);
+        listeners.put(key, new WeakReference<>(delegate));
+        return delegate;
+    }
+
+    public void addListener(K key, MapLoadListener<V> mapLoadListener) {
+        listeners.put(key, new WeakReference<>(mapLoadListener));
     }
 
     /**
@@ -47,8 +74,21 @@ public abstract class BaseMapHandler<K, V> {
         for (Map.Entry<ResourceLocation, Set<Map.Entry<ResourceLocation, MapValue>>> entry : unresolvedMaps.entrySet()) {
             DataResult<Map<V, String>> dataResult = resolveMap(unresolvedMaps, registeredMaps, entry.getKey(), this::createMapKey, this::createKey, new LinkedHashSet<>());
             dataResult.error().ifPresent(mapPartialResult -> Trimmed.LOGGER.error(mapPartialResult.message()));
+            updateListeners(this.createMapKey(entry.getKey()));
         }
         isLoaded = true;
+    }
+
+    protected void updateListeners(K key) {
+        Map<V, String> map = registeredMaps.get(key);
+        for (Iterator<WeakReference<MapLoadListener<V>>> iter = listeners.get(key).iterator(); iter.hasNext();) {
+            MapLoadListener<V> listener = iter.next().get();
+            if (listener == null) {
+                iter.remove();
+            } else {
+                listener.onReload(map);
+            }
+        }
     }
 
     protected final <KEY, VAL> DataResult<Map<VAL, String>> resolveMap(Map<ResourceLocation, Set<Map.Entry<ResourceLocation, MapValue>>> unresolvedMaps, Map<KEY, Map<VAL, String>> resolvedMaps, ResourceLocation mapId, Function<ResourceLocation, KEY> mapKeyFactory, BiFunction<ResourceLocation, MapValue, VAL> keyFactory, LinkedHashSet<ResourceLocation> resolutionSet) {
@@ -75,5 +115,9 @@ public abstract class BaseMapHandler<K, V> {
         }
 
         return DataResult.success(resolvedMaps.computeIfAbsent(key, key1 -> mapBuilder.build()));
+    }
+
+    public interface MapLoadListener<K> {
+        void onReload(Map<K, String> map);
     }
 }

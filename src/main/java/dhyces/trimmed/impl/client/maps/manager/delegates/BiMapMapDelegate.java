@@ -3,6 +3,7 @@ package dhyces.trimmed.impl.client.maps.manager.delegates;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import com.mojang.serialization.DataResult;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnmodifiableView;
@@ -17,8 +18,9 @@ public class BiMapMapDelegate<K, V> extends BaseMapDelegate<K, V> implements BiM
 
     private final BiMap<K, V> delegate;
     private final Function<String, DataResult<K>> inverseMappingFunction;
+    private BiMapMapDelegate<V, K> inverse;
 
-    BiMapMapDelegate(Function<String, DataResult<V>> forwardMappingFunction, Function<String, DataResult<K>> inverseMappingFunction) {
+    public BiMapMapDelegate(Function<String, DataResult<V>> forwardMappingFunction, Function<String, DataResult<K>> inverseMappingFunction) {
         super(forwardMappingFunction);
         delegate = HashBiMap.create();
         this.inverseMappingFunction = inverseMappingFunction;
@@ -30,8 +32,9 @@ public class BiMapMapDelegate<K, V> extends BaseMapDelegate<K, V> implements BiM
         this.inverseMappingFunction = inverseMappingFunction;
     }
 
+    @ApiStatus.Internal
     @Override
-    void onReload(Map<K, String> underlyingMap) {
+    public void onReload(Map<K, String> underlyingMap) {
         delegate.clear();
         super.onReload(underlyingMap);
     }
@@ -99,7 +102,11 @@ public class BiMapMapDelegate<K, V> extends BaseMapDelegate<K, V> implements BiM
     @UnmodifiableView
     @Override
     public BiMap<V, K> inverse() {
-        return new BiMapMapDelegate<>(inverseMappingFunction, mappingFunction, delegate.inverse());
+        if (inverse == null) {
+            this.inverse = new BiMapMapDelegate<>(inverseMappingFunction, mappingFunction, delegate.inverse());
+            this.inverse.inverse = this;
+        }
+        return inverse;
     }
 
     @NotNull

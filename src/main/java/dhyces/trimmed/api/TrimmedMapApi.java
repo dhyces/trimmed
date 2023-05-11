@@ -15,6 +15,10 @@ public interface TrimmedMapApi {
 
     <K> Map<Holder<K>, String> getDatapackedClientMap(ClientRegistryMapKey<K> clientRegistryMapKey);
 
+    <K> String getRegistryClientValue(ClientRegistryMapKey<K> clientRegistryMapKey, K key);
+
+    <K> String getDatapackedClientValue(ClientRegistryMapKey<K> clientRegistryMapKey, Holder<K> key);
+
     Optional<Map<OptionalId, String>> getSafeUncheckedClientMap(ClientMapKey clientMapKey);
 
     <K> Optional<Map<K, String>> getSafeRegistryClientMap(ClientRegistryMapKey<K> clientRegistryMapKey);
