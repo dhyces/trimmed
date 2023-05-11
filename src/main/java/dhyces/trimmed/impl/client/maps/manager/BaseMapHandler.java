@@ -52,7 +52,7 @@ public abstract class BaseMapHandler<K, V> {
     }
 
     /**
-     * This is for the MapKey<T>
+     * This is for the MapKey
      */
     protected abstract K createMapKey(ResourceLocation mapId);
 
