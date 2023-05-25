@@ -23,11 +23,12 @@
       ]
     },
     "mixins": [
-      "trimmed.mixins.json"
+      "trimmed.mixins.json",
+      "trimmed.fabric.mixins.json"
     ],
 
-  "accessWidener" : "trimmed.accesswidener",
-  
+    "accessWidener": "trimmed.accesswidener",
+
     "depends": {
       "fabricloader": ">=0.14",
       "fabric": "*",

@@ -1,5 +1,5 @@
 plugins {
-    id 'fabric-loom' version '1.0-SNAPSHOT'
+    id 'fabric-loom' version '1.1-SNAPSHOT'
     id 'maven-publish'
     id 'idea'
 }
@@ -12,15 +12,15 @@ dependencies {
         officialMojangMappings()
         parchment("org.parchmentmc.data:parchment-1.19.3:2023.03.12@zip")
     }
+
     modImplementation "net.fabricmc:fabric-loader:${fabric_loader_version}"
     modImplementation "net.fabricmc.fabric-api:fabric-api:${fabric_version}"
-    compileOnly project(":Common")
-
-    implementation 'org.jetbrains:annotations:24.0.0'
+    implementation project(path: ":Common", configuration: "namedElements")
 }
 
 loom {
-    accessWidenerPath = file("src/main/resources/trimmed.accesswidener")
+    accessWidenerPath = project(":Common").file("src/main/resources/trimmed.accesswidener")
+
     runs {
         client {
             client()
@@ -34,6 +34,10 @@ loom {
             ideConfigGenerated(true)
             runDir("run")
         }
+    }
+
+    mixin {
+        defaultRefmapName = "${mod_id}.refmap.json"
     }
 }
 
@@ -54,6 +58,10 @@ processResources {
 
 tasks.withType(JavaCompile) {
     source(project(":Common").sourceSets.main.allSource)
+}
+
+sourcesJar {
+    from(project(":Common").sourceSets.main.allSource)
 }
 
 publishing {
