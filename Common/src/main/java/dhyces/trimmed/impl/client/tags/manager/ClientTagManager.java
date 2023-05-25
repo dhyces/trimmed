@@ -64,7 +64,7 @@ public class ClientTagManager implements PreparableReloadListener {
 
     @Override
     public CompletableFuture<Void> reload(PreparationBarrier pPreparationBarrier, ResourceManager pResourceManager, ProfilerFiller pPreparationsProfiler, ProfilerFiller pReloadProfiler, Executor pBackgroundExecutor, Executor pGameExecutor) {
-        return load(pResourceManager).thenCompose(pPreparationBarrier::wait).thenRun(() -> Trimmed.LOGGER.debug("Client tags loaded!"));
+        return load(pResourceManager).thenCompose(pPreparationBarrier::wait).thenRun(() -> Trimmed.logInDev("Client tags loaded!"));
     }
 
     @SuppressWarnings("UnstableApiUsage")
@@ -115,7 +115,7 @@ public class ClientTagManager implements PreparableReloadListener {
             try (BufferedReader reader = resource.openAsReader()) {
                 JsonObject json = GsonHelper.parse(reader);
                 if (!Services.PLATFORM_HELPER.shouldPassConditions(json)) {
-                    Trimmed.LOGGER.debug("Skipping loading client tag {} as it's conditions were not met", fileName);
+                    Trimmed.LOGGER.debug("Skipping loading client tag {} as its conditions were not met", fileName);
                     continue;
                 }
                 Optional<ClientTagFile> result = ClientTagFile.CODEC.parse(JsonOps.INSTANCE, json).resultOrPartial(Trimmed.LOGGER::error);

@@ -22,6 +22,9 @@ public class TrimmedClient {
 
     public static void registerClientReloadListener(Consumer<PreparableReloadListener> eventConsumer) {
         eventConsumer.accept(new ItemOverrideReloadListener());
+    }
+
+    public static void injectListenersAtBeginning() {
         ((ReloadableResourceManagerImplAccessor)Minecraft.getInstance().getResourceManager()).getListeners().add(0, new ClientMapManager());
         ((ReloadableResourceManagerImplAccessor)Minecraft.getInstance().getResourceManager()).getListeners().add(0, new ClientTagManager());
     }

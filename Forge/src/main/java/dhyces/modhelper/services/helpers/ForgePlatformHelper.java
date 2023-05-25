@@ -28,6 +28,11 @@ public final class ForgePlatformHelper implements PlatformHelper {
     }
 
     @Override
+    public boolean isProduction() {
+        return FMLLoader.isProduction();
+    }
+
+    @Override
     public <T> boolean modRegistryExists(ResourceKey<? extends Registry<T>> modRegistry) {
         return RegistryManager.ACTIVE.getRegistry(modRegistry) != null;
     }

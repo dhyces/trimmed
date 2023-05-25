@@ -62,7 +62,7 @@ public class ClientMapManager implements PreparableReloadListener {
 
     @Override
     public CompletableFuture<Void> reload(PreparationBarrier pPreparationBarrier, ResourceManager pResourceManager, ProfilerFiller pPreparationsProfiler, ProfilerFiller pReloadProfiler, Executor pBackgroundExecutor, Executor pGameExecutor) {
-        return load(pResourceManager).thenCompose(pPreparationBarrier::wait).thenRun(() -> Trimmed.LOGGER.debug("Client maps loaded!"));
+        return load(pResourceManager).thenCompose(pPreparationBarrier::wait).thenRun(() -> Trimmed.logInDev("Client maps loaded!"));
     }
 
     @SuppressWarnings("UnstableApiUsage")
@@ -112,7 +112,7 @@ public class ClientMapManager implements PreparableReloadListener {
             try (BufferedReader reader = resource.openAsReader()) {
                 JsonObject json = GsonHelper.parse(reader);
                 if (!Services.PLATFORM_HELPER.shouldPassConditions(json)) {
-                    Trimmed.LOGGER.debug("Skipping loading client map {} as it's conditions were not met", fileName);
+                    Trimmed.LOGGER.debug("Skipping loading client map {} as its conditions were not met", fileName);
                     continue;
                 }
                 Optional<MapFile> mapFileOptional = MapFile.CODEC.parse(JsonOps.INSTANCE, json).resultOrPartial(Trimmed.LOGGER::error);

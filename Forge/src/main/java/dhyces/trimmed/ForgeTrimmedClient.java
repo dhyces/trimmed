@@ -17,6 +17,7 @@ public class ForgeTrimmedClient {
 
     private static void registerClientReloadListener(final RegisterClientReloadListenersEvent event) {
         TrimmedClient.registerClientReloadListener(event::registerReloadListener);
+        TrimmedClient.injectListenersAtBeginning();
     }
 
     private static void addModels(final ModelEvent.RegisterAdditional event) {

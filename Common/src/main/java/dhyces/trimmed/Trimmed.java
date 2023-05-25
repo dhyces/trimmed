@@ -1,5 +1,6 @@
 package dhyces.trimmed;
 
+import dhyces.modhelper.services.Services;
 import net.minecraft.resources.ResourceLocation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,4 +12,10 @@ public class Trimmed {
     }
 
     public static final Logger LOGGER = LoggerFactory.getLogger("Trimmed");
+
+    public static void logInDev(String str) {
+        if (!Services.PLATFORM_HELPER.isProduction()) {
+            LOGGER.info(str);
+        }
+    }
 }

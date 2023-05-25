@@ -5,6 +5,7 @@ import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.JsonOps;
+import dhyces.modhelper.services.Services;
 import dhyces.trimmed.Trimmed;
 import dhyces.trimmed.api.client.override.provider.ItemOverrideProvider;
 import net.minecraft.Util;
@@ -34,7 +35,12 @@ public class ItemOverrideReloadListener implements PreparableReloadListener {
         MODELS_TO_ADD.clear();
         ItemOverrideRegistry.clearRegistry();
         return CompletableFuture.supplyAsync(() -> OVERRIDES_FINDER.listMatchingResourceStacks(manager), prepareExecutor)
-                .thenCompose(identifierListMap -> parseAll(identifierListMap, prepareExecutor)).thenCompose(synchronizer::wait).thenAccept(pairs -> pairs.forEach(pair -> ItemOverrideRegistry.addOverrideSet(pair.getFirst(), pair.getSecond())));
+                .thenCompose(identifierListMap -> parseAll(identifierListMap, prepareExecutor))
+                .thenCompose(synchronizer::wait)
+                .thenAccept(pairs -> {
+                    pairs.forEach(pair -> ItemOverrideRegistry.addOverrideSet(pair.getFirst(), pair.getSecond()));
+                    Trimmed.logInDev("Item model overrides loaded!");
+                });
     }
 
     private CompletableFuture<List<Pair<ModelResourceLocation, Set<ItemOverrideProvider>>>> parseAll(final Map<ResourceLocation, List<Resource>> map, Executor prepareExecutor) {
@@ -49,6 +55,10 @@ public class ItemOverrideReloadListener implements PreparableReloadListener {
                 for (Resource resource : entry.getValue()) {
                     try (BufferedReader reader = resource.openAsReader()) {
                         JsonObject jsonObject = GsonHelper.parse(reader, true);
+                        if (!Services.PLATFORM_HELPER.shouldPassConditions(jsonObject)) {
+                            Trimmed.LOGGER.debug("Skipping loading item overrides from {} as its conditions were not met", cleanId);
+                            continue;
+                        }
                         DataResult<List<ItemOverrideProvider>> providerResult = ITEM_OVERRIDE_CODEC.parse(JsonOps.INSTANCE, jsonObject);
                         if (providerResult.error().isPresent()) {
                             Trimmed.LOGGER.error(providerResult.error().get().message());

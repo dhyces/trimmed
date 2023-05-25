@@ -1,13 +1,9 @@
 package dhyces.modhelper.services.helpers;
 
 import com.google.gson.JsonObject;
-import com.mojang.blaze3d.platform.NativeImage;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.fabric.api.resource.conditions.v1.ResourceConditions;
 import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.client.renderer.texture.SpriteContents;
-import net.minecraft.client.resources.metadata.animation.AnimationMetadataSection;
-import net.minecraft.client.resources.metadata.animation.FrameSize;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceKey;
@@ -22,6 +18,11 @@ public final class FabricPlatformHelper implements PlatformHelper {
     @Override
     public boolean isClientDist() {
         return FabricLoader.getInstance().getEnvironmentType().equals(EnvType.CLIENT);
+    }
+
+    @Override
+    public boolean isProduction() {
+        return !FabricLoader.getInstance().isDevelopmentEnvironment();
     }
 
     @Override
