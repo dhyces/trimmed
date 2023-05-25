@@ -1,0 +1,68 @@
+plugins {
+    id 'java'
+    id 'org.quiltmc.loom' version '1.1.+'
+    id 'maven-publish'
+}
+
+archivesBaseName = "${mod_name}-common-${minecraft_version}"
+
+loom {
+    accessWidenerPath = file("src/main/resources/trimmed.accesswidener")
+
+    runConfigs.configureEach {
+        ideConfigGenerated = false
+    }
+}
+
+dependencies {
+    minecraft "com.mojang:minecraft:${minecraft_version}"
+    mappings loom.layered() {
+        officialMojangMappings()
+        parchment("org.parchmentmc.data:parchment-1.19.3:2023.03.12@zip")
+    }
+
+    modCompileOnly("org.quiltmc:quilt-loader:${quilt_loader_version}")
+
+    compileOnly group:'org.spongepowered', name:'mixin', version:'0.8.5'
+}
+
+idea {
+    module {
+        inheritOutputDirs = false
+    }
+}
+
+configurations {
+    testCompileOnly.extendsFrom(compileOnly)
+}
+
+import net.fabricmc.loom.task.AbstractRemapJarTask
+tasks.withType(AbstractRemapJarTask).each {
+    it.targetNamespace = "named"
+}
+
+processResources {
+    def buildProps = project.properties.clone()
+
+    filesMatching(['pack.mcmeta']) {
+
+        expand buildProps
+    }
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            groupId project.group
+            artifactId project.archivesBaseName
+            version project.version
+            from components.java
+        }
+    }
+
+    repositories {
+        maven {
+            url "file://" + System.getenv("local_maven")
+        }
+    }
+}

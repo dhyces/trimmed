@@ -1,0 +1,38 @@
+{
+    "schemaVersion": 1,
+    "id": "trimmed",
+    "version": "${version}",
+  
+    "name": "Trimmed",
+    "description": "Better item overrides! Override it all!",
+    "authors": [
+      "Dhyces"
+    ],
+    "contact": {
+      "homepage": "https://fabricmc.net/",
+      "sources": "https://github.com/FabricMC/fabric-example-mod"
+    },
+  
+    "license": "MIT",
+    "icon": "icon.png",
+  
+    "environment": "*",
+    "entrypoints": {
+      "client": [
+        "dhyces.trimmed.FabricTrimmedClient"
+      ]
+    },
+    "mixins": [
+      "trimmed.mixins.json"
+    ],
+
+  "accessWidener" : "trimmed.accesswidener",
+  
+    "depends": {
+      "fabricloader": ">=0.14",
+      "fabric": "*",
+      "minecraft": "1.19.4",
+      "java": ">=17"
+    }
+  }
+  

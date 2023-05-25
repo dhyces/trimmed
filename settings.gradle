@@ -7,11 +7,19 @@ pluginManagement {
             url = 'https://maven.minecraftforge.net/'
         }
         maven {
+            name = 'Fabric'
+            url = 'https://maven.fabricmc.net/'
+        }
+        maven {
             name = 'Sponge Snapshots'
             url = 'https://repo.spongepowered.org/repository/maven-public/'
         }
         maven {
             url = 'https://maven.parchmentmc.org'
+        }
+        maven {
+            name 'Quilt (Release)'
+            url 'https://maven.quiltmc.org/repository/release/'
         }
     }
 
@@ -25,4 +33,4 @@ pluginManagement {
     }
 }
 
-include(":", "TestMod")
+include("Common", "Forge", "Forge:TestMod", "Fabric")

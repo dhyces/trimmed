@@ -1,0 +1,77 @@
+plugins {
+	id 'net.minecraftforge.gradle' version '5.1.+'
+	id 'org.parchmentmc.librarian.forgegradle' version '1.+'
+	id 'org.spongepowered.mixin' version '0.7.+'
+}
+
+archivesBaseName = "${mod_id}-TESTMOD-DO-NOT-PUBLISH-Forge-${minecraft_version}-${version}"
+
+minecraft {
+	mappings channel: "parchment", version: "${parchment_version}"
+
+	accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
+
+	runs {
+		configureEach {
+			workingDirectory "$rootDir/run"
+			ideaModule "${rootProject.name}.Forge.${project.name}.main"
+			property "mixin.config", "trimmed.mixin.json"
+			property 'mixin.env.remapRefMap', 'true'
+			property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
+
+			mods {
+				mod {
+					source project(":Common").sourceSets.main
+					source project(":Forge").sourceSets.main
+				}
+				testmod {
+					source sourceSets.main
+				}
+			}
+		}
+
+		client {
+			taskName 'Client'
+		}
+
+		server {
+			taskName 'Server'
+		}
+
+		data {
+			args '--mod', 'testmod', '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
+			taskName 'Data'
+		}
+	}
+}
+
+sourceSets.main.resources.srcDir "$rootDir/Forge/TestMod/src/generated/resources"
+
+repositories {
+	maven {
+		url = "https://maven.dhyces.dev/"
+	}
+}
+
+dependencies {
+	minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
+
+	annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
+	compileOnly project(":Common")
+	implementation project(":Forge")
+//	implementation "dev.dhyces.trimmed:trimmed-forge-1.19.4:0.0.1"
+}
+
+mixin {
+	config "trimmed.mixins.json"
+
+	debug.verbose = true
+	debug.export = true
+}
+
+tasks.withType(JavaCompile) {
+	source(project(":Common").sourceSets.main.allSource)
+	source(project(":Forge").sourceSets.main.allSource)
+}
+
+jar.finalizedBy('reobfJar')
