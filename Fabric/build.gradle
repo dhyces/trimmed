@@ -1,10 +1,10 @@
 plugins {
-    id 'fabric-loom' version '1.1-SNAPSHOT'
+    id 'fabric-loom' version '1.1.+'
     id 'maven-publish'
     id 'idea'
 }
 
-archivesBaseName = "${mod_name}-fabric-${minecraft_version}"
+archivesBaseName = "${mod_name}-fabric-${minecraft_version}-${mod_version}"
 
 dependencies {
     minecraft "com.mojang:minecraft:${minecraft_version}"

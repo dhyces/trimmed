@@ -7,7 +7,7 @@ plugins {
 	id 'org.spongepowered.mixin' version '0.7.+'
 }
 
-archivesBaseName = "${mod_name}-forge-${minecraft_version}"
+archivesBaseName = "${mod_name}-forge-${minecraft_version}-${mod_version}"
 
 minecraft {
 	mappings channel: 'parchment', version: project.parchment_version

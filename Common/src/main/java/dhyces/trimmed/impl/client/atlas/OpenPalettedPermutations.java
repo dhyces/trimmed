@@ -52,6 +52,7 @@ public class OpenPalettedPermutations implements SpriteSource {
             PalettedPermutations.loadPaletteEntryFromImage(pResourceManager, paletteKey)
         );
         Map<String, OptionalSupplier> replacePixelsMap = new HashMap<>();
+        // TODO: Handle error if the map doesn't exist
         TrimmedApi.MAP_API.getSafeUncheckedClientMap(permutations).ifPresent(optionalIdStringMap -> {
             optionalIdStringMap.forEach((optionalId, s) ->
                     replacePixelsMap.put(s,
@@ -62,6 +63,7 @@ public class OpenPalettedPermutations implements SpriteSource {
             );
         });
 
+        // TODO: Handle error if the tag doesn't exist or if any elements don't exist
         TrimmedApi.TAG_API.getUncheckedTag(textures).forEach(optionalTagElement -> {
             Optional<Resource> imageOptional = pResourceManager.getResource(TEXTURE_ID_CONVERTER.idToFile(optionalTagElement.elementId()));
             if (imageOptional.isEmpty() && optionalTagElement.isRequired()) {
