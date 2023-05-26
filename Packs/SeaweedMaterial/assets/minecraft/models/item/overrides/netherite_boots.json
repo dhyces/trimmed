@@ -1,0 +1,9 @@
+{
+  "values": [
+    {
+      "type": "trimmed:trim",
+      "material": "seaweedmaterial:kelp",
+      "model": "seaweedmaterial:netherite_boots_kelp_trim"
+    }
+  ]
+}

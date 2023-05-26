@@ -1,0 +1,9 @@
+{
+  "values": [
+    {
+      "type": "trimmed:trim",
+      "material": "seaweedmaterial:kelp",
+      "model": "seaweedmaterial:iron_boots_kelp_trim"
+    }
+  ]
+}

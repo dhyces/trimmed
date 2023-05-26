@@ -1,0 +1,9 @@
+{
+  "values": [
+    {
+      "type": "trimmed:trim",
+      "material": "seaweedmaterial:kelp",
+      "model": "seaweedmaterial:leather_leggings_kelp_trim"
+    }
+  ]
+}

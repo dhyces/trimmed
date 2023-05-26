@@ -1,0 +1,9 @@
+{
+  "values": [
+    {
+      "type": "trimmed:trim",
+      "material": "seaweedmaterial:kelp",
+      "model": "seaweedmaterial:leather_helmet_kelp_trim"
+    }
+  ]
+}
