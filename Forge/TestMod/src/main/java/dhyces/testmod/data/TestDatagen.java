@@ -2,6 +2,7 @@ package dhyces.testmod.data;
 
 import dhyces.testmod.ModTrimMaterials;
 import dhyces.testmod.ModTrimPatterns;
+import dhyces.testmod.TrimmedTest;
 import dhyces.testmod.data.trimmed.*;
 import dhyces.testmod.data.trimmed.registrymaps.ClientBlockProvider;
 import dhyces.testmod.data.trimmed.registrymaps.ClientDamageTypeProvider;
@@ -35,13 +36,13 @@ public class TestDatagen {
         DataGenerator generator = event.getGenerator();
         PackOutput packOutput = generator.getPackOutput();
         CompletableFuture<HolderLookup.Provider> lookupProvider = event.getLookupProvider();
-        generator.addProvider(event.includeServer(), new DatapackBuiltinEntriesProvider(packOutput, lookupProvider, BUILDER, Set.of("testmod")));
-        generator.addProvider(event.includeServer(), new TestItemTagProvider(packOutput, lookupProvider, "testmod", event.getExistingFileHelper()));
+        generator.addProvider(event.includeServer(), new DatapackBuiltinEntriesProvider(packOutput, lookupProvider, BUILDER, Set.of(TrimmedTest.MODID)));
+        generator.addProvider(event.includeServer(), new TestItemTagProvider(packOutput, lookupProvider, TrimmedTest.MODID, event.getExistingFileHelper()));
         generator.addProvider(event.includeServer(), new TestRecipeProvider(packOutput));
 
 //        generator.addProvider(event.includeClient(), (DataProvider.Factory<TestAtlasProvider>) TestAtlasProvider::new);
         generator.addProvider(event.includeClient(), new TestLangProvider(packOutput));
-        generator.addProvider(event.includeClient(), new TestModelProvider(packOutput, "testmod", new ExistingFileHelper(Collections.emptyList(), Collections.emptySet(), false, null, null)));
+        generator.addProvider(event.includeClient(), new TestModelProvider(packOutput, TrimmedTest.MODID, event.getExistingFileHelper()));
 
         generator.addProvider(event.includeClient(), new TestItemOverrideProvider(packOutput));
         generator.addProvider(event.includeClient(), new TestClientTagProvider(packOutput, event.getExistingFileHelper()));

@@ -3,7 +3,7 @@ loaderVersion="[45,)"
 license="MIT"
 #issueTrackerURL="https://change.me.to.your.issue.tracker.example.invalid/"
 [[mods]]
-modId="testmod"
+modId="trimmed_testmod"
 version="${file.jarVersion}"
 displayName="TestMod"
 #displayURL="https://change.me.to.your.mods.homepage.example.invalid/"

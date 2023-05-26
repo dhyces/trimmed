@@ -9,7 +9,7 @@ import net.minecraftforge.common.data.ExistingFileHelper;
 public class TestClientTagProvider extends ClientTagDataProvider {
 
     public TestClientTagProvider(PackOutput packOutput, ExistingFileHelper existingFileHelper) {
-        super(packOutput, "testmod", existingFileHelper);
+        super(packOutput, TrimmedTest.MODID, existingFileHelper);
     }
 
     public static final ClientTagKey TEST_TAG = ClientTagKey.of(TrimmedTest.id("test_client_tag"));

@@ -2,28 +2,28 @@
   "values": [
     {
       "type": "trimmed:trim",
-      "material": "testmod:blaze",
-      "model": "testmod:diamond_leggings_blaze_trim"
+      "material": "trimmed_testmod:blaze",
+      "model": "trimmed_testmod:diamond_leggings_blaze_trim"
     },
     {
       "type": "trimmed:trim",
-      "material": "testmod:echo",
-      "model": "testmod:diamond_leggings_echo_trim"
+      "material": "trimmed_testmod:echo",
+      "model": "trimmed_testmod:diamond_leggings_echo_trim"
     },
     {
       "type": "trimmed:trim",
-      "material": "testmod:glow",
-      "model": "testmod:diamond_leggings_glow_trim"
+      "material": "trimmed_testmod:glow",
+      "model": "trimmed_testmod:diamond_leggings_glow_trim"
     },
     {
       "type": "trimmed:trim",
-      "material": "testmod:prismarine",
-      "model": "testmod:diamond_leggings_prismarine_trim"
+      "material": "trimmed_testmod:prismarine",
+      "model": "trimmed_testmod:diamond_leggings_prismarine_trim"
     },
     {
       "type": "trimmed:trim",
-      "material": "testmod:shell",
-      "model": "testmod:diamond_leggings_shell_trim"
+      "material": "trimmed_testmod:shell",
+      "model": "trimmed_testmod:diamond_leggings_shell_trim"
     }
   ]
 }

@@ -1,10 +1,10 @@
 {
   "__comment": "Map of palette texture location to suffix for generated textures",
   "pairs": {
-    "testmod:trims/color_palettes/blaze": "blaze",
-    "testmod:trims/color_palettes/echo": "echo",
-    "testmod:trims/color_palettes/glow": "glow",
-    "testmod:trims/color_palettes/prismarine": "prismarine",
-    "testmod:trims/color_palettes/shell": "shell"
+    "trimmed_testmod:trims/color_palettes/blaze": "blaze",
+    "trimmed_testmod:trims/color_palettes/echo": "echo",
+    "trimmed_testmod:trims/color_palettes/glow": "glow",
+    "trimmed_testmod:trims/color_palettes/prismarine": "prismarine",
+    "trimmed_testmod:trims/color_palettes/shell": "shell"
   }
 }

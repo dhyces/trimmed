@@ -16,7 +16,7 @@ import java.util.concurrent.CompletableFuture;
 public class TestClientItemTagProvider extends ClientRegistryTagDataProvider<Item> {
 
     public TestClientItemTagProvider(PackOutput packOutput, CompletableFuture<HolderLookup.Provider> lookupProviderFuture, ExistingFileHelper existingFileHelper) {
-        super(packOutput, "testmod", lookupProviderFuture, Registries.ITEM, existingFileHelper);
+        super(packOutput, TrimmedTest.MODID, lookupProviderFuture, Registries.ITEM, existingFileHelper);
     }
 
     public static final ClientRegistryTagKey<Item> TEST_ITEM_TAG = ClientRegistryTagKey.of(Registries.ITEM, TrimmedTest.id("test_item_client_tag"));

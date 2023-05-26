@@ -1,6 +1,7 @@
 package dhyces.testmod.data.trimmed;
 
 import dhyces.testmod.ModTrimMaterials;
+import dhyces.testmod.TrimmedTest;
 import dhyces.testmod.client.providers.BlockStateItemOverrideProvider;
 import dhyces.trimmed.api.data.ItemOverrideDataProvider;
 import net.minecraft.Util;
@@ -18,7 +19,7 @@ import java.util.List;
 public class TestItemOverrideProvider extends ItemOverrideDataProvider {
 
     public TestItemOverrideProvider(PackOutput output) {
-        super(output, "testmod");
+        super(output, TrimmedTest.MODID);
     }
 
     @Override

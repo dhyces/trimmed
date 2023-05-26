@@ -39,7 +39,7 @@ minecraft {
 		}
 
 		data {
-			args '--mod', 'testmod', '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
+			args '--mod', 'trimmed_testmod', '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
 			taskName 'Data'
 		}
 	}

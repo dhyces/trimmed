@@ -1,7 +1,7 @@
 {
   "values": [
     {
-      "type": "testmod:block_state"
+      "type": "trimmed_testmod:block_state"
     }
   ]
 }

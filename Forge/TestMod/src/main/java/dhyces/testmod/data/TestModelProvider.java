@@ -5,6 +5,7 @@ import dhyces.testmod.TrimmedTest;
 import net.minecraft.Util;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.packs.PackType;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.world.item.ArmorMaterials;
@@ -61,8 +62,8 @@ public class TestModelProvider extends ItemModelProvider {
     private void uploadTwoLayerArmor(ArmorMaterial material, ArmorItem.Type type, ResourceLocation trimMaterial) {
         String armorMaterialName = material == ArmorMaterials.GOLD ? "golden" : material.getName();
         ResourceLocation id = new ResourceLocation(trimMaterial.getNamespace(), "item/%s_%s_%s_trim".formatted(armorMaterialName, type.getName(), trimMaterial.getPath()));
-        ResourceLocation layer0Id = new ResourceLocation("item/%s_%s".formatted(armorMaterialName, type.getName()));
-        ResourceLocation layer1Id = new ResourceLocation("trims/items/%s_trim_%s".formatted(type.getName(), trimMaterial.getPath()));
+        ResourceLocation layer0Id = trackGeneratedTexture(new ResourceLocation("item/%s_%s".formatted(armorMaterialName, type.getName())));
+        ResourceLocation layer1Id = trackGeneratedTexture(new ResourceLocation("trims/items/%s_trim_%s".formatted(type.getName(), trimMaterial.getPath())));
         withExistingParent(id.getPath(), "item/generated")
                 .texture("layer0", layer0Id.toString())
                 .texture("layer1", layer1Id.toString());
@@ -79,12 +80,17 @@ public class TestModelProvider extends ItemModelProvider {
 
     private void uploadThreeLayerArmor(ArmorMaterial material, ArmorItem.Type type, ResourceLocation trimMaterial) {
         ResourceLocation id = new ResourceLocation(trimMaterial.getNamespace(), "item/%s_%s_%s_trim".formatted(material.getName(), type.getName(), trimMaterial.getPath()));
-        ResourceLocation layer0Id = new ResourceLocation("item/%s_%s".formatted(material.getName(), type.getName()));
-        ResourceLocation layer1Id = new ResourceLocation("item/%s_%s_overlay".formatted(material.getName(), type.getName()));
-        ResourceLocation layer2Id = new ResourceLocation("trims/items/%s_trim_%s".formatted(type.getName(), trimMaterial.getPath()));
+        ResourceLocation layer0Id = trackGeneratedTexture(new ResourceLocation("item/%s_%s".formatted(material.getName(), type.getName())));
+        ResourceLocation layer1Id = trackGeneratedTexture(new ResourceLocation("item/%s_%s_overlay".formatted(material.getName(), type.getName())));
+        ResourceLocation layer2Id = trackGeneratedTexture(new ResourceLocation("trims/items/%s_trim_%s".formatted(type.getName(), trimMaterial.getPath())));
         withExistingParent(id.getPath(), "item/generated")
                 .texture("layer0", layer0Id.toString())
                 .texture("layer1", layer1Id.toString())
                 .texture("layer2", layer2Id.toString());
+    }
+
+    private ResourceLocation trackGeneratedTexture(ResourceLocation location) {
+        existingFileHelper.trackGenerated(location, PackType.CLIENT_RESOURCES, ".png", "textures");
+        return location;
     }
 }

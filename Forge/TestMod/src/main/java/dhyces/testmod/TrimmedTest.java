@@ -26,7 +26,7 @@ import org.slf4j.LoggerFactory;
 @Mod(TrimmedTest.MODID)
 public class TrimmedTest {
 
-    public static final String MODID = "testmod";
+    public static final String MODID = "trimmed_testmod";
     public static final Logger LOGGER = LoggerFactory.getLogger(MODID);
 
     public static ResourceLocation id(String id) {

@@ -2,28 +2,28 @@
   "values": [
     {
       "type": "trimmed:trim",
-      "material": "testmod:blaze",
-      "model": "testmod:golden_helmet_blaze_trim"
+      "material": "trimmed_testmod:blaze",
+      "model": "trimmed_testmod:golden_helmet_blaze_trim"
     },
     {
       "type": "trimmed:trim",
-      "material": "testmod:echo",
-      "model": "testmod:golden_helmet_echo_trim"
+      "material": "trimmed_testmod:echo",
+      "model": "trimmed_testmod:golden_helmet_echo_trim"
     },
     {
       "type": "trimmed:trim",
-      "material": "testmod:glow",
-      "model": "testmod:golden_helmet_glow_trim"
+      "material": "trimmed_testmod:glow",
+      "model": "trimmed_testmod:golden_helmet_glow_trim"
     },
     {
       "type": "trimmed:trim",
-      "material": "testmod:prismarine",
-      "model": "testmod:golden_helmet_prismarine_trim"
+      "material": "trimmed_testmod:prismarine",
+      "model": "trimmed_testmod:golden_helmet_prismarine_trim"
     },
     {
       "type": "trimmed:trim",
-      "material": "testmod:shell",
-      "model": "testmod:golden_helmet_shell_trim"
+      "material": "trimmed_testmod:shell",
+      "model": "trimmed_testmod:golden_helmet_shell_trim"
     }
   ]
 }
