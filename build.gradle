@@ -2,6 +2,7 @@ subprojects {
 
     apply plugin: 'java-library'
     apply plugin: 'java'
+    apply plugin: 'maven-publish'
     
     java.toolchain.languageVersion = JavaLanguageVersion.of(17)
     java.withSourcesJar()
@@ -63,7 +64,31 @@ subprojects {
     // metadata includes mapped dependencies which are not reasonably consumable by
     // other mod developers.
     tasks.withType(GenerateModuleMetadata) {
-
         enabled = false
+    }
+
+    publishing {
+        repositories {
+            maven {
+                name "Local"
+                url "file://" + findProperty("local_maven")
+            }
+            maven {
+                name "Maven"
+                url findProperty("mavenUrl")
+                credentials(PasswordCredentials) {
+                    username = findProperty("mavenUsername")
+                    password = findProperty("mavenPassword")
+                }
+            }
+            maven {
+                name = "GitHubPackages"
+                url = uri("https://maven.pkg.github.com/dhyces/trimmed")
+                credentials {
+                    username = project.findProperty("gpr.user") ?: System.getenv("USERNAME")
+                    password = project.findProperty("gpr.key") ?: System.getenv("TOKEN")
+                }
+            }
+        }
     }
 }

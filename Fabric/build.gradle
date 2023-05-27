@@ -4,7 +4,7 @@ plugins {
     id 'idea'
 }
 
-archivesBaseName = "${mod_name}-fabric-${minecraft_version}-${mod_version}"
+archivesBaseName = "${mod_id}-fabric-${minecraft_version}"
 
 dependencies {
     minecraft "com.mojang:minecraft:${minecraft_version}"
@@ -67,16 +67,13 @@ sourcesJar {
 publishing {
     publications {
         mavenJava(MavenPublication) {
-            groupId project.group
+            groupId project.maven_group
             artifactId project.archivesBaseName
-            version project.version
+            version project.mod_version
             from components.java
-        }
-    }
-
-    repositories {
-        maven {
-            url "file://" + System.getenv("local_maven")
+            pom.withXml {
+                asNode().remove(asNode().dependencies)
+            }
         }
     }
 }

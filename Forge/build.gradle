@@ -7,7 +7,7 @@ plugins {
 	id 'org.spongepowered.mixin' version '0.7.+'
 }
 
-archivesBaseName = "${mod_name}-forge-${minecraft_version}-${mod_version}"
+archivesBaseName = "${mod_id}-forge-${minecraft_version}"
 
 minecraft {
 	mappings channel: 'parchment', version: project.parchment_version
@@ -134,28 +134,6 @@ jar {
 }
 
 publishing {
-	repositories {
-		maven {
-			name "Local"
-			url "file://" + findProperty("local_maven")
-		}
-		maven {
-			name "Maven"
-			url findProperty("mavenUrl")
-			credentials(PasswordCredentials) {
-				username = findProperty("mavenUsername")
-				password = findProperty("mavenPassword")
-			}
-		}
-		maven {
-			name = "GitHubPackages"
-			url = uri("https://maven.pkg.github.com/dhyces/trimmed")
-			credentials {
-				username = project.findProperty("gpr.user") ?: System.getenv("USERNAME")
-				password = project.findProperty("gpr.key") ?: System.getenv("TOKEN")
-			}
-		}
-	}
 	publications {
 		mavenJava(MavenPublication) {
 			groupId project.maven_group
