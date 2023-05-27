@@ -1,0 +1,34 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "chunkedpattern:chunked_grass_block_smithing_trim"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    },
+    "test_advancement": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "minecraft:grass_block"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "requirements": [
+    [
+      "test_advancement",
+      "has_the_recipe"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "chunkedpattern:chunked_grass_block_smithing_trim"
+    ]
+  }
+}

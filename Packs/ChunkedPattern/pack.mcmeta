@@ -5,7 +5,7 @@
         ]
     },
     "pack": {
-        "description": "Adds a kelp trim material!",
+        "description": "Adds a new trim pattern!",
         "pack_format": 12
     }
 }

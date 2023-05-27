@@ -1,0 +1,7 @@
+{
+  "asset_id": "chunkedpattern:chunked",
+  "description": {
+    "translate": "chunkedpattern.trim_pattern.chunked"
+  },
+  "template_item": "minecraft:grass_block"
+}
