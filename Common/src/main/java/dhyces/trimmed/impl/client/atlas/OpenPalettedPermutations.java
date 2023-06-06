@@ -86,7 +86,7 @@ public class OpenPalettedPermutations implements SpriteSource {
 
     public record OptionalSupplier(boolean isRequired, Supplier<IntUnaryOperator> mapper) {}
 
-    public record OpenPalettedSpriteSupplier(LazyLoadedImage lazyLoadedImage, OptionalSupplier optionalSupplier, ResourceLocation permutedId) implements SpriteSupplier{
+    public record OpenPalettedSpriteSupplier(LazyLoadedImage lazyLoadedImage, OptionalSupplier optionalSupplier, ResourceLocation permutedId) implements SpriteSupplier {
 
         @Override
         public SpriteContents get() {

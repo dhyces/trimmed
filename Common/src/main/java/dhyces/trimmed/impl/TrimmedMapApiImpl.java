@@ -10,7 +10,7 @@ import net.minecraft.core.Holder;
 import java.util.Map;
 import java.util.Optional;
 
-public class TrimmedMapApiImpl implements TrimmedMapApi {
+public final class TrimmedMapApiImpl implements TrimmedMapApi {
     @Override
     public Map<OptionalId, String> getUncheckedClientMap(ClientMapKey clientMapKey) {
         return ClientMapManager.getUncheckedHandler().getMap(clientMapKey);

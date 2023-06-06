@@ -88,7 +88,6 @@ abstract class BaseTagHandler<K, V> {
             builder.addAll(entryResult.result().get());
         }
 
-        // Adds it to the registered map and returns the set
         return DataResult.success(resolvedTags.computeIfAbsent(key, k -> builder.build()));
     }
 
