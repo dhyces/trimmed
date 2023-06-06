@@ -1,19 +1,21 @@
 package dhyces.trimmed.impl.network.packets;
 
-import dhyces.modhelper.network.SimplePacket;
-import dhyces.trimmed.impl.network.Packets;
+import dhyces.modhelper.network.packet.SimplePacket;
+import dhyces.trimmed.impl.network.Networking;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.item.ItemStack;
 
-public record SyncMapsPacket(ItemStack item) implements SimplePacket<SyncMapsPacket> {
+public class SyncMapsPacket extends SimplePacket<SyncMapsPacket> {
 
-    @Override
-    public void writeTo(FriendlyByteBuf friendlyByteBuf) {
-        friendlyByteBuf.writeItem(item);
+    public final ItemStack stack;
+
+    public SyncMapsPacket(FriendlyByteBuf buf) {
+        super(Networking.SYNC_MAPS);
+        this.stack = buf.readItem();
     }
 
     @Override
-    public Type<?> getType() {
-        return Packets.SYNC_MAPS_TYPE;
+    public void writeTo(FriendlyByteBuf buf) {
+        buf.writeItem(stack);
     }
 }

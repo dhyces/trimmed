@@ -51,14 +51,17 @@ repositories {
 	maven {
 		url = "https://maven.dhyces.dev/"
 	}
+	maven {
+		url = "https://jm.gserv.me/repository/maven-public/"
+	}
 }
 
 dependencies {
 	minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
 
 	annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
-	compileOnly project(":Common")
-	implementation project(":Forge")
+	implementation project(":Common")
+	compileOnly project(":Forge")
 //	implementation "dev.dhyces.trimmed:trimmed-forge-1.19.4:0.0.1"
 }
 

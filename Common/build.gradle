@@ -23,6 +23,8 @@ dependencies {
 
     modCompileOnly("org.quiltmc:quilt-loader:${quilt_loader_version}")
 
+    implementation 'mysticdrew:common-networking:1.0.0+1.19.3-common'
+
     compileOnly group:'org.spongepowered', name:'mixin', version:'0.8.5'
 }
 

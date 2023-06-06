@@ -1,7 +1,7 @@
 package dhyces.trimmed;
 
-import dhyces.modhelper.network.SimpleChannelHandler;
 import dhyces.modhelper.services.Services;
+import dhyces.trimmed.impl.network.Networking;
 import net.minecraft.resources.ResourceLocation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,9 +14,9 @@ public class Trimmed {
 
     public static final Logger LOGGER = LoggerFactory.getLogger("Trimmed");
 
-    public static final SimpleChannelHandler CHANNEL_HANDLER = Services.NETWORK_HELPER.createChannelHandler("1", Trimmed.id("main"));
-
-    public static void init() {}
+    public static void init() {
+        Networking.init();
+    }
 
     public static void logInDev(String str) {
         if (!Services.PLATFORM_HELPER.isProduction()) {

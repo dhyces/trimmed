@@ -69,6 +69,8 @@ repositories {
 dependencies {
 	minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
 
+	implementation fg.deobf('mysticdrew:common-networking:1.0.0+1.19.3-forge')
+
 	annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
 	implementation project(":Common")
 }
