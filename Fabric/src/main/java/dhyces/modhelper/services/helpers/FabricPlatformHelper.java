@@ -40,6 +40,11 @@ public final class FabricPlatformHelper implements PlatformHelper {
     }
 
     @Override
+    public boolean isLoadingStateValid() {
+        return true;
+    }
+
+    @Override
     public <T> T getRegistryValue(ResourceKey<? extends Registry<T>> registry, ResourceLocation valueKey) {
         return (T)BuiltInRegistries.REGISTRY.get(registry.location()).get(valueKey);
     }

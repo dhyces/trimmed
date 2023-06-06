@@ -15,5 +15,7 @@ public interface PlatformHelper {
 
     boolean shouldPassConditions(JsonObject jsonObject);
 
+    boolean isLoadingStateValid();
+
     <T> T getRegistryValue(ResourceKey<? extends Registry<T>> registry, ResourceLocation valueKey);
 }

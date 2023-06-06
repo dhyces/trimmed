@@ -13,6 +13,7 @@ import net.minecraftforge.client.textures.ForgeTextureMetadata;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.common.crafting.conditions.ICondition;
 import net.minecraftforge.fml.ModList;
+import net.minecraftforge.fml.ModLoader;
 import net.minecraftforge.fml.loading.FMLLoader;
 import net.minecraftforge.registries.RegistryManager;
 
@@ -40,6 +41,11 @@ public final class ForgePlatformHelper implements PlatformHelper {
     @Override
     public boolean shouldPassConditions(JsonObject jsonObject) {
         return CraftingHelper.processConditions(jsonObject, "conditions", ICondition.IContext.TAGS_INVALID);
+    }
+
+    @Override
+    public boolean isLoadingStateValid() {
+        return ModLoader.isLoadingStateValid();
     }
 
     @Override
