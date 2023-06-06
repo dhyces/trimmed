@@ -4,6 +4,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dhyces.trimmed.api.client.override.provider.ItemOverrideProvider;
 import dhyces.trimmed.api.client.override.provider.ItemOverrideProviderType;
+import dhyces.trimmed.api.client.override.provider.SimpleItemOverrideProvider;
 import dhyces.trimmed.api.util.CodecUtil;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.resources.model.ModelResourceLocation;
@@ -18,7 +19,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-public final class TrimItemOverrideProvider implements ItemOverrideProvider {
+public final class TrimItemOverrideProvider extends SimpleItemOverrideProvider {
     public static final Codec<TrimItemOverrideProvider> CODEC = RecordCodecBuilder.create(instance ->
             instance.group(
                     ResourceLocation.CODEC.fieldOf("material").forGetter(provider -> provider.material),
@@ -35,14 +36,13 @@ public final class TrimItemOverrideProvider implements ItemOverrideProvider {
     }
 
     @Override
-    public Optional<ModelResourceLocation> getModel(ItemStack itemStack, @Nullable ClientLevel world, @Nullable LivingEntity entity, int seed) {
+    public Optional<ModelResourceLocation> getModelLocation(ItemStack itemStack, @Nullable ClientLevel world, @Nullable LivingEntity entity, int seed) {
         if (world == null) {
             return Optional.empty();
         }
         boolean isMaterial = ArmorTrim.getTrim(world.registryAccess(), itemStack)
                 .map(ArmorTrim::material)
-                .map(Holder::unwrapKey)
-                .orElse(Optional.empty())
+                .flatMap(Holder::unwrapKey)
                 .map(ResourceKey::location)
                 .map(material::equals)
                 .orElse(false);

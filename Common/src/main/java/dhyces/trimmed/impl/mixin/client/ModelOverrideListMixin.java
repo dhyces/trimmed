@@ -19,8 +19,8 @@ import java.util.Optional;
 public class ModelOverrideListMixin {
 
     @Inject(method = "resolve", at = @At("HEAD"), cancellable = true)
-    private void trimmed$findModdedOverrides(BakedModel model, ItemStack stack, ClientLevel world, LivingEntity entity, int seed, CallbackInfoReturnable<BakedModel> cir) {
-        Optional<ModelResourceLocation> optionalId = ItemOverrideRegistry.getOverrideModel(stack, world, entity, seed);
-        optionalId.ifPresent(identifier -> cir.setReturnValue(Minecraft.getInstance().getModelManager().getModel(identifier)));
+    private void trimmed$findModdedOverrides(BakedModel oldModel, ItemStack stack, ClientLevel world, LivingEntity entity, int seed, CallbackInfoReturnable<BakedModel> cir) {
+        Optional<BakedModel> optionalModel = ItemOverrideRegistry.getOverrideModel(stack, world, entity, seed);
+        optionalModel.ifPresent(cir::setReturnValue);
     }
 }

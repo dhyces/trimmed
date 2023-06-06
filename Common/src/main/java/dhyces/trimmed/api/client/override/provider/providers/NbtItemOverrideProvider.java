@@ -4,6 +4,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dhyces.trimmed.api.client.override.provider.ItemOverrideProvider;
 import dhyces.trimmed.api.client.override.provider.ItemOverrideProviderType;
+import dhyces.trimmed.api.client.override.provider.SimpleItemOverrideProvider;
 import dhyces.trimmed.api.util.CodecUtil;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.resources.model.ModelResourceLocation;
@@ -15,7 +16,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-public final class NbtItemOverrideProvider implements ItemOverrideProvider {
+public final class NbtItemOverrideProvider extends SimpleItemOverrideProvider {
     public static final Codec<NbtItemOverrideProvider> CODEC = RecordCodecBuilder.create(instance ->
             instance.group(
                     CompoundTag.CODEC.fieldOf("nbt").forGetter(nbtItemOverrideProvider -> nbtItemOverrideProvider.nbt),
@@ -32,7 +33,7 @@ public final class NbtItemOverrideProvider implements ItemOverrideProvider {
     }
 
     @Override
-    public Optional<ModelResourceLocation> getModel(ItemStack itemStack, @Nullable ClientLevel world, @Nullable LivingEntity entity, int seed) {
+    public Optional<ModelResourceLocation> getModelLocation(ItemStack itemStack, @Nullable ClientLevel world, @Nullable LivingEntity entity, int seed) {
         if (itemStack.hasTag()) {
             CompoundTag stackNbt = itemStack.getTag();
             for (String key : nbt.getAllKeys()) {
