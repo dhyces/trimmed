@@ -44,7 +44,7 @@ public class ClientRegistryMapAppender<T, V> extends BaseMapAppender<ClientRegis
 
         public RegistryAware(MapBuilder builder, Function<V, String> mappingFunction, ResourceKey<? extends Registry<T>> registryResourceKey, HolderLookup.Provider lookupProvider) {
             super(builder, mappingFunction, registryResourceKey);
-            this.lookup = lookupProvider.lookupOrThrow(registryResourceKey).listElements().map(tReference -> Map.entry(tReference.get(), tReference.key().location())).collect(Util.toMap());
+            this.lookup = lookupProvider.lookupOrThrow(registryResourceKey).listElements().map(tReference -> Map.entry(tReference.value(), tReference.key().location())).collect(Util.toMap());
         }
 
         public RegistryAware<T, V> put(T key, V value) {

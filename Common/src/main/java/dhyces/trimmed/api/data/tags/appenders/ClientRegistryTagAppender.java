@@ -67,7 +67,7 @@ public class ClientRegistryTagAppender<T> {
 
         public RegistryAware(TagBuilder builder, ResourceKey<? extends Registry<T>> registryResourceKey, HolderLookup.Provider lookupProvider) {
             super(builder, registryResourceKey);
-            this.lookup = lookupProvider.lookupOrThrow(registryResourceKey).listElements().map(tReference -> Map.entry(tReference.get(), tReference.key().location())).collect(Util.toMap());
+            this.lookup = lookupProvider.lookupOrThrow(registryResourceKey).listElements().map(tReference -> Map.entry(tReference.value(), tReference.key().location())).collect(Util.toMap());
         }
 
         public RegistryAware<T> add(T element) {
