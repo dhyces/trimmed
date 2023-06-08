@@ -1,6 +1,7 @@
 package dhyces.trimmed.api.data.maps.appenders;
 
 import dhyces.trimmed.api.data.maps.MapBuilder;
+import dhyces.trimmed.impl.client.maps.ClientRegistryMapKey;
 import dhyces.trimmed.impl.client.tags.ClientRegistryTagKey;
 import net.minecraft.Util;
 import net.minecraft.core.HolderLookup;
@@ -12,7 +13,7 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-public class ClientRegistryMapAppender<T, V> extends BaseMapAppender<ClientRegistryTagKey<T>, V> {
+public class ClientRegistryMapAppender<T, V> extends BaseMapAppender<ClientRegistryMapKey<T>, V> {
     private final ResourceKey<? extends Registry<T>> registryKey;
 
     public ClientRegistryMapAppender(MapBuilder builder, Function<V, String> mappingFunction, ResourceKey<? extends Registry<T>> registryKey) {
@@ -35,8 +36,8 @@ public class ClientRegistryMapAppender<T, V> extends BaseMapAppender<ClientRegis
     }
 
     @Override
-    protected ResourceLocation keyToRL(ClientRegistryTagKey<T> key) {
-        return key.getTagId();
+    protected ResourceLocation keyToRL(ClientRegistryMapKey<T> key) {
+        return key.getMapId();
     }
 
     public static final class RegistryAware<T, V> extends ClientRegistryMapAppender<T, V> {

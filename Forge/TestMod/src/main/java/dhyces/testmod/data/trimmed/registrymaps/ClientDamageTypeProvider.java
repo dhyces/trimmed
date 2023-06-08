@@ -19,6 +19,7 @@ public class ClientDamageTypeProvider extends ClientRegistryMapDataProvider<Dama
 
     @Override
     protected void addMaps(HolderLookup.Provider lookupProvider) {
-        mapWithMapper(TestClientMaps.DATAGEN_TEST_DAMAGE_TYPE_MAP, Integer.class, Object::toString).put(DamageTypes.DRAGON_BREATH, 4);
+        mapWithMapper(TestClientMaps.DATAGEN_TEST_DAMAGE_TYPE_MAP, (Integer i) -> i.toString()).put(DamageTypes.DRAGON_BREATH, 4);
+
     }
 }

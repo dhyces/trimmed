@@ -18,7 +18,7 @@ public class EntityToEntityProvider extends ClientRegistryMapDataProvider<Entity
 
     @Override
     protected void addMaps(HolderLookup.Provider lookupProvider) {
-        registryAwareWithMapper(TestClientMaps.DATAGEN_ENTITY_TRANSFORM, EntityType.class, entityType -> entityType.builtInRegistryHolder().key().location().toString(), lookupProvider)
+        registryAwareWithMapper(TestClientMaps.DATAGEN_ENTITY_TRANSFORM, (EntityType<?> entityType) -> entityType.builtInRegistryHolder().key().location().toString(), lookupProvider)
                 .put(EntityType.ALLAY, EntityType.BAT);
     }
 }

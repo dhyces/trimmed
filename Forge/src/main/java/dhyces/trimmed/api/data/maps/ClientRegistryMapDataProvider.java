@@ -40,7 +40,7 @@ public abstract class ClientRegistryMapDataProvider<T> extends BaseMapDataProvid
         return new ClientRegistryMapAppender<>(getOrCreateBuilder(clientRegistryMapKey.getMapId()), Function.identity(), registryKey);
     }
 
-    public <V> ClientRegistryMapAppender<T, V> mapWithMapper(ClientRegistryMapKey<T> clientRegistryMapKey, Class<V> valueClass, Function<V, String> mapper) {
+    public <V> ClientRegistryMapAppender<T, V> mapWithMapper(ClientRegistryMapKey<T> clientRegistryMapKey, Function<V, String> mapper) {
         return new ClientRegistryMapAppender<>(getOrCreateBuilder(clientRegistryMapKey.getMapId()), mapper, registryKey);
     }
 
@@ -48,7 +48,7 @@ public abstract class ClientRegistryMapDataProvider<T> extends BaseMapDataProvid
         return new ClientRegistryMapAppender.RegistryAware<>(getOrCreateBuilder(clientRegistryMapKey.getMapId()), Function.identity(), registryKey, lookupProvider);
     }
 
-    public <V> ClientRegistryMapAppender.RegistryAware<T, V> registryAwareWithMapper(ClientRegistryMapKey<T> clientRegistryMapKey, Class<V> valueClass, Function<V, String> mapper, HolderLookup.Provider lookupProvider) {
+    public <V> ClientRegistryMapAppender.RegistryAware<T, V> registryAwareWithMapper(ClientRegistryMapKey<T> clientRegistryMapKey, Function<V, String> mapper, HolderLookup.Provider lookupProvider) {
         return new ClientRegistryMapAppender.RegistryAware<>(getOrCreateBuilder(clientRegistryMapKey.getMapId()), mapper, registryKey, lookupProvider);
     }
 
