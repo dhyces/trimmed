@@ -9,7 +9,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-public final class UnresolvedMap<R, T> implements Iterable<Map.Entry<ResourceKey<? extends Registry<R>>, Map<ResourceLocation, T>>> {
+public final class UnresolvedMapIterable<R, T> implements Iterable<Map.Entry<ResourceKey<? extends Registry<R>>, Map<ResourceLocation, T>>> {
 
     private final Map<ResourceKey<? extends Registry<R>>, Map<ResourceLocation, T>> backing = new HashMap<>();
 
