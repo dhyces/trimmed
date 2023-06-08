@@ -7,7 +7,7 @@ import dhyces.modhelper.services.Services;
 import dhyces.trimmed.Trimmed;
 import dhyces.trimmed.api.util.ResourcePath;
 import dhyces.trimmed.impl.client.tags.ClientTagFile;
-import dhyces.trimmed.impl.util.UnresolvedMap;
+import dhyces.trimmed.impl.util.UnresolvedMapIterable;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -72,7 +72,7 @@ public class ClientTagManager implements PreparableReloadListener {
         UNCHECKED_HANDLER.clear();
         REGISTRY_HANDLERS.clear();
         DATAPACKED_HANDLERS.clear();
-        final UnresolvedMap<T, Set<TagEntry>> readTags = new UnresolvedMap<>();
+        final UnresolvedMapIterable<T, Set<TagEntry>> readTags = new UnresolvedMapIterable<>();
         for (Map.Entry<ResourceLocation, List<Resource>> entry : FILE_TO_ID_CONVERTER.listMatchingResourceStacks(resourceManager).entrySet()) {
             ResourcePath idPath = new ResourcePath(entry.getKey());
             Set<TagEntry> readEntries = readResources(entry.getKey(), entry.getValue());

@@ -8,7 +8,7 @@ import dhyces.trimmed.Trimmed;
 import dhyces.trimmed.api.data.maps.MapValue;
 import dhyces.trimmed.api.data.maps.MapFile;
 import dhyces.trimmed.api.util.ResourcePath;
-import dhyces.trimmed.impl.util.UnresolvedMap;
+import dhyces.trimmed.impl.util.UnresolvedMapIterable;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -70,7 +70,7 @@ public class ClientMapManager implements PreparableReloadListener {
         UNCHECKED_HANDLERS.clear();
         REGISTRY_HANDLERS.values().forEach(BaseMapHandler::clear);
         DATAPACKED_HANDLERS.values().forEach(BaseMapHandler::clear);
-        final UnresolvedMap<T, Set<Map.Entry<ResourceLocation, MapValue>>> readMaps = new UnresolvedMap<>();
+        final UnresolvedMapIterable<T, Set<Map.Entry<ResourceLocation, MapValue>>> readMaps = new UnresolvedMapIterable<>();
         for (Map.Entry<ResourceLocation, List<Resource>> entry : FILE_TO_ID_CONVERTER.listMatchingResourceStacks(resourceManager).entrySet()) {
             ResourcePath idPath = new ResourcePath(entry.getKey());
             Map<ResourceLocation, MapValue> readMap = readResources(entry.getKey(), entry.getValue());
