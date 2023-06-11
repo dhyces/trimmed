@@ -1,6 +1,6 @@
 package dhyces.trimmed.impl;
 
-import dhyces.trimmed.api.TrimmedTagApi;
+import dhyces.trimmed.api.TrimmedClientTagApi;
 import dhyces.trimmed.impl.client.tags.ClientRegistryTagKey;
 import dhyces.trimmed.impl.client.tags.ClientTagKey;
 import dhyces.trimmed.impl.client.tags.manager.ClientTagManager;
@@ -9,9 +9,10 @@ import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Optional;
 import java.util.Set;
 
-public final class TrimmedTagApiImpl implements TrimmedTagApi {
+public final class TrimmedClientTagApiImpl implements TrimmedClientTagApi {
     @Override
     public boolean uncheckedTagContains(ClientTagKey tagKey, ResourceLocation value) {
         return OptionalId.checkEither(value, optionalTagElement -> ClientTagManager.getUncheckedHandler().doesTagContain(tagKey, optionalTagElement));
@@ -51,5 +52,22 @@ public final class TrimmedTagApiImpl implements TrimmedTagApi {
         return ClientTagManager.getDatapackedHandler(clientRegistryTagKey.getRegistryKey())
                 .map(tDatapackTagHandler -> tDatapackTagHandler.getSet(clientRegistryTagKey))
                 .orElse(null);
+    }
+
+    @Override
+    public Optional<Set<OptionalId>> getSafeUncheckedTag(ClientTagKey clientTagKey) {
+        return Optional.ofNullable(ClientTagManager.getUncheckedHandler().getSet(clientTagKey));
+    }
+
+    @Override
+    public <T> Optional<Set<T>> getSafeRegistryTag(ClientRegistryTagKey<T> clientRegistryTagKey) {
+        return ClientTagManager.getRegistryHandler(clientRegistryTagKey.getRegistryKey())
+                .map(tRegistryTagHandler -> tRegistryTagHandler.getSet(clientRegistryTagKey));
+    }
+
+    @Override
+    public <T> Optional<Set<Holder<T>>> getSafeDatapackedTag(ClientRegistryTagKey<T> clientRegistryTagKey) {
+        return ClientTagManager.getDatapackedHandler(clientRegistryTagKey.getRegistryKey())
+                .map(tDatapackTagHandler -> tDatapackTagHandler.getSet(clientRegistryTagKey));
     }
 }
