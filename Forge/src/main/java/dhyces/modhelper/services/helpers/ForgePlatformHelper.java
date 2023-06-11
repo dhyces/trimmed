@@ -1,15 +1,10 @@
 package dhyces.modhelper.services.helpers;
 
 import com.google.gson.JsonObject;
-import com.mojang.blaze3d.platform.NativeImage;
-import dhyces.modhelper.services.helpers.PlatformHelper;
-import net.minecraft.client.renderer.texture.SpriteContents;
-import net.minecraft.client.resources.metadata.animation.AnimationMetadataSection;
-import net.minecraft.client.resources.metadata.animation.FrameSize;
+import dhyces.modhelper.services.util.Platform;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.client.textures.ForgeTextureMetadata;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.common.crafting.conditions.ICondition;
 import net.minecraftforge.fml.ModList;
@@ -31,6 +26,21 @@ public final class ForgePlatformHelper implements PlatformHelper {
     @Override
     public boolean isProduction() {
         return FMLLoader.isProduction();
+    }
+
+    @Override
+    public Platform getPlatform() {
+        return Platform.FORGE;
+    }
+
+    @Override
+    public String resolveRegistryPath(ResourceKey<? extends Registry<?>> resourceKey) {
+        String registryNamespace = resourceKey.location().getNamespace();
+        if (registryNamespace.equals("minecraft")) {
+            return resourceKey.location().getPath();
+        } else {
+            return registryNamespace + "/" + resourceKey.location().getPath();
+        }
     }
 
     @Override

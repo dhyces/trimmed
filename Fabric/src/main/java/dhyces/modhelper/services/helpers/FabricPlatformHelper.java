@@ -1,6 +1,7 @@
 package dhyces.modhelper.services.helpers;
 
 import com.google.gson.JsonObject;
+import dhyces.modhelper.services.util.Platform;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.fabric.api.resource.conditions.v1.ResourceConditions;
 import net.fabricmc.loader.api.FabricLoader;
@@ -23,6 +24,16 @@ public final class FabricPlatformHelper implements PlatformHelper {
     @Override
     public boolean isProduction() {
         return !FabricLoader.getInstance().isDevelopmentEnvironment();
+    }
+
+    @Override
+    public Platform getPlatform() {
+        return Platform.FABRIC;
+    }
+
+    @Override
+    public String resolveRegistryPath(ResourceKey<? extends Registry<?>> resourceKey) {
+        return resourceKey.location().getPath();
     }
 
     @Override
