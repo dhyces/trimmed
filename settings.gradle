@@ -22,15 +22,6 @@ pluginManagement {
             url 'https://maven.quiltmc.org/repository/release/'
         }
     }
-
-    // https://github.com/CraftTweaker/CraftTweaker/blob/1.19/settings.gradle.kts#L22-L31
-    resolutionStrategy {
-        eachPlugin {
-            if (requested.id.id == "org.spongepowered.mixin") {
-                useModule("org.spongepowered:mixingradle:${requested.version}")
-            }
-        }
-    }
 }
 
 include("Common", "Forge", "Forge:TestMod", "Fabric")
