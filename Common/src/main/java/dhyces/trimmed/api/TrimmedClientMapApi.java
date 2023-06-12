@@ -11,13 +11,9 @@ import java.util.Optional;
 
 public interface TrimmedClientMapApi {
     TrimmedClientMapApi INSTANCE = new TrimmedClientMapApiImpl();
-    LimitedMap<ResourceLocation, MapValue> getUncheckedClientMap(ClientMapKey clientMapKey);
+    LimitedMap<ResourceLocation, MapValue> map(ClientMapKey clientMapKey);
 
-    <K> LimitedMap<K, String> getRegistryClientMap(ClientRegistryMapKey<K> clientRegistryMapKey);
+    <K> LimitedMap<K, String> map(ClientRegistryMapKey<K> clientRegistryMapKey);
 
     <K> String getRegistryClientValue(ClientRegistryMapKey<K> clientRegistryMapKey, K key);
-
-    Optional<LimitedMap<ResourceLocation, MapValue>> getSafeUncheckedClientMap(ClientMapKey clientMapKey);
-
-    <K> Optional<LimitedMap<K, String>> getSafeRegistryClientMap(ClientRegistryMapKey<K> clientRegistryMapKey);
 }

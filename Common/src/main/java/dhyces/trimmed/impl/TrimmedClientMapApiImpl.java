@@ -12,27 +12,17 @@ import java.util.Optional;
 
 public final class TrimmedClientMapApiImpl implements TrimmedClientMapApi {
     @Override
-    public LimitedMap<ResourceLocation, MapValue> getUncheckedClientMap(ClientMapKey clientMapKey) {
+    public LimitedMap<ResourceLocation, MapValue> map(ClientMapKey clientMapKey) {
         return ClientMapManager.getUncheckedHandler().getMap(clientMapKey);
     }
 
     @Override
-    public <K> LimitedMap<K, String> getRegistryClientMap(ClientRegistryMapKey<K> clientRegistryMapKey) {
+    public <K> LimitedMap<K, String> map(ClientRegistryMapKey<K> clientRegistryMapKey) {
         return ClientMapManager.getRegistryHandler(clientRegistryMapKey.getRegistryKey()).getMap(clientRegistryMapKey);
     }
 
     @Override
     public <K> String getRegistryClientValue(ClientRegistryMapKey<K> clientRegistryMapKey, K key) {
-        return getRegistryClientMap(clientRegistryMapKey).get(key);
-    }
-
-    @Override
-    public Optional<LimitedMap<ResourceLocation, MapValue>> getSafeUncheckedClientMap(ClientMapKey clientMapKey) {
-        return Optional.ofNullable(getUncheckedClientMap(clientMapKey));
-    }
-
-    @Override
-    public <K> Optional<LimitedMap<K, String>> getSafeRegistryClientMap(ClientRegistryMapKey<K> clientRegistryMapKey) {
-        return Optional.ofNullable(getRegistryClientMap(clientRegistryMapKey));
+        return map(clientRegistryMapKey).get(key);
     }
 }

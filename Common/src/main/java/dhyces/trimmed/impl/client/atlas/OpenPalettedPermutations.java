@@ -53,16 +53,12 @@ public class OpenPalettedPermutations implements SpriteSource {
         );
         Map<ResourceLocation, OptionalSupplier> replacePixelsMap = new HashMap<>();
 
-        TrimmedClientMapApi.INSTANCE.getSafeUncheckedClientMap(permutations).ifPresentOrElse(optionalIdStringMap -> {
-            optionalIdStringMap.forEach((entry) ->
-                    replacePixelsMap.put(new ResourceLocation(entry.getKey().getNamespace(), entry.getValue().value()),
-                            new OptionalSupplier(entry.getValue().isRequired(), Suppliers.memoize(() ->
-                                    PalettedPermutations.createPaletteMapping(rawPaletteKeyImage.get(), PalettedPermutations.loadPaletteEntryFromImage(pResourceManager, entry.getKey()))
-                            ))
-                    )
+        TrimmedClientMapApi.INSTANCE.map(permutations).forEach(entry -> {
+            replacePixelsMap.put(new ResourceLocation(entry.getKey().getNamespace(), entry.getValue().value()),
+                    new OptionalSupplier(entry.getValue().isRequired(), Suppliers.memoize(() ->
+                            PalettedPermutations.createPaletteMapping(rawPaletteKeyImage.get(), PalettedPermutations.loadPaletteEntryFromImage(pResourceManager, entry.getKey()))
+                    ))
             );
-        }, () -> {
-            throw new IllegalStateException("The client-map {%s} could not be found!".formatted(permutations));
         });
 
         TrimmedClientTagApi.INSTANCE.getSafeUncheckedTag(textures).ifPresentOrElse(optionalIds -> {
