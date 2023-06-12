@@ -7,7 +7,7 @@ import dhyces.trimmed.Trimmed;
 import dhyces.trimmed.api.client.override.provider.ItemOverrideProvider;
 import dhyces.trimmed.api.client.override.provider.providers.NbtItemOverrideProvider;
 import dhyces.trimmed.api.client.override.provider.providers.TrimItemOverrideProvider;
-import dhyces.trimmed.impl.client.override.ItemOverrideReloadListener;
+import dhyces.trimmed.api.util.Utils;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.CachedOutput;
@@ -80,7 +80,7 @@ public abstract class ItemOverrideDataProvider implements DataProvider {
     public CompletableFuture<?> run(CachedOutput writer) {
         addItemOverrides();
         return CompletableFuture.allOf(providerMap.entrySet().stream().map((entry) -> {
-            DataResult<JsonElement> encoded = ItemOverrideReloadListener.ITEM_OVERRIDE_CODEC.encodeStart(JsonOps.INSTANCE, entry.getValue());
+            DataResult<JsonElement> encoded = ItemOverrideProvider.LIST_CODEC.encodeStart(JsonOps.INSTANCE, entry.getValue());
             JsonElement json = encoded.getOrThrow(false, Trimmed.LOGGER::error);
             ResourceLocation id = BuiltInRegistries.ITEM.getKey(entry.getKey().asItem());
             return DataProvider.saveStable(writer, json, pathResolver.json(id));
