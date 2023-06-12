@@ -1,6 +1,7 @@
 package dhyces.trimmed.impl.client.tags.manager;
 
 import dhyces.modhelper.services.Services;
+import dhyces.trimmed.api.client.util.ClientUtil;
 import dhyces.trimmed.impl.client.tags.ClientRegistryTagKey;
 import dhyces.trimmed.impl.util.OptionalId;
 import net.minecraft.core.Registry;
@@ -22,6 +23,6 @@ public class RegistryTagHandler<V> extends BaseTagHandler<ClientRegistryTagKey<V
 
     @Override
     protected V createValue(OptionalId value) {
-        return Services.PLATFORM_HELPER.getRegistryValue(registry, value.elementId());
+        return Services.PLATFORM_HELPER.getRegistryValue(ClientUtil.getRegistryAccess(), registry, value.elementId());
     }
 }
