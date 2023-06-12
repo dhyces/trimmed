@@ -5,9 +5,6 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 
 public final class Utils {
-    public static boolean endsInJson(ResourceLocation resourceLocation) {
-        return resourceLocation.getPath().endsWith(".json");
-    }
 
     public static String sanitize(String toSanitize, String... toRemove) {
         for (String removal : toRemove) {
@@ -25,7 +22,15 @@ public final class Utils {
      * should have a parent directory with the mod's namespace
      */
     public static <T> String prefix(ResourceKey<? extends Registry<T>> registryResourceKey) {
-        ResourceLocation location = registryResourceKey.location();
-        return location.getNamespace().equals("minecraft") ? location.getPath() : location.getNamespace() + "/" + location.getPath();
+        return namespacedPath(registryResourceKey.location(), '/');
+    }
+
+    public static String namespacedPath(ResourceLocation location, char delimiter) {
+        return location.getNamespace().equals("minecraft") ? location.getPath() : location.getNamespace() + delimiter + location.getPath();
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <T> T cast(Object o) {
+        return (T) o;
     }
 }
