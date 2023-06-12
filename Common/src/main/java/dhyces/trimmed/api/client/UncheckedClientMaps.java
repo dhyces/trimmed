@@ -6,4 +6,5 @@ import dhyces.trimmed.impl.client.maps.ClientMapKey;
 public class UncheckedClientMaps {
     public static final ClientMapKey CUSTOM_TRIM_PERMUTATIONS = ClientMapKey.of(Trimmed.id("custom_trim_material_permutations"));
     public static final ClientMapKey VANILLA_TRIM_PERMUTATIONS = ClientMapKey.of(Trimmed.id("vanilla_trim_material_permutations"));
+    public static final ClientMapKey ARMOR_MATERIAL_SUFFIX_OVERRIDES = ClientMapKey.of(Trimmed.id("armor_material_suffix_overrides"));
 }
