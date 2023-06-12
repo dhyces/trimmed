@@ -1,99 +1,75 @@
 package dhyces.trimmed.impl.client.maps.manager;
 
-import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Multimap;
+import com.google.common.collect.Interner;
 import com.mojang.serialization.DataResult;
 import dhyces.trimmed.Trimmed;
 import dhyces.trimmed.api.data.maps.MapValue;
-import dhyces.trimmed.impl.client.maps.manager.delegates.BiMapMapDelegate;
-import dhyces.trimmed.impl.client.maps.manager.delegates.HashMapDelegate;
-import dhyces.trimmed.impl.client.maps.manager.delegates.LazyMapDelegate;
+import dhyces.trimmed.api.maps.LimitedBiMap;
+import dhyces.trimmed.api.maps.LimitedMap;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
 
-import java.lang.ref.WeakReference;
-import java.util.*;
-import java.util.function.BiFunction;
+import java.util.HashMap;
+import java.util.LinkedHashSet;
+import java.util.Map;
+import java.util.Set;
 import java.util.function.Function;
 
-public abstract class BaseMapHandler<K, V> {
-    protected final Map<K, Map<V, String>> registeredMaps = new HashMap<>();
-    protected final Multimap<K, WeakReference<MapLoadListener<V>>> listeners = HashMultimap.create();
+public abstract class BaseMapHandler<MAPKEY, KEY, VAL> {
+    protected final Map<MAPKEY, MapHolder<KEY, VAL>> internal = new HashMap<>();
     protected boolean isLoaded = false;
 
     @Nullable
-    public Map<V, String> getMap(K mapKey) {
-        return registeredMaps.get(mapKey);
+    public LimitedMap<KEY, VAL> getMap(MAPKEY mapKey) {
+        return internal.computeIfAbsent(mapKey, mapkey -> new MapHolder<>()).get();
     }
 
-    public <T> HashMapDelegate<V, T> hashMapDelegate(K key, Function<String, DataResult<T>> mappingFunction) {
-        HashMapDelegate<V, T> delegate = new HashMapDelegate<>(mappingFunction);
-        listeners.put(key, new WeakReference<>(delegate));
-        return delegate;
-    }
-
-    public <T> BiMapMapDelegate<V, T> biMapDelegate(K key, Function<String, DataResult<T>> forwardMappingFunction, Function<String, DataResult<V>> inverseMappingFunction) {
-        BiMapMapDelegate<V, T> delegate = new BiMapMapDelegate<>(forwardMappingFunction, inverseMappingFunction);
-        listeners.put(key, new WeakReference<>(delegate));
-        return delegate;
-    }
-
-    public <T> LazyMapDelegate<V, T> lazyMapDelegate(K key, Function<String, DataResult<T>> mappingFunction) {
-        LazyMapDelegate<V, T> delegate = new LazyMapDelegate<>(mappingFunction);
-        listeners.put(key, new WeakReference<>(delegate));
-        return delegate;
-    }
-
-    public void addListener(K key, MapLoadListener<V> mapLoadListener) {
-        listeners.put(key, new WeakReference<>(mapLoadListener));
+    @Nullable
+    public LimitedBiMap<KEY, VAL> getBiMap(MAPKEY mapKey) {
+        return internal.computeIfAbsent(mapKey, mapkey -> new MapHolder<>()).getBiMap();
     }
 
     /**
      * This is for the MapKey
      */
-    protected abstract K createMapKey(ResourceLocation mapId);
+    protected abstract MAPKEY createMapKey(ResourceLocation mapId);
 
     /**
      * This is for the actual internal map, ie "minecraft:iron_ingot" -> "SomeValue"
      */
-    protected abstract V createKey(ResourceLocation key, MapValue value);
+    protected abstract DataResult<KEY> createKey(ResourceLocation key);
+
+    protected abstract DataResult<VAL> parseValue(MapValue mapValue);
 
     public boolean hasLoaded() {
         return isLoaded;
     }
 
     void clear() {
-        registeredMaps.clear();
+        internal.forEach((mapkey, keyvalMapHolder) -> keyvalMapHolder.clear());
         isLoaded = false;
     }
 
     void resolveMaps(Map<ResourceLocation, Set<Map.Entry<ResourceLocation, MapValue>>> unresolvedMaps) {
         for (Map.Entry<ResourceLocation, Set<Map.Entry<ResourceLocation, MapValue>>> entry : unresolvedMaps.entrySet()) {
-            DataResult<Map<V, String>> dataResult = resolveMap(unresolvedMaps, registeredMaps, entry.getKey(), this::createMapKey, this::createKey, new LinkedHashSet<>());
+            DataResult<MapHolder<KEY, VAL>> dataResult = resolveMap(unresolvedMaps, internal, entry.getKey(), this::createMapKey, this::createKey, this::parseValue, new LinkedHashSet<>());
             dataResult.error().ifPresent(mapPartialResult -> Trimmed.LOGGER.error(mapPartialResult.message()));
             updateListeners(this.createMapKey(entry.getKey()));
         }
         isLoaded = true;
     }
 
-    protected void updateListeners(K key) {
-        Map<V, String> map = registeredMaps.get(key);
-        for (Iterator<WeakReference<MapLoadListener<V>>> iter = listeners.get(key).iterator(); iter.hasNext();) {
-            MapLoadListener<V> listener = iter.next().get();
-            if (listener == null) {
-                iter.remove();
-            } else {
-                listener.onReload(map);
-            }
-        }
+    @Deprecated
+    protected void updateListeners(MAPKEY key) {
+        // TODO
     }
 
-    protected final <KEY, VAL> DataResult<Map<VAL, String>> resolveMap(Map<ResourceLocation, Set<Map.Entry<ResourceLocation, MapValue>>> unresolvedMaps, Map<KEY, Map<VAL, String>> resolvedMaps, ResourceLocation mapId, Function<ResourceLocation, KEY> mapKeyFactory, BiFunction<ResourceLocation, MapValue, VAL> keyFactory, LinkedHashSet<ResourceLocation> resolutionSet) {
-        if (resolvedMaps.containsKey(mapId)) {
+    protected final <MK, K, V> DataResult<MapHolder<K, V>> resolveMap(Map<ResourceLocation, Set<Map.Entry<ResourceLocation, MapValue>>> unresolvedMaps, Map<MK, MapHolder<K, V>> resolvedMaps, ResourceLocation mapId, Function<ResourceLocation, MK> mapKeyFactory, Function<ResourceLocation, DataResult<K>> keyFactory, Function<MapValue, DataResult<V>> valueFactory, LinkedHashSet<ResourceLocation> resolutionSet) {
+        if (resolvedMaps.containsKey(mapId) && !resolvedMaps.get(mapId).isEmpty()) {
             return DataResult.success(resolvedMaps.get(mapId));
         }
-        KEY key = mapKeyFactory.apply(mapId);
+        MK key = mapKeyFactory.apply(mapId);
 
         Set<Map.Entry<ResourceLocation, MapValue>> entries = unresolvedMaps.get(mapId);
 
@@ -101,21 +77,26 @@ public abstract class BaseMapHandler<K, V> {
             return DataResult.error(() -> "Map %s does not exist!".formatted(mapId));
         }
 
-        ImmutableMap.Builder<VAL, String> mapBuilder = ImmutableMap.builder();
+        ImmutableMap.Builder<K, V> mapBuilder = ImmutableMap.builder();
 
         for (Map.Entry<ResourceLocation, MapValue> entry : entries) {
-            VAL resolvedKey = keyFactory.apply(entry.getKey(), entry.getValue());
-            if (resolvedKey != null) {
-                mapBuilder.put(resolvedKey, entry.getValue().value());
-            } else if (entry.getValue().isRequired()) {
-                return DataResult.error(() -> "Map key %s is not present and is required!".formatted(entry.getKey()));
+            DataResult<K> resolvedKey = keyFactory.apply(entry.getKey());
+            if (resolvedKey.error().isPresent() && entry.getValue().isRequired()) {
+                return resolvedKey.map(val -> null);
             }
+            DataResult<V> parsedValue = valueFactory.apply(entry.getValue());
+            if (parsedValue.error().isPresent()) {
+                return parsedValue.map(v -> null);
+            }
+            mapBuilder.put(resolvedKey.result().get(), parsedValue.result().get());
         }
 
-        return DataResult.success(resolvedMaps.computeIfAbsent(key, key1 -> mapBuilder.build()));
+        MapHolder<K, V> holder = resolvedMaps.computeIfAbsent(key, key1 -> new MapHolder<>(mapBuilder.build()));
+        holder.set(mapBuilder.build());
+        return DataResult.success(holder);
     }
 
     public interface MapLoadListener<K> {
-        void onReload(Map<K, String> map);
+        void onReload(Map<K, MapValue> map);
     }
 }

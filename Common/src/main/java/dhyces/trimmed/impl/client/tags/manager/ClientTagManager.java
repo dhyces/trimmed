@@ -5,9 +5,15 @@ import com.google.gson.JsonObject;
 import com.mojang.serialization.JsonOps;
 import dhyces.modhelper.services.Services;
 import dhyces.trimmed.Trimmed;
-import dhyces.trimmed.api.util.ResourcePath;
+import dhyces.trimmed.api.client.util.ClientUtil;
+import dhyces.trimmed.api.util.Utils;
 import dhyces.trimmed.impl.client.tags.ClientTagFile;
-import dhyces.trimmed.impl.util.UnresolvedMapIterable;
+import dhyces.trimmed.impl.resources.PathInfo;
+import dhyces.trimmed.impl.resources.RegistryPathInfo;
+import dhyces.trimmed.impl.util.RegistryType;
+import net.minecraft.Util;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -33,8 +39,6 @@ public class ClientTagManager implements PreparableReloadListener {
     private static final Map<ResourceKey<? extends Registry<?>>, RegistryTagHandler<?>> REGISTRY_HANDLERS = new HashMap<>();
     private static final Map<ResourceKey<? extends Registry<?>>, DatapackTagHandler<?>> DATAPACKED_HANDLERS = new HashMap<>();
 
-    public static final FileToIdConverter FILE_TO_ID_CONVERTER = FileToIdConverter.json("tags");
-
     public static UncheckedTagHandler getUncheckedHandler() {
         if (!UNCHECKED_HANDLER.hasLoaded()) {
             Trimmed.LOGGER.error("Client tags aren't loaded yet! May result in unexpected behavior");
@@ -46,14 +50,14 @@ public class ClientTagManager implements PreparableReloadListener {
         if (REGISTRY_HANDLERS.isEmpty()) {
             Trimmed.LOGGER.error("Client tags aren't loaded yet! May result in unexpected behavior");
         }
-        return Optional.ofNullable(cast(REGISTRY_HANDLERS.get(registryKey)));
+        return Optional.ofNullable(Utils.cast(REGISTRY_HANDLERS.get(registryKey)));
     }
 
     public static <T> Optional<DatapackTagHandler<T>> getDatapackedHandler(ResourceKey<? extends Registry<T>> registryKey) {
         if (DATAPACKED_HANDLERS.isEmpty()) {
-            Trimmed.LOGGER.error("Client tags aren't loaded yet! May result in unexpected behavior");
+            Trimmed.LOGGER.error("Datapack client tags aren't loaded yet! May result in unexpected behavior");
         }
-        return Optional.ofNullable(cast(DATAPACKED_HANDLERS.get(registryKey)));
+        return Optional.ofNullable(Utils.cast(DATAPACKED_HANDLERS.get(registryKey)));
     }
 
     public static void updateDatapacksSynced(RegistryAccess registryAccess) {
@@ -67,46 +71,38 @@ public class ClientTagManager implements PreparableReloadListener {
         return load(pResourceManager).thenCompose(pPreparationBarrier::wait).thenRun(() -> Trimmed.logInDev("Client tags loaded!"));
     }
 
-    @SuppressWarnings("UnstableApiUsage")
-    private <T> CompletableFuture<Unit> load(ResourceManager resourceManager) {
+    private CompletableFuture<Unit> load(ResourceManager resourceManager) {
         UNCHECKED_HANDLER.clear();
         REGISTRY_HANDLERS.clear();
         DATAPACKED_HANDLERS.clear();
-        final UnresolvedMapIterable<T, Set<TagEntry>> readTags = new UnresolvedMapIterable<>();
-        for (Map.Entry<ResourceLocation, List<Resource>> entry : FILE_TO_ID_CONVERTER.listMatchingResourceStacks(resourceManager).entrySet()) {
-            ResourcePath idPath = new ResourcePath(entry.getKey());
-            Set<TagEntry> readEntries = readResources(entry.getKey(), entry.getValue());
+        final Collection<PathInfo> foldersToSearch = PathInfo.gatherAllInfos(ClientUtil.getRegistryAccess());
 
-            String registryDirectoryPath = idPath.getDirectoryStringFrom("tags");
-            String[] registryDirectories = registryDirectoryPath.split("/");
-            ResourceKey<? extends Registry<T>> registryId;
-            if (registryDirectories.length > 1 && Services.PLATFORM_HELPER.isModLoaded(registryDirectories[0])) {
-                registryId = ResourceKey.createRegistryKey(new ResourceLocation(registryDirectories[0], idPath.getDirectoryStringFrom(registryDirectories[0]))); // TODO: test this
-            } else {
-                registryId = ResourceKey.createRegistryKey(new ResourceLocation(registryDirectoryPath));
-            }
-            ResourceLocation truncated = idPath.getFileNameOnly(5).asResourceLocation();
-            readTags.add(registryId, truncated, readEntries);
-        }
+        for (PathInfo pathInfo : foldersToSearch) {
+            FileToIdConverter converter = FileToIdConverter.json("tags/" + pathInfo.getPath());
+            Map<ResourceLocation, Set<TagEntry>> unresolved = readMap(converter, resourceManager);
 
-        for (Map.Entry<ResourceKey<? extends Registry<T>>, Map<ResourceLocation, Set<TagEntry>>> entry : readTags) {
-            ResourceKey<? extends Registry<T>> handlerKey = entry.getKey();
-            Map<ResourceLocation, Set<TagEntry>> unresolved = entry.getValue();
-
-            if (handlerKey.location().getPath().equals("unchecked")) {
+            if (!(pathInfo instanceof RegistryPathInfo registryPathInfo)) {
                 UNCHECKED_HANDLER.resolveTags(unresolved);
             } else {
-                final boolean isModded = !handlerKey.location().getNamespace().equals("minecraft");
+                final ResourceKey<? extends Registry<?>> key = registryPathInfo.resourceKey();
 
-                if (BuiltInRegistries.REGISTRY.get(handlerKey.location()) != null || (isModded && Services.PLATFORM_HELPER.modRegistryExists(handlerKey))) {
-                    REGISTRY_HANDLERS.computeIfAbsent(handlerKey, resourceKey -> new RegistryTagHandler<>(handlerKey)).resolveTags(unresolved);
+                if (registryPathInfo.registryType() == RegistryType.STATIC) {
+                    REGISTRY_HANDLERS.computeIfAbsent(key, resourceKey -> new RegistryTagHandler<>(registryPathInfo.castRegistryKey())).resolveTags(unresolved);
                 } else {
-                    DATAPACKED_HANDLERS.computeIfAbsent(handlerKey, resourceKey -> new DatapackTagHandler<>(handlerKey)).resolveTags(unresolved);
+                    DATAPACKED_HANDLERS.computeIfAbsent(key, resourceKey -> new DatapackTagHandler<>(registryPathInfo.castRegistryKey())).resolveTags(unresolved);
                 }
             }
         }
 
         return CompletableFuture.completedFuture(Unit.INSTANCE);
+    }
+
+    private Map<ResourceLocation, Set<TagEntry>> readMap(FileToIdConverter converter, ResourceManager resourceManager) {
+        return converter.listMatchingResourceStacks(resourceManager).entrySet().stream()
+                .map(entry -> {
+                    ResourceLocation id = converter.fileToId(entry.getKey());
+                    return Map.entry(id, readResources(id, entry.getValue()));
+                }).collect(Util.toMap());
     }
 
     private Set<TagEntry> readResources(ResourceLocation fileName, List<Resource> resourceStack) {
@@ -133,7 +129,22 @@ public class ClientTagManager implements PreparableReloadListener {
         return setBuilder.build();
     }
 
-    private static <T> T cast(Object o) {
-        return (T) o;
+    private Collection<PathInfo> getRegistryPathInfos() {
+        ImmutableSet.Builder<PathInfo> builder = ImmutableSet.builder();
+        ClientLevel level = Minecraft.getInstance().level;
+        if (level != null) {
+            level.registryAccess().registries()
+                    .map(RegistryAccess.RegistryEntry::key)
+                    .map(resourceKey -> {
+                        RegistryType registryType = BuiltInRegistries.REGISTRY.containsKey(resourceKey.location()) ? RegistryType.STATIC : RegistryType.DATAPACK;
+                        return RegistryPathInfo.implied(resourceKey, registryType);
+                    })
+                    .forEach(builder::add);
+        } else {
+            BuiltInRegistries.REGISTRY.registryKeySet().stream()
+                    .map(resourceKey -> RegistryPathInfo.implied(resourceKey, RegistryType.STATIC))
+                    .forEach(builder::add);
+        }
+        return builder.build();
     }
 }

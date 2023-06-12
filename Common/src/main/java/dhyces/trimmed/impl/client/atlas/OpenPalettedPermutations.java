@@ -6,7 +6,9 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dhyces.modhelper.services.Services;
 import dhyces.trimmed.Trimmed;
-import dhyces.trimmed.api.TrimmedApi;
+import dhyces.trimmed.api.TrimmedClientMapApi;
+import dhyces.trimmed.api.TrimmedClientTagApi;
+import dhyces.trimmed.api.util.Utils;
 import dhyces.trimmed.impl.client.maps.ClientMapKey;
 import dhyces.trimmed.impl.client.tags.ClientTagKey;
 import net.minecraft.client.renderer.texture.SpriteContents;
@@ -14,8 +16,6 @@ import net.minecraft.client.renderer.texture.atlas.SpriteSource;
 import net.minecraft.client.renderer.texture.atlas.SpriteSourceType;
 import net.minecraft.client.renderer.texture.atlas.sources.LazyLoadedImage;
 import net.minecraft.client.renderer.texture.atlas.sources.PalettedPermutations;
-import net.minecraft.client.resources.metadata.animation.AnimationMetadataSection;
-import net.minecraft.client.resources.metadata.animation.FrameSize;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
@@ -51,31 +51,37 @@ public class OpenPalettedPermutations implements SpriteSource {
         Supplier<int[]> rawPaletteKeyImage = Suppliers.memoize(() ->
             PalettedPermutations.loadPaletteEntryFromImage(pResourceManager, paletteKey)
         );
-        Map<String, OptionalSupplier> replacePixelsMap = new HashMap<>();
-        // TODO: Handle error if the map doesn't exist
-        TrimmedApi.MAP_API.getSafeUncheckedClientMap(permutations).ifPresent(optionalIdStringMap -> {
-            optionalIdStringMap.forEach((optionalId, s) ->
-                    replacePixelsMap.put(s,
-                            new OptionalSupplier(optionalId.isRequired(), Suppliers.memoize(() ->
-                                    PalettedPermutations.createPaletteMapping(rawPaletteKeyImage.get(), PalettedPermutations.loadPaletteEntryFromImage(pResourceManager, optionalId.elementId()))
+        Map<ResourceLocation, OptionalSupplier> replacePixelsMap = new HashMap<>();
+
+        TrimmedClientMapApi.INSTANCE.getSafeUncheckedClientMap(permutations).ifPresentOrElse(optionalIdStringMap -> {
+            optionalIdStringMap.forEach((entry) ->
+                    replacePixelsMap.put(new ResourceLocation(entry.getKey().getNamespace(), entry.getValue().value()),
+                            new OptionalSupplier(entry.getValue().isRequired(), Suppliers.memoize(() ->
+                                    PalettedPermutations.createPaletteMapping(rawPaletteKeyImage.get(), PalettedPermutations.loadPaletteEntryFromImage(pResourceManager, entry.getKey()))
                             ))
                     )
             );
+        }, () -> {
+            throw new IllegalStateException("The client-map {%s} could not be found!".formatted(permutations));
         });
 
-        // TODO: Handle error if the tag doesn't exist or if any elements don't exist
-        TrimmedApi.TAG_API.getUncheckedTag(textures).forEach(optionalTagElement -> {
-            Optional<Resource> imageOptional = pResourceManager.getResource(TEXTURE_ID_CONVERTER.idToFile(optionalTagElement.elementId()));
-            if (imageOptional.isEmpty() && optionalTagElement.isRequired()) {
-                Trimmed.LOGGER.error("Cannot locate required " + optionalTagElement.elementId());
-            } else if (imageOptional.isPresent()) {
-                LazyLoadedImage lazyloadedimage = new LazyLoadedImage(optionalTagElement.elementId(), imageOptional.get(), replacePixelsMap.size());
+        TrimmedClientTagApi.INSTANCE.getSafeUncheckedTag(textures).ifPresentOrElse(optionalIds -> {
+            optionalIds.forEach(optionalTagElement -> {
+                Optional<Resource> imageOptional = pResourceManager.getResource(TEXTURE_ID_CONVERTER.idToFile(optionalTagElement.elementId()));
+                if (imageOptional.isEmpty() && optionalTagElement.isRequired()) {
+                    Trimmed.LOGGER.error("Cannot locate required " + optionalTagElement.elementId());
+                } else if (imageOptional.isPresent()) {
+                    LazyLoadedImage lazyloadedimage = new LazyLoadedImage(optionalTagElement.elementId(), imageOptional.get(), replacePixelsMap.size());
 
-                for (Map.Entry<String, OptionalSupplier> entry : replacePixelsMap.entrySet()) {
-                    ResourceLocation permutedId = optionalTagElement.elementId().withSuffix("_" + entry.getKey());
-                    pOutput.add(permutedId, new OpenPalettedSpriteSupplier(lazyloadedimage, entry.getValue(), permutedId));
+                    for (Map.Entry<ResourceLocation, OptionalSupplier> entry : replacePixelsMap.entrySet()) {
+                        String suffix = Utils.namespacedPath(entry.getKey(), '-');
+                        ResourceLocation permutedId = optionalTagElement.elementId().withSuffix("_" + suffix);
+                        pOutput.add(permutedId, new OpenPalettedSpriteSupplier(lazyloadedimage, entry.getValue(), permutedId));
+                    }
                 }
-            }
+            });
+        }, () -> {
+            throw new IllegalStateException("The client-tag {%s} could not be found!".formatted(textures));
         });
     }
 

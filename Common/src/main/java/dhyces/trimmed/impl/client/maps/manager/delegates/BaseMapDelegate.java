@@ -2,6 +2,7 @@ package dhyces.trimmed.impl.client.maps.manager.delegates;
 
 import com.mojang.serialization.DataResult;
 import dhyces.trimmed.Trimmed;
+import dhyces.trimmed.api.data.maps.MapValue;
 import dhyces.trimmed.impl.client.maps.manager.BaseMapHandler;
 import dhyces.trimmed.impl.util.ImmutableMap;
 import org.jetbrains.annotations.ApiStatus;
@@ -22,9 +23,9 @@ public abstract class BaseMapDelegate<K, V> implements ImmutableMap<K, V>, BaseM
     }
 
     @ApiStatus.Internal
-    public void onReload(Map<K, String> underlyingMap) {
-        for (Map.Entry<K, String> entry : underlyingMap.entrySet()) {
-            DataResult<V> mapResult = map(entry.getValue());
+    public void onReload(Map<K, MapValue> underlyingMap) {
+        for (Entry<K, MapValue> entry : underlyingMap.entrySet()) {
+            DataResult<V> mapResult = map(entry.getValue().value());
             // TODO: handle cases in which there should be an irrecoverable error
             mapResult.resultOrPartial(Trimmed.LOGGER::error).ifPresent(v -> onMapped(entry.getKey(), v));
         }
