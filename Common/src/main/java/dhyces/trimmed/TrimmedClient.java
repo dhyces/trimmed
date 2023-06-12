@@ -49,7 +49,6 @@ public class TrimmedClient {
                 Minecraft.getInstance().getToasts().addToast(InfoToast.reloadClientInfo());
             }
             ClientTagManager.updateDatapacksSynced(registryAccess);
-            ClientMapManager.updateDatapacksSynced(registryAccess);
         }
     }
 }
