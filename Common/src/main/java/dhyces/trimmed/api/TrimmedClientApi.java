@@ -2,15 +2,11 @@ package dhyces.trimmed.api;
 
 import dhyces.trimmed.api.client.override.provider.ItemOverrideProvider;
 import dhyces.trimmed.api.client.override.provider.ItemOverrideProviderType;
-import dhyces.trimmed.impl.TrimmedApiImpl;
-import dhyces.trimmed.impl.TrimmedMapApiImpl;
-import dhyces.trimmed.impl.TrimmedTagApiImpl;
+import dhyces.trimmed.impl.TrimmedClientApiImpl;
 import net.minecraft.resources.ResourceLocation;
 
-public interface TrimmedApi {
-    TrimmedApi INSTANCE = new TrimmedApiImpl();
-    TrimmedTagApi TAG_API = new TrimmedTagApiImpl();
-    TrimmedMapApi MAP_API = new TrimmedMapApiImpl();
+public interface TrimmedClientApi {
+    TrimmedClientApi INSTANCE = new TrimmedClientApiImpl();
 
     /**
      * This is a helper to register your own item override type. It's basically a codec supplier.
