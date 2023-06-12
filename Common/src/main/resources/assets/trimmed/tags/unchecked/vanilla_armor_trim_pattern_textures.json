@@ -22,6 +22,16 @@
     "minecraft:trims/models/armor/rib",
     "minecraft:trims/models/armor/rib_leggings",
     "minecraft:trims/models/armor/spire",
-    "minecraft:trims/models/armor/spire_leggings"
+    "minecraft:trims/models/armor/spire_leggings",
+    "minecraft:trims/models/armor/wayfinder",
+    "minecraft:trims/models/armor/wayfinder_leggings",
+    "minecraft:trims/models/armor/shaper",
+    "minecraft:trims/models/armor/shaper_leggings",
+    "minecraft:trims/models/armor/silence",
+    "minecraft:trims/models/armor/silence_leggings",
+    "minecraft:trims/models/armor/raiser",
+    "minecraft:trims/models/armor/raiser_leggings",
+    "minecraft:trims/models/armor/host",
+    "minecraft:trims/models/armor/host_leggings"
   ]
 }
