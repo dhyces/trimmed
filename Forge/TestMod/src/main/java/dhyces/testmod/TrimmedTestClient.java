@@ -22,9 +22,9 @@ public class TrimmedTestClient {
         TrimmedClientTagApi.INSTANCE.getRegistryTag(TestClientTags.TEST_CUSTOM_REG_KEY).forEach(item -> TrimmedTest.LOGGER.info(item.toString()));
         TrimmedClientTagApi.INSTANCE.getSafeDatapackedTag(TestClientTags.TEST_BIOME_TAG).ifPresent(holders -> holders.forEach(biomeHolder -> TrimmedTest.LOGGER.info(biomeHolder.toString())));
 
-        TrimmedClientMapApi.INSTANCE.getUncheckedClientMap(TestClientMaps.MANUAL_TEST_MAP).forEach((entry) -> TrimmedTest.LOGGER.info("KEY: {}, VALUE: {}", entry.getKey(), entry.getValue()));
-        TrimmedTest.LOGGER.info("Map present! " + TrimmedClientMapApi.INSTANCE.getRegistryClientMap(TestClientMaps.MANUAL_TEST_ITEM_MAP).get(Items.IRON_INGOT));
-        TrimmedClientMapApi.INSTANCE.getSafeRegistryClientMap(TestClientMaps.MANUAL_TEST_BIOME_MAP).ifPresent(map -> map.forEach((entry) -> TrimmedTest.LOGGER.info("KEY: {}, VALUE: {}", entry.getKey(), entry.getValue())));
+        TrimmedClientMapApi.INSTANCE.map(TestClientMaps.MANUAL_TEST_MAP).forEach((entry) -> TrimmedTest.LOGGER.info("KEY: {}, VALUE: {}", entry.getKey(), entry.getValue()));
+        TrimmedTest.LOGGER.info("Map present! " + TrimmedClientMapApi.INSTANCE.map(TestClientMaps.MANUAL_TEST_ITEM_MAP).get(Items.IRON_INGOT));
+        TrimmedClientMapApi.INSTANCE.map(TestClientMaps.MANUAL_TEST_BIOME_MAP).forEach((entry) -> TrimmedTest.LOGGER.info("KEY: {}, VALUE: {}", entry.getKey(), entry.getValue()));
 
         TrimmedTest.TEST_DELEGATE.forEach((entry) -> {
             TrimmedTest.LOGGER.info("KEY: {}, VALUE: {}", entry.getKey(), entry.getValue());
