@@ -2,7 +2,6 @@ package dhyces.trimmed.impl.util;
 
 import dhyces.trimmed.impl.mixin.TagEntryAccessor;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.TagEntry;
 
 import java.util.function.Predicate;
 
