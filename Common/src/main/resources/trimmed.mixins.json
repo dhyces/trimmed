@@ -10,7 +10,8 @@
   ],
   "client": [
     "client.AtlasSourceManagerAccessor",
-    "client.ModelOverrideListMixin"
+    "client.ModelOverrideListMixin",
+    "client.ArmorTrimMixin"
   ],
   "injectors": {
     "defaultRequire": 1
