@@ -1,11 +1,6 @@
 {
-    "features": {
-        "enabled": [
-            "minecraft:update_1_20"
-        ]
-    },
     "pack": {
         "description": "Adds a kelp trim material!",
-        "pack_format": 12
+        "pack_format": 15
     }
 }

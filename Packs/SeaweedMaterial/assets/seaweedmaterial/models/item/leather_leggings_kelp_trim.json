@@ -3,6 +3,6 @@
   "textures": {
     "layer0": "minecraft:item/leather_leggings",
     "layer1": "minecraft:item/leather_leggings_overlay",
-    "layer2": "minecraft:trims/items/leggings_trim_kelp"
+    "layer2": "minecraft:trims/items/leggings_trim_seaweedmaterial-kelp"
   }
 }
