@@ -2,7 +2,6 @@ package dhyces.trimmed.api.client.override.provider.providers;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import dhyces.trimmed.api.client.override.provider.ItemOverrideProvider;
 import dhyces.trimmed.api.client.override.provider.ItemOverrideProviderType;
 import dhyces.trimmed.api.client.override.provider.SimpleItemOverrideProvider;
 import dhyces.trimmed.api.util.CodecUtil;

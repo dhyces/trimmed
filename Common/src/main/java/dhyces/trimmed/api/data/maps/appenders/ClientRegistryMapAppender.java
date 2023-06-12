@@ -2,7 +2,6 @@ package dhyces.trimmed.api.data.maps.appenders;
 
 import dhyces.trimmed.api.data.maps.MapBuilder;
 import dhyces.trimmed.impl.client.maps.ClientRegistryMapKey;
-import dhyces.trimmed.impl.client.tags.ClientRegistryTagKey;
 import net.minecraft.Util;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Registry;

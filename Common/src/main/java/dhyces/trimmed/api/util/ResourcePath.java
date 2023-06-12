@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.Objects;
 import java.util.regex.Pattern;
 
+@Deprecated(forRemoval = true)
 public class ResourcePath {
     private final String namespace;
     private final String[] path;

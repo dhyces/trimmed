@@ -1,6 +1,5 @@
 package dhyces.trimmed.api.codec;
 
-import com.google.common.collect.ImmutableSet;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.datafixers.util.Unit;
 import com.mojang.serialization.*;
