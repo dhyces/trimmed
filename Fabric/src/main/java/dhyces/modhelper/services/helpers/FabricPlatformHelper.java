@@ -6,9 +6,11 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.fabric.api.resource.conditions.v1.ResourceConditions;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.core.Registry;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import org.jetbrains.annotations.Nullable;
 
 public final class FabricPlatformHelper implements PlatformHelper {
     @Override
@@ -56,7 +58,10 @@ public final class FabricPlatformHelper implements PlatformHelper {
     }
 
     @Override
-    public <T> T getRegistryValue(ResourceKey<? extends Registry<T>> registry, ResourceLocation valueKey) {
-        return (T)BuiltInRegistries.REGISTRY.get(registry.location()).get(valueKey);
+    public <T> T getRegistryValue(@Nullable RegistryAccess registryAccess, ResourceKey<? extends Registry<T>> registryKey, ResourceLocation valueKey) {
+        if (registryAccess != null) {
+            return registryAccess.registry(registryKey).map(reg -> reg.get(valueKey)).orElse(null);
+        }
+        return (T)BuiltInRegistries.REGISTRY.get(registryKey.location()).get(valueKey);
     }
 }

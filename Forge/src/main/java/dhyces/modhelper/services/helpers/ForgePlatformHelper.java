@@ -3,6 +3,7 @@ package dhyces.modhelper.services.helpers;
 import com.google.gson.JsonObject;
 import dhyces.modhelper.services.util.Platform;
 import net.minecraft.core.Registry;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.crafting.CraftingHelper;
@@ -11,6 +12,7 @@ import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.ModLoader;
 import net.minecraftforge.fml.loading.FMLLoader;
 import net.minecraftforge.registries.RegistryManager;
+import org.jetbrains.annotations.Nullable;
 
 public final class ForgePlatformHelper implements PlatformHelper {
     @Override
@@ -59,7 +61,10 @@ public final class ForgePlatformHelper implements PlatformHelper {
     }
 
     @Override
-    public <T> T getRegistryValue(ResourceKey<? extends Registry<T>> registry, ResourceLocation valueKey) {
-        return RegistryManager.ACTIVE.getRegistry(registry).getValue(valueKey);
+    public <T> T getRegistryValue(@Nullable RegistryAccess registryAccess, ResourceKey<? extends Registry<T>> registryKey, ResourceLocation valueKey) {
+        if (registryAccess != null) {
+            return registryAccess.registry(registryKey).map(registry -> registry.get(valueKey)).orElse(null);
+        }
+        return RegistryManager.ACTIVE.getRegistry(registryKey).getValue(valueKey);
     }
 }
