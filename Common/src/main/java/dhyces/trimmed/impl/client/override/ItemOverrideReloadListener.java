@@ -2,7 +2,6 @@ package dhyces.trimmed.impl.client.override;
 
 import com.google.gson.JsonObject;
 import com.mojang.datafixers.util.Pair;
-import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.JsonOps;
 import dhyces.modhelper.services.Services;
@@ -26,7 +25,6 @@ import java.util.concurrent.Executor;
 
 public class ItemOverrideReloadListener implements PreparableReloadListener {
     private static final Set<ModelResourceLocation> MODELS_TO_ADD = new HashSet<>();
-    public static final Codec<List<ItemOverrideProvider>> ITEM_OVERRIDE_CODEC = ItemOverrideProvider.CODEC.listOf().fieldOf("values").codec();
 
     private static final FileToIdConverter OVERRIDES_FINDER = FileToIdConverter.json("models/item/overrides");
 
@@ -47,9 +45,7 @@ public class ItemOverrideReloadListener implements PreparableReloadListener {
         List<CompletableFuture<Pair<ModelResourceLocation, Set<ItemOverrideProvider>>>> futures = new ArrayList<>();
         for (Map.Entry<ResourceLocation, List<Resource>> entry : map.entrySet()) {
             futures.add(CompletableFuture.supplyAsync(() -> {
-                ResourceLocation cleanId = new ResourceLocation(entry.getKey().getNamespace(), entry.getKey().getPath()
-                        .replace("models/item/overrides/", "")
-                        .replace(".json", ""));
+                ResourceLocation cleanId = OVERRIDES_FINDER.fileToId(entry.getKey());
                 ModelResourceLocation id = new ModelResourceLocation(cleanId, "inventory");
                 Set<ItemOverrideProvider> providers = new LinkedHashSet<>();
                 for (Resource resource : entry.getValue()) {
@@ -59,14 +55,14 @@ public class ItemOverrideReloadListener implements PreparableReloadListener {
                             Trimmed.LOGGER.debug("Skipping loading item overrides from {} as its conditions were not met", cleanId);
                             continue;
                         }
-                        DataResult<List<ItemOverrideProvider>> providerResult = ITEM_OVERRIDE_CODEC.parse(JsonOps.INSTANCE, jsonObject);
+                        DataResult<List<ItemOverrideProvider>> providerResult = ItemOverrideProvider.LIST_CODEC.parse(JsonOps.INSTANCE, jsonObject);
                         if (providerResult.error().isPresent()) {
                             Trimmed.LOGGER.error(providerResult.error().get().message());
                             continue;
                         }
                         providers.addAll(providerResult.result().get());
                     } catch (IOException e) {
-                        throw new RuntimeException(e);
+                        throw new RuntimeException(e); // TODO
                     }
                 }
                 providers.stream().flatMap(ItemOverrideProvider::getModelsToBake).forEachOrdered(MODELS_TO_ADD::add);
