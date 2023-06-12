@@ -29,5 +29,12 @@ public class TestItemTagProvider extends IntrinsicHolderTagsProvider<Item> {
                 .add(Items.PRISMARINE_CRYSTALS)
                 .add(Items.GLOW_INK_SAC);
         tag(ItemTags.TRIM_TEMPLATES).add(ModItems.SPIRAL_PATTERN.get());
+        tag(ItemTags.TRIMMABLE_ARMOR)
+                .add(
+                        ModItems.TEST_HELMET.get(),
+                        ModItems.TEST_CHESTPLATE.get(),
+                        ModItems.TEST_LEGGINGS.get(),
+                        ModItems.TEST_BOOTS.get()
+                );
     }
 }

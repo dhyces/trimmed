@@ -1,3 +1,4 @@
-// 1.19.4	2023-05-25T20:04:44.8044416	Tags for minecraft:item mod id trimmed_testmod
+// 1.20	2023-06-09T10:25:12.3897246	Tags for minecraft:item mod id trimmed_testmod
+762fc1523a5a43636e3b4f41c18c388d4b8b5baa data/minecraft/tags/items/trimmable_armor.json
 ad3ee0bd44429ce6b068dc64d9f9ddc39ea74fc7 data/minecraft/tags/items/trim_materials.json
 0dd05b8dbd3456bd69e9de659f63a16c92ba1f57 data/minecraft/tags/items/trim_templates.json

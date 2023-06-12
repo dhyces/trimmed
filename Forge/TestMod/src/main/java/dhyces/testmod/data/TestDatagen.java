@@ -40,7 +40,6 @@ public class TestDatagen {
         generator.addProvider(event.includeServer(), new TestItemTagProvider(packOutput, lookupProvider, TrimmedTest.MODID, event.getExistingFileHelper()));
         generator.addProvider(event.includeServer(), new TestRecipeProvider(packOutput));
 
-//        generator.addProvider(event.includeClient(), (DataProvider.Factory<TestAtlasProvider>) TestAtlasProvider::new);
         generator.addProvider(event.includeClient(), new TestLangProvider(packOutput));
         generator.addProvider(event.includeClient(), new TestModelProvider(packOutput, TrimmedTest.MODID, event.getExistingFileHelper()));
 
