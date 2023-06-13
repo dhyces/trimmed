@@ -3,20 +3,20 @@
     {
       "type": "trimmed:open_paletted_permutations",
       "palette_key": "minecraft:trims/color_palettes/trim_palette",
-      "permutations": "trimmed:vanilla_trim_material_permutations",
-      "textures": "trimmed:custom_armor_trim_pattern_textures"
+      "permutation_map": "trimmed:vanilla_trim_material_permutations",
+      "texture_set": "trimmed:custom_armor_trim_pattern_textures"
     },
     {
       "type": "trimmed:open_paletted_permutations",
       "palette_key": "minecraft:trims/color_palettes/trim_palette",
-      "permutations": "trimmed:custom_trim_material_permutations",
-      "textures": "trimmed:vanilla_armor_trim_pattern_textures"
+      "permutation_map": "trimmed:custom_trim_material_permutations",
+      "texture_set": "trimmed:vanilla_armor_trim_pattern_textures"
     },
     {
       "type": "trimmed:open_paletted_permutations",
       "palette_key": "minecraft:trims/color_palettes/trim_palette",
-      "permutations": "trimmed:custom_trim_material_permutations",
-      "textures": "trimmed:custom_armor_trim_pattern_textures"
+      "permutation_map": "trimmed:custom_trim_material_permutations",
+      "texture_set": "trimmed:custom_armor_trim_pattern_textures"
     }
   ]
 }
