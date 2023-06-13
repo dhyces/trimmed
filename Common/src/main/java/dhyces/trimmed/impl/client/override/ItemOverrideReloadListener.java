@@ -62,7 +62,7 @@ public class ItemOverrideReloadListener implements PreparableReloadListener {
                         }
                         providers.addAll(providerResult.result().get());
                     } catch (IOException e) {
-                        throw new RuntimeException(e); // TODO
+                        throw new RuntimeException("Could not read %s: ".formatted(entry.getKey()), e);
                     }
                 }
                 providers.stream().flatMap(ItemOverrideProvider::getModelsToBake).forEachOrdered(MODELS_TO_ADD::add);
