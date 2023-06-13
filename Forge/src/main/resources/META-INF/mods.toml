@@ -1,16 +1,16 @@
 modLoader="javafml"
 loaderVersion="[46,)"
 license="MIT"
-#issueTrackerURL="https://change.me.to.your.issue.tracker.example.invalid/"
+issueTrackerURL="https://github.com/dhyces/trimmed/issues"
 [[mods]]
 modId="trimmed"
 version="${file.jarVersion}"
 displayName="Trimmed"
-#displayURL="https://change.me.to.your.mods.homepage.example.invalid/"
+displayURL="https://modrinth.com/mod/trimmed"
 logoFile="icon.png"
 credits=""
 authors="Dhyces"
-description='''Better item overrides! Override it all!'''
+description='''Better item overrides! Better trim support! Override it all!'''
 [[dependencies.trimmed]]
     modId="forge"
     mandatory=true
