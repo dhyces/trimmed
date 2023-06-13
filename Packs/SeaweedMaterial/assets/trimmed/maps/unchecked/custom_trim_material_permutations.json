@@ -1,6 +1,6 @@
 {
   "__comment": "Map of palette texture location to suffix for generated textures",
   "pairs": {
-    "seaweedmaterial:trims/color_palettes/kelp": "kelp"
+    "seaweedmaterial:trims/color_palettes/kelp": "seaweedmaterial-kelp"
   }
 }
