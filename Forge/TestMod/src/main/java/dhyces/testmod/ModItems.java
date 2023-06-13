@@ -1,8 +1,7 @@
 package dhyces.testmod;
 
-import dhyces.testmod.item.TestArmorItem;
+import dhyces.testmod.item.AdamantiumArmorItem;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -17,8 +16,11 @@ public class ModItems {
     }
 
     public static final RegistryObject<Item> SPIRAL_PATTERN = ITEMS.register("spiral_armor_trim_smithing_template", () -> new Item(new Item.Properties()));
-    public static final RegistryObject<Item> TEST_HELMET = ITEMS.register("test_helmet", () -> new TestArmorItem(ArmorItem.Type.HELMET));
-    public static final RegistryObject<Item> TEST_CHESTPLATE = ITEMS.register("test_chestplate", () -> new TestArmorItem(ArmorItem.Type.CHESTPLATE));
-    public static final RegistryObject<Item> TEST_LEGGINGS = ITEMS.register("test_leggings", () -> new TestArmorItem(ArmorItem.Type.LEGGINGS));
-    public static final RegistryObject<Item> TEST_BOOTS = ITEMS.register("test_boots", () -> new TestArmorItem(ArmorItem.Type.BOOTS));
+    
+    public static final RegistryObject<Item> ADAMANTIUM_HELMET = ITEMS.register("adamantium_helmet", () -> new AdamantiumArmorItem(ArmorItem.Type.HELMET));
+    public static final RegistryObject<Item> ADAMANTIUM_CHESTPLATE = ITEMS.register("adamantium_chestplate", () -> new AdamantiumArmorItem(ArmorItem.Type.CHESTPLATE));
+    public static final RegistryObject<Item> ADAMANTIUM_LEGGINGS = ITEMS.register("adamantium_leggings", () -> new AdamantiumArmorItem(ArmorItem.Type.LEGGINGS));
+    public static final RegistryObject<Item> ADAMANTIUM_BOOTS = ITEMS.register("adamantium_boots", () -> new AdamantiumArmorItem(ArmorItem.Type.BOOTS));
+    
+    public static final RegistryObject<Item> ADAMANTIUM = ITEMS.register("adamantium", () -> new Item(new Item.Properties().fireResistant()));
 }

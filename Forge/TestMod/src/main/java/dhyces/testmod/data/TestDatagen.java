@@ -41,7 +41,9 @@ public class TestDatagen {
         generator.addProvider(event.includeServer(), new TestRecipeProvider(packOutput));
 
         generator.addProvider(event.includeClient(), new TestLangProvider(packOutput));
-        generator.addProvider(event.includeClient(), new TestModelProvider(packOutput, TrimmedTest.MODID, event.getExistingFileHelper()));
+        TestModClientMapProvider mapProvider = new TestModClientMapProvider(packOutput, TrimmedTest.MODID, event.getExistingFileHelper());
+        generator.addProvider(event.includeClient(), mapProvider);
+        generator.addProvider(event.includeClient(), new TestModelProvider(packOutput, mapProvider.contentsGetter(), TrimmedTest.MODID, event.getExistingFileHelper()));
 
         generator.addProvider(event.includeClient(), new TestItemOverrideProvider(packOutput));
         generator.addProvider(event.includeClient(), new TestClientTagProvider(packOutput, event.getExistingFileHelper()));

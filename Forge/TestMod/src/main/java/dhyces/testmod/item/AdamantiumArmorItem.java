@@ -1,19 +1,19 @@
 package dhyces.testmod.item;
 
+import dhyces.testmod.ModItems;
 import dhyces.testmod.TrimmedTest;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.world.item.crafting.Ingredient;
 
-public class TestArmorItem extends ArmorItem {
-    public TestArmorItem(Type type) {
-        super(TestArmorMaterial.INSTANCE, type, new Properties().stacksTo(1));
+public class AdamantiumArmorItem extends ArmorItem {
+    public AdamantiumArmorItem(Type type) {
+        super(AdamantiumArmorMaterial.INSTANCE, type, new Properties().stacksTo(1));
     }
 
-    public enum TestArmorMaterial implements ArmorMaterial {
+    public enum AdamantiumArmorMaterial implements ArmorMaterial {
         INSTANCE;
 
         @Override
@@ -38,12 +38,12 @@ public class TestArmorItem extends ArmorItem {
 
         @Override
         public Ingredient getRepairIngredient() {
-            return Ingredient.of(ItemTags.TRIM_MATERIALS);
+            return Ingredient.of(ModItems.ADAMANTIUM.get());
         }
 
         @Override
         public String getName() {
-            return TrimmedTest.MODID + ":test";
+            return TrimmedTest.MODID + ":adamantium";
         }
 
         @Override

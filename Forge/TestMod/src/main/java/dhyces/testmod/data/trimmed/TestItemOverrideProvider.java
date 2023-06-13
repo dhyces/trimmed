@@ -57,6 +57,7 @@ public class TestItemOverrideProvider extends ItemOverrideDataProvider {
             addTrimOverride(item, ModTrimMaterials.GLOW);
             addTrimOverride(item, ModTrimMaterials.PRISMARINE);
             addTrimOverride(item, ModTrimMaterials.SHELL);
+            addTrimOverride(item, ModTrimMaterials.ADAMANTIUM);
         }
 
         CompoundTag nbt = new CompoundTag();
