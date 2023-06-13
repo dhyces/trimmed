@@ -70,8 +70,7 @@ public class OpenPalettedPermutations implements SpriteSource {
                     LazyLoadedImage lazyloadedimage = new LazyLoadedImage(optionalTagElement.elementId(), imageOptional.get(), replacePixelsMap.size());
 
                     for (Map.Entry<ResourceLocation, OptionalSupplier> entry : replacePixelsMap.entrySet()) {
-                        String suffix = Utils.namespacedPath(entry.getKey(), '-');
-                        ResourceLocation permutedId = optionalTagElement.elementId().withSuffix("_" + suffix);
+                        ResourceLocation permutedId = optionalTagElement.elementId().withSuffix("_" + entry.getKey().getPath());
                         pOutput.add(permutedId, new OpenPalettedSpriteSupplier(lazyloadedimage, entry.getValue(), permutedId));
                     }
                 }

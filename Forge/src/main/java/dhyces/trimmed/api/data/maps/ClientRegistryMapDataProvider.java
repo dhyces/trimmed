@@ -27,13 +27,11 @@ import java.util.function.Function;
 public abstract class ClientRegistryMapDataProvider<T> extends BaseMapDataProvider {
     private final ResourceKey<? extends Registry<T>> registryKey;
     private final CompletableFuture<HolderLookup.Provider> lookupProviderFuture;
-    private final CompletableFuture<Unit> completed;
 
     public ClientRegistryMapDataProvider(PackOutput packOutput, String modid, CompletableFuture<HolderLookup.Provider> lookupProviderFuture, ResourceKey<? extends Registry<T>> registryKey, ExistingFileHelper existingFileHelper) {
         super(packOutput, modid, new ExistingFileHelper.ResourceType(PackType.CLIENT_RESOURCES, ".json", "maps/" + Utils.prefix(registryKey)), existingFileHelper);
         this.lookupProviderFuture = lookupProviderFuture;
         this.registryKey = registryKey;
-        this.completed = new CompletableFuture<>();
     }
 
     public ClientRegistryMapAppender<T, String> map(ClientRegistryMapKey<T> clientRegistryMapKey) {
@@ -58,10 +56,10 @@ public abstract class ClientRegistryMapDataProvider<T> extends BaseMapDataProvid
     public CompletableFuture<?> run(CachedOutput pOutput) {
         return lookupProviderFuture.thenApply(provider -> {
             addMaps(provider);
-            completed.complete(Unit.INSTANCE);
+            complete();
             return provider;
         }).thenCompose(provider -> {
-            Optional<HolderLookup.RegistryLookup<T>> registryLookup = provider.lookup(registryKey);
+            HolderLookup.RegistryLookup<T> registryLookup = provider.lookupOrThrow(registryKey);
 
             return CompletableFuture.allOf(builders.entrySet().stream().map(entry -> {
                 if (exists(registryLookup, ResourceKey.create(registryKey, entry.getKey()))) {
@@ -75,8 +73,8 @@ public abstract class ClientRegistryMapDataProvider<T> extends BaseMapDataProvid
         });
     }
 
-    protected boolean exists(Optional<HolderLookup.RegistryLookup<T>> firstLookup, ResourceKey<T> resourceKey) {
-        return firstLookup.flatMap(tRegistryLookup -> tRegistryLookup.get(resourceKey)).isPresent() || checkForgeRegistries(resourceKey);
+    protected boolean exists(HolderLookup.RegistryLookup<T> firstLookup, ResourceKey<T> resourceKey) {
+        return firstLookup.get(resourceKey).isPresent() || checkForgeRegistries(resourceKey);
     }
 
     protected boolean checkForgeRegistries(ResourceKey<T> resourceKey) {

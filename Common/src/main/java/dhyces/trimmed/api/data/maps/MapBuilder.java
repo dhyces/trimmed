@@ -42,6 +42,10 @@ public class MapBuilder {
         return this;
     }
 
+    public MapValue get(ResourceLocation key) {
+        return builder.build().get(key);
+    }
+
     public MapFile build() {
         return new MapFile(builder.build(), appendedMaps, isReplace);
     }

@@ -35,6 +35,7 @@ public abstract class ClientMapDataProvider extends BaseMapDataProvider {
     @Override
     public CompletableFuture<?> run(CachedOutput pOutput) {
         this.addMaps();
+        complete();
         return CompletableFuture.allOf(builders.entrySet().stream().map(entry -> {
             DataResult<JsonElement> elementResult = MapFile.CODEC.encodeStart(JsonOps.INSTANCE, entry.getValue().build());
             Path path = pathProvider.json(entry.getKey());
