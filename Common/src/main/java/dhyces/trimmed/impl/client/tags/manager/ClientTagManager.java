@@ -123,7 +123,7 @@ public class ClientTagManager implements PreparableReloadListener {
                     setBuilder.addAll(tagFile.tags());
                 }
             } catch (IOException e) {
-                throw new RuntimeException(e); // TODO
+                throw new RuntimeException("Failed to read %s from %s: ".formatted(fileName, resource.source().packId()), e);
             }
         }
         return setBuilder.build();

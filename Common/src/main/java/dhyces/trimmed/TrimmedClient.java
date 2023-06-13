@@ -44,10 +44,10 @@ public class TrimmedClient {
     }
 
     public static void onTagsSynced(RegistryAccess registryAccess, boolean shouldUpdateStatic) {
-        if (shouldUpdateStatic) {
-            if (Minecraft.getInstance().player != null) {
-                Minecraft.getInstance().getToasts().addToast(InfoToast.reloadClientInfo());
-            }
+        if (shouldUpdateStatic) { //TODO: Disabled the toast for now. Use toast later when a datapack registry queued
+//            if (Minecraft.getInstance().player != null) {
+//                Minecraft.getInstance().getToasts().addToast(InfoToast.reloadClientInfo());
+//            }
             ClientTagManager.updateDatapacksSynced(registryAccess);
         }
     }
