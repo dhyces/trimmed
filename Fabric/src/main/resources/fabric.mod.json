@@ -4,7 +4,7 @@
     "version": "${version}",
   
     "name": "Trimmed",
-    "description": "Better item overrides! Override it all!",
+    "description": "Better item overrides! Better trim support! Override it all!",
     "authors": [
       "Dhyces"
     ],
