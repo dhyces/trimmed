@@ -4,6 +4,7 @@
     "minecraft:nautilus_shell",
     "minecraft:blaze_powder",
     "minecraft:prismarine_crystals",
-    "minecraft:glow_ink_sac"
+    "minecraft:glow_ink_sac",
+    "trimmed_testmod:adamantium"
   ]
 }

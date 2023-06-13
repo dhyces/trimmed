@@ -1,7 +1,8 @@
 {
-  "trimmed.trim_material.blaze": "Blaze",
-  "trimmed.trim_material.echo": "Echo",
-  "trimmed.trim_material.glow": "Glow",
-  "trimmed.trim_material.prismarine": "Prismarine",
-  "trimmed.trim_material.shell": "Shell"
+  "trimmed.trim_material.adamantium": "Adamantium Material",
+  "trimmed.trim_material.blaze": "Blaze Material",
+  "trimmed.trim_material.echo": "Echo Material",
+  "trimmed.trim_material.glow": "Glow Material",
+  "trimmed.trim_material.prismarine": "Prismarine Material",
+  "trimmed.trim_material.shell": "Shell Material"
 }

@@ -1,0 +1,9 @@
+{
+  "asset_name": "trimmed_testmod-adamantium",
+  "description": {
+    "color": "#9D2638",
+    "translate": "trimmed.trim_material.adamantium"
+  },
+  "ingredient": "trimmed_testmod:adamantium",
+  "item_model_index": -1.0
+}

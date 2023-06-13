@@ -1,8 +1,8 @@
 {
   "values": [
-    "trimmed_testmod:test_helmet",
-    "trimmed_testmod:test_chestplate",
-    "trimmed_testmod:test_leggings",
-    "trimmed_testmod:test_boots"
+    "trimmed_testmod:adamantium_helmet",
+    "trimmed_testmod:adamantium_chestplate",
+    "trimmed_testmod:adamantium_leggings",
+    "trimmed_testmod:adamantium_boots"
   ]
 }

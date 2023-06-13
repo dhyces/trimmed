@@ -2,6 +2,6 @@
   "parent": "minecraft:item/generated",
   "textures": {
     "layer0": "minecraft:item/turtle_leggings",
-    "layer1": "minecraft:trims/items/leggings_trim_echo"
+    "layer1": "minecraft:trims/items/leggings_trim_trimmed_testmod-echo"
   }
 }

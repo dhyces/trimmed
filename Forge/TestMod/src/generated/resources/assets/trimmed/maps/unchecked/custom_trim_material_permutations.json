@@ -1,0 +1,11 @@
+{
+  "pairs": {
+    "trimmed_testmod:trims/color_palettes/adamantium": "trimmed_testmod-adamantium",
+    "trimmed_testmod:trims/color_palettes/adamantium_darker": "trimmed_testmod-adamantium_darker",
+    "trimmed_testmod:trims/color_palettes/blaze": "trimmed_testmod-blaze",
+    "trimmed_testmod:trims/color_palettes/echo": "trimmed_testmod-echo",
+    "trimmed_testmod:trims/color_palettes/glow": "trimmed_testmod-glow",
+    "trimmed_testmod:trims/color_palettes/prismarine": "trimmed_testmod-prismarine",
+    "trimmed_testmod:trims/color_palettes/shell": "trimmed_testmod-shell"
+  }
+}

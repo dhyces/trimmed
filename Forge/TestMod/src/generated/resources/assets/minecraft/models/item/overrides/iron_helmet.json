@@ -24,6 +24,11 @@
       "type": "trimmed:trim",
       "material": "trimmed_testmod:shell",
       "model": "trimmed_testmod:iron_helmet_shell_trim"
+    },
+    {
+      "type": "trimmed:trim",
+      "material": "trimmed_testmod:adamantium",
+      "model": "trimmed_testmod:iron_helmet_adamantium_trim"
     }
   ]
 }

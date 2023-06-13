@@ -3,6 +3,6 @@
   "textures": {
     "layer0": "minecraft:item/leather_chestplate",
     "layer1": "minecraft:item/leather_chestplate_overlay",
-    "layer2": "minecraft:trims/items/chestplate_trim_echo"
+    "layer2": "minecraft:trims/items/chestplate_trim_trimmed_testmod-echo"
   }
 }
