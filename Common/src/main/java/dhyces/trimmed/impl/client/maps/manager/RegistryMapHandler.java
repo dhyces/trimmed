@@ -1,7 +1,7 @@
 package dhyces.trimmed.impl.client.maps.manager;
 
 import com.mojang.serialization.DataResult;
-import dhyces.modhelper.services.Services;
+import dhyces.trimmed.modhelper.services.Services;
 import dhyces.trimmed.api.client.util.ClientUtil;
 import dhyces.trimmed.api.data.maps.MapValue;
 import dhyces.trimmed.impl.client.maps.ClientRegistryMapKey;

@@ -1,6 +1,6 @@
 package dhyces.trimmed.impl.mixin.client;
 
-import dhyces.modhelper.services.Services;
+import dhyces.trimmed.modhelper.services.Services;
 import dhyces.trimmed.api.TrimmedClientMapApi;
 import dhyces.trimmed.api.data.maps.MapValue;
 import dhyces.trimmed.impl.client.maps.ClientMapKey;

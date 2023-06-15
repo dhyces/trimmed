@@ -1,7 +1,6 @@
 package dhyces.trimmed;
 
-import dhyces.modhelper.network.handler.SimplePacketHandler;
-import dhyces.trimmed.impl.client.InfoToast;
+import dhyces.trimmed.modhelper.network.handler.SimplePacketHandler;
 import dhyces.trimmed.impl.client.atlas.TrimmedSpriteSourceTypes;
 import dhyces.trimmed.impl.client.maps.manager.ClientMapManager;
 import dhyces.trimmed.impl.client.override.ItemOverrideReloadListener;

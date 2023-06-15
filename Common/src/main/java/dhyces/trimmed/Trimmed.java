@@ -1,6 +1,6 @@
 package dhyces.trimmed;
 
-import dhyces.modhelper.services.Services;
+import dhyces.trimmed.modhelper.services.Services;
 import dhyces.trimmed.impl.network.Networking;
 import net.minecraft.resources.ResourceLocation;
 import org.slf4j.Logger;

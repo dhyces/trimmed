@@ -1,6 +1,6 @@
 package dhyces.trimmed.impl.client.override;
 
-import dhyces.modhelper.services.Services;
+import dhyces.trimmed.modhelper.services.Services;
 import dhyces.trimmed.api.client.override.provider.ItemOverrideProvider;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.resources.model.BakedModel;

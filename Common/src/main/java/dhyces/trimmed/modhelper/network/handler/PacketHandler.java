@@ -1,6 +1,6 @@
-package dhyces.modhelper.network.handler;
+package dhyces.trimmed.modhelper.network.handler;
 
-import dhyces.modhelper.network.packet.CommonPacket;
+import dhyces.trimmed.modhelper.network.packet.CommonPacket;
 
 public interface PacketHandler {
     <T extends CommonPacket<T>> PacketConsumer getPacketConsumer(CommonPacket.Type<T> packetType);

@@ -1,4 +1,4 @@
-package dhyces.modhelper.services.util;
+package dhyces.trimmed.modhelper.services.util;
 
 public enum Platform {
     FABRIC, FORGE, QUILT, UNKNOWN;

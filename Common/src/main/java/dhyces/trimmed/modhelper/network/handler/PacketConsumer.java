@@ -1,7 +1,7 @@
-package dhyces.modhelper.network.handler;
+package dhyces.trimmed.modhelper.network.handler;
 
 import commonnetwork.networking.data.PacketContext;
-import dhyces.modhelper.network.packet.CommonPacket;
+import dhyces.trimmed.modhelper.network.packet.CommonPacket;
 
 @FunctionalInterface
 public interface PacketConsumer {

@@ -1,6 +1,6 @@
-package dhyces.modhelper.network.handler;
+package dhyces.trimmed.modhelper.network.handler;
 
-import dhyces.modhelper.network.packet.CommonPacket;
+import dhyces.trimmed.modhelper.network.packet.CommonPacket;
 
 import java.util.HashMap;
 import java.util.Map;

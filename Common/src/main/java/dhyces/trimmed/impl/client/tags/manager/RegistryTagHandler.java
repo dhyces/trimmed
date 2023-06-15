@@ -1,6 +1,6 @@
 package dhyces.trimmed.impl.client.tags.manager;
 
-import dhyces.modhelper.services.Services;
+import dhyces.trimmed.modhelper.services.Services;
 import dhyces.trimmed.api.client.util.ClientUtil;
 import dhyces.trimmed.impl.client.tags.ClientRegistryTagKey;
 import dhyces.trimmed.impl.util.OptionalId;
