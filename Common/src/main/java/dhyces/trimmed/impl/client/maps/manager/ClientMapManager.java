@@ -3,7 +3,7 @@ package dhyces.trimmed.impl.client.maps.manager;
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.JsonObject;
 import com.mojang.serialization.JsonOps;
-import dhyces.modhelper.services.Services;
+import dhyces.trimmed.modhelper.services.Services;
 import dhyces.trimmed.Trimmed;
 import dhyces.trimmed.api.client.util.ClientUtil;
 import dhyces.trimmed.api.data.maps.MapFile;

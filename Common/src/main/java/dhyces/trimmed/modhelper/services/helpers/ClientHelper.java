@@ -1,4 +1,4 @@
-package dhyces.modhelper.services.helpers;
+package dhyces.trimmed.modhelper.services.helpers;
 
 import com.mojang.blaze3d.platform.NativeImage;
 import net.minecraft.client.renderer.texture.SpriteContents;

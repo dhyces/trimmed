@@ -1,7 +1,7 @@
-package dhyces.modhelper.services.helpers;
+package dhyces.trimmed.modhelper.services.helpers;
 
 import com.google.gson.JsonObject;
-import dhyces.modhelper.services.util.Platform;
+import dhyces.trimmed.modhelper.services.util.Platform;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceKey;

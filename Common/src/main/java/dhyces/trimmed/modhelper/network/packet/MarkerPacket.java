@@ -1,4 +1,4 @@
-package dhyces.modhelper.network.packet;
+package dhyces.trimmed.modhelper.network.packet;
 
 import net.minecraft.network.FriendlyByteBuf;
 

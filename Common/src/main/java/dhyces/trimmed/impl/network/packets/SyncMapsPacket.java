@@ -1,6 +1,6 @@
 package dhyces.trimmed.impl.network.packets;
 
-import dhyces.modhelper.network.packet.SimplePacket;
+import dhyces.trimmed.modhelper.network.packet.SimplePacket;
 import dhyces.trimmed.impl.network.Networking;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.item.ItemStack;

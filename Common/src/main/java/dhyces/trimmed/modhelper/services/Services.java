@@ -1,7 +1,7 @@
-package dhyces.modhelper.services;
+package dhyces.trimmed.modhelper.services;
 
-import dhyces.modhelper.services.helpers.ClientHelper;
-import dhyces.modhelper.services.helpers.PlatformHelper;
+import dhyces.trimmed.modhelper.services.helpers.ClientHelper;
+import dhyces.trimmed.modhelper.services.helpers.PlatformHelper;
 
 import java.util.ServiceLoader;
 
