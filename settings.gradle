@@ -24,4 +24,4 @@ pluginManagement {
     }
 }
 
-include("Common", "Forge", "Forge:TestMod", "Fabric")
+include("Common", "Forge", "Forge:TestMod", "Fabric", /*"Quilt"*/)
