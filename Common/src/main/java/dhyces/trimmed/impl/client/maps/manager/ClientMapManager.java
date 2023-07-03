@@ -105,7 +105,7 @@ public class ClientMapManager implements PreparableReloadListener {
                 throw new RuntimeException(e); // TODO
             }
         }
-        return mapBuilder.build();
+        return mapBuilder.buildKeepingLast();
     }
 
     private static <T> T cast(Object o) {
