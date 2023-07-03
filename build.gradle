@@ -8,7 +8,7 @@ modsDotGroovy {
     multiloader {
         common = project(':Common')
 //        quilt = [project(':Quilt')]
-//        forge = [project(':Forge')]
+        forge = [project(':Forge')]
         fabric = [project(':Fabric')]
     }
 }
