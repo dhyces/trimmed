@@ -64,7 +64,7 @@ ModsDotGroovy.make {
     }
 
     onFabric {
-        mixin += [
+        mixin = [
                 modid + ".fabric.mixins.json"
         ]
     }

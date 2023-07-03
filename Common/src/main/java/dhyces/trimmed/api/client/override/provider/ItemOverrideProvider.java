@@ -3,7 +3,9 @@ package dhyces.trimmed.api.client.override.provider;
 import com.mojang.serialization.Codec;
 import dhyces.trimmed.impl.client.override.provider.ItemOverrideProviderRegistry;
 import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.renderer.ItemModelShaper;
 import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.client.resources.model.ModelBakery;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
@@ -25,6 +27,9 @@ public interface ItemOverrideProvider {
      */
     default Stream<ModelResourceLocation> getModelsToBake() {
         return Stream.of();
+    }
+
+    default void bakeAdditional(ModelBakery modelBakery) {
     }
 
     ItemOverrideProviderType<?> getType();

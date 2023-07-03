@@ -30,7 +30,6 @@
       "trimmed.fabric.mixins.json"
     ],
 
-    "___accessWidener": "old_trimmed.accesswidener",
     "accessWidener": "trimmed.accesswidener",
 
     "depends": {

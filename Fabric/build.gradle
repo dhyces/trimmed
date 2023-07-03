@@ -1,22 +1,15 @@
 plugins {
-    id 'fabric-loom' version '1.2.+'
+    id 'org.quiltmc.loom' version '1.2.+'
     id 'maven-publish'
     id 'idea'
 }
 
 archivesBaseName = "${mod_id}-fabric-${minecraft_version}"
 
-dependencies {
-    minecraft "com.mojang:minecraft:${minecraft_version}"
-    mappings loom.layered() {
-        officialMojangMappings()
-        parchment("org.parchmentmc.data:parchment-1.19.3:2023.03.12@zip")
+idea {
+    module {
+        inheritOutputDirs = false
     }
-
-    modImplementation "net.fabricmc:fabric-loader:${fabric_loader_version}"
-    modImplementation "net.fabricmc.fabric-api:fabric-api:${fabric_version}"
-    include(modImplementation 'mysticdrew:common-networking:1.0.0+1.20-fabric')
-    implementation project(path: ":Common", configuration: "namedElements")
 }
 
 loom {
@@ -40,12 +33,28 @@ loom {
     mixin {
         defaultRefmapName = "${mod_id}.refmap.json"
     }
+
+    mods {
+        trimmed {
+            // When using split sources you should add the main and client sourceset
+            sourceSet sourceSets.main
+            sourceSet project(":Common").sourceSets.main
+        }
+    }
 }
 
-idea {
-    module {
-        inheritOutputDirs = false
+dependencies {
+    minecraft "com.mojang:minecraft:${minecraft_version}"
+    mappings loom.layered() {
+        officialMojangMappings()
+        parchment("org.parchmentmc.data:parchment-1.20.1:2023.07.02@zip")
     }
+
+    modImplementation "net.fabricmc:fabric-loader:${fabric_loader_version}"
+    modImplementation "net.fabricmc.fabric-api:fabric-api:${fabric_version}"
+
+    include(modImplementation 'mysticdrew:common-networking:1.0.0+1.20-fabric')
+    implementation project(path: ":Common", configuration: "namedElements")
 }
 
 processResources {

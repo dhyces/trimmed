@@ -8,13 +8,12 @@ modsDotGroovy {
     multiloader {
         common = project(':Common')
 //        quilt = [project(':Quilt')]
-        forge = [project(':Forge')]
+//        forge = [project(':Forge')]
         fabric = [project(':Fabric')]
     }
 }
 
 subprojects {
-    apply plugin: 'java-library'
     apply plugin: 'java'
     apply plugin: 'maven-publish'
 
