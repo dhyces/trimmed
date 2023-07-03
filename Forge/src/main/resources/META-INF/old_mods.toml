@@ -1,7 +1,7 @@
 modLoader="javafml"
 loaderVersion="[46,)"
 license="MIT"
-issueTrackerURL="https://github.com/dhyces/trimmed/issues"
+issueTrackerURL="https://github.com/dhyces/trimmed/issues/"
 [[mods]]
 modId="trimmed"
 version="${file.jarVersion}"

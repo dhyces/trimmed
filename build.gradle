@@ -1,9 +1,23 @@
-subprojects {
+plugins {
+    id 'org.groovymc.modsdotgroovy' version '1.4.1'
+}
 
+modsDotGroovy {
+    dslVersion = '1.5.0'
+    platform = 'multiloader'
+    multiloader {
+        common = project(':Common')
+//        quilt = [project(':Quilt')]
+        forge = [project(':Forge')]
+        fabric = [project(':Fabric')]
+    }
+}
+
+subprojects {
     apply plugin: 'java-library'
     apply plugin: 'java'
     apply plugin: 'maven-publish'
-    
+
     java.toolchain.languageVersion = JavaLanguageVersion.of(17)
     java.withSourcesJar()
     java.withJavadocJar()
