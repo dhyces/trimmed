@@ -1,10 +1,12 @@
-package dhyces.trimmed.impl.client.override;
+package dhyces.trimmed.impl.client.models.override;
 
 import dhyces.trimmed.modhelper.services.Services;
 import dhyces.trimmed.api.client.override.provider.ItemOverrideProvider;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.ModelResourceLocation;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
@@ -15,10 +17,10 @@ import java.util.Optional;
 import java.util.Set;
 
 public class ItemOverrideRegistry {
-    private static final Map<ModelResourceLocation, Set<ItemOverrideProvider>> OVERRIDE_SET_MAP = new HashMap<>();
+    private static final Map<ResourceLocation, Set<ItemOverrideProvider>> OVERRIDE_SET_MAP = new HashMap<>();
 
     public static Optional<BakedModel> getOverrideModel(ItemStack itemStack, @Nullable ClientLevel world, @Nullable LivingEntity entity, int seed) {
-        Set<ItemOverrideProvider> providers = OVERRIDE_SET_MAP.get(Services.CLIENT_HELPER.getModelLocation(itemStack));
+        Set<ItemOverrideProvider> providers = OVERRIDE_SET_MAP.get(BuiltInRegistries.ITEM.getKey(itemStack.getItem()));
         if (providers == null) {
             return Optional.empty();
         }
@@ -32,11 +34,11 @@ public class ItemOverrideRegistry {
         return Optional.empty();
     }
 
-    public static Optional<Set<ItemOverrideProvider>> getOverrides(ModelResourceLocation modelId) {
+    public static Optional<Set<ItemOverrideProvider>> getOverrides(ResourceLocation modelId) {
         return Optional.ofNullable(OVERRIDE_SET_MAP.get(modelId));
     }
 
-    static void addOverrideSet(ModelResourceLocation identifier, Set<ItemOverrideProvider> set) {
+    static void addOverrideSet(ResourceLocation identifier, Set<ItemOverrideProvider> set) {
         OVERRIDE_SET_MAP.put(identifier, set);
     }
 

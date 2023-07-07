@@ -67,6 +67,8 @@ subprojects {
         maven {
             url = "https://jm.gserv.me/repository/maven-public/"
         }
+
+        maven { url = "https://jitpack.io/" }
     }
 
     dependencies {

@@ -1,4 +1,4 @@
-package dhyces.trimmed.impl.client.override.provider;
+package dhyces.trimmed.impl.client.models.override.provider;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;

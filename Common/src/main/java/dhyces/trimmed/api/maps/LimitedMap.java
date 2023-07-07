@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Supplier;
+import java.util.stream.Stream;
 
 public interface LimitedMap<K, V> extends Iterable<ImmutableEntry<K, V>> {
 
@@ -16,6 +17,8 @@ public interface LimitedMap<K, V> extends Iterable<ImmutableEntry<K, V>> {
     V getOrSupply(Object key, Supplier<V> defaultSupplier);
     <T> T mapUnsafe(Object key, Function<V, T> mappingFunction);
     <T> Optional<T> getAndMap(Object key, Function<V, T> mappingFunction);
+
+    Stream<ImmutableEntry<K, V>> stream();
 
     static <K, V> LimitedMap<K, V> adapter(OperableSupplier<Map<K, V>> backing) {
         return new ApiLimitedMapImpl<>(backing);
@@ -63,6 +66,11 @@ public interface LimitedMap<K, V> extends Iterable<ImmutableEntry<K, V>> {
         @Override
         public <T> Optional<T> getAndMap(Object key, Function<V, T> mappingFunction) {
             return Optional.ofNullable(this.mappingFunction.apply(backing.get().get(key))).map(mappingFunction);
+        }
+
+        @Override
+        public Stream<ImmutableEntry<K, V>> stream() {
+            return backing.get().entrySet().stream().map(koEntry -> ImmutableEntry.basic(koEntry.getKey(), mappingFunction.apply(koEntry.getValue())));
         }
 
         @NotNull

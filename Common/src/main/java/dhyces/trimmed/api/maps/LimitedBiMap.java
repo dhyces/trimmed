@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Supplier;
+import java.util.stream.Stream;
 
 public interface LimitedBiMap<K, V> extends LimitedMap<K, V> {
     LimitedBiMap<V, K> inverse();
@@ -64,6 +65,11 @@ public interface LimitedBiMap<K, V> extends LimitedMap<K, V> {
         @Override
         public <T> Optional<T> getAndMap(Object key, Function<V, T> mappingFunction) {
             return Optional.ofNullable(backing.get(key)).map(mappingFunction);
+        }
+
+        @Override
+        public Stream<ImmutableEntry<K, V>> stream() {
+            return backing.entrySet().stream().map(ImmutableEntry::from);
         }
 
         @NotNull

@@ -31,7 +31,6 @@ loom {
 
     mods {
         trimmed {
-            // When using split sources you should add the main and client sourceset
             sourceSet sourceSets.main
             sourceSet project(":Common").sourceSets.main
         }
@@ -49,6 +48,9 @@ dependencies {
     modImplementation "net.fabricmc.fabric-api:fabric-api:${fabric_version}"
 
     include(modImplementation 'mysticdrew:common-networking:1.0.0+1.20-fabric')
+
+    include(implementation(annotationProcessor("com.github.llamalad7.mixinextras:mixinextras-fabric:0.2.0-beta.9")))
+
     implementation project(path: ":Common", configuration: "namedElements")
 }
 

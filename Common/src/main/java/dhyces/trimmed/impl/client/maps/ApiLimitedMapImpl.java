@@ -47,6 +47,11 @@ public class ApiLimitedMapImpl<K, V> implements LimitedMap<K, V> {
         return Optional.ofNullable(get(key)).map(mappingFunction);
     }
 
+    @Override
+    public Stream<ImmutableEntry<K, V>> stream() {
+        return backing.mapOrElse(kvMap -> kvMap.entrySet().stream().map(ImmutableEntry::from), Stream.empty());
+    }
+
     @NotNull
     @Override
     public Iterator<ImmutableEntry<K, V>> iterator() {

@@ -59,10 +59,17 @@ repositories {
 dependencies {
 	minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
 
-	annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
 	implementation fg.deobf('mysticdrew:common-networking:1.0.0+1.19.3-forge')
-	implementation project(":Common")
-	compileOnly project(":Forge")
+
+	implementation(annotationProcessor("com.github.llamalad7.mixinextras:mixinextras-common:0.2.0-beta.9"))
+	implementation(jarJar("com.github.llamalad7.mixinextras:mixinextras-forge:0.2.0-beta.9")) {
+		jarJar.ranged(it, "[0.2.0-beta.9,)")
+	}
+
+	compileOnly(project(":Forge"))
+
+	annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
+
 //	implementation "dev.dhyces.trimmed:trimmed-forge-1.19.4:0.0.1"
 }
 
@@ -73,9 +80,9 @@ mixin {
 	debug.export = true
 }
 
-tasks.withType(JavaCompile) {
-	source(project(":Common").sourceSets.main.allSource)
-	source(project(":Forge").sourceSets.main.allSource)
-}
+//tasks.withType(JavaCompile) {
+//	source(project(":Common").sourceSets.main.allSource)
+//	source(project(":Forge").sourceSets.main.allSource)
+//}
 
 jar.finalizedBy('reobfJar')

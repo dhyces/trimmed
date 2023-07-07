@@ -1,8 +1,12 @@
 package dhyces.trimmed.impl.client.maps.manager;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
 import com.google.gson.JsonObject;
+import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.JsonOps;
+import dhyces.trimmed.api.data.maps.MapAppendElement;
 import dhyces.trimmed.modhelper.services.Services;
 import dhyces.trimmed.Trimmed;
 import dhyces.trimmed.api.client.util.ClientUtil;
@@ -62,7 +66,7 @@ public class ClientMapManager implements PreparableReloadListener {
 
         for (PathInfo pathInfo : foldersToSearch) {
             FileToIdConverter converter = FileToIdConverter.json("maps/" + pathInfo.getPath());
-            Map<ResourceLocation, Set<Map.Entry<ResourceLocation, MapValue>>> unresolved = readResources(converter, resourceManager);
+            Map<ResourceLocation, Pair<Map<ResourceLocation, MapValue>, Set<MapAppendElement>>> unresolved = readResources(converter, resourceManager);
 
             if (!(pathInfo instanceof RegistryPathInfo registryPathInfo)) {
                 UNCHECKED_HANDLER.resolveMaps(unresolved);
@@ -76,16 +80,17 @@ public class ClientMapManager implements PreparableReloadListener {
         return CompletableFuture.completedFuture(Unit.INSTANCE);
     }
 
-    private Map<ResourceLocation, Set<Map.Entry<ResourceLocation, MapValue>>> readResources(FileToIdConverter converter, ResourceManager resourceManager) {
+    private Map<ResourceLocation, Pair<Map<ResourceLocation, MapValue>, Set<MapAppendElement>>> readResources(FileToIdConverter converter, ResourceManager resourceManager) {
         return converter.listMatchingResourceStacks(resourceManager).entrySet().stream()
                 .map(entry -> {
                     ResourceLocation id = converter.fileToId(entry.getKey());
-                    return Map.entry(id, readStack(id, entry.getValue()).entrySet());
+                    return Map.entry(id, readStack(id, entry.getValue()));
                 }).collect(Util.toMap());
     }
 
-    private Map<ResourceLocation, MapValue> readStack(ResourceLocation fileName, List<Resource> resourceStack) {
+    private Pair<Map<ResourceLocation, MapValue>, Set<MapAppendElement>> readStack(ResourceLocation fileName, List<Resource> resourceStack) {
         ImmutableMap.Builder<ResourceLocation, MapValue> mapBuilder = ImmutableMap.builder();
+        ImmutableSet.Builder<MapAppendElement> appendListBuilder = ImmutableSet.builder();
         for (Resource resource : resourceStack) {
             try (BufferedReader reader = resource.openAsReader()) {
                 JsonObject json = GsonHelper.parse(reader);
@@ -98,14 +103,16 @@ public class ClientMapManager implements PreparableReloadListener {
                     MapFile mapFile = mapFileOptional.get();
                     if (mapFile.shouldReplace()) {
                         mapBuilder = ImmutableMap.builder();
+                        appendListBuilder = ImmutableSet.builder();
                     }
                     mapBuilder.putAll(mapFile.map());
+                    appendListBuilder.addAll(mapFile.appendElements());
                 }
             } catch (IOException e) {
                 throw new RuntimeException(e); // TODO
             }
         }
-        return mapBuilder.buildKeepingLast();
+        return Pair.of(mapBuilder.buildKeepingLast(), appendListBuilder.build());
     }
 
     private static <T> T cast(Object o) {

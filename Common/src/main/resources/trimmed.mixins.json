@@ -9,9 +9,11 @@
     "client.ReloadableResourceManagerImplAccessor"
   ],
   "client": [
+    "client.ArmorTrimMixin",
     "client.AtlasSourceManagerAccessor",
-    "client.ModelOverrideListMixin",
-    "client.ArmorTrimMixin"
+    "client.BakedModelManagerMixin",
+    "client.ModelBakeryMixin",
+    "client.ModelOverrideListMixin"
   ],
   "injectors": {
     "defaultRequire": 1

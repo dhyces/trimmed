@@ -1,10 +1,11 @@
 package dhyces.trimmed;
 
+import dhyces.trimmed.impl.client.models.template.ModelTemplateManager;
 import dhyces.trimmed.modhelper.network.handler.SimplePacketHandler;
 import dhyces.trimmed.impl.client.atlas.TrimmedSpriteSourceTypes;
 import dhyces.trimmed.impl.client.maps.manager.ClientMapManager;
-import dhyces.trimmed.impl.client.override.ItemOverrideReloadListener;
-import dhyces.trimmed.impl.client.override.provider.ItemOverrideProviderRegistry;
+import dhyces.trimmed.impl.client.models.override.ItemOverrideReloadListener;
+import dhyces.trimmed.impl.client.models.override.provider.ItemOverrideProviderRegistry;
 import dhyces.trimmed.impl.client.tags.manager.ClientTagManager;
 import dhyces.trimmed.impl.mixin.client.ReloadableResourceManagerImplAccessor;
 import dhyces.trimmed.impl.network.Networking;
@@ -26,6 +27,7 @@ public class TrimmedClient {
 
     public static void init() {
         TrimmedSpriteSourceTypes.bootstrap();
+        ModelTemplateManager.init();
         ItemOverrideProviderRegistry.init();
     }
 

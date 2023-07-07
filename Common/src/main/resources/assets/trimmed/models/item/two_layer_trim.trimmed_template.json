@@ -1,0 +1,7 @@
+{
+	"parent": "minecraft:item/generated",
+	"textures": {
+		"layer0": "${item_texture}",
+		"layer1": "${trim_texture}_${material}"
+	}
+}

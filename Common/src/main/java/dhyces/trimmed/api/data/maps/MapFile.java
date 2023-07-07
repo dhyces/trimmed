@@ -11,7 +11,7 @@ public record MapFile(Map<ResourceLocation, MapValue> map, List<MapAppendElement
     public static final Codec<MapFile> CODEC = RecordCodecBuilder.create(instance ->
             instance.group(
                     Codec.unboundedMap(ResourceLocation.CODEC, MapValue.EITHER_CODEC).fieldOf("pairs").forGetter(MapFile::map),
-                    Codec.list(MapAppendElement.EITHER).optionalFieldOf("append", List.of()).forGetter(MapFile::appendElements),
+                    MapAppendElement.EITHER.listOf().optionalFieldOf("append", List.of()).forGetter(MapFile::appendElements),
                     Codec.BOOL.optionalFieldOf("replace", false).forGetter(MapFile::shouldReplace)
             ).apply(instance, MapFile::new)
     );

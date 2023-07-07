@@ -1,0 +1,9 @@
+{
+	"values": [
+		{
+			"type": "trimmed:any_trim",
+			"template": "trimmed:item/two_layer_trim",
+			"trim_texture": "minecraft:trims/items/boots_trim"
+		}
+	]
+}

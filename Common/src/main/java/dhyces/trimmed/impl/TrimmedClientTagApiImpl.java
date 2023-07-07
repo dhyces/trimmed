@@ -33,25 +33,23 @@ public final class TrimmedClientTagApiImpl implements TrimmedClientTagApi {
     }
 
     @Override
-    @Nullable
     public Set<OptionalId> getUncheckedTag(ClientTagKey clientTagKey) {
-        return ClientTagManager.getUncheckedHandler().getSet(clientTagKey);
+        Set<OptionalId> tag = ClientTagManager.getUncheckedHandler().getSet(clientTagKey);
+        return tag == null ? Set.of() : tag;
     }
 
     @Override
-    @Nullable
     public <T> Set<T> getRegistryTag(ClientRegistryTagKey<T> clientRegistryTagKey) {
         return ClientTagManager.getRegistryHandler(clientRegistryTagKey.getRegistryKey())
                 .map(tRegistryTagHandler -> tRegistryTagHandler.getSet(clientRegistryTagKey))
-                .orElse(null);
+                .orElse(Set.of());
     }
 
     @Override
-    @Nullable
     public <T> Set<Holder<T>> getDatapackedTag(ClientRegistryTagKey<T> clientRegistryTagKey) {
         return ClientTagManager.getDatapackedHandler(clientRegistryTagKey.getRegistryKey())
                 .map(tDatapackTagHandler -> tDatapackTagHandler.getSet(clientRegistryTagKey))
-                .orElse(null);
+                .orElse(Set.of());
     }
 
     @Override

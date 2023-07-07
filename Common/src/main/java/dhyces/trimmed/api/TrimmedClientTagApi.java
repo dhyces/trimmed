@@ -31,7 +31,6 @@ public interface TrimmedClientTagApi {
     @ApiStatus.Experimental
     <T> boolean datapackedTagContains(ClientRegistryTagKey<T> tagKey, Holder<T> value);
 
-    @Nullable
     Set<OptionalId> getUncheckedTag(ClientTagKey clientTagKey);
 
     @Nullable

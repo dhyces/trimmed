@@ -1,0 +1,7 @@
+{
+  "pairs": {},
+  "append": [
+    "trimmed:vanilla_trim_material_permutations",
+    "trimmed:custom_trim_material_permutations"
+  ]
+}

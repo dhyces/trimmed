@@ -38,6 +38,10 @@ public class MapHolder<K, V> {
         }
     }
 
+    Map<K, V> getBacking() {
+        return backing;
+    }
+
     public LimitedMap<K, V> get() {
         if (directRef == null || directRef.get() == null) {
             directRef = new SoftReference<>(LimitedMap.adapter(() -> backing));

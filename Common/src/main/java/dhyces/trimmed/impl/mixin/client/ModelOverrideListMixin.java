@@ -1,6 +1,6 @@
 package dhyces.trimmed.impl.mixin.client;
 
-import dhyces.trimmed.impl.client.override.ItemOverrideRegistry;
+import dhyces.trimmed.impl.client.models.override.ItemOverrideRegistry;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.block.model.ItemOverrides;
 import net.minecraft.client.resources.model.BakedModel;
