@@ -13,8 +13,10 @@ import dhyces.trimmed.api.util.CodecUtil;
 import dhyces.trimmed.impl.client.maps.manager.ClientMapManager;
 import dhyces.trimmed.impl.client.models.template.GroovyReplacer;
 import dhyces.trimmed.impl.client.models.template.ModelTemplateManager;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.block.model.BlockModel;
+import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceKey;
@@ -53,6 +55,12 @@ public class AnyTrimItemOverrideProvider extends SimpleItemOverrideProvider {
     }
 
     @Override
+    public Optional<BakedModel> getModel(ItemStack itemStack, @Nullable ClientLevel world, @Nullable LivingEntity entity, int seed) {
+        return super.getModel(itemStack, world, entity, seed)
+                .filter(model -> model != Minecraft.getInstance().getModelManager().getMissingModel());
+    }
+
+    @Override
     public Optional<ModelResourceLocation> getModelLocation(ItemStack itemStack, @Nullable ClientLevel world, @Nullable LivingEntity entity, int seed) {
         if (world == null) {
             return Optional.empty();
@@ -66,7 +74,7 @@ public class AnyTrimItemOverrideProvider extends SimpleItemOverrideProvider {
             ResourceLocation materialId = materialIdOptional.get();
             Optional<String> materialOverride = TrimmedClientApi.INSTANCE.getArmorTrimSuffix(world.registryAccess(), itemStack);
             String trimMaterialSuffix = materialOverride.orElseGet(() -> PERMUTATIONS.get(materialId.withPrefix("trims/color_palettes/")));
-            return Optional.of(new ModelResourceLocation(id.getNamespace(), id.getPath() + "_" + trimMaterialSuffix + "_trim", "inventory"));
+            return Optional.of(new ModelResourceLocation(id.withSuffix("_" + trimMaterialSuffix + "_trim"), "inventory"));
         }
         return Optional.empty();
     }
@@ -88,17 +96,10 @@ public class AnyTrimItemOverrideProvider extends SimpleItemOverrideProvider {
                 replacers.add(Pair.of("material", material.getValue()));
                 replacers.add(Pair.of("trim_texture", trimTexture.toString()));
 
-                String replacedModel = GroovyReplacer.replace(rawData, replacers);
-                modelConsumer.accept(id.withSuffix("_" + material.getValue() + "_trim"), BlockModel.fromString(replacedModel));
+                modelConsumer.accept(id.withSuffix("_" + material.getValue() + "_trim"), () -> BlockModel.fromString(GroovyReplacer.replace(rawData, replacers)));
             }
         });
     }
-
-//    @Override
-//    public Stream<ModelResourceLocation> getModelsToBake() {
-//        return TrimmedClientMapApi.INSTANCE.map(UncheckedClientMaps.ALL_TRIM_PERMUTATIONS).stream()
-//                .map(entry -> new ModelResourceLocation(id.withSuffix("_" + entry.getValue().value() + "_trim"), "inventory"));
-//    }
 
     @Override
     public ItemOverrideProviderType<?> getType() {
