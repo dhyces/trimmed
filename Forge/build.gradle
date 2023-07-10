@@ -98,6 +98,8 @@ dependencies {
 
 mixin {
 	add sourceSets.main, 'trimmed.refmap.json'
+
+	config 'trimmed.forge.mixins.json'
 	config 'trimmed.mixins.json'
 
 	debug.verbose = true
@@ -130,6 +132,7 @@ tasks.withType(JavaCompile) {
 
 processResources {
 	from project(":Common").sourceSets.main.resources
+	exclude("trimmed.accesswidener")
 }
 
 jar.finalizedBy('reobfJar')

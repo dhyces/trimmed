@@ -1,3 +1,0 @@
-accessWidener v1 named
-extendable class net/minecraft/client/texture/atlas/PalettedPermutationsAtlasSource$PalettedSpriteRegion
-accessible method net/minecraft/client/texture/atlas/PalettedPermutationsAtlasSource method_48492 ([I[I)Ljava/util/function/IntUnaryOperator;

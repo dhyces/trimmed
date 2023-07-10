@@ -11,8 +11,7 @@
   "client": [
     "client.ArmorTrimMixin",
     "client.AtlasSourceManagerAccessor",
-    "client.BakedModelManagerMixin",
-    "client.ModelBakeryMixin",
+    "client.ModelLoaderMixin",
     "client.ModelOverrideListMixin"
   ],
   "injectors": {

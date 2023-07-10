@@ -1,4 +1,4 @@
-package dhyces.trimmed.impl.mixin;
+package dhyces.trimmed.impl.mixin.client;
 
 import dhyces.trimmed.TrimmedClient;
 import net.minecraft.client.Minecraft;

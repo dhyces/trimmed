@@ -74,6 +74,7 @@ dependencies {
 
 mixin {
 	config "trimmed.mixins.json"
+	config "trimmed.forge.mixins.json"
 
 	debug.verbose = true
 	debug.export = true

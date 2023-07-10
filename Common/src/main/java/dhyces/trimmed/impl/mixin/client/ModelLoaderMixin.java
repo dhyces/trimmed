@@ -10,31 +10,28 @@ import net.minecraft.resources.ResourceLocation;
 import org.spongepowered.asm.mixin.*;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.HashMap;
 import java.util.Map;
 
+import static net.minecraft.client.resources.model.ModelBakery.MISSING_MODEL_LOCATION;
+
 @Mixin(ModelBakery.class)
-public abstract class ModelBakeryMixin {
+public abstract class ModelLoaderMixin {
 
     @Shadow @Final @Mutable
     private Map<ResourceLocation, BlockModel> modelResources;
 
     @Shadow protected abstract void loadTopLevel(ModelResourceLocation location);
 
-    @Shadow @Final private Map<ResourceLocation, UnbakedModel> topLevelModels;
-    @Unique
-    private boolean templatesGenerated;
-
     @Unique
     private Map<ResourceLocation, UnbakedModel> generatedModels;
 
-    @Inject(method = "loadBlockModel", at = @At("HEAD"))
-    private void trimmed$generateTemplates(ResourceLocation location, CallbackInfoReturnable<BlockModel> cir) {
-        int i = 0;
-        if (!templatesGenerated) {
-            templatesGenerated = true;
+    @Inject(method = "loadTopLevel", at = @At("HEAD"))
+    private void trimmed$generateTemplates(ModelResourceLocation location, CallbackInfo ci) {
+        if (location == MISSING_MODEL_LOCATION) {
             modelResources = new HashMap<>(modelResources);
             generatedModels = new HashMap<>();
             try {

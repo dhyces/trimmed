@@ -7,8 +7,7 @@
   "mixins": [
   ],
   "client": [
-    "client.BakedModelManagerMixin",
-    "client.MinecraftMixin"
+    "client.BakedModelManagerMixin"
   ],
   "injectors": {
     "defaultRequire": 1
