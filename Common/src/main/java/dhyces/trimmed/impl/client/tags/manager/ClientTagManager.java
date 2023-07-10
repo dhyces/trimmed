@@ -50,14 +50,14 @@ public class ClientTagManager implements PreparableReloadListener {
         if (REGISTRY_HANDLERS.isEmpty()) {
             Trimmed.LOGGER.error("Client tags aren't loaded yet! May result in unexpected behavior");
         }
-        return Optional.ofNullable(Utils.cast(REGISTRY_HANDLERS.get(registryKey)));
+        return Optional.ofNullable(Utils.unsafeCast(REGISTRY_HANDLERS.get(registryKey)));
     }
 
     public static <T> Optional<DatapackTagHandler<T>> getDatapackedHandler(ResourceKey<? extends Registry<T>> registryKey) {
         if (DATAPACKED_HANDLERS.isEmpty()) {
             Trimmed.LOGGER.error("Datapack client tags aren't loaded yet! May result in unexpected behavior");
         }
-        return Optional.ofNullable(Utils.cast(DATAPACKED_HANDLERS.get(registryKey)));
+        return Optional.ofNullable(Utils.unsafeCast(DATAPACKED_HANDLERS.get(registryKey)));
     }
 
     public static void updateDatapacksSynced(RegistryAccess registryAccess) {
@@ -127,24 +127,5 @@ public class ClientTagManager implements PreparableReloadListener {
             }
         }
         return setBuilder.build();
-    }
-
-    private Collection<PathInfo> getRegistryPathInfos() {
-        ImmutableSet.Builder<PathInfo> builder = ImmutableSet.builder();
-        ClientLevel level = Minecraft.getInstance().level;
-        if (level != null) {
-            level.registryAccess().registries()
-                    .map(RegistryAccess.RegistryEntry::key)
-                    .map(resourceKey -> {
-                        RegistryType registryType = BuiltInRegistries.REGISTRY.containsKey(resourceKey.location()) ? RegistryType.STATIC : RegistryType.DATAPACK;
-                        return RegistryPathInfo.implied(resourceKey, registryType);
-                    })
-                    .forEach(builder::add);
-        } else {
-            BuiltInRegistries.REGISTRY.registryKeySet().stream()
-                    .map(resourceKey -> RegistryPathInfo.implied(resourceKey, RegistryType.STATIC))
-                    .forEach(builder::add);
-        }
-        return builder.build();
     }
 }

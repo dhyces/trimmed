@@ -7,6 +7,5 @@ import java.io.BufferedReader;
 import java.util.function.BiConsumer;
 
 public interface Template {
-
     void generate(BufferedReader reader, BiConsumer<ResourceLocation, BlockModel> modelConsumer);
 }

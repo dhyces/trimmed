@@ -3,9 +3,18 @@ package dhyces.trimmed.impl.client.maps.manager;
 import com.mojang.serialization.DataResult;
 import dhyces.trimmed.api.data.maps.MapValue;
 import dhyces.trimmed.impl.client.maps.ClientMapKey;
+import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
 import net.minecraft.resources.ResourceLocation;
 
-public class UncheckedMapHandler extends BaseMapHandler<ClientMapKey, ResourceLocation, MapValue> {
+import java.util.HashMap;
+import java.util.Map;
+
+public class UncheckedMapHandler extends BaseMapHandler<ClientMapKey, ResourceLocation, String> {
+
+    public UncheckedMapHandler() {
+        super(HashMap::new);
+    }
+
     @Override
     protected ClientMapKey createMapKey(ResourceLocation mapId) {
         return ClientMapKey.of(mapId);
@@ -17,7 +26,7 @@ public class UncheckedMapHandler extends BaseMapHandler<ClientMapKey, ResourceLo
     }
 
     @Override
-    protected DataResult<MapValue> parseValue(MapValue mapValue) {
-        return DataResult.success(mapValue);
+    protected DataResult<String> parseValue(MapValue mapValue) {
+        return DataResult.success(mapValue.value());
     }
 }

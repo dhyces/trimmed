@@ -22,7 +22,7 @@ public class ModTabs {
                 output.acceptAll(ModItems.ITEMS.getEntries().stream().map(reg -> reg.get().getDefaultInstance()).toList());
             })
             .icon(ModItems.SPIRAL_PATTERN.lazyMap(Item::getDefaultInstance))
-            .withSlotColor(0xFFAABB)
+            .withSlotColor(0xFFFFAABB)
             .withSearchBar()
             .withTabsBefore(CreativeModeTabs.SPAWN_EGGS)
             .build());

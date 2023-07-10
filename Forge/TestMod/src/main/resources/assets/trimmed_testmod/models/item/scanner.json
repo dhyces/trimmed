@@ -1,6 +1,6 @@
 {
 	"parent": "minecraft:item/generated",
 	"textures": {
-		"layer0": "trimmed_testmod:item/adamantium_chestplate"
+		"layer0": "trimmed_testmod:item/scanner"
 	}
 }

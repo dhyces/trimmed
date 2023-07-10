@@ -34,7 +34,7 @@ public record RegistryPathInfo(ResourceKey<? extends Registry<?>> resourceKey, R
     }
 
     public <T> ResourceKey<? extends Registry<T>> castRegistryKey() {
-        return Utils.cast(resourceKey);
+        return Utils.unsafeCast(resourceKey);
     }
 
     @Override

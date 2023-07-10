@@ -9,14 +9,17 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 public class ApiLimitedMapImpl<K, V> implements LimitedMap<K, V> {
     private final OperableSupplier<Map<K, V>> backing;
+    private final Predicate<K> requiredPredicate;
 
-    public ApiLimitedMapImpl(OperableSupplier<Map<K, V>> underlying) {
+    public ApiLimitedMapImpl(OperableSupplier<Map<K, V>> underlying, Predicate<K> requiredPredicate) {
         this.backing = underlying;
+        this.requiredPredicate = requiredPredicate;
     }
 
     @Override
@@ -48,8 +51,18 @@ public class ApiLimitedMapImpl<K, V> implements LimitedMap<K, V> {
     }
 
     @Override
+    public Optional<V> getOptional(Object key) {
+        return Optional.ofNullable(get(key));
+    }
+
+    @Override
     public Stream<ImmutableEntry<K, V>> stream() {
         return backing.mapOrElse(kvMap -> kvMap.entrySet().stream().map(ImmutableEntry::from), Stream.empty());
+    }
+
+    @Override
+    public boolean isRequired(K key) {
+        return requiredPredicate.test(key);
     }
 
     @NotNull
@@ -57,4 +70,7 @@ public class ApiLimitedMapImpl<K, V> implements LimitedMap<K, V> {
     public Iterator<ImmutableEntry<K, V>> iterator() {
         return backing.mapOrElse(map -> map.entrySet().stream().map(ImmutableEntry::from).iterator(), Stream.<ImmutableEntry<K, V>>empty().iterator());
     }
+
+    @Override
+    public void onUpdated(Map<K, V> map) {}
 }

@@ -5,6 +5,7 @@ import dhyces.trimmed.modhelper.services.Services;
 import dhyces.trimmed.api.client.util.ClientUtil;
 import dhyces.trimmed.api.data.maps.MapValue;
 import dhyces.trimmed.impl.client.maps.ClientRegistryMapKey;
+import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -14,6 +15,7 @@ public class RegistryMapHandler<T> extends BaseMapHandler<ClientRegistryMapKey<T
     private final ResourceKey<? extends Registry<T>> registryKey;
 
     public RegistryMapHandler(ResourceKey<? extends Registry<T>> registryKey) {
+        super(Reference2ObjectOpenHashMap::new);
         this.registryKey = registryKey;
     }
 

@@ -33,6 +33,7 @@ public class TrimmedClient {
 
     public static void registerClientReloadListener(Consumer<PreparableReloadListener> eventConsumer) {
         eventConsumer.accept(new ItemOverrideReloadListener());
+        eventConsumer.accept(ModelTemplateManager.getInstance());
     }
 
     public static void injectListenersAtBeginning() {

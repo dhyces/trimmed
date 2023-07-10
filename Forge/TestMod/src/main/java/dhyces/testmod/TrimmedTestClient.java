@@ -1,10 +1,13 @@
 package dhyces.testmod;
 
-import dhyces.trimmed.api.TrimmedClientApi;
 import dhyces.trimmed.api.TrimmedClientMapApi;
 import dhyces.trimmed.api.TrimmedClientTagApi;
+import dhyces.trimmed.api.maps.LimitedMap;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Items;
-import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
+import net.minecraft.world.level.block.Block;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 
@@ -12,7 +15,6 @@ public class TrimmedTestClient {
 
     static void init(IEventBus modBus, IEventBus forgeBus) {
         forgeBus.addListener(TrimmedTestClient::loggedIn);
-        modBus.addListener(TrimmedTestClient::buildContents);
     }
 
     private static void loggedIn(final PlayerEvent.PlayerLoggedInEvent event) {
@@ -35,13 +37,9 @@ public class TrimmedTestClient {
         });
     }
 
-    private static void buildContents(final BuildCreativeModeTabContentsEvent event) {
-//        if (event.getTabKey() == CreativeModeTabs.COMBAT) {
-//            event.accept(ModItems.SPIRAL_PATTERN);
-//            event.accept(ModItems.TEST_HELMET);
-//            event.accept(ModItems.TEST_CHESTPLATE);
-//            event.accept(ModItems.TEST_LEGGINGS);
-//            event.accept(ModItems.TEST_BOOTS);
-//        }
+    public static final LimitedMap<Block, String> DESC_MAP = TrimmedClientMapApi.INSTANCE.map(TestClientMaps.MANUAL_SCANNER_DESCS);
+
+    public static void printDescriptor(Player player, Block block) {
+        DESC_MAP.getOptional(block).ifPresent(s -> player.sendSystemMessage(Component.literal(s)));
     }
 }

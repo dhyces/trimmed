@@ -1,17 +1,12 @@
 package dhyces.trimmed.impl.client.maps.manager;
 
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSet;
 import com.google.gson.JsonObject;
-import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.JsonOps;
-import dhyces.trimmed.api.data.maps.MapAppendElement;
+import dhyces.trimmed.api.util.Utils;
 import dhyces.trimmed.modhelper.services.Services;
 import dhyces.trimmed.Trimmed;
 import dhyces.trimmed.api.client.util.ClientUtil;
 import dhyces.trimmed.api.data.maps.MapFile;
-import dhyces.trimmed.api.data.maps.MapValue;
 import dhyces.trimmed.impl.resources.PathInfo;
 import dhyces.trimmed.impl.resources.RegistryPathInfo;
 import net.minecraft.Util;
@@ -49,7 +44,7 @@ public class ClientMapManager implements PreparableReloadListener {
 //        if (REGISTRY_HANDLERS.isEmpty()) {
 //            Trimmed.LOGGER.error("Client maps aren't loaded yet! May result in unexpected behavior");
 //        }
-        return cast(REGISTRY_HANDLERS.computeIfAbsent(registryKey, resourceKey -> new RegistryMapHandler<>(registryKey)));
+        return Utils.unsafeCast(REGISTRY_HANDLERS.computeIfAbsent(registryKey, resourceKey -> new RegistryMapHandler<>(registryKey)));
     }
 
     @Override
@@ -57,7 +52,6 @@ public class ClientMapManager implements PreparableReloadListener {
         return load(pResourceManager).thenCompose(pPreparationBarrier::wait).thenRun(() -> Trimmed.logInDev("Client maps loaded!"));
     }
 
-    @SuppressWarnings("UnstableApiUsage")
     private CompletableFuture<Unit> load(ResourceManager resourceManager) {
         UNCHECKED_HANDLER.clear();
         REGISTRY_HANDLERS.values().forEach(BaseMapHandler::clear);
@@ -66,7 +60,7 @@ public class ClientMapManager implements PreparableReloadListener {
 
         for (PathInfo pathInfo : foldersToSearch) {
             FileToIdConverter converter = FileToIdConverter.json("maps/" + pathInfo.getPath());
-            Map<ResourceLocation, Pair<Map<ResourceLocation, MapValue>, Set<MapAppendElement>>> unresolved = readResources(converter, resourceManager);
+            Map<ResourceLocation, MapFile> unresolved = readResources(converter, resourceManager);
 
             if (!(pathInfo instanceof RegistryPathInfo registryPathInfo)) {
                 UNCHECKED_HANDLER.resolveMaps(unresolved);
@@ -80,7 +74,7 @@ public class ClientMapManager implements PreparableReloadListener {
         return CompletableFuture.completedFuture(Unit.INSTANCE);
     }
 
-    private Map<ResourceLocation, Pair<Map<ResourceLocation, MapValue>, Set<MapAppendElement>>> readResources(FileToIdConverter converter, ResourceManager resourceManager) {
+    private Map<ResourceLocation, MapFile> readResources(FileToIdConverter converter, ResourceManager resourceManager) {
         return converter.listMatchingResourceStacks(resourceManager).entrySet().stream()
                 .map(entry -> {
                     ResourceLocation id = converter.fileToId(entry.getKey());
@@ -88,9 +82,8 @@ public class ClientMapManager implements PreparableReloadListener {
                 }).collect(Util.toMap());
     }
 
-    private Pair<Map<ResourceLocation, MapValue>, Set<MapAppendElement>> readStack(ResourceLocation fileName, List<Resource> resourceStack) {
-        ImmutableMap.Builder<ResourceLocation, MapValue> mapBuilder = ImmutableMap.builder();
-        ImmutableSet.Builder<MapAppendElement> appendListBuilder = ImmutableSet.builder();
+    private MapFile readStack(ResourceLocation fileName, List<Resource> resourceStack) {
+        MapFile.Builder builder = new MapFile.Builder();
         for (Resource resource : resourceStack) {
             try (BufferedReader reader = resource.openAsReader()) {
                 JsonObject json = GsonHelper.parse(reader);
@@ -102,20 +95,14 @@ public class ClientMapManager implements PreparableReloadListener {
                 if (mapFileOptional.isPresent()) {
                     MapFile mapFile = mapFileOptional.get();
                     if (mapFile.shouldReplace()) {
-                        mapBuilder = ImmutableMap.builder();
-                        appendListBuilder = ImmutableSet.builder();
+                        builder = new MapFile.Builder();
                     }
-                    mapBuilder.putAll(mapFile.map());
-                    appendListBuilder.addAll(mapFile.appendElements());
+                    builder.merge(mapFile);
                 }
             } catch (IOException e) {
                 throw new RuntimeException(e); // TODO
             }
         }
-        return Pair.of(mapBuilder.buildKeepingLast(), appendListBuilder.build());
-    }
-
-    private static <T> T cast(Object o) {
-        return (T) o;
+        return builder.build();
     }
 }

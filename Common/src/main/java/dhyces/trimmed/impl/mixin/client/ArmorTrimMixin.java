@@ -1,10 +1,12 @@
 package dhyces.trimmed.impl.mixin.client;
 
+import dhyces.trimmed.api.client.UncheckedClientMaps;
 import dhyces.trimmed.modhelper.services.Services;
 import dhyces.trimmed.api.TrimmedClientMapApi;
 import dhyces.trimmed.api.data.maps.MapValue;
 import dhyces.trimmed.impl.client.maps.ClientMapKey;
 import net.minecraft.core.Holder;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.world.item.armortrim.ArmorTrim;
@@ -25,9 +27,9 @@ public abstract class ArmorTrimMixin {
         if (Services.PLATFORM_HELPER.isClientDist()) {
             // If a mod has an armor material for titanium, we want to check if they have a texture override for it
             // in this map, like "titanium_darker".
-            ResourceLocation trimMaterialId = material().unwrapKey().get().location();
-            TrimmedClientMapApi.INSTANCE.map(ClientMapKey.of(trimMaterialId.withPrefix("armor_material_overrides/")))
-                    .getAndMap(new ResourceLocation(armorMaterial.getName()), MapValue::value)
+            ResourceKey<TrimMaterial> trimMaterialKey = material().unwrapKey().get();
+            TrimmedClientMapApi.INSTANCE.map(UncheckedClientMaps.armorMaterialOverride(trimMaterialKey))
+                    .getOptional(new ResourceLocation(armorMaterial.getName()))
                     .ifPresent(cir::setReturnValue);
         }
     }

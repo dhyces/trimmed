@@ -4,19 +4,27 @@ import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
+import dhyces.trimmed.Trimmed;
 import net.minecraft.client.renderer.block.model.BlockModel;
 import net.minecraft.resources.FileToIdConverter;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.IoSupplier;
+import net.minecraft.server.packs.resources.PreparableReloadListener;
+import net.minecraft.server.packs.resources.Resource;
+import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.util.Unit;
+import net.minecraft.util.profiling.ProfilerFiller;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executor;
 import java.util.function.BiConsumer;
 
-public final class ModelTemplateManager {
-    private static final BiMap<ResourceLocation, PreProcessor> PRE_PROCESSORS = HashBiMap.create();
+public final class ModelTemplateManager implements PreparableReloadListener {
+    private static ModelTemplateManager INSTANCE;
 
     private static Map<ResourceLocation, IoSupplier<BufferedReader>> rawTemplates;
     private static Multimap<ResourceLocation, Template> templates;
@@ -26,6 +34,13 @@ public final class ModelTemplateManager {
 //    public static final Codec<PreProcessor> PRE_PROCESSOR_CODEC = CodecUtil.TRIMMED_IDENTIFIER.dispatch(PRE_PROCESSORS.inverse()::get, PRE_PROCESSORS::get);
 
     public static void init() {
+    }
+
+    public static ModelTemplateManager getInstance() {
+        if (INSTANCE == null) {
+            INSTANCE = new ModelTemplateManager();
+        }
+        return INSTANCE;
     }
 
     private ModelTemplateManager() {}
@@ -59,20 +74,15 @@ public final class ModelTemplateManager {
                 throw new RuntimeException(e);
             }
         }
+        rawTemplates.clear();
     }
 
-    public static void register(ResourceLocation id, PreProcessor processorCodec) {
-        if (PRE_PROCESSORS.containsKey(id)) {
-            throw new IllegalArgumentException("The processor " + id + " is already registered with " + PRE_PROCESSORS.get(id).getClass().getSimpleName() + "!");
-        }
-        PRE_PROCESSORS.put(id, processorCodec);
-    }
-
-//    @Override
-//    public CompletableFuture<Void> reload(PreparationBarrier preparationBarrier, ResourceManager resourceManager, ProfilerFiller preparationsProfiler, ProfilerFiller reloadProfiler, Executor backgroundExecutor, Executor gameExecutor) {
+    @Override
+    public CompletableFuture<Void> reload(PreparationBarrier preparationBarrier, ResourceManager resourceManager, ProfilerFiller preparationsProfiler, ProfilerFiller reloadProfiler, Executor backgroundExecutor, Executor gameExecutor) {
+        return CompletableFuture.completedFuture(Unit.INSTANCE).thenCompose(preparationBarrier::wait).thenAccept(unit -> Trimmed.logInDev("Trimmed templates are prepared!"));
 //        return load(resourceManager).thenCompose(preparationBarrier::wait).thenAccept(unit -> Trimmed.logInDev("Template pre-processors are prepared!"));
-//    }
-//
+    }
+
 //    private CompletableFuture<Unit> load(ResourceManager manager) {
 //        for (Map.Entry<ResourceLocation, Resource> entry : PRE_PROCESSOR_CONVERTER.listMatchingResources(manager).entrySet()) {
 //

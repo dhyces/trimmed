@@ -3,7 +3,14 @@
 		{
 			"type": "trimmed:any_trim",
 			"template": "trimmed:item/two_layer_trim",
-			"trim_texture": "minecraft:trims/items/leggings_trim"
+			"trim_texture": "minecraft:trims/items/leggings_trim",
+			"exclude_palettes": [
+				"minecraft:trims/color_palettes/iron_darker",
+				"minecraft:trims/color_palettes/gold_darker",
+				"minecraft:trims/color_palettes/diamond_darker",
+				"minecraft:trims/color_palettes/netherite_darker",
+				"trimmed_testmod:trims/color_palettes/adamantium"
+			]
 		}
 	]
 }

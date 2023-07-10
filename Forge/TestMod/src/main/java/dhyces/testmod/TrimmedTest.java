@@ -56,6 +56,6 @@ public class TrimmedTest {
             TestDatagen.init(modBus);
         }
 
-        LimitedMap<ResourceLocation, MapValue> test = ClientMapManager.getUncheckedHandler().getMap(TestClientMaps.DATAGEN_TEST_MAP_2);
+        LimitedMap<ResourceLocation, String> test = ClientMapManager.getUncheckedHandler().getMap(TestClientMaps.DATAGEN_TEST_MAP_2);
     }
 }

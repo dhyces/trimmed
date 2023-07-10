@@ -4,6 +4,7 @@ import com.google.common.base.Suppliers;
 import com.mojang.blaze3d.platform.NativeImage;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import dhyces.trimmed.api.maps.OptionalMapEntry;
 import dhyces.trimmed.modhelper.services.Services;
 import dhyces.trimmed.Trimmed;
 import dhyces.trimmed.api.TrimmedClientMapApi;
@@ -52,10 +53,10 @@ public class OpenPalettedPermutations implements SpriteSource {
         );
         Map<ResourceLocation, OptionalSupplier> replacePixelsMap = new HashMap<>();
 
-        TrimmedClientMapApi.INSTANCE.map(permutations).forEach(entry -> {
-            replacePixelsMap.put(new ResourceLocation(entry.getKey().getNamespace(), entry.getValue().value()),
-                    new OptionalSupplier(entry.getValue().isRequired(), Suppliers.memoize(() ->
-                            PalettedPermutations.createPaletteMapping(rawPaletteKeyImage.get(), PalettedPermutations.loadPaletteEntryFromImage(pResourceManager, entry.getKey()))
+        TrimmedClientMapApi.INSTANCE.mapStream(permutations).forEach(entry -> {
+            replacePixelsMap.put(new ResourceLocation(entry.key().getNamespace(), entry.value()),
+                    new OptionalSupplier(entry.isRequired(), Suppliers.memoize(() ->
+                            PalettedPermutations.createPaletteMapping(rawPaletteKeyImage.get(), PalettedPermutations.loadPaletteEntryFromImage(pResourceManager, entry.key()))
                     ))
             );
         });

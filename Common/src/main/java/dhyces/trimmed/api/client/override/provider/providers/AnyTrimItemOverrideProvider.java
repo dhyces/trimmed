@@ -3,12 +3,14 @@ package dhyces.trimmed.api.client.override.provider.providers;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import dhyces.trimmed.api.TrimmedClientMapApi;
+import dhyces.trimmed.api.TrimmedClientApi;
 import dhyces.trimmed.api.client.UncheckedClientMaps;
 import dhyces.trimmed.api.client.override.provider.ItemOverrideProviderType;
 import dhyces.trimmed.api.client.override.provider.SimpleItemOverrideProvider;
-import dhyces.trimmed.api.data.maps.MapValue;
 import dhyces.trimmed.api.maps.ImmutableEntry;
+import dhyces.trimmed.api.maps.LimitedMap;
+import dhyces.trimmed.api.util.CodecUtil;
+import dhyces.trimmed.impl.client.maps.manager.ClientMapManager;
 import dhyces.trimmed.impl.client.models.template.GroovyReplacer;
 import dhyces.trimmed.impl.client.models.template.ModelTemplateManager;
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -25,38 +27,46 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class AnyTrimItemOverrideProvider extends SimpleItemOverrideProvider {
     public static final Codec<AnyTrimItemOverrideProvider> CODEC = RecordCodecBuilder.create(instance ->
             instance.group(
                     ResourceLocation.CODEC.fieldOf("template").forGetter(anyTrimItemOverrideProvider -> anyTrimItemOverrideProvider.templateId),
-                    ResourceLocation.CODEC.fieldOf("trim_texture").forGetter(anyTrimItemOverrideProvider -> anyTrimItemOverrideProvider.trimTexture)
+                    ResourceLocation.CODEC.fieldOf("trim_texture").forGetter(anyTrimItemOverrideProvider -> anyTrimItemOverrideProvider.trimTexture),
+                    CodecUtil.setOf(ResourceLocation.CODEC).optionalFieldOf("exclude_palettes", Set.of()).forGetter(anyTrimItemOverrideProvider -> anyTrimItemOverrideProvider.excludedTextures)
             ).apply(instance, AnyTrimItemOverrideProvider::new)
     );
 
     private final ResourceLocation templateId;
     private final ResourceLocation trimTexture;
+    private final Set<ResourceLocation> excludedTextures;
     private ResourceLocation id;
 
-    public AnyTrimItemOverrideProvider(ResourceLocation templateId, ResourceLocation trimTexture) {
+    private static final LimitedMap<ResourceLocation, String> PERMUTATIONS = ClientMapManager.getUncheckedHandler().getMap(UncheckedClientMaps.ALL_TRIM_PERMUTATIONS);
+
+    public AnyTrimItemOverrideProvider(ResourceLocation templateId, ResourceLocation trimTexture, Set<ResourceLocation> excludedTextures) {
         this.templateId = templateId;
         this.trimTexture = trimTexture;
+        this.excludedTextures = excludedTextures;
     }
 
     @Override
     public Optional<ModelResourceLocation> getModelLocation(ItemStack itemStack, @Nullable ClientLevel world, @Nullable LivingEntity entity, int seed) {
-        Optional<ResourceLocation> materialId = ArmorTrim.getTrim(world.registryAccess(), itemStack)
+        if (world == null) {
+            return Optional.empty();
+        }
+
+        Optional<ResourceLocation> materialIdOptional = ArmorTrim.getTrim(world.registryAccess(), itemStack)
                 .map(ArmorTrim::material)
                 .flatMap(Holder::unwrapKey)
                 .map(ResourceKey::location);
-        if (materialId.isPresent()) {
-            // TODO: this wouldn't get armor material overrides though
-            ResourceLocation key = materialId.get().withPath(s -> "trims/color_palettes/" + s);
-            MapValue value = TrimmedClientMapApi.INSTANCE.map(UncheckedClientMaps.ALL_TRIM_PERMUTATIONS).get(key);
-            if (value != null) {
-                return Optional.of(new ModelResourceLocation(id.getNamespace(), id.getPath() + "_" + value.value() + "_trim", "inventory"));
-            }
+        if (materialIdOptional.isPresent()) {
+            ResourceLocation materialId = materialIdOptional.get();
+            Optional<String> materialOverride = TrimmedClientApi.INSTANCE.getArmorTrimSuffix(world.registryAccess(), itemStack);
+            String trimMaterialSuffix = materialOverride.orElseGet(() -> PERMUTATIONS.get(materialId.withPrefix("trims/color_palettes/")));
+            return Optional.of(new ModelResourceLocation(id.getNamespace(), id.getPath() + "_" + trimMaterialSuffix + "_trim", "inventory"));
         }
         return Optional.empty();
     }
@@ -68,14 +78,18 @@ public class AnyTrimItemOverrideProvider extends SimpleItemOverrideProvider {
             String rawData = reader.lines().collect(Collectors.joining());
             Pair<String, String> item = Pair.of("item_texture", id.withPrefix("item/").toString());
 
-            for (ImmutableEntry<ResourceLocation, MapValue> material : TrimmedClientMapApi.INSTANCE.map(UncheckedClientMaps.ALL_TRIM_PERMUTATIONS)) {
+            for (ImmutableEntry<ResourceLocation, String> material : PERMUTATIONS) {
+                if (excludedTextures.contains(material.getKey())) {
+                    continue;
+                }
+
                 List<Pair<String, String>> replacers = new ArrayList<>();
                 replacers.add(item);
-                replacers.add(Pair.of("material", material.getValue().value()));
+                replacers.add(Pair.of("material", material.getValue()));
                 replacers.add(Pair.of("trim_texture", trimTexture.toString()));
 
                 String replacedModel = GroovyReplacer.replace(rawData, replacers);
-                modelConsumer.accept(id.withSuffix("_" + material.getValue().value() + "_trim"), BlockModel.fromString(replacedModel));
+                modelConsumer.accept(id.withSuffix("_" + material.getValue() + "_trim"), BlockModel.fromString(replacedModel));
             }
         });
     }

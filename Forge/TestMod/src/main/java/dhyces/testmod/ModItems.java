@@ -1,6 +1,7 @@
 package dhyces.testmod;
 
 import dhyces.testmod.item.AdamantiumArmorItem;
+import dhyces.testmod.item.ScannerItem;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.Item;
@@ -23,4 +24,5 @@ public class ModItems {
     public static final RegistryObject<Item> ADAMANTIUM_BOOTS = ITEMS.register("adamantium_boots", () -> new AdamantiumArmorItem(ArmorItem.Type.BOOTS));
     
     public static final RegistryObject<Item> ADAMANTIUM = ITEMS.register("adamantium", () -> new Item(new Item.Properties().fireResistant()));
+    public static final RegistryObject<Item> SCANNER = ITEMS.register("scanner", () -> new ScannerItem(new Item.Properties().stacksTo(1)));
 }
