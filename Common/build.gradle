@@ -28,6 +28,8 @@ dependencies {
     compileOnly group:'org.spongepowered', name:'mixin', version:'0.8.5'
 }
 
+sourceSets.main.resources.srcDir 'src/generated/resources'
+
 idea {
     module {
         inheritOutputDirs = false

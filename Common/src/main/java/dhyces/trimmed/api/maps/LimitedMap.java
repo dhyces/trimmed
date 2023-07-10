@@ -2,6 +2,7 @@ package dhyces.trimmed.api.maps;
 
 import dhyces.trimmed.impl.client.maps.ApiLimitedMapImpl;
 import it.unimi.dsi.fastutil.objects.Object2BooleanFunction;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Iterator;
@@ -12,6 +13,7 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
+@ApiStatus.Experimental
 public interface LimitedMap<K, V> extends Iterable<ImmutableEntry<K, V>>, MapObserver<K, V> {
 
     V get(Object key);
