@@ -1,7 +1,5 @@
 package dhyces.trimmed.impl.client.maps.manager;
 
-import com.google.common.collect.Interner;
-import com.google.common.collect.Interners;
 import dhyces.trimmed.api.maps.LimitedBiMap;
 import dhyces.trimmed.api.maps.LimitedMap;
 import org.jetbrains.annotations.ApiStatus;
@@ -15,8 +13,8 @@ import java.util.Set;
 public class MapHolder<K, V> {
     private Map<K, V> backing;
     private Set<K> optionalKeys;
-    private final Interner<LimitedMap<K, V>> mapInterner = Interners.newWeakInterner();
-    private SoftReference<LimitedMap<K, V>> directRef;
+    private SoftReference<LimitedBiMap<K, V>> bimapRef;
+    private SoftReference<LimitedMap<K, V>> mapRef;
 
     public MapHolder(Map<K, V> backing, Set<K> optionalKeys) {
         this.backing = backing;
@@ -40,8 +38,13 @@ public class MapHolder<K, V> {
         if (this.backing == null) {
             this.backing = backing;
             this.optionalKeys = optionalKeys;
-            // TODO: handle updating observers
+            updateListeners();
         }
+    }
+
+    private void updateListeners() {
+        if (mapRef != null && mapRef.get() != null) {mapRef.get().onUpdated(backing);}
+        if (bimapRef != null && bimapRef.get() != null) {bimapRef.get().onUpdated(backing);}
     }
 
     @Nullable
@@ -50,13 +53,16 @@ public class MapHolder<K, V> {
     }
 
     public LimitedMap<K, V> get() {
-        if (directRef == null || directRef.get() == null) {
-            directRef = new SoftReference<>(LimitedMap.adapter(this::getBacking, this::isRequired));
+        if (mapRef == null || mapRef.get() == null) {
+            mapRef = new SoftReference<>(LimitedMap.adapter(this::getBacking, this::isRequired));
         }
-        return directRef.get();
+        return mapRef.get();
     }
 
     public LimitedBiMap<K, V> getBiMap() {
-        return (LimitedBiMap<K, V>) mapInterner.intern(LimitedBiMap.biMapAdapter(backing, this::isRequired));
+        if (bimapRef == null || bimapRef.get() == null) {
+            bimapRef = new SoftReference<>(LimitedBiMap.biMapAdapter(backing, this::isRequired));
+        }
+        return bimapRef.get();
     }
 }
