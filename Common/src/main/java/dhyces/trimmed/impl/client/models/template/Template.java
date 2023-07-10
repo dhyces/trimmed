@@ -5,7 +5,8 @@ import net.minecraft.resources.ResourceLocation;
 
 import java.io.BufferedReader;
 import java.util.function.BiConsumer;
+import java.util.function.Supplier;
 
 public interface Template {
-    void generate(BufferedReader reader, BiConsumer<ResourceLocation, BlockModel> modelConsumer);
+    void generate(BufferedReader reader, BiConsumer<ResourceLocation, Supplier<BlockModel>> modelConsumer);
 }

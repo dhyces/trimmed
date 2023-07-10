@@ -22,6 +22,7 @@ import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 import java.util.function.BiConsumer;
+import java.util.function.Supplier;
 
 public final class ModelTemplateManager implements PreparableReloadListener {
     private static ModelTemplateManager INSTANCE;
@@ -59,7 +60,7 @@ public final class ModelTemplateManager implements PreparableReloadListener {
         templates.put(templateId, template);
     }
 
-    public static void generateTemplates(BiConsumer<ResourceLocation, BlockModel> modelConsumer) {
+    public static void generateTemplates(BiConsumer<ResourceLocation, Supplier<BlockModel>> modelConsumer) {
         if (templates == null) {
             return;
         }

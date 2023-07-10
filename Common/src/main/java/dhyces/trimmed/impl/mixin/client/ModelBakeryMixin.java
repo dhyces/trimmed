@@ -18,24 +18,12 @@ import java.util.Map;
 @Mixin(ModelBakery.class)
 public abstract class ModelBakeryMixin {
 
-//    @Inject(method = "<init>", at = @At("TAIL"))
-//    private void trimmed$setupGenerated(
-//            BlockColors blockColors,
-//            ProfilerFiller profilerFiller,
-//            Map<ResourceLocation, BlockModel> map,
-//            Map<ResourceLocation, List<ModelBakery.LoadedJson>> map2,
-//            CallbackInfo ci
-//    ) {
-//
-//    }
-
     @Shadow @Final @Mutable
     private Map<ResourceLocation, BlockModel> modelResources;
 
-    @Shadow @Final private Map<ResourceLocation, UnbakedModel> unbakedCache;
-
     @Shadow protected abstract void loadTopLevel(ModelResourceLocation location);
 
+    @Shadow @Final private Map<ResourceLocation, UnbakedModel> topLevelModels;
     @Unique
     private boolean templatesGenerated;
 
@@ -44,16 +32,20 @@ public abstract class ModelBakeryMixin {
 
     @Inject(method = "loadBlockModel", at = @At("HEAD"))
     private void trimmed$generateTemplates(ResourceLocation location, CallbackInfoReturnable<BlockModel> cir) {
+        int i = 0;
         if (!templatesGenerated) {
             templatesGenerated = true;
             modelResources = new HashMap<>(modelResources);
             generatedModels = new HashMap<>();
             try {
-                ModelTemplateManager.generateTemplates((resourceLocation, unbakedModel) -> {
+                ModelTemplateManager.generateTemplates((resourceLocation, modelSupplier) -> {
                     ResourceLocation fileId = ModelBakery.MODEL_LISTER.idToFile(resourceLocation.withPrefix("item/"));
-                    generatedModels.put(fileId, unbakedModel);
-                    modelResources.put(fileId, unbakedModel);
-                    loadTopLevel(new ModelResourceLocation(resourceLocation, "inventory"));
+                    if (!modelResources.containsKey(fileId)) {
+                        BlockModel model = modelSupplier.get();
+                        generatedModels.put(fileId, model);
+                        modelResources.put(fileId, model);
+                        loadTopLevel(new ModelResourceLocation(resourceLocation, "inventory"));
+                    }
                 });
             } catch (RuntimeException e) {
                 Trimmed.LOGGER.error(e.getMessage());
