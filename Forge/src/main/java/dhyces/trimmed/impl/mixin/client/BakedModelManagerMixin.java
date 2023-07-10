@@ -23,9 +23,9 @@ import java.util.function.Supplier;
 import static dhyces.trimmed.impl.util.BakedModelManagerMixinUtil.*;
 
 @Mixin(ModelManager.class)
-public class BakedModelManagerMixin {
+public abstract class BakedModelManagerMixin {
 
-    @ModifyVariable(method = "lambda$loadBlockModels$10", at = @At(value = "STORE", target = "Ljava/util/Iterator;next()Ljava/lang/Object;"))
+    @ModifyVariable(method = {"lambda$loadBlockModels$10", "m_245318_"}, at = @At(value = "STORE", target = "Ljava/util/Iterator;next()Ljava/lang/Object;"))
     private static Map.Entry<ResourceLocation, Resource> trimmed$interceptTemplates(
             Map.Entry<ResourceLocation, Resource> entry,
             @Share("trimmed-cancelAdd") LocalBooleanRef cancelAdd
@@ -33,7 +33,7 @@ public class BakedModelManagerMixin {
         return interceptTemplates(entry, cancelAdd);
     }
 
-    @WrapOperation(method = "lambda$loadBlockModels$10", at = @At(value = "INVOKE", target = "Ljava/util/concurrent/CompletableFuture;supplyAsync(Ljava/util/function/Supplier;Ljava/util/concurrent/Executor;)Ljava/util/concurrent/CompletableFuture;"))
+    @WrapOperation(method = {"lambda$loadBlockModels$10", "m_245318_"}, at = @At(value = "INVOKE", target = "Ljava/util/concurrent/CompletableFuture;supplyAsync(Ljava/util/function/Supplier;Ljava/util/concurrent/Executor;)Ljava/util/concurrent/CompletableFuture;"))
     private static CompletableFuture<Pair<ResourceLocation, BlockModel>> trimmed$interceptCompletable(
             Supplier<Pair<ResourceLocation, BlockModel>> supplier,
             Executor executor,
@@ -46,8 +46,8 @@ public class BakedModelManagerMixin {
     }
 
 
-    @WrapWithCondition(method = "lambda$loadBlockModels$10", at = @At(value = "INVOKE", target = "Ljava/util/List;add(Ljava/lang/Object;)Z"))
-    private static boolean trimmed$cancelAddBlockModelSrg(
+    @WrapWithCondition(method = {"lambda$loadBlockModels$10", "m_245318_"}, at = @At(value = "INVOKE", target = "Ljava/util/List;add(Ljava/lang/Object;)Z"))
+    private static boolean trimmed$cancelAddBlockModel(
             List<CompletableFuture<Pair<ResourceLocation, BlockModel>>> instance,
             Object future,
             @Share("trimmed-cancelAdd") LocalBooleanRef cancelAdd

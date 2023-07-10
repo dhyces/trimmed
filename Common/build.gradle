@@ -49,7 +49,6 @@ processResources {
     def buildProps = project.properties.clone()
 
     filesMatching(['pack.mcmeta']) {
-
         expand buildProps
     }
 }
