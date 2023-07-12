@@ -10,9 +10,7 @@ plugins {
 archivesBaseName = "${mod_id}-forge-${minecraft_version}"
 
 sourceSets {
-	main {
-		java.srcDir("src/datagen/java")
-	}
+	main
 	test
 	datagen {
 		compileClasspath = project.configurations.compileClasspath

@@ -14,9 +14,5 @@ public class ForgeTrimmed {
         if (FMLLoader.getDist().isClient()) {
             ForgeTrimmedClient.init(MinecraftForge.EVENT_BUS, FMLJavaModLoadingContext.get().getModEventBus());
         }
-
-        if (DatagenModLoader.isRunningDataGen()) {
-            FMLJavaModLoadingContext.get().getModEventBus().register(new TrimmedDatagen());
-        }
     }
 }
