@@ -2,7 +2,7 @@
   "asset_name": "trimmed_testmod-shell",
   "description": {
     "color": "#D17E7E",
-    "translate": "trimmed.trim_material.shell"
+    "translate": "trim_pattern.trimmed_testmod.shell"
   },
   "ingredient": "minecraft:nautilus_shell",
   "item_model_index": -1.0

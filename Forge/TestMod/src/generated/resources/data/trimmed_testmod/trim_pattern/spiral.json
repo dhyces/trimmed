@@ -1,7 +1,7 @@
 {
   "asset_id": "trimmed_testmod:spiral",
   "description": {
-    "translate": "trimmed.trim_pattern.spiral"
+    "translate": "trim_pattern.trimmed_testmod.spiral"
   },
   "template_item": "trimmed_testmod:spiral_armor_trim_smithing_template"
 }

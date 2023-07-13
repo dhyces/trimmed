@@ -2,7 +2,7 @@
   "asset_name": "trimmed_testmod-glow",
   "description": {
     "color": "#7EFCBE",
-    "translate": "trimmed.trim_material.glow"
+    "translate": "trim_pattern.trimmed_testmod.glow"
   },
   "ingredient": "minecraft:glow_ink_sac",
   "item_model_index": -1.0

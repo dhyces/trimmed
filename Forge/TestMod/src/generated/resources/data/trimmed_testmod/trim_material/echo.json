@@ -2,7 +2,7 @@
   "asset_name": "trimmed_testmod-echo",
   "description": {
     "color": "#0A4F5F",
-    "translate": "trimmed.trim_material.echo"
+    "translate": "trim_pattern.trimmed_testmod.echo"
   },
   "ingredient": "minecraft:echo_shard",
   "item_model_index": -1.0

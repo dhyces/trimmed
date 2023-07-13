@@ -1,8 +1,8 @@
-// 1.20	2023-06-12T17:43:48.7531581	Registries
-85483d7db37fb988e508efc095d7efa91189c856 data/trimmed_testmod/trim_material/adamantium.json
-80725f7a61620c312dacba28e4636884c388059c data/trimmed_testmod/trim_material/blaze.json
-56c90e7329c4bcb98b65a8a07f71365dc3df1e99 data/trimmed_testmod/trim_material/echo.json
-d3c0b4153ffba27c7ec0c0ce18593df0786d340e data/trimmed_testmod/trim_material/glow.json
-d20e72df024e4062455b9da64857e46d410e544b data/trimmed_testmod/trim_material/prismarine.json
-28b91746a5c4c6a0664fbd5aa09227d3193b237c data/trimmed_testmod/trim_material/shell.json
-2bf7f1e9fd96562db279a3c96e2498c07476aa5c data/trimmed_testmod/trim_pattern/spiral.json
+// 1.20.1	2023-07-12T02:42:08.1943998	Registries
+c80c9bdb56fbb838dfa202c80f4a17e0273a8cfe data/trimmed_testmod/trim_material/adamantium.json
+347010c4a504a8406383979c05e7409e690e1ac3 data/trimmed_testmod/trim_material/blaze.json
+5aeba81e596271bd590c1f32083a693771c045e6 data/trimmed_testmod/trim_material/echo.json
+7b7be28a2240199c66a402bb141470c16098d420 data/trimmed_testmod/trim_material/glow.json
+6cb74271e0d1d6b8e22dc315632b9f3b57b969b2 data/trimmed_testmod/trim_material/prismarine.json
+b231fdbe8efc262e6619c408181660f4c83c48d5 data/trimmed_testmod/trim_material/shell.json
+13d764355f80d88b3f288e27da161e6894795d91 data/trimmed_testmod/trim_pattern/spiral.json

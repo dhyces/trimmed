@@ -1,8 +1,8 @@
 {
   "values": [
     "minecraft:echo_shard",
-    "minecraft:nautilus_shell",
     "minecraft:blaze_powder",
+    "minecraft:nautilus_shell",
     "minecraft:prismarine_crystals",
     "minecraft:glow_ink_sac",
     "trimmed_testmod:adamantium"

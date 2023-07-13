@@ -2,7 +2,7 @@
   "asset_name": "trimmed_testmod-prismarine",
   "description": {
     "color": "#B2D5C8",
-    "translate": "trimmed.trim_material.prismarine"
+    "translate": "trim_pattern.trimmed_testmod.prismarine"
   },
   "ingredient": "minecraft:prismarine_crystals",
   "item_model_index": -1.0

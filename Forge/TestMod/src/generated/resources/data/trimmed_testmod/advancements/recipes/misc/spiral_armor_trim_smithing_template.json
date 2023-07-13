@@ -1,13 +1,7 @@
 {
   "parent": "minecraft:recipes/root",
   "criteria": {
-    "has_the_recipe": {
-      "conditions": {
-        "recipe": "trimmed_testmod:spiral_armor_trim_smithing_template_smithing_trim"
-      },
-      "trigger": "minecraft:recipe_unlocked"
-    },
-    "test_advancement": {
+    "has_spiral_armor_trim_smithing_template": {
       "conditions": {
         "items": [
           {
@@ -18,17 +12,23 @@
         ]
       },
       "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "trimmed_testmod:spiral_armor_trim_smithing_template"
+      },
+      "trigger": "minecraft:recipe_unlocked"
     }
   },
   "requirements": [
     [
-      "test_advancement",
+      "has_spiral_armor_trim_smithing_template",
       "has_the_recipe"
     ]
   ],
   "rewards": {
     "recipes": [
-      "trimmed_testmod:spiral_armor_trim_smithing_template_smithing_trim"
+      "trimmed_testmod:spiral_armor_trim_smithing_template"
     ]
   },
   "sends_telemetry_event": false

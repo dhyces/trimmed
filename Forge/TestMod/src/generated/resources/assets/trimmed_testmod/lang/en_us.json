@@ -1,8 +1,9 @@
 {
-  "trimmed.trim_material.adamantium": "Adamantium Material",
-  "trimmed.trim_material.blaze": "Blaze Material",
-  "trimmed.trim_material.echo": "Echo Material",
-  "trimmed.trim_material.glow": "Glow Material",
-  "trimmed.trim_material.prismarine": "Prismarine Material",
-  "trimmed.trim_material.shell": "Shell Material"
+  "trim_pattern.trimmed_testmod.adamantium": "Adamantium Material",
+  "trim_pattern.trimmed_testmod.blaze": "Blaze Material",
+  "trim_pattern.trimmed_testmod.echo": "Echo Material",
+  "trim_pattern.trimmed_testmod.glow": "Glow Material",
+  "trim_pattern.trimmed_testmod.prismarine": "Prismarine Material",
+  "trim_pattern.trimmed_testmod.shell": "Shell Material",
+  "trim_pattern.trimmed_testmod.spiral": "Spiral Armor Trim"
 }
