@@ -1,7 +1,0 @@
-{
-  "__comment": "Set of armor pattern texture locations to permute with trim materials",
-  "values": [
-    "trimmed_testmod:trims/models/armor/spiral",
-    "trimmed_testmod:trims/models/armor/spiral_leggings"
-  ]
-}

@@ -11,8 +11,6 @@ public class TestClientMapProvider extends ClientMapDataProvider {
         super(packOutput, TrimmedTest.MODID, existingFileHelper);
     }
 
-
-
     @Override
     protected void addMaps() {
         map(TestClientMaps.DATAGEN_TEST_MAP_2).put(TrimmedTest.id("some/kind/of/key"), "aValue");

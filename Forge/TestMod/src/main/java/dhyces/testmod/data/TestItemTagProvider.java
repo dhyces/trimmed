@@ -22,17 +22,6 @@ public class TestItemTagProvider extends IntrinsicHolderTagsProvider<Item> {
 
     @Override
     protected void addTags(HolderLookup.Provider pProvider) {
-        tag(ItemTags.TRIM_MATERIALS)
-                .add(
-                        Items.ECHO_SHARD,
-                        Items.NAUTILUS_SHELL,
-                        Items.BLAZE_POWDER,
-                        Items.PRISMARINE_CRYSTALS,
-                        Items.GLOW_INK_SAC,
-                        ModItems.ADAMANTIUM.get()
-                );
-        tag(ItemTags.TRIM_TEMPLATES)
-                .add(ModItems.SPIRAL_PATTERN.get());
         tag(ItemTags.TRIMMABLE_ARMOR)
                 .add(
                         ModItems.ADAMANTIUM_HELMET.get(),
