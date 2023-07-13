@@ -1,7 +1,6 @@
 package dhyces.trimmed.modhelper.services.helpers;
 
 import com.google.gson.JsonObject;
-import dhyces.trimmed.modhelper.services.helpers.PlatformHelper;
 import dhyces.trimmed.modhelper.services.util.Platform;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.fabric.api.resource.conditions.v1.ResourceConditions;

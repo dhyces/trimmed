@@ -4,32 +4,24 @@ import dhyces.testmod.ModItems;
 import dhyces.testmod.ModTrimMaterials;
 import dhyces.testmod.ModTrimPatterns;
 import dhyces.testmod.TrimmedTest;
-import dhyces.testmod.data.trimmed.*;
+import dhyces.testmod.data.trimmed.TestClientMapProvider;
+import dhyces.testmod.data.trimmed.TestClientTagProvider;
+import dhyces.testmod.data.trimmed.TestItemOverrideProvider;
 import dhyces.testmod.data.trimmed.registrymaps.ClientBlockProvider;
 import dhyces.testmod.data.trimmed.registrymaps.ClientDamageTypeProvider;
 import dhyces.testmod.data.trimmed.registrymaps.EntityToEntityProvider;
 import dhyces.testmod.data.trimmed.registrytags.TestClientCustomObjTagProvider;
 import dhyces.testmod.data.trimmed.registrytags.TestClientItemTagProvider;
 import dhyces.testmod.item.AdamantiumArmorItem;
-import dhyces.trimmed.api.data.BaseTrimDatagenSuite;
 import dhyces.trimmed.api.data.TrimDatagenSuite;
-import net.minecraft.core.*;
-import net.minecraft.core.registries.Registries;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.PackOutput;
-import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.armortrim.TrimMaterials;
-import net.minecraft.world.item.armortrim.TrimPattern;
-import net.minecraftforge.common.data.DatapackBuiltinEntriesProvider;
-import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.common.data.LanguageProvider;
 import net.minecraftforge.data.event.GatherDataEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 
-import java.util.Collections;
-import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 
 public class TestDatagen {

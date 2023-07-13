@@ -1,7 +1,6 @@
 package dhyces.trimmed.modhelper.services.helpers;
 
 import com.google.gson.JsonObject;
-import dhyces.trimmed.modhelper.services.helpers.PlatformHelper;
 import dhyces.trimmed.modhelper.services.util.Platform;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;

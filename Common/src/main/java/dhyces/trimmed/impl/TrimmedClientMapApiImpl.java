@@ -1,7 +1,6 @@
 package dhyces.trimmed.impl;
 
 import dhyces.trimmed.api.TrimmedClientMapApi;
-import dhyces.trimmed.api.data.maps.MapValue;
 import dhyces.trimmed.api.maps.LimitedMap;
 import dhyces.trimmed.api.maps.OptionalMapEntry;
 import dhyces.trimmed.impl.client.maps.ClientMapKey;
@@ -9,9 +8,6 @@ import dhyces.trimmed.impl.client.maps.ClientRegistryMapKey;
 import dhyces.trimmed.impl.client.maps.manager.ClientMapManager;
 import net.minecraft.resources.ResourceLocation;
 
-import java.util.Iterator;
-import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Stream;
 
 public final class TrimmedClientMapApiImpl implements TrimmedClientMapApi {

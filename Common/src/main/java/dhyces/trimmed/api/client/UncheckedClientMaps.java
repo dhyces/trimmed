@@ -3,7 +3,6 @@ package dhyces.trimmed.api.client;
 import dhyces.trimmed.Trimmed;
 import dhyces.trimmed.impl.client.maps.ClientMapKey;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.armortrim.TrimMaterial;
 
 public class UncheckedClientMaps {

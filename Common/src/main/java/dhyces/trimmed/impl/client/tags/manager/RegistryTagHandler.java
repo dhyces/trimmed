@@ -1,9 +1,9 @@
 package dhyces.trimmed.impl.client.tags.manager;
 
-import dhyces.trimmed.modhelper.services.Services;
 import dhyces.trimmed.api.client.util.ClientUtil;
 import dhyces.trimmed.impl.client.tags.ClientRegistryTagKey;
 import dhyces.trimmed.impl.util.OptionalId;
+import dhyces.trimmed.modhelper.services.Services;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
