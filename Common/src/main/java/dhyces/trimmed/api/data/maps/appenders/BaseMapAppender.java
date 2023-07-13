@@ -3,6 +3,7 @@ package dhyces.trimmed.api.data.maps.appenders;
 import dhyces.trimmed.api.data.maps.MapBuilder;
 import net.minecraft.resources.ResourceLocation;
 
+import java.util.Map;
 import java.util.function.Function;
 
 public abstract class BaseMapAppender<K, V> {
@@ -25,6 +26,16 @@ public abstract class BaseMapAppender<K, V> {
 
     public <S extends BaseMapAppender<K, V>> S putOptional(ResourceLocation key, V value) {
         builder.putOptional(key, mappingFunction.apply(value));
+        return self();
+    }
+
+    public <S extends BaseMapAppender<K, V>> S putAll(Map<ResourceLocation, V> map) {
+        map.forEach((key, value) -> builder.put(key, mappingFunction.apply(value)));
+        return self();
+    }
+
+    public <S extends BaseMapAppender<K, V>> S putAllOptional(Map<ResourceLocation, V> map) {
+        map.forEach((key, value) -> builder.putOptional(key, mappingFunction.apply(value)));
         return self();
     }
 
