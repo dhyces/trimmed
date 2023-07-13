@@ -50,7 +50,7 @@ public class TestDatagen {
             protected void addTranslations() {}
         };
 
-        TrimDatagenSuite suite = new TrimDatagenSuite(event, TrimmedTest.MODID, langProvider::add, itemTagProvider.contentsGetter());
+        TrimDatagenSuite suite = new TrimDatagenSuite(event, TrimmedTest.MODID, langProvider::add);
         suite.makeMaterial(ModTrimMaterials.ECHO, Items.ECHO_SHARD, 0x0A4F5F)
                 .makeMaterial(ModTrimMaterials.BLAZE, Items.BLAZE_POWDER, 0xFCA100)
                 .makeMaterial(ModTrimMaterials.SHELL, Items.NAUTILUS_SHELL, 0xD17E7E)

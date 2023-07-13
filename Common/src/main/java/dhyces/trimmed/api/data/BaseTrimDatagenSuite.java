@@ -42,10 +42,6 @@ public abstract class BaseTrimDatagenSuite {
 
     @Nullable
     private final BiConsumer<String, String> mainTranslationConsumer;
-    @Nullable
-    protected final CompletableFuture<TagsProvider.TagLookup<Item>> baseTagLookup;
-    protected final DataGenerator generator;
-    protected final PackOutput packOutput;
     protected final String modid;
 
     protected List<Pair<ResourceKey<TrimPattern>, TrimPattern>> patterns = new ArrayList<>();
@@ -57,14 +53,9 @@ public abstract class BaseTrimDatagenSuite {
     protected Map<ResourceLocation, String> materialTexturePermutations = new LinkedHashMap<>();
     protected Multimap<ResourceKey<TrimMaterial>, ArmorMaterialOverride> armorMaterialOverrides = HashMultimap.create();
 
-    public BaseTrimDatagenSuite(DataGenerator generator, PackOutput packOutput, String modid,
-                                @Nullable BiConsumer<String, String> translationConsumer,
-                                @Nullable CompletableFuture<TagsProvider.TagLookup<Item>> baseTagLookup) {
-        this.generator = generator;
-        this.packOutput = packOutput;
+    public BaseTrimDatagenSuite(String modid, @Nullable BiConsumer<String, String> translationConsumer) {
         this.modid = modid;
         this.mainTranslationConsumer = translationConsumer;
-        this.baseTagLookup = baseTagLookup;
     }
 
     /**

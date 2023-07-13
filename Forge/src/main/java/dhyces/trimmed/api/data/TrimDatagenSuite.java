@@ -8,6 +8,8 @@ import dhyces.trimmed.impl.client.maps.ClientMapKey;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.RegistrySetBuilder;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.data.DataGenerator;
+import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.data.recipes.RecipeProvider;
 import net.minecraft.data.tags.ItemTagsProvider;
@@ -27,19 +29,13 @@ import java.util.function.Consumer;
 public class TrimDatagenSuite extends BaseTrimDatagenSuite {
 
     public TrimDatagenSuite(GatherDataEvent event, String modid) {
-        this(event, modid, null, null);
-    }
-
-    public TrimDatagenSuite(GatherDataEvent event, String modid, @Nullable CompletableFuture<TagsProvider.TagLookup<Item>> baseTagLookup) {
-        this(event, modid, null, baseTagLookup);
+        this(event, modid, null);
     }
 
     public TrimDatagenSuite(GatherDataEvent event, String modid, @Nullable BiConsumer<String, String> translationConsumer) {
-        this(event, modid, translationConsumer, null);
-    }
-
-    public TrimDatagenSuite(GatherDataEvent event, String modid, @Nullable BiConsumer<String, String> translationConsumer, @Nullable CompletableFuture<TagsProvider.TagLookup<Item>> baseTagLookup) {
-        super(event.getGenerator(), event.getGenerator().getPackOutput(), modid, translationConsumer, baseTagLookup);
+        super(modid, translationConsumer);
+        DataGenerator generator = event.getGenerator();
+        PackOutput packOutput = event.getGenerator().getPackOutput();
         RegistrySetBuilder builder = new RegistrySetBuilder()
                 .add(Registries.TRIM_PATTERN, pContext -> {
                     patterns.forEach(pair -> pContext.register(pair.getFirst(), pair.getSecond()));
@@ -64,7 +60,7 @@ public class TrimDatagenSuite extends BaseTrimDatagenSuite {
                 return "TrimDatagenSuite / " + super.getName() + ": " + modid;
             }
         });
-        generator.addProvider(event.includeServer(), new ItemTagsProvider(packOutput, event.getLookupProvider(), baseTagLookup != null ? baseTagLookup : CompletableFuture.completedFuture(TagsProvider.TagLookup.empty()), CompletableFuture.completedFuture(TagsProvider.TagLookup.empty()), modid, event.getExistingFileHelper()) {
+        generator.addProvider(event.includeServer(), new ItemTagsProvider(packOutput, event.getLookupProvider(), CompletableFuture.completedFuture(TagsProvider.TagLookup.empty()), modid, event.getExistingFileHelper()) {
             @Override
             protected void addTags(HolderLookup.Provider pProvider) {
                 tag(ItemTags.TRIM_TEMPLATES).add(patterns.stream().map(pair -> pair.getSecond().templateItem().get()).toArray(Item[]::new));
@@ -88,7 +84,6 @@ public class TrimDatagenSuite extends BaseTrimDatagenSuite {
                 return "TrimDatagenSuite / " + super.getName();
             }
         });
-
         generator.addProvider(event.includeClient(), new ClientMapDataProvider(packOutput, modid, event.getExistingFileHelper()) {
             @Override
             protected void addMaps() {
