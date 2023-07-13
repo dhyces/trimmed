@@ -2,10 +2,10 @@ package dhyces.trimmed.impl.network;
 
 import commonnetwork.api.Network;
 import commonnetwork.networking.data.PacketContext;
-import dhyces.trimmed.modhelper.network.packet.CommonPacket;
 import dhyces.trimmed.Trimmed;
 import dhyces.trimmed.TrimmedClient;
 import dhyces.trimmed.impl.network.packets.SyncMapsPacket;
+import dhyces.trimmed.modhelper.network.packet.CommonPacket;
 
 import java.util.function.Consumer;
 

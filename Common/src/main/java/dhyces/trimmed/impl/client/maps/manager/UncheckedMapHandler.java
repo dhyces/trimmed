@@ -3,11 +3,9 @@ package dhyces.trimmed.impl.client.maps.manager;
 import com.mojang.serialization.DataResult;
 import dhyces.trimmed.api.data.maps.MapValue;
 import dhyces.trimmed.impl.client.maps.ClientMapKey;
-import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.HashMap;
-import java.util.Map;
 
 public class UncheckedMapHandler extends BaseMapHandler<ClientMapKey, ResourceLocation, String> {
 

@@ -2,13 +2,13 @@ package dhyces.trimmed.impl.client.maps.manager;
 
 import com.google.gson.JsonObject;
 import com.mojang.serialization.JsonOps;
-import dhyces.trimmed.api.util.Utils;
-import dhyces.trimmed.modhelper.services.Services;
 import dhyces.trimmed.Trimmed;
 import dhyces.trimmed.api.client.util.ClientUtil;
 import dhyces.trimmed.api.data.maps.MapFile;
+import dhyces.trimmed.api.util.Utils;
 import dhyces.trimmed.impl.resources.PathInfo;
 import dhyces.trimmed.impl.resources.RegistryPathInfo;
+import dhyces.trimmed.modhelper.services.Services;
 import net.minecraft.Util;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.FileToIdConverter;

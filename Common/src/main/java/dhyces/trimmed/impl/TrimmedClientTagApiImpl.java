@@ -7,7 +7,6 @@ import dhyces.trimmed.impl.client.tags.manager.ClientTagManager;
 import dhyces.trimmed.impl.util.OptionalId;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceLocation;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
 import java.util.Set;

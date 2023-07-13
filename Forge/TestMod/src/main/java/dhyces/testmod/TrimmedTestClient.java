@@ -4,7 +4,6 @@ import dhyces.trimmed.api.TrimmedClientMapApi;
 import dhyces.trimmed.api.TrimmedClientTagApi;
 import dhyces.trimmed.api.maps.LimitedMap;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;

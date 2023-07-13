@@ -2,7 +2,6 @@ package dhyces.trimmed.api.data;
 
 import com.google.common.base.Suppliers;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableSet;
 import com.google.gson.JsonElement;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.JsonOps;
@@ -11,8 +10,6 @@ import dhyces.trimmed.api.client.override.provider.ItemOverrideProvider;
 import dhyces.trimmed.api.client.override.provider.providers.AnyTrimItemOverrideProvider;
 import dhyces.trimmed.api.client.override.provider.providers.NbtItemOverrideProvider;
 import dhyces.trimmed.api.client.override.provider.providers.TrimItemOverrideProvider;
-import dhyces.trimmed.api.util.Utils;
-import net.minecraft.Util;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.CachedOutput;

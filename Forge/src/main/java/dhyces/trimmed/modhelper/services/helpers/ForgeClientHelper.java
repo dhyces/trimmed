@@ -1,7 +1,6 @@
 package dhyces.trimmed.modhelper.services.helpers;
 
 import com.mojang.blaze3d.platform.NativeImage;
-import dhyces.trimmed.modhelper.services.helpers.ClientHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.SpriteContents;
 import net.minecraft.client.resources.metadata.animation.AnimationMetadataSection;

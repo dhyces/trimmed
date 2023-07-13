@@ -5,7 +5,6 @@ import dhyces.trimmed.api.TrimmedClientMapApi;
 import dhyces.trimmed.api.client.UncheckedClientMaps;
 import dhyces.trimmed.api.client.override.provider.ItemOverrideProvider;
 import dhyces.trimmed.api.client.override.provider.ItemOverrideProviderType;
-import dhyces.trimmed.api.data.maps.MapValue;
 import dhyces.trimmed.impl.client.maps.ClientMapKey;
 import dhyces.trimmed.impl.client.models.override.provider.ItemOverrideProviderRegistry;
 import net.minecraft.core.RegistryAccess;

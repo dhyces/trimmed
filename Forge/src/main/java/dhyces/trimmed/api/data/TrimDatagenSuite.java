@@ -4,7 +4,6 @@ import dhyces.trimmed.api.client.UncheckedClientMaps;
 import dhyces.trimmed.api.client.UncheckedClientTags;
 import dhyces.trimmed.api.data.maps.ClientMapDataProvider;
 import dhyces.trimmed.api.data.tags.ClientTagDataProvider;
-import dhyces.trimmed.impl.client.maps.ClientMapKey;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.RegistrySetBuilder;
 import net.minecraft.core.registries.Registries;

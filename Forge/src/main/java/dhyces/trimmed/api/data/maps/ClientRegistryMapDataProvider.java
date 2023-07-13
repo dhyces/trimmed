@@ -1,7 +1,6 @@
 package dhyces.trimmed.api.data.maps;
 
 import com.google.gson.JsonElement;
-import com.mojang.datafixers.util.Unit;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.JsonOps;
 import dhyces.trimmed.Trimmed;
@@ -20,7 +19,6 @@ import net.minecraftforge.registries.IForgeRegistry;
 import net.minecraftforge.registries.RegistryManager;
 
 import java.nio.file.Path;
-import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 

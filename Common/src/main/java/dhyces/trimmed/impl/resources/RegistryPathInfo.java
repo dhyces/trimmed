@@ -1,8 +1,8 @@
 package dhyces.trimmed.impl.resources;
 
-import dhyces.trimmed.modhelper.services.Services;
 import dhyces.trimmed.api.util.Utils;
 import dhyces.trimmed.impl.util.RegistryType;
+import dhyces.trimmed.modhelper.services.Services;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;

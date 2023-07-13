@@ -1,10 +1,8 @@
 package dhyces.trimmed.impl.mixin.client;
 
+import dhyces.trimmed.api.TrimmedClientMapApi;
 import dhyces.trimmed.api.client.UncheckedClientMaps;
 import dhyces.trimmed.modhelper.services.Services;
-import dhyces.trimmed.api.TrimmedClientMapApi;
-import dhyces.trimmed.api.data.maps.MapValue;
-import dhyces.trimmed.impl.client.maps.ClientMapKey;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;

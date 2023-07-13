@@ -1,14 +1,14 @@
 package dhyces.trimmed;
 
-import dhyces.trimmed.impl.client.models.template.ModelTemplateManager;
-import dhyces.trimmed.modhelper.network.handler.SimplePacketHandler;
 import dhyces.trimmed.impl.client.atlas.TrimmedSpriteSourceTypes;
 import dhyces.trimmed.impl.client.maps.manager.ClientMapManager;
 import dhyces.trimmed.impl.client.models.override.ItemOverrideReloadListener;
 import dhyces.trimmed.impl.client.models.override.provider.ItemOverrideProviderRegistry;
+import dhyces.trimmed.impl.client.models.template.ModelTemplateManager;
 import dhyces.trimmed.impl.client.tags.manager.ClientTagManager;
 import dhyces.trimmed.impl.mixin.client.ReloadableResourceManagerImplAccessor;
 import dhyces.trimmed.impl.network.Networking;
+import dhyces.trimmed.modhelper.network.handler.SimplePacketHandler;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.model.ModelResourceLocation;

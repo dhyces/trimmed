@@ -1,17 +1,11 @@
 package dhyces.testmod;
 
-import com.google.common.collect.BiMap;
-import com.mojang.serialization.DataResult;
 import dhyces.testmod.client.providers.MyProviderTypes;
 import dhyces.testmod.data.TestDatagen;
 import dhyces.testmod.registry.CustomRegistration;
-import dhyces.trimmed.api.data.maps.MapValue;
 import dhyces.trimmed.api.maps.LimitedBiMap;
 import dhyces.trimmed.api.maps.LimitedMap;
 import dhyces.trimmed.impl.client.maps.manager.ClientMapManager;
-import dhyces.trimmed.impl.util.OptionalId;
-import net.minecraft.core.Holder;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.damagesource.DamageType;
@@ -22,7 +16,6 @@ import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLLoader;
-import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
