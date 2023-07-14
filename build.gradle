@@ -3,7 +3,7 @@ plugins {
 }
 
 modsDotGroovy {
-    dslVersion = '1.5.0'
+    dslVersion = '1.5.1'
     platform = 'multiloader'
     multiloader {
         common = project(':Common')
