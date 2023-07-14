@@ -80,7 +80,7 @@ dependencies {
 	minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
 
 	implementation fg.deobf('mysticdrew:common-networking-forge:1.0.1-1.20.1')
-	jarJar('mysticdrew:common-networking:1.0.1+1.20.1-forge') {
+	jarJar('mysticdrew:common-networking-forge:1.0.1-1.20.1') {
 		jarJar.ranged(it, "[1.0.0,2.0.0)")
 	}
 
