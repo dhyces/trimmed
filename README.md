@@ -18,9 +18,8 @@ repositories {
 dependencies {
     runtimeOnly("com.github.llamalad7.mixinextras:mixinextras-common:0.2.0-beta.9")
     runtimeOnly("com.github.llamalad7.mixinextras:mixinextras-forge:0.2.0-beta.9")
-    // Using slug and version number. Human readable, but can be changed at discretion of the author
     runtimeOnly "maven.modrinth:common-network:9uXKGD5m"
-    implementation fg.deobf("maven.modrinth:trimmed:1.20.1-2.1.0")
+    implementation fg.deobf("maven.modrinth:trimmed:1.20.1-2.1.0+forge")
 }
 ```
 
@@ -36,9 +35,8 @@ repositories {
 
 dependencies {
     runtimeOnly("com.github.llamalad7.mixinextras:mixinextras-fabric:0.2.0-beta.9")
-    // Using project and version IDs. These have no meaning, but do not change
     modRuntimeOnly("maven.modrinth:HIuqnQpi:GjLUIsDm")
-    modImplementation("maven.modrinth:trimmed:1.20.1-2.1.0")
+    modImplementation("maven.modrinth:trimmed:1.20.1-2.1.0+fabric")
 }
 ```
 
