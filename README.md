@@ -20,7 +20,7 @@ dependencies {
     runtimeOnly("com.github.llamalad7.mixinextras:mixinextras-common:0.2.0-beta.9")
     runtimeOnly("com.github.llamalad7.mixinextras:mixinextras-forge:0.2.0-beta.9")
     // Using slug and version number. Human readable, but can be changed at discretion of the author
-    runtimeOnly "maven.modrinth:common-network:1.0.1+1.20.1-forge"
+    runtimeOnly "maven.modrinth:common-network-forge:1.0.1-1.20.1"
     implementation fg.deobf("maven.modrinth:trimmed:1.20.1-2.1.0")
 }
 ```
@@ -40,7 +40,7 @@ dependencies {
 ```groovy
 dependencies {
     runtimeOnly("com.github.llamalad7.mixinextras:mixinextras-common:0.2.0-beta.9")
-    implementation("mysticdrew:common-networking:1.0.1+1.20.1-common")
+    implementation("mysticdrew:common-networking-common:1.0.1-1.20.1")
     implementation("dev.dhyces.trimmed:trimmed-common-1.20.1:2.1.0")
 }
 ```
@@ -48,7 +48,7 @@ dependencies {
 ```groovy
 dependencies {
     runtimeOnly("com.github.llamalad7.mixinextras:mixinextras-forge:0.2.0-beta.9")
-    implementation("mysticdrew:common-networking:1.0.1+1.20.1-forge")
+    implementation("mysticdrew:common-networking-forge:1.0.1-1.20.1")
     implementation fg.deobf("dev.dhyces.trimmed:trimmed-forge-1.20.1:2.1.0")
 }
 ```
@@ -56,7 +56,7 @@ dependencies {
 ```groovy
 dependencies {
     runtimeOnly("com.github.llamalad7.mixinextras:mixinextras-fabric:0.2.0-beta.9")
-    modImplementation("mysticdrew:common-networking:1.0.1+1.20.1-fabric")
+    modImplementation("mysticdrew:common-networking-fabric:1.0.1-1.20.1")
     modImplementation("dev.dhyces.trimmed:trimmed-fabric-1.20.1:2.1.0")
     
 }

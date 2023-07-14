@@ -47,7 +47,7 @@ dependencies {
     modImplementation "net.fabricmc:fabric-loader:${fabric_loader_version}"
     modImplementation "net.fabricmc.fabric-api:fabric-api:${fabric_version}"
 
-    include(modImplementation 'mysticdrew:common-networking:1.0.0+1.20-fabric')
+    include(modImplementation 'mysticdrew:common-networking-fabric:1.0.1-1.20.1')
 
     include(implementation(annotationProcessor("com.github.llamalad7.mixinextras:mixinextras-fabric:0.2.0-beta.9")))
 
