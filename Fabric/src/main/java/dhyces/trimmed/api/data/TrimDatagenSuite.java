@@ -1,5 +1,8 @@
 package dhyces.trimmed.api.data;
 
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Multimap;
+import com.mojang.datafixers.util.Pair;
 import dhyces.trimmed.api.client.UncheckedClientMaps;
 import dhyces.trimmed.api.client.UncheckedClientTags;
 import dhyces.trimmed.api.data.maps.ClientMapDataProvider;
@@ -7,10 +10,9 @@ import dhyces.trimmed.api.data.tags.ClientTagDataProvider;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricDynamicRegistryProvider;
+import net.fabricmc.fabric.api.datagen.v1.provider.FabricLanguageProvider;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.core.RegistrySetBuilder;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.data.tags.ItemTagsProvider;
 import net.minecraft.data.tags.TagsProvider;
@@ -20,19 +22,18 @@ import net.minecraft.world.item.Item;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.concurrent.CompletableFuture;
-import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 public class TrimDatagenSuite extends BaseTrimDatagenSuite {
-    public TrimDatagenSuite(FabricDataGenerator.Pack pack, String modid, @Nullable BiConsumer<String, String> translationConsumer) {
-        super(modid, translationConsumer);
-        RegistrySetBuilder builder = new RegistrySetBuilder()
-                .add(Registries.TRIM_PATTERN, pContext -> {
 
-                })
-                .add(Registries.TRIM_MATERIAL, pContext -> {
+    protected static final Multimap<ResourceLocation, Pair<String, String>> TRANSLATIONS = HashMultimap.create();
 
-                });
+    public TrimDatagenSuite(FabricDataGenerator.Pack pack, String modid, @Nullable String mainLanguageCode) {
+        super(modid, (key, translation) -> {
+            if (mainLanguageCode != null) {
+                TRANSLATIONS.put(new ResourceLocation(modid, mainLanguageCode), Pair.of(key, translation));
+            }
+        });
         pack.addProvider((output, registriesFuture) -> {
             return new FabricDynamicRegistryProvider(output, registriesFuture) {
                 @Override
@@ -107,5 +108,13 @@ public class TrimDatagenSuite extends BaseTrimDatagenSuite {
                 }
             };
         });
+    }
+
+    /**
+     * This must be called in language providers so that translations are generated. Otherwise, modders can handle the
+     * translations themselves.
+     */
+    public void resolveTranslationsFor(String languageCode, FabricLanguageProvider.TranslationBuilder builder) {
+        TRANSLATIONS.get(new ResourceLocation(modid, languageCode)).forEach(pair -> builder.add(pair.getFirst(), pair.getSecond()));
     }
 }

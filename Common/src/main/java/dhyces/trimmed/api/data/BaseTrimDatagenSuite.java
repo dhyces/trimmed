@@ -29,10 +29,6 @@ import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
 import java.util.regex.Pattern;
 
-//	- client-tag
-//		- easily just add it to the custom tag
-//	- tags
-//		- add it to the vanilla tag
 public abstract class BaseTrimDatagenSuite {
 
     protected static Pattern replacerPattern = Pattern.compile("(\\b[a-z](?!\\s))");
@@ -56,24 +52,47 @@ public abstract class BaseTrimDatagenSuite {
     }
 
     /**
-     * Use this if you want to implement the class and call the builder methods here
+     * Creates a new pattern, as well as add to the "trim_templates" tag, add an entry to the custom patterns
+     * client-tag, create a smithing trim recipe, and optionally add a lang entry (if a lang provider is provided)
+     * and a "copy" recipe (used for duplicating the template).
+     * @param patternKey The pattern key
+     * @param templateItem The item that is used to obtain this pattern on armor
      */
-    public void run() {
-
-    }
-
     public BaseTrimDatagenSuite makePattern(ResourceKey<TrimPattern> patternKey, Supplier<? extends ItemLike> templateItem) {
         return makePattern(patternKey, templateItem.get());
     }
 
+    /**
+     * Creates a new pattern, as well as add to the "trim_templates" tag, add an entry to the custom patterns
+     * client-tag, create a smithing trim recipe, and optionally add a lang entry (if a lang provider is provided)
+     * and a "copy" recipe (used for duplicating the template).
+     * @param patternKey The pattern key
+     * @param templateItem The item that is used to obtain this pattern on armor
+     * @param patternConfigConsumer An optional element allowing modification of certain elements
+     */
     public BaseTrimDatagenSuite makePattern(ResourceKey<TrimPattern> patternKey, Supplier<? extends ItemLike> templateItem, Consumer<PatternConfig> patternConfigConsumer) {
         return makePattern(patternKey, templateItem.get(), patternConfigConsumer);
     }
 
+    /**
+     * Creates a new pattern, as well as add to the "trim_templates" tag, add an entry to the custom patterns
+     * client-tag, create a smithing trim recipe, and optionally add a lang entry (if a lang provider is provided)
+     * and a "copy" recipe (used for duplicating the template).
+     * @param patternKey The pattern key
+     * @param templateItem The item that is used to obtain this pattern on armor
+     */
     public BaseTrimDatagenSuite makePattern(ResourceKey<TrimPattern> patternKey, ItemLike templateItem) {
         return makePattern(patternKey, templateItem, patternConfig -> {});
     }
 
+    /**
+     * Creates a new pattern, as well as add to the "trim_templates" tag, add an entry to the custom patterns
+     * client-tag, create a smithing trim recipe, and optionally add a lang entry (if a lang provider is provided)
+     * and a "copy" recipe (used for duplicating the template).
+     * @param patternKey The pattern key
+     * @param templateItem The item that is used to obtain this pattern on armor
+     * @param patternConfigConsumer An optional element allowing modification of certain elements
+     */
     public BaseTrimDatagenSuite makePattern(ResourceKey<TrimPattern> patternKey, ItemLike templateItem, Consumer<PatternConfig> patternConfigConsumer) {
 
         String translationKey = Util.makeDescriptionId("trim_pattern", patternKey.location());
@@ -129,18 +148,48 @@ public abstract class BaseTrimDatagenSuite {
                 .unlocks("has_smithing_trim_template", InventoryChangeTrigger.TriggerInstance.hasItems(templateItem));
     }
 
+    /**
+     * Creates a new material, as well as add to the "trim_materials" tag, add an entry to the custom material
+     * permutations client-map, and optionally add a lang entry (if a lang provider is provided).
+     * @param materialKey The key for your material
+     * @param materialItem The item that is attributed to this material
+     * @param color The color to style the component shown in the tooltip
+     */
     public BaseTrimDatagenSuite makeMaterial(ResourceKey<TrimMaterial> materialKey, Supplier<? extends ItemLike> materialItem, int color) {
         return makeMaterial(materialKey, materialItem.get(), color);
     }
 
+    /**
+     * Creates a new material, as well as add to the "trim_materials" tag, add an entry to the custom material
+     * permutations client-map, and optionally add a lang entry (if a lang provider is provided).
+     * @param materialKey The key for your material
+     * @param materialItem The item that is attributed to this material
+     * @param color The color to style the component shown in the tooltip
+     * @param materialConfigConsumer An optional consumer allowing modification of certain elements
+     */
     public BaseTrimDatagenSuite makeMaterial(ResourceKey<TrimMaterial> materialKey, Supplier<? extends ItemLike> materialItem, int color, Consumer<MaterialConfig> materialConfigConsumer) {
         return makeMaterial(materialKey, materialItem.get(), color, materialConfigConsumer);
     }
 
+    /**
+     * Creates a new material, as well as add to the "trim_materials" tag, add an entry to the custom material
+     * permutations client-map, and optionally add a lang entry (if a lang provider is provided).
+     * @param materialKey The key for your material
+     * @param materialItem The item that is attributed to this material
+     * @param color The color to style the component shown in the tooltip
+     */
     public BaseTrimDatagenSuite makeMaterial(ResourceKey<TrimMaterial> materialKey, ItemLike materialItem, int color) {
         return makeMaterial(materialKey, materialItem, color, materialConfig -> {});
     }
 
+    /**
+     * Creates a new material, as well as add to the "trim_materials" tag, add an entry to the custom material
+     * permutations client-map, and optionally add a lang entry (if a lang provider is provided).
+     * @param materialKey The key for your material
+     * @param materialItem The item that is attributed to this material
+     * @param color The color to style the component shown in the tooltip
+     * @param materialConfigConsumer An optional consumer allowing modification of certain elements
+     */
     public BaseTrimDatagenSuite makeMaterial(ResourceKey<TrimMaterial> materialKey, ItemLike materialItem, int color, Consumer<MaterialConfig> materialConfigConsumer) {
 
         MaterialConfig config = new MaterialConfig(materialKey, Style.EMPTY.withColor(color));
@@ -181,8 +230,6 @@ public abstract class BaseTrimDatagenSuite {
         return this;
     }
 
-    // makeMaterial
-
     public static class PatternConfig {
         protected final ItemLike templateItem;
         protected String mainTranslation;
@@ -213,12 +260,22 @@ public abstract class BaseTrimDatagenSuite {
             return this;
         }
 
+        /**
+         * The generated paths are "modid:trims/models/armor/pattern" and "modid:trims/models/armor/pattern_leggings".
+         * This method can be used if the textures are located elsewhere.
+         */
         public PatternConfig textureLocations(ResourceLocation main, ResourceLocation leggings) {
             mainTexture = main;
             leggingsTexture = leggings;
             return this;
         }
 
+        /**
+         * Creates a default "copy" recipe to duplicate the template.
+         * #S#    # = minecraft:diamond
+         * #C#    C = baseItem
+         * ###    S = templateItem
+         */
         public PatternConfig createCopyRecipe(ItemLike baseItem) {
             copyRecipe = ShapedRecipeBuilder.shaped(RecipeCategory.MISC, templateItem, 2)
                     .define('#', Items.DIAMOND)
@@ -234,6 +291,9 @@ public abstract class BaseTrimDatagenSuite {
             return this;
         }
 
+        /**
+         * Sets a flag that prevents a default smithing trim recipe from being generated.
+         */
         public PatternConfig omitTrimRecipe() {
             omitTrimRecipe = true;
             return this;
@@ -272,20 +332,42 @@ public abstract class BaseTrimDatagenSuite {
             return this;
         }
 
+        /**
+         * Allows users to change the texture location from the generated default located in
+         * "modid:trims/color_palettes/material"
+         */
         public MaterialConfig colorPaletteTexture(ResourceLocation paletteTexture) {
             this.paletteTexture = paletteTexture;
             return this;
         }
 
+        /**
+         * Override for {@link MaterialConfig#armorOverride(ArmorMaterial, ResourceLocation, String)}, but it assumes
+         * the texture location is "{modid}:trims/color_palettes/{material}_darker".
+         * @param overrideSuffix Suffix for the override. It's encouraged to use the "modid-suffix" format.
+         */
         public MaterialConfig armorOverride(ArmorMaterial armorMaterial, String overrideSuffix) {
             return armorOverride(armorMaterial, materialKey.location().withPath(s -> "trims/color_palettes/" + s + "_darker"), overrideSuffix);
         }
 
+        /**
+         * Allows users to specify texture overrides for armor materials, for example, using a darker texture when the
+         * material is applied to an armor of the same color/crafting material. Vanilla hardcodes an enum into their
+         * TrimMaterial class, which means that enum extension would be mandatory for modders and everyone would have
+         * to migrate their 'ArmorMaterial's to it. Trimmed provides an alternate system outside the material class
+         * as a resource-pack element.
+         * @param overrideSuffix Suffix for the override. It's encouraged to use the "modid-suffix" format.
+         */
         public MaterialConfig armorOverride(ArmorMaterial armorMaterial, ResourceLocation textureLocation, String overrideSuffix) {
             armorOverrides.add(new ArmorMaterialOverride(new ResourceLocation(armorMaterial.getName()), textureLocation, overrideSuffix));
             return this;
         }
 
+        /**
+         * Allows modification of the style used in the material's component. This style is already colored with what
+         * was passed into the {@link BaseTrimDatagenSuite#makeMaterial(ResourceKey, ItemLike, int, Consumer)} method.
+         * Vanilla only applies color to their components, but modders may want to do more.
+         */
         public MaterialConfig style(UnaryOperator<Style> styleOperator) {
             this.materialStyle = styleOperator.apply(materialStyle);
             return this;
