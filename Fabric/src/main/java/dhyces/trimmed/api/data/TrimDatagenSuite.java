@@ -66,8 +66,12 @@ public class TrimDatagenSuite extends BaseTrimDatagenSuite {
             return new ItemTagsProvider(output, registriesFuture, CompletableFuture.completedFuture(TagsProvider.TagLookup.empty())) {
                 @Override
                 protected void addTags(HolderLookup.Provider provider) {
-                    tag(ItemTags.TRIM_TEMPLATES).add(patterns.stream().map(pair -> pair.getSecond().templateItem().value()).toArray(Item[]::new));
-                    tag(ItemTags.TRIM_MATERIALS).add(materials.stream().map(pair -> pair.getSecond().ingredient().value()).toArray(Item[]::new));
+                    if (!patterns.isEmpty()) {
+                        tag(ItemTags.TRIM_TEMPLATES).add(patterns.stream().map(pair -> pair.getSecond().templateItem().value()).toArray(Item[]::new));
+                    }
+                    if (!materials.isEmpty()) {
+                        tag(ItemTags.TRIM_MATERIALS).add(materials.stream().map(pair -> pair.getSecond().ingredient().value()).toArray(Item[]::new));
+                    }
                 }
 
                 @Override
@@ -81,7 +85,9 @@ public class TrimDatagenSuite extends BaseTrimDatagenSuite {
             return new ClientTagDataProvider(output, modid) {
                 @Override
                 protected void addTags() {
-                    clientTag(UncheckedClientTags.CUSTOM_TRIM_PATTERN_TEXTURES).add(patternTextures.toArray(ResourceLocation[]::new));
+                    if (!patternTextures.isEmpty()) {
+                        clientTag(UncheckedClientTags.CUSTOM_TRIM_PATTERN_TEXTURES).add(patternTextures.toArray(ResourceLocation[]::new));
+                    }
                 }
 
                 @Override
@@ -95,7 +101,9 @@ public class TrimDatagenSuite extends BaseTrimDatagenSuite {
             return new ClientMapDataProvider(output, modid) {
                 @Override
                 protected void addMaps() {
-                    map(UncheckedClientMaps.CUSTOM_TRIM_PERMUTATIONS).putAll(materialTexturePermutations);
+                    if (!materialTexturePermutations.isEmpty()) {
+                        map(UncheckedClientMaps.CUSTOM_TRIM_PERMUTATIONS).putAll(materialTexturePermutations);
+                    }
                     armorMaterialOverrides.forEach((trimMaterialResourceKey, armorMaterialOverride) -> {
                         map(UncheckedClientMaps.armorMaterialOverride(trimMaterialResourceKey))
                                 .put(armorMaterialOverride.armorMaterial(), armorMaterialOverride.overrideSuffix());
