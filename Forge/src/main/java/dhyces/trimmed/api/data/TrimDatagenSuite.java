@@ -99,4 +99,12 @@ public class TrimDatagenSuite extends BaseTrimDatagenSuite {
             }
         });
     }
+
+    public static TrimDatagenSuite create(GatherDataEvent event, String modid) {
+        return new TrimDatagenSuite(event, modid);
+    }
+
+    public static TrimDatagenSuite create(GatherDataEvent event, String modid, @Nullable BiConsumer<String, String> translationConsumer) {
+        return new TrimDatagenSuite(event, modid, translationConsumer);
+    }
 }

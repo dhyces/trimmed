@@ -49,6 +49,14 @@ public abstract class BaseTrimDatagenSuite {
     public BaseTrimDatagenSuite(String modid, @Nullable BiConsumer<String, String> translationConsumer) {
         this.modid = modid;
         this.mainTranslationConsumer = translationConsumer;
+        generate();
+    }
+
+    /**
+     * Use this if you wish to extend the class and generate in one method
+     */
+    public void generate() {
+
     }
 
     /**

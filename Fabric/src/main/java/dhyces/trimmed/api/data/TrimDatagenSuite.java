@@ -110,6 +110,14 @@ public class TrimDatagenSuite extends BaseTrimDatagenSuite {
         });
     }
 
+    public static TrimDatagenSuite create(FabricDataGenerator.Pack pack, String modid) {
+        return create(pack, modid, null);
+    }
+
+    public static TrimDatagenSuite create(FabricDataGenerator.Pack pack, String modid, @Nullable String mainLanguageCode) {
+        return new TrimDatagenSuite(pack, modid, mainLanguageCode);
+    }
+
     /**
      * This must be called in language providers so that translations are generated. Otherwise, modders can handle the
      * translations themselves.
