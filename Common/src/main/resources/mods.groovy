@@ -8,6 +8,8 @@ ModsDotGroovy.make {
     license = "MIT"
     issueTrackerUrl = "https://github.com/dhyces/trimmed/issues/"
 
+    accessWidener = "trimmed.accesswidener"
+
     mod {
         modId = modid
         displayName = this.buildProperties["mod_name"]
@@ -25,7 +27,6 @@ ModsDotGroovy.make {
                 main = "dhyces.trimmed.FabricTrimmed"
                 client = "dhyces.trimmed.FabricTrimmedClient"
             }
-            accessWidener = "trimmed.accesswidener"
         }
 
         onQuilt {
