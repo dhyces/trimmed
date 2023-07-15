@@ -75,6 +75,7 @@ tasks.withType(JavaCompile) {
 
 sourcesJar {
     from(project(":Common").sourceSets.main.allSource)
+    exclude("mods.groovy")
 }
 
 publishing {
