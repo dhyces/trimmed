@@ -54,6 +54,8 @@ public class TestDatagen {
                 })
                 .makePattern(ModTrimPatterns.SPIRAL, ModItems.SPIRAL_PATTERN, patternConfig -> patternConfig.createCopyRecipe(Items.NAUTILUS_SHELL));
 
+//        new TestTrimDatagenSuite(event, TrimmedTest.MODID, langProvider::add);
+
         generator.addProvider(event.includeClient(), langProvider);
         generator.addProvider(event.includeClient(), new TestModelProvider(packOutput, TrimmedTest.MODID, event.getExistingFileHelper()));
 

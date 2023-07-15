@@ -8,6 +8,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.core.RegistrySetBuilder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.DataGenerator;
+import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.data.recipes.RecipeProvider;
@@ -42,7 +43,7 @@ public class TrimDatagenSuite extends BaseTrimDatagenSuite {
                 .add(Registries.TRIM_MATERIAL, pContext -> {
                     materials.forEach(pair -> pContext.register(pair.getFirst(), pair.getSecond()));
                 });
-        generator.addProvider(event.includeServer(), new DatapackBuiltinEntriesProvider(packOutput, event.getLookupProvider(), builder, Set.of(modid)) {
+        generator.addProvider(event.includeServer(), (DataProvider.Factory<? extends DataProvider>) pOutput -> new DatapackBuiltinEntriesProvider(packOutput, event.getLookupProvider(), builder, Set.of(modid)) {
             @Override
             public String getName() {
                 return "TrimDatagenSuite / " + super.getName() + " " + modid;
