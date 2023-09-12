@@ -46,6 +46,10 @@ ModsDotGroovy.make {
             onFabric {
                 minecraft = "${this.buildProperties["minecraft_version_range"]}"
                 fabricloader = ">=${this.fabricLoaderVersion}"
+                mod {
+                    modId = 'fabric-api'
+                    versionRange = '>=0.86.0'
+                }
             }
 
             onQuilt {

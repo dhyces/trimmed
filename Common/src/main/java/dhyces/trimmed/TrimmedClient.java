@@ -15,6 +15,7 @@ import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.server.packs.resources.PreparableReloadListener;
 
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 public class TrimmedClient {
@@ -31,9 +32,9 @@ public class TrimmedClient {
         ItemOverrideProviderRegistry.init();
     }
 
-    public static void registerClientReloadListener(Consumer<PreparableReloadListener> eventConsumer) {
-        eventConsumer.accept(new ItemOverrideReloadListener());
-        eventConsumer.accept(ModelTemplateManager.getInstance());
+    public static void registerClientReloadListener(BiConsumer<String, PreparableReloadListener> eventConsumer) {
+        eventConsumer.accept("item_model_overrides", new ItemOverrideReloadListener());
+        eventConsumer.accept("model_templates", ModelTemplateManager.getInstance());
     }
 
     public static void injectListenersAtBeginning() {

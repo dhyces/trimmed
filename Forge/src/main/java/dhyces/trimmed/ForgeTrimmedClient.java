@@ -16,7 +16,7 @@ public class ForgeTrimmedClient {
     }
 
     private static void registerClientReloadListener(final RegisterClientReloadListenersEvent event) {
-        TrimmedClient.registerClientReloadListener(event::registerReloadListener);
+        TrimmedClient.registerClientReloadListener((s, preparableReloadListener) -> event.registerReloadListener(preparableReloadListener));
         TrimmedClient.injectListenersAtBeginning();
     }
 

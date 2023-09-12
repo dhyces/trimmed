@@ -23,7 +23,8 @@ public abstract class ModelLoaderMixin {
     @Shadow @Final @Mutable
     private Map<ResourceLocation, BlockModel> modelResources;
 
-    @Shadow protected abstract void loadTopLevel(ModelResourceLocation location);
+    @Shadow
+    protected abstract void loadTopLevel(ModelResourceLocation location);
 
     @Unique
     private Map<ResourceLocation, UnbakedModel> generatedModels;
