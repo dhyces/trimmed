@@ -7,9 +7,7 @@ import dhyces.trimmed.impl.client.models.override.provider.ItemOverrideProviderR
 import dhyces.trimmed.impl.client.models.template.ModelTemplateManager;
 import dhyces.trimmed.impl.client.tags.manager.ClientTagManager;
 import dhyces.trimmed.impl.mixin.client.ReloadableResourceManagerImplAccessor;
-import dhyces.trimmed.impl.network.Networking;
-import dhyces.trimmed.modhelper.network.handler.SimplePacketHandler;
-import net.minecraft.Util;
+//import dhyces.trimmed.impl.network.Networking;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.core.RegistryAccess;
@@ -20,11 +18,11 @@ import java.util.function.Consumer;
 
 public class TrimmedClient {
 
-    public static final SimplePacketHandler CLIENT_HANDLER = Util.make(new SimplePacketHandler(), handler -> {
-        handler.registerPacketConsumer(Networking.SYNC_MAPS, context -> {
-            Minecraft.getInstance().player.displayClientMessage(context.message().stack.getDisplayName(), false);
-        });
-    });
+//    public static final SimplePacketHandler CLIENT_HANDLER = Util.make(new SimplePacketHandler(), handler -> {
+//        handler.registerPacketConsumer(Networking.SYNC_MAPS, context -> {
+//            Minecraft.getInstance().player.displayClientMessage(context.message().stack.getDisplayName(), false);
+//        });
+//    });
 
     public static void init() {
         TrimmedSpriteSourceTypes.bootstrap();

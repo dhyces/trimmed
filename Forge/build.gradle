@@ -79,11 +79,6 @@ repositories {
 dependencies {
 	minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
 
-	implementation fg.deobf('mysticdrew:common-networking-forge:1.0.1-1.20.1')
-	jarJar('mysticdrew:common-networking-forge:1.0.1-1.20.1') {
-		jarJar.ranged(it, "[1.0.0,2.0.0)")
-	}
-
 	implementation(annotationProcessor("com.github.llamalad7.mixinextras:mixinextras-common:0.2.0-beta.9"))
 	implementation(jarJar("com.github.llamalad7.mixinextras:mixinextras-forge:0.2.0-beta.9")) {
 		jarJar.ranged(it, "[0.2.0-beta.9,)")

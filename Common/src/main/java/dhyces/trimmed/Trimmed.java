@@ -1,6 +1,5 @@
 package dhyces.trimmed;
 
-import dhyces.trimmed.impl.network.Networking;
 import dhyces.trimmed.modhelper.services.Services;
 import net.minecraft.resources.ResourceLocation;
 import org.slf4j.Logger;
@@ -15,7 +14,7 @@ public class Trimmed {
     public static final Logger LOGGER = LoggerFactory.getLogger("Trimmed");
 
     public static void init() {
-        Networking.init();
+//        Networking.init();
     }
 
     public static void logInDev(String str) {
