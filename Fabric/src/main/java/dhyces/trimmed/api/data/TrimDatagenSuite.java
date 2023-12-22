@@ -13,7 +13,7 @@ import net.fabricmc.fabric.api.datagen.v1.provider.FabricDynamicRegistryProvider
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricLanguageProvider;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.tags.ItemTagsProvider;
 import net.minecraft.data.tags.TagsProvider;
 import net.minecraft.resources.ResourceLocation;
@@ -22,7 +22,6 @@ import net.minecraft.world.item.Item;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.concurrent.CompletableFuture;
-import java.util.function.Consumer;
 
 public class TrimDatagenSuite extends BaseTrimDatagenSuite {
 
@@ -51,9 +50,9 @@ public class TrimDatagenSuite extends BaseTrimDatagenSuite {
 
         pack.addProvider((FabricDataOutput output) -> new FabricRecipeProvider(output) {
             @Override
-            public void buildRecipes(Consumer<FinishedRecipe> exporter) {
-                trimRecipes.forEach(pair -> pair.getSecond().save(exporter, pair.getFirst()));
-                copyRecipes.forEach(pair -> pair.getSecond().save(exporter));
+            public void buildRecipes(RecipeOutput output) {
+                trimRecipes.forEach(pair -> pair.getSecond().save(output, pair.getFirst()));
+                copyRecipes.forEach(pair -> pair.getSecond().save(output));
             }
 
             @Override

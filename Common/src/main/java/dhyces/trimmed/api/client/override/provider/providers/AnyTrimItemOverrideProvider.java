@@ -66,7 +66,7 @@ public class AnyTrimItemOverrideProvider extends SimpleItemOverrideProvider {
             return Optional.empty();
         }
 
-        Optional<ResourceLocation> materialIdOptional = ArmorTrim.getTrim(world.registryAccess(), itemStack)
+        Optional<ResourceLocation> materialIdOptional = ArmorTrim.getTrim(world.registryAccess(), itemStack, true)
                 .map(ArmorTrim::material)
                 .flatMap(Holder::unwrapKey)
                 .map(ResourceKey::location);

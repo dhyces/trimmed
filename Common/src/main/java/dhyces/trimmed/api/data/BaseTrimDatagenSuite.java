@@ -83,9 +83,9 @@ public abstract class BaseTrimDatagenSuite {
     }
 
     /**
-     * Creates a new pattern, as well as add to the "trim_templates" tag, add an entry to the custom patterns
-     * client-tag, create a smithing trim recipe, and optionally add a lang entry (if a lang provider is provided)
-     * and a "copy" recipe (used for duplicating the template).
+     * Creates a new pattern with decal set to false, as well as add to the "trim_templates" tag, add an entry to the
+     * custom patterns client-tag, create a smithing trim recipe, and optionally add a lang entry (if a lang provider
+     * is provided) and a "copy" recipe (used for duplicating the template).
      * @param patternKey The pattern key
      * @param templateItem The item that is used to obtain this pattern on armor
      */
@@ -104,8 +104,7 @@ public abstract class BaseTrimDatagenSuite {
     public BaseTrimDatagenSuite makePattern(ResourceKey<TrimPattern> patternKey, ItemLike templateItem, Consumer<PatternConfig> patternConfigConsumer) {
 
         String translationKey = Util.makeDescriptionId("trim_pattern", patternKey.location());
-        patterns.add(Pair.of(patternKey, new TrimPattern(patternKey.location(), templateItem.asItem().builtInRegistryHolder(), Component.translatable(translationKey))));
-
+        patterns.add(Pair.of(patternKey, new TrimPattern(patternKey.location(), templateItem.asItem().builtInRegistryHolder(), Component.translatable(translationKey), false)));
 
         PatternConfig config = new PatternConfig(templateItem);
         patternConfigConsumer.accept(config);

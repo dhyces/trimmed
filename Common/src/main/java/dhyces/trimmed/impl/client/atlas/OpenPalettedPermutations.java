@@ -11,6 +11,7 @@ import dhyces.trimmed.impl.client.maps.ClientMapKey;
 import dhyces.trimmed.impl.client.tags.ClientTagKey;
 import dhyces.trimmed.modhelper.services.Services;
 import net.minecraft.client.renderer.texture.SpriteContents;
+import net.minecraft.client.renderer.texture.atlas.SpriteResourceLoader;
 import net.minecraft.client.renderer.texture.atlas.SpriteSource;
 import net.minecraft.client.renderer.texture.atlas.SpriteSourceType;
 import net.minecraft.client.renderer.texture.atlas.sources.LazyLoadedImage;
@@ -89,7 +90,7 @@ public class OpenPalettedPermutations implements SpriteSource {
     public record OpenPalettedSpriteSupplier(LazyLoadedImage lazyLoadedImage, OptionalSupplier optionalSupplier, ResourceLocation permutedId) implements SpriteSupplier {
 
         @Override
-        public SpriteContents get() {
+        public SpriteContents apply(SpriteResourceLoader spriteResourceLoader) {
             try {
                 NativeImage image = lazyLoadedImage.get().mappedCopy(optionalSupplier.mapper.get());
                 return Services.CLIENT_HELPER.createSpriteContents(permutedId, image);

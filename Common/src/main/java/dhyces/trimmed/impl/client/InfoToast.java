@@ -7,11 +7,13 @@ import net.minecraft.client.gui.components.toasts.Toast;
 import net.minecraft.client.gui.components.toasts.ToastComponent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FormattedCharSequence;
 
 import java.util.List;
 
 public class InfoToast implements Toast {
+    public static final ResourceLocation TEXTURE = new ResourceLocation("toast/advancement");
     private static final int MIDDLE_OF_TOAST = 24;
     private final Component title;
     private final List<FormattedCharSequence> messageLines;

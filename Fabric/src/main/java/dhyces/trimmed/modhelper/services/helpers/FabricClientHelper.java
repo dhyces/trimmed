@@ -7,13 +7,14 @@ import net.minecraft.client.resources.metadata.animation.AnimationMetadataSectio
 import net.minecraft.client.resources.metadata.animation.FrameSize;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.packs.resources.ResourceMetadata;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
 public class FabricClientHelper implements ClientHelper {
     @Override
     public SpriteContents createSpriteContents(ResourceLocation id, NativeImage image) {
-        return new SpriteContents(id, new FrameSize(image.getWidth(), image.getHeight()), image, AnimationMetadataSection.EMPTY);
+        return new SpriteContents(id, new FrameSize(image.getWidth(), image.getHeight()), image, ResourceMetadata.EMPTY);
     }
 
     @Override

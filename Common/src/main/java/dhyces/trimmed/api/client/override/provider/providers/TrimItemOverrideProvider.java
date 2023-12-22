@@ -39,7 +39,7 @@ public final class TrimItemOverrideProvider extends SimpleItemOverrideProvider {
         if (world == null) {
             return Optional.empty();
         }
-        boolean isMaterial = ArmorTrim.getTrim(world.registryAccess(), itemStack)
+        boolean isMaterial = ArmorTrim.getTrim(world.registryAccess(), itemStack, true)
                 .map(ArmorTrim::material)
                 .flatMap(Holder::unwrapKey)
                 .map(ResourceKey::location)

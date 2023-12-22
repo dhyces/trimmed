@@ -27,7 +27,7 @@ public final class TrimmedClientApiImpl implements TrimmedClientApi {
 
     @Override
     public Optional<String> getArmorTrimSuffix(RegistryAccess registryAccess, ItemStack stack) {
-        return ArmorTrim.getTrim(registryAccess, stack)
+        return ArmorTrim.getTrim(registryAccess, stack, true)
                 .map(ArmorTrim::material)
                 .map(holder -> {
                     if (stack.getItem() instanceof ArmorItem armorItem) {
