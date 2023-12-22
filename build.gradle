@@ -1,15 +1,26 @@
 plugins {
-    id 'org.groovymc.modsdotgroovy' version '1.4.1'
+    alias libs.plugins.mods.dot.groovy
+
 }
 
 modsDotGroovy {
-    dslVersion = '1.5.1'
+    dslVersion = libs.versions.mdg.dsl
     platform = 'multiloader'
     multiloader {
         common = project(':Common')
 //        quilt = [project(':Quilt')]
         forge = [project(':Forge')]
         fabric = [project(':Fabric')]
+    }
+}
+
+allprojects {
+    ext {
+        if (libs.versions.parchment.mc.get().equals(libs.versions.minecraft.release.get())) {
+            parchmentVersion = "${libs.versions.parchment.mc.get()}-${libs.versions.parchment.release.get()}-${libs.versions.minecraft.release.get()}"
+        } else {
+            parchmentVersion = "${libs.versions.parchment.release.get()}-${libs.versions.minecraft.release.get()}"
+        }
     }
 }
 
@@ -38,7 +49,7 @@ subprojects {
                 'Implementation-Timestamp': new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
                 'Timestamp'               : System.currentTimeMillis(),
                 'Built-On-Java'           : "${System.getProperty('java.vm.version')} (${System.getProperty('java.vm.vendor')})",
-                'Built-On-Minecraft'      : minecraft_version
+                'Built-On-Minecraft'      : libs.versions.minecraft
             ])
         }
     }
@@ -72,11 +83,10 @@ subprojects {
     }
 
     dependencies {
-        compileOnly 'org.jetbrains:annotations:24.0.0'
+        compileOnly libs.jetbrains.annotations
     }
 
     tasks.withType(JavaCompile).configureEach {
-    
         it.options.encoding = 'UTF-8'
         it.options.release = 17
     }

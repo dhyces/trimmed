@@ -1,29 +1,29 @@
 plugins {
     id 'idea'
     id 'java'
-    id 'org.quiltmc.loom' version '1.2.+'
     id 'maven-publish'
+    alias libs.plugins.quilt.loom
 }
 
-archivesBaseName = "${mod_id}-common-${minecraft_version}"
+archivesBaseName = "${mod_id}-common-${libs.versions.minecraft}"
 
 loom {
     accessWidenerPath = file("src/main/resources/trimmed.accesswidener")
 }
 
 dependencies {
-    minecraft "com.mojang:minecraft:${minecraft_version}"
+    minecraft libs.minecraft
     mappings loom.layered() {
         officialMojangMappings()
-        parchment("org.parchmentmc.data:parchment-1.20.1:2023.07.02@zip")
+        parchment("org.parchmentmc.data:parchment-${libs.versions.parchment.mc.get()}:${libs.versions.parchment.release.get()}@zip")
     }
 
-    modCompileOnly("org.quiltmc:quilt-loader:${quilt_loader_version}")
+    modCompileOnly libs.quilt.loader
 
-    implementation("com.github.llamalad7.mixinextras:mixinextras-common:0.2.0-beta.9")
-    annotationProcessor("com.github.llamalad7.mixinextras:mixinextras-common:0.2.0-beta.9")
+    implementation(libs.mixinextras.common)
+    annotationProcessor(libs.mixinextras.common)
 
-    compileOnly group:'org.spongepowered', name:'mixin', version:'0.8.5'
+    compileOnly libs.sponge.mixin
 }
 
 sourceSets.main.resources.srcDir 'src/generated/resources'

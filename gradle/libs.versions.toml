@@ -1,0 +1,54 @@
+[versions]
+minecraft_release = "1.20.1"
+minecraft_range = "[1.20,1.20.2)"
+
+forge = "1.20.1-47.1.46"
+
+fabric_loader = "0.14.22"
+fabric_api = "0.88.1+1.20.1"
+
+quilt_loader = "0.20.2"
+quilt_qsl = "6.2.1"
+quilt_fabric = "7.2.1+0.88.1"
+
+parchment_release = "2023.07.02"
+parchment_mc = "1.20.1"
+
+mixin = "0.8.5"
+mixinextras = "0.2.0-beta.9"
+
+jetbrains_annotations = "24.0.0"
+
+mdg_release = "1.4.1"
+mdg_dsl = "1.5.1"
+
+forgegradle = "[6.0,6.2)"
+librarian = "1.+"
+mixingradle = "0.7-SNAPSHOT"
+
+fabric_loom = "1.2-SNAPSHOT"
+quilt_loom = "1.2.+"
+
+[libraries]
+minecraft = { module = "com.mojang:minecraft", version.ref = "minecraft_release" }
+forge = { module = "net.minecraftforge:forge", version.ref = "forge" }
+fabric_api = { module = "net.fabricmc.fabric-api:fabric-api", version.ref = "fabric_api" }
+fabric_loader = { module = "net.fabricmc:fabric-loader", version.ref = "fabric_loader" }
+quilt_loader = { module = "org.quiltmc:quilt-loader", version.ref = "quilt_loader" }
+
+sponge_mixin = { module = "org.spongepowered:mixin", version.ref = "mixin" }
+mixinextras_common = { module = "com.github.llamalad7.mixinextras:mixinextras-common", version.ref = "mixinextras" }
+mixinextras_forge = { module = "com.github.llamalad7.mixinextras:mixinextras-forge", version.ref = "mixinextras" }
+mixinextras_fabric = { module = "com.github.llamalad7.mixinextras:mixinextras-fabric", version.ref = "mixinextras" }
+
+jetbrains_annotations = { module = "org.jetbrains:annotations", version.ref = "jetbrains_annotations" }
+
+[plugins]
+mods_dot_groovy = { id = "org.groovymc.modsdotgroovy", version.ref = "mdg_release" }
+
+forgegradle = { id = "net.minecraftforge.gradle", version.ref = "forgegradle" }
+librarian = { id = "org.parchmentmc.librarian.forgegradle", version.ref = "librarian" }
+mixingradle = { id = "org.spongepowered.mixin", version.ref = "mixingradle" }
+
+fabric_loom = { id = "fabric-loom", version.ref = "fabric_loom" }
+quilt_loom = { id = "org.quiltmc.loom", version.ref = "quilt_loom" }

@@ -4,10 +4,10 @@ plugins {
 	id 'org.spongepowered.mixin' version '0.7-SNAPSHOT'
 }
 
-archivesBaseName = "${mod_id}-TESTMOD-DO-NOT-PUBLISH-Forge-${minecraft_version}-${version}"
+archivesBaseName = "${mod_id}-TESTMOD-DO-NOT-PUBLISH-Forge-${libs.versions.minecraft.release}-${version}"
 
 minecraft {
-	mappings channel: "parchment", version: "${parchment_version}"
+	mappings channel: "parchment", version: rootProject.ext.parchmentVersion
 
 	accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
 
@@ -51,15 +51,10 @@ repositories {
 	maven {
 		url = "https://maven.dhyces.dev/"
 	}
-	maven {
-		url = "https://jm.gserv.me/repository/maven-public/"
-	}
 }
 
 dependencies {
-	minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
-
-	implementation fg.deobf('mysticdrew:common-networking-forge:1.0.1-1.20.1')
+	minecraft libs.forge
 
 	implementation(annotationProcessor("com.github.llamalad7.mixinextras:mixinextras-common:0.2.0-beta.9"))
 	implementation("com.github.llamalad7.mixinextras:mixinextras-forge:0.2.0-beta.9")

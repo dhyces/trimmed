@@ -2,12 +2,12 @@ plugins {
 	id 'idea'
 	id 'java'
 	id 'maven-publish'
-	id 'net.minecraftforge.gradle' version '[6.0,6.2)'
-	id 'org.parchmentmc.librarian.forgegradle' version '1.+'
-	id 'org.spongepowered.mixin' version '0.7-SNAPSHOT'
+	alias libs.plugins.forgegradle
+	alias libs.plugins.librarian
+	alias libs.plugins.mixingradle
 }
 
-archivesBaseName = "${mod_id}-forge-${minecraft_version}"
+archivesBaseName = "${mod_id}-forge-${libs.versions.minecraft}"
 
 sourceSets {
 	main
@@ -19,7 +19,7 @@ sourceSets {
 }
 
 minecraft {
-	mappings channel: 'parchment', version: parchment_version
+	mappings channel: 'parchment', version: rootProject.ext.parchmentVersion
 
 	accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
 
@@ -77,16 +77,18 @@ repositories {
 }
 
 dependencies {
-	minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
+	minecraft libs.forge
 
-	implementation(annotationProcessor("com.github.llamalad7.mixinextras:mixinextras-common:0.2.0-beta.9"))
-	implementation(jarJar("com.github.llamalad7.mixinextras:mixinextras-forge:0.2.0-beta.9")) {
-		jarJar.ranged(it, "[0.2.0-beta.9,)")
+	implementation(libs.mixinextras.common)
+	annotationProcessor(libs.mixinextras.common)
+	implementation(libs.mixinextras.forge)
+	jarJar(libs.mixinextras.forge) {
+		jarJar.ranged(it, "[${libs.versions.mixinextras.get()},)")
 	}
 
 	compileOnly(project(":Common"))
 
-	annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
+	annotationProcessor "${libs.versions.mixin.get()}:processor"
 }
 
 mixin {
@@ -146,7 +148,7 @@ jar {
 				'Implementation-Timestamp': new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
 				'Timestamp'               : System.currentTimeMillis(),
 				'Built-On-Java'           : "${System.getProperty('java.vm.version')} (${System.getProperty('java.vm.vendor')})",
-				'Built-On-Minecraft'      : minecraft_version
+				'Built-On-Minecraft'      : libs.versions.minecraft.release
 		])
 	}
 }
