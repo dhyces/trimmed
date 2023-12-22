@@ -21,6 +21,10 @@ pluginManagement {
             name 'Quilt (Release)'
             url 'https://maven.quiltmc.org/repository/release/'
         }
+        maven {
+            name = 'Architectury'
+            url = "https://maven.architectury.dev/"
+        }
     }
 }
 
@@ -28,4 +32,4 @@ plugins {
     id 'org.gradle.toolchains.foojay-resolver-convention' version '0.5.0'
 }
 
-include("Common", "Forge", "Forge:TestMod", "Fabric", /*"Quilt"*/)
+include("Common"/*, "Neo"*/, "Forge", "Forge:TestMod", "Fabric", /*"Quilt"*/)

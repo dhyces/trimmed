@@ -1,6 +1,6 @@
 plugins {
-    alias libs.plugins.mods.dot.groovy
-
+    alias libs.plugins.mdg
+    alias libs.plugins.archloom apply(false)
 }
 
 modsDotGroovy {
@@ -8,15 +8,16 @@ modsDotGroovy {
     platform = 'multiloader'
     multiloader {
         common = project(':Common')
-//        quilt = [project(':Quilt')]
         forge = [project(':Forge')]
+//        forge = [project(':Neo')]
         fabric = [project(':Fabric')]
+//        quilt = [project(':Quilt')]
     }
 }
 
 allprojects {
     ext {
-        if (libs.versions.parchment.mc.get().equals(libs.versions.minecraft.release.get())) {
+        if (!libs.versions.parchment.mc.get().equals(libs.versions.minecraft.release.get())) {
             parchmentVersion = "${libs.versions.parchment.mc.get()}-${libs.versions.parchment.release.get()}-${libs.versions.minecraft.release.get()}"
         } else {
             parchmentVersion = "${libs.versions.parchment.release.get()}-${libs.versions.minecraft.release.get()}"
@@ -61,7 +62,6 @@ subprojects {
     }
 
     repositories {
-
         mavenCentral()
         mavenLocal()
 

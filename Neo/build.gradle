@@ -2,21 +2,9 @@ plugins {
 	id 'idea'
 	id 'java'
 	id 'maven-publish'
-	alias libs.plugins.forgegradle
-	alias libs.plugins.librarian
-	alias libs.plugins.mixingradle
 }
 
-archivesBaseName = "${mod_id}-forge-${libs.versions.minecraft}"
-
-sourceSets {
-	main
-	test
-	datagen {
-		compileClasspath = project.configurations.compileClasspath
-		runtimeClasspath = project.configurations.runtimeClasspath
-	}
-}
+archivesBaseName = "${mod_id}-neo-${libs.versions.minecraft}"
 
 minecraft {
 	mappings channel: 'parchment', version: rootProject.ext.parchmentVersion
@@ -88,7 +76,7 @@ dependencies {
 
 	compileOnly(project(":Common"))
 
-	annotationProcessor "${libs.sponge.mixin.get()}:processor"
+	annotationProcessor "${libs.versions.mixin.get()}:processor"
 }
 
 mixin {
