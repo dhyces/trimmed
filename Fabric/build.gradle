@@ -49,10 +49,6 @@ dependencies {
         exclude module: "fabric-models-v0"
     }
 
-    implementation(libs.mixinextras.fabric)
-    include(libs.mixinextras.fabric)
-    annotationProcessor(libs.mixinextras.fabric)
-
     implementation project(path: ":Common", configuration: "namedElements")
 }
 

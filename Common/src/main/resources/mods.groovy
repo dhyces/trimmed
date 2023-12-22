@@ -1,6 +1,6 @@
 ModsDotGroovy.make {
     def modid = this.buildProperties["mod_id"]
-    def majorForgeVersion = (libs.versions.forge as String).split("\\.")[0]
+    def majorForgeVersion = (this.libs.versions.forge as String).split("\\.")[0]
 
     modLoader = "javafml"
     loaderVersion = "[${majorForgeVersion},)"
@@ -39,12 +39,12 @@ ModsDotGroovy.make {
 
         dependencies {
             onForge {
-                minecraft = "${libs.versions.minecraft.range}"
+                minecraft = "${this.libs.versions.minecraft.range}"
                 forge = "[${majorForgeVersion},)"
             }
 
             onFabric {
-                minecraft = "${libs.versions.minecraft.range}"
+                minecraft = "${this.libs.versions.minecraft.range}"
                 fabricloader = ">=${this.fabricLoaderVersion}"
                 mod {
                     modId = 'fabric-api'
@@ -53,10 +53,10 @@ ModsDotGroovy.make {
             }
 
             onQuilt {
-                minecraft = "${libs.versions.minecraft.range}"
+                minecraft = "${this.libs.versions.minecraft.range}"
                 quilt_loader = ">=${this.quiltLoaderVersion}"
-                quilted_fabric_api = ">=${libs.versions.quilt.fabric}"
-                quilt_base = ">=${libs.versions.quilt.qsl}"
+                quilted_fabric_api = ">=${this.libs.versions.quilt.fabric}"
+                quilt_base = ">=${this.libs.versions.quilt.qsl}"
             }
         }
     }
