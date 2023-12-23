@@ -1,9 +1,34 @@
 # Trimmed API
 
-Depends on: [Common Network](https://modrinth.com/mod/common-network/versions), [MixinExtras 0.2.+](https://github.com/LlamaLad7/MixinExtras)
+Depends on: [MixinExtras 0.3.2](https://github.com/LlamaLad7/MixinExtras)
 
-You will at least need a runtime dependency on common network and mixinextras
+## NeoForge Only
+```groovy
+repositories {
+    maven {
+        name = "Modrinth"
+        url = "https://api.modrinth.com/maven"
+    }
+}
 
+dependencies {
+    implementation fg.deobf("maven.modrinth:trimmed:1.20.4-2.1.5+neoforge")
+}
+```
+
+## Fabric Only
+```groovy
+repositories {
+    maven {
+        name = "Modrinth"
+        url = "https://api.modrinth.com/maven"
+    }
+}
+
+dependencies {
+    modImplementation("maven.modrinth:trimmed:1.20.4-2.1.5+fabric")
+}
+```
 
 ## Forge Only
 ```groovy
@@ -16,27 +41,9 @@ repositories {
 }
 
 dependencies {
-    runtimeOnly("com.github.llamalad7.mixinextras:mixinextras-common:0.2.0-beta.9")
-    runtimeOnly("com.github.llamalad7.mixinextras:mixinextras-forge:0.2.0-beta.9")
-    runtimeOnly "maven.modrinth:common-network:9uXKGD5m"
-    implementation fg.deobf("maven.modrinth:trimmed:1.20.1-2.1.0+forge")
-}
-```
-
-## Fabric Only
-```groovy
-repositories {
-    maven {
-        name = "Modrinth"
-        url = "https://api.modrinth.com/maven"
-    }
-    maven { url = "https://jitpack.io/" }
-}
-
-dependencies {
-    runtimeOnly("com.github.llamalad7.mixinextras:mixinextras-fabric:0.2.0-beta.9")
-    modRuntimeOnly("maven.modrinth:HIuqnQpi:GjLUIsDm")
-    modImplementation("maven.modrinth:trimmed:1.20.1-2.1.0+fabric")
+    runtimeOnly("io.github.llamalad7:mixinextras-common:0.3.2")
+    runtimeOnly("io.github.llamalad7:mixinextras-forge:0.3.2")
+    implementation fg.deobf("maven.modrinth:trimmed:1.20.4-2.1.5+forge")
 }
 ```
 
@@ -61,25 +68,26 @@ repositories {
 ### Common
 ```groovy
 dependencies {
-    runtimeOnly("com.github.llamalad7.mixinextras:mixinextras-common:0.2.0-beta.9")
-    implementation("mysticdrew:common-networking-common:1.0.1-1.20.1")
-    implementation("dev.dhyces.trimmed:trimmed-common-1.20.1:2.1.0")
+    runtimeOnly("io.github.llamalad7:mixinextras-common:0.3.2")
+    implementation("dev.dhyces.trimmed:trimmed-common-1.20.4:2.1.5")
 }
 ```
-### Forge
+### Neo
 ```groovy
 dependencies {
-    runtimeOnly("com.github.llamalad7.mixinextras:mixinextras-forge:0.2.0-beta.9")
-    implementation("mysticdrew:common-networking-forge:1.0.1-1.20.1")
-    implementation fg.deobf("dev.dhyces.trimmed:trimmed-forge-1.20.1:2.1.0")
+    implementation fg.deobf("dev.dhyces.trimmed:trimmed-neoforge-1.20.4:2.1.5")
 }
 ```
 ### Fabric
 ```groovy
 dependencies {
-    runtimeOnly("com.github.llamalad7.mixinextras:mixinextras-fabric:0.2.0-beta.9")
-    modImplementation("mysticdrew:common-networking-fabric:1.0.1-1.20.1")
-    modImplementation("dev.dhyces.trimmed:trimmed-fabric-1.20.1:2.1.0")
-    
+    modImplementation("dev.dhyces.trimmed:trimmed-fabric-1.20.4:2.1.5")
+}
+```
+### Forge
+```groovy
+dependencies {
+    runtimeOnly("io.github.llamalad7:mixinextras-forge:0.3.2")
+    implementation fg.deobf("dev.dhyces.trimmed:trimmed-forge-1.20.4:2.1.5")
 }
 ```
