@@ -1,6 +1,6 @@
 ModsDotGroovy.make {
     def modid = this.buildProperties["mod_id"]
-    def majorForgeVersion = (this.libs.versions.forge as String).split("\\.")[0]
+    def majorForgeVersion = (this.libs.versions.forge as String).split("-")[1].split("\\.")[0]
 
     modLoader = "javafml"
     loaderVersion = "[${majorForgeVersion},)"
