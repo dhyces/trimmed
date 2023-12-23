@@ -2,10 +2,12 @@
 minecraft_release = "1.20.4"
 minecraft_range = "[1.20.4,1.21)"
 
-forge = "1.20.4-49.0.11"
+neoforge = "20.4.49-beta"
 
 fabric_loader = "0.15.3"
 fabric_api = "0.91.3+1.20.4"
+
+forge = "1.20.4-49.0.11"
 
 quilt_loader = "0.20.2"
 quilt_qsl = "6.2.1"
@@ -28,13 +30,14 @@ librarian = "1.+"
 mixingradle = "0.7-SNAPSHOT"
 
 fabric_loom = "1.4-SNAPSHOT"
-quilt_loom = "1.2.+"
+quilt_loom = "1.4.+"
 
 [libraries]
 minecraft = { module = "com.mojang:minecraft", version.ref = "minecraft_release" }
-forge = { module = "net.minecraftforge:forge", version.ref = "forge" }
+neoforge = { module = "net.neoforged:neoforge", version.ref = "neoforge" }
 fabric_api = { module = "net.fabricmc.fabric-api:fabric-api", version.ref = "fabric_api" }
 fabric_loader = { module = "net.fabricmc:fabric-loader", version.ref = "fabric_loader" }
+forge = { module = "net.minecraftforge:forge", version.ref = "forge" }
 quilt_loader = { module = "org.quiltmc:quilt-loader", version.ref = "quilt_loader" }
 
 sponge_mixin = { module = "org.spongepowered:mixin", version.ref = "mixin" }

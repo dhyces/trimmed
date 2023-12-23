@@ -2,91 +2,110 @@ plugins {
 	id 'idea'
 	id 'java'
 	id 'maven-publish'
+	alias libs.plugins.archloom
 }
 
-archivesBaseName = "${mod_id}-neo-${libs.versions.minecraft}"
+base {
+	archivesName = "${mod_name}-neo-${libs.versions.minecraft.release.get()}"
+}
 
-minecraft {
-	mappings channel: 'parchment', version: rootProject.ext.parchmentVersion
-
-	accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
-
+loom {
+	neoForge {
+//        accessTransformer(file('src/main/resources/META-INF/accesstransformer.cfg'))
+//		mixinConfigs("trimmed.mixins.json", "trimmed.neo.mixins.json")
+	}
 	runs {
 		client {
-			workingDirectory file('run')
-			ideaModule "${rootProject.name}.${project.name}.main"
-			taskName 'Client'
-			property 'mixin.env.remapRefMap', 'true'
-			property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
-			mods {
-				modClientRun {
-					source sourceSets.main
-					source project(":Common").sourceSets.main
-				}
-			}
+			client()
+			setConfigName("Neo Client")
+			ideConfigGenerated(true)
+			runDir("run")
 		}
-
 		server {
-			workingDirectory file('run')
-			ideaModule "${rootProject.name}.${project.name}.main"
-			taskName 'Server'
-			property 'mixin.env.remapRefMap', 'true'
-			property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
-			mods {
-				modServerRun {
-					source sourceSets.main
-					source project(":Common").sourceSets.main
-				}
-			}
+			server()
+			setConfigName("Neo Server")
+			ideConfigGenerated(true)
+			runDir("run")
 		}
-
 		data {
-			workingDirectory file('run')
-			ideaModule "${rootProject.name}.${project.name}.datagen"
-			args '--mod', mod_id, '--all', '--output', project(":Common").file('src/generated/resources/'), '--existing', file('src/main/resources/')
-			taskName 'Data'
-			property 'mixin.env.remapRefMap', 'true'
-			property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
-			mods {
-				modDataRun {
-					source sourceSets.main
-					source sourceSets.datagen
-					source project(":Common").sourceSets.main
-				}
-			}
+			data()
+			setConfigName("Neo Data")
+			ideConfigGenerated(true)
+			runDir("run")
+
+			programArgs("'--mod', ${mod_id}, '--all', '--output', ${project(":Common").file('src/generated/resources/')}, '--existing', ${file('src/main/resources/')}")
 		}
 	}
 }
 
-jarJar.enable()
+//minecraft {
+//	mappings channel: 'parchment', version: rootProject.ext.parchmentVersion
+//
+//	accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
+//
+//	runs {
+//		client {
+//			workingDirectory file('run')
+//			ideaModule "${rootProject.name}.${project.name}.main"
+//			taskName 'Client'
+//			property 'mixin.env.remapRefMap', 'true'
+//			property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
+//			mods {
+//				modClientRun {
+//					source sourceSets.main
+//					source project(":Common").sourceSets.main
+//				}
+//			}
+//		}
+//
+//		server {
+//			workingDirectory file('run')
+//			ideaModule "${rootProject.name}.${project.name}.main"
+//			taskName 'Server'
+//			property 'mixin.env.remapRefMap', 'true'
+//			property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
+//			mods {
+//				modServerRun {
+//					source sourceSets.main
+//					source project(":Common").sourceSets.main
+//				}
+//			}
+//		}
+//
+//		data {
+//			workingDirectory file('run')
+//			ideaModule "${rootProject.name}.${project.name}.datagen"
+//			args '--mod', mod_id, '--all', '--output', project(":Common").file('src/generated/resources/'), '--existing', file('src/main/resources/')
+//			taskName 'Data'
+//			property 'mixin.env.remapRefMap', 'true'
+//			property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
+//			mods {
+//				modDataRun {
+//					source sourceSets.main
+//					source sourceSets.datagen
+//					source project(":Common").sourceSets.main
+//				}
+//			}
+//		}
+//	}
+//}
 
 repositories {
-	mavenCentral()
+	maven {
+		name = 'Neo'
+		url = 'https://maven.neoforged.net/releases'
+	}
 }
 
 dependencies {
-	minecraft libs.forge
-
-	implementation(libs.mixinextras.common)
-	annotationProcessor(libs.mixinextras.common)
-	implementation(libs.mixinextras.forge)
-	jarJar(libs.mixinextras.forge) {
-		jarJar.ranged(it, "[${libs.versions.mixinextras.get()},)")
+	minecraft libs.minecraft
+	neoForge libs.neoforge
+	mappings loom.layered() {
+		officialMojangMappings()
+		parchment("org.parchmentmc.data:parchment-${libs.versions.parchment.mc.get()}:${libs.versions.parchment.release.get()}@zip")
 	}
 
 	compileOnly(project(":Common"))
-
-	annotationProcessor "${libs.versions.mixin.get()}:processor"
-}
-
-mixin {
-	add sourceSets.main, 'trimmed.refmap.json'
-
-	config 'trimmed.forge.mixins.json'
-	config 'trimmed.mixins.json'
-
-	debug.verbose = true
-	debug.export = true
 }
 
 tasks.withType(JavaCompile).configureEach {
@@ -117,9 +136,6 @@ processResources {
 	from project(":Common").sourceSets.main.resources
 	exclude("trimmed.accesswidener")
 }
-
-jar.finalizedBy('reobfJar')
-
 
 jar {
 	from(rootProject.file("LICENSE")) {

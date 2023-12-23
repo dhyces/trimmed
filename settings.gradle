@@ -3,12 +3,20 @@ pluginManagement {
         mavenCentral()
         gradlePluginPortal()
         maven {
-            name = 'Forge'
-            url = 'https://maven.minecraftforge.net/'
+            name = 'Neo'
+            url = 'https://maven.neoforged.net/releases'
         }
         maven {
             name = 'Fabric'
             url = 'https://maven.fabricmc.net/'
+        }
+        maven {
+            name = 'Forge'
+            url = 'https://maven.minecraftforge.net/'
+        }
+        maven {
+            name 'Quilt (Release)'
+            url 'https://maven.quiltmc.org/repository/release/'
         }
         maven {
             name = 'Sponge Snapshots'
@@ -16,10 +24,6 @@ pluginManagement {
         }
         maven {
             url = 'https://maven.parchmentmc.org'
-        }
-        maven {
-            name 'Quilt (Release)'
-            url 'https://maven.quiltmc.org/repository/release/'
         }
         maven {
             name = 'Architectury'
@@ -32,4 +36,4 @@ plugins {
     id 'org.gradle.toolchains.foojay-resolver-convention' version '0.5.0'
 }
 
-include("Common"/*, "Neo"*/, "Forge", "Forge:TestMod", "Fabric", /*"Quilt"*/)
+include("Common", "Neo", "Forge", "Forge:TestMod", "Fabric", /*"Quilt"*/)
