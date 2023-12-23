@@ -1,0 +1,40 @@
+modLoader = "javafml"
+loaderVersion = "[1,)"
+license = "MIT"
+issueTrackerURL = "https://github.com/dhyces/trimmed/issues/"
+
+[[mods]]
+modId = "trimmed"
+version = "2.1.5"
+displayName = "Trimmed"
+displayURL = "https://modrinth.com/mod/trimmed/"
+logoFile = "logo.png"
+description = "Better item overrides! Better trim support! Override it all!"
+authors = "dhyces"
+
+[[dependencies.trimmed]]
+type = "required"
+versionRange = "[20.4,)"
+ordering = "NONE"
+side = "BOTH"
+modId = "neoforge"
+
+[[dependencies.trimmed]]
+type = "required"
+versionRange = "[1.20.4,1.21)"
+ordering = "NONE"
+side = "BOTH"
+modId = "minecraft"
+
+[[mixins]]
+config="trimmed.mixins.json"
+
+[[mixins]]
+config="trimmed.neo.mixins.json"
+
+[[accessTransformers]]
+file="META-INF/accesstransformer.cfg"
+
+[modproperties.trimmed]
+group = "trimmed"
+sourcesUrl = "https://github.com/dhyces/trimmed/"
