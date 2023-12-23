@@ -6,6 +6,7 @@ import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.common.crafting.conditions.ICondition;
 import net.minecraftforge.fml.ModList;
@@ -52,7 +53,7 @@ public final class ForgePlatformHelper implements PlatformHelper {
 
     @Override
     public boolean shouldPassConditions(JsonObject jsonObject) {
-        return CraftingHelper.processConditions(jsonObject, "conditions", ICondition.IContext.TAGS_INVALID);
+        return ForgeHooks.readAndTestCondition(ICondition.IContext.TAGS_INVALID, jsonObject);
     }
 
     @Override

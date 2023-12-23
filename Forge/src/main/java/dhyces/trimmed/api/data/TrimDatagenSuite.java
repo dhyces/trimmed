@@ -10,21 +10,21 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
-import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.RecipeProvider;
+import net.minecraft.data.registries.RegistriesDatapackGenerator;
+import net.minecraft.data.registries.RegistryPatchGenerator;
 import net.minecraft.data.tags.ItemTagsProvider;
 import net.minecraft.data.tags.TagsProvider;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.Item;
-import net.minecraftforge.common.data.DatapackBuiltinEntriesProvider;
 import net.minecraftforge.data.event.GatherDataEvent;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.BiConsumer;
-import java.util.function.Consumer;
 
 public class TrimDatagenSuite extends BaseTrimDatagenSuite {
 
@@ -43,7 +43,7 @@ public class TrimDatagenSuite extends BaseTrimDatagenSuite {
                 .add(Registries.TRIM_MATERIAL, pContext -> {
                     materials.forEach(pair -> pContext.register(pair.getFirst(), pair.getSecond()));
                 });
-        generator.addProvider(event.includeServer(), (DataProvider.Factory<? extends DataProvider>) pOutput -> new DatapackBuiltinEntriesProvider(packOutput, event.getLookupProvider(), builder, Set.of(modid)) {
+        generator.addProvider(event.includeServer(), (DataProvider.Factory<? extends DataProvider>) pOutput -> new RegistriesDatapackGenerator(packOutput, RegistryPatchGenerator.createLookup(event.getLookupProvider(), builder).thenApply(RegistrySetBuilder.PatchedRegistries::patches), Set.of(modid)) {
             @Override
             public String getName() {
                 return "TrimDatagenSuite / " + super.getName() + " " + modid;
@@ -51,9 +51,9 @@ public class TrimDatagenSuite extends BaseTrimDatagenSuite {
         });
         generator.addProvider(event.includeServer(), new RecipeProvider(packOutput) {
             @Override
-            protected void buildRecipes(Consumer<FinishedRecipe> pWriter) {
-                trimRecipes.forEach(pair -> pair.getSecond().save(pWriter, pair.getFirst()));
-                copyRecipes.forEach(pair -> pair.getSecond().save(pWriter));
+            protected void buildRecipes(RecipeOutput output) {
+                trimRecipes.forEach(pair -> pair.getSecond().save(output, pair.getFirst()));
+                copyRecipes.forEach(pair -> pair.getSecond().save(output));
             }
 
             public String getName() {
