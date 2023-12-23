@@ -23,7 +23,7 @@ mdg_release = "1.4.3"
 mdg_dsl = "1.5.1"
 archloom = "1.4.367"
 
-forgegradle = "[6.0,6.2)"
+forgegradle = "[6.0.16,6.2)"
 librarian = "1.+"
 mixingradle = "0.7-SNAPSHOT"
 

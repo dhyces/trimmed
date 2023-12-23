@@ -1,10 +1,10 @@
 plugins {
-	id 'net.minecraftforge.gradle' version '[6.0,6.2)'
-	id 'org.parchmentmc.librarian.forgegradle' version '1.+'
-	id 'org.spongepowered.mixin' version '0.7-SNAPSHOT'
+	alias libs.plugins.forgegradle
+	alias libs.plugins.librarian
+	alias libs.plugins.mixingradle
 }
 
-archivesBaseName = "${mod_id}-TESTMOD-DO-NOT-PUBLISH-Forge-${libs.versions.minecraft.release}-${version}"
+archivesBaseName = "${mod_id}-TESTMOD-DO-NOT-PUBLISH-forge-${libs.versions.minecraft.release}-${version}"
 
 minecraft {
 	mappings channel: "parchment", version: rootProject.ext.parchmentVersion
@@ -56,8 +56,7 @@ repositories {
 dependencies {
 	minecraft libs.forge
 
-	implementation(libs.mixinextras.common)
-	annotationProcessor(libs.mixinextras.common)
+	compileOnly(annotationProcessor(libs.mixinextras.common.get()))
 	implementation(libs.mixinextras.forge)
 
 	compileOnly(project(":Common"))
@@ -76,9 +75,22 @@ mixin {
 	debug.export = true
 }
 
+tasks.withType(JavaCompile).configureEach {
+	it.options.encoding = 'UTF-8'
+	it.options.release = 17
+}
+
+tasks.withType(GenerateModuleMetadata) {
+	enabled = false
+}
+
 //tasks.withType(JavaCompile) {
 //	source(project(":Common").sourceSets.main.allSource)
 //	source(project(":Forge").sourceSets.main.allSource)
 //}
 
-jar.finalizedBy('reobfJar')
+sourceSets.each {
+	def dir = layout.buildDirectory.dir("sourcesSets/$it.name")
+	it.output.resourcesDir = dir
+	it.java.destinationDirectory = dir
+}

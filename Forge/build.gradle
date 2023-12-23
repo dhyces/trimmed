@@ -79,10 +79,8 @@ repositories {
 dependencies {
 	minecraft libs.forge
 
-	implementation(libs.mixinextras.common)
-	annotationProcessor(libs.mixinextras.common)
-	implementation(libs.mixinextras.forge)
-	jarJar(libs.mixinextras.forge) {
+	compileOnly(annotationProcessor(libs.mixinextras.common.get()))
+	implementation(jarJar(libs.mixinextras.forge.get())) {
 		jarJar.ranged(it, "[${libs.versions.mixinextras.get()},)")
 	}
 
@@ -130,9 +128,6 @@ processResources {
 	exclude("trimmed.accesswidener")
 }
 
-jar.finalizedBy('reobfJar')
-
-
 jar {
 	from(rootProject.file("LICENSE")) {
 		rename { "${it}_${mod_id}" }
@@ -153,9 +148,13 @@ jar {
 	}
 }
 
+tasks.named('publish').configure {
+    dependsOn 'reobfJar'
+}
+
 publishing {
 	publications {
-		mavenJava(MavenPublication) {
+		register('mavenJava', MavenPublication) {
 			groupId project.maven_group
 			artifactId project.archivesBaseName
 			version project.mod_version
@@ -165,4 +164,10 @@ publishing {
 			}
 		}
 	}
+}
+
+sourceSets.each {
+	def dir = layout.buildDirectory.dir("sourcesSets/$it.name")
+	it.output.resourcesDir = dir
+	it.java.destinationDirectory = dir
 }
