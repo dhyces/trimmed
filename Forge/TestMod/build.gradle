@@ -4,7 +4,9 @@ plugins {
 	alias libs.plugins.mixingradle
 }
 
-archivesBaseName = "${mod_id}-TESTMOD-DO-NOT-PUBLISH-forge-${libs.versions.minecraft.release}-${version}"
+base {
+	archivesName = "${mod_id}-TESTMOD-DO-NOT-PUBLISH-forge-${libs.versions.minecraft.release.get()}-${version}"
+}
 
 minecraft {
 	mappings channel: "parchment", version: rootProject.ext.parchmentVersion
@@ -57,7 +59,7 @@ dependencies {
 	minecraft libs.forge
 
 	compileOnly(annotationProcessor(libs.mixinextras.common.get()))
-	implementation(libs.mixinextras.forge)
+	implementation(libs.mixinextras.forge.get())
 
 	compileOnly(project(":Common"))
 	implementation(project(":Forge"))
@@ -80,7 +82,7 @@ tasks.withType(JavaCompile).configureEach {
 	it.options.release = 17
 }
 
-tasks.withType(GenerateModuleMetadata) {
+tasks.withType(GenerateModuleMetadata).configureEach {
 	enabled = false
 }
 

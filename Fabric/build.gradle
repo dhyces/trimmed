@@ -1,11 +1,15 @@
 plugins {
+    id 'idea'
     id 'java'
     id 'maven-publish'
-    id 'idea'
+    alias libs.plugins.curseforgegradle
+    alias libs.plugins.minotaur
     alias libs.plugins.archloom
 }
 
-archivesBaseName = "${mod_id}-fabric-${libs.versions.minecraft}"
+base {
+    archivesName = "${mod_id}-fabric-${libs.versions.minecraft.release.get()}"
+}
 
 loom {
     accessWidenerPath = project(":Common").file("src/main/resources/trimmed.accesswidener")
