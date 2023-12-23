@@ -2,7 +2,7 @@ plugins {
     id 'java'
     id 'maven-publish'
     id 'idea'
-    alias libs.plugins.fabric.loom
+    alias libs.plugins.archloom
 }
 
 archivesBaseName = "${mod_id}-fabric-${libs.versions.minecraft}"

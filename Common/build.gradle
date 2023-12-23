@@ -7,8 +7,24 @@ plugins {
 
 archivesBaseName = "${mod_id}-common-${libs.versions.minecraft}"
 
+configurations {
+    commonJava {
+        canBeResolved = false
+        canBeConsumed = true
+    }
+    commonResources {
+        canBeResolved = false
+        canBeConsumed = true
+    }
+    testCompileOnly.extendsFrom(compileOnly)
+}
+
 loom {
     accessWidenerPath = file("src/main/resources/trimmed.accesswidener")
+
+    runConfigs.configureEach {
+        ideConfigGenerated = false
+    }
 }
 
 dependencies {
@@ -18,11 +34,14 @@ dependencies {
         parchment("org.parchmentmc.data:parchment-${libs.versions.parchment.mc.get()}:${libs.versions.parchment.release.get()}@zip")
     }
 
-    modCompileOnly libs.quilt.loader
+    modCompileOnly libs.fabric.loader
 
     implementation(annotationProcessor(libs.mixinextras.common.get()))
+}
 
-    compileOnly libs.sponge.mixin
+artifacts {
+    commonJava sourceSets.main.java.sourceDirectories.singleFile
+    commonResources sourceSets.main.resources.sourceDirectories.singleFile
 }
 
 sourceSets.main.resources.srcDir 'src/generated/resources'
@@ -31,10 +50,6 @@ idea {
     module {
         inheritOutputDirs = false
     }
-}
-
-configurations {
-    testCompileOnly.extendsFrom(compileOnly)
 }
 
 import net.fabricmc.loom.task.AbstractRemapJarTask

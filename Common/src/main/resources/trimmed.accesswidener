@@ -1,3 +1,4 @@
 accessWidener v1 named
 extendable class net/minecraft/client/renderer/texture/atlas/sources/PalettedPermutations$PalettedSpriteSupplier
 accessible method net/minecraft/client/renderer/texture/atlas/sources/PalettedPermutations createPaletteMapping ([I[I)Ljava/util/function/IntUnaryOperator;
+extendable method net/minecraft/data/recipes/RecipeProvider getName ()Ljava/lang/String;
