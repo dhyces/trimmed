@@ -2,8 +2,8 @@ package dhyces.testmod;
 
 import dhyces.testmod.registry.CustomObj;
 import dhyces.testmod.registry.CustomRegistration;
-import dhyces.trimmed.impl.client.tags.ClientRegistryTagKey;
-import dhyces.trimmed.impl.client.tags.ClientTagKey;
+import dev.dhyces.trimmed.impl.client.tags.ClientRegistryTagKey;
+import dev.dhyces.trimmed.impl.client.tags.ClientTagKey;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.biome.Biome;

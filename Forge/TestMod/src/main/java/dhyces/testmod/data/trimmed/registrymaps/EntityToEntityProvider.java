@@ -2,7 +2,7 @@ package dhyces.testmod.data.trimmed.registrymaps;
 
 import dhyces.testmod.TestClientMaps;
 import dhyces.testmod.TrimmedTest;
-import dhyces.trimmed.api.data.maps.ClientRegistryMapDataProvider;
+import dev.dhyces.trimmed.api.data.maps.ClientRegistryMapDataProvider;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;

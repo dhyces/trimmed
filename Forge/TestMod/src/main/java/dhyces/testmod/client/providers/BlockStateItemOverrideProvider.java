@@ -2,8 +2,8 @@ package dhyces.testmod.client.providers;
 
 import com.google.common.base.Suppliers;
 import com.mojang.serialization.Codec;
-import dhyces.trimmed.api.client.override.provider.ItemOverrideProvider;
-import dhyces.trimmed.api.client.override.provider.ItemOverrideProviderType;
+import dev.dhyces.trimmed.api.client.override.provider.ItemOverrideProvider;
+import dev.dhyces.trimmed.api.client.override.provider.ItemOverrideProviderType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.resources.model.BakedModel;

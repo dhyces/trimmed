@@ -1,7 +1,7 @@
 package dhyces.testmod;
 
-import dhyces.trimmed.impl.client.maps.ClientMapKey;
-import dhyces.trimmed.impl.client.maps.ClientRegistryMapKey;
+import dev.dhyces.trimmed.impl.client.maps.ClientMapKey;
+import dev.dhyces.trimmed.impl.client.maps.ClientRegistryMapKey;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.entity.EntityType;

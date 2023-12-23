@@ -2,7 +2,7 @@ package dhyces.testmod.data.trimmed;
 
 import dhyces.testmod.TestClientMaps;
 import dhyces.testmod.TrimmedTest;
-import dhyces.trimmed.api.data.maps.ClientMapDataProvider;
+import dev.dhyces.trimmed.api.data.maps.ClientMapDataProvider;
 import net.minecraft.data.PackOutput;
 import net.minecraftforge.common.data.ExistingFileHelper;
 

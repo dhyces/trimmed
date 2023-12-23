@@ -1,8 +1,8 @@
 package dhyces.testmod.data.trimmed.registrytags;
 
 import dhyces.testmod.TrimmedTest;
-import dhyces.trimmed.api.data.tags.ClientRegistryTagDataProvider;
-import dhyces.trimmed.impl.client.tags.ClientRegistryTagKey;
+import dev.dhyces.trimmed.api.data.tags.ClientRegistryTagDataProvider;
+import dev.dhyces.trimmed.impl.client.tags.ClientRegistryTagKey;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;

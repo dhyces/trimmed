@@ -1,7 +1,7 @@
 package dhyces.trimmed.model;
 
-import dhyces.trimmed.Trimmed;
-import dhyces.trimmed.api.data.ItemOverrideDataProvider;
+import dev.dhyces.trimmed.Trimmed;
+import dev.dhyces.trimmed.api.data.ItemOverrideDataProvider;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Items;

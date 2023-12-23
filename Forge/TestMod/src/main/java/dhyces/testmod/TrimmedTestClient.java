@@ -1,8 +1,8 @@
 package dhyces.testmod;
 
-import dhyces.trimmed.api.TrimmedClientMapApi;
-import dhyces.trimmed.api.TrimmedClientTagApi;
-import dhyces.trimmed.api.maps.LimitedMap;
+import dev.dhyces.trimmed.api.TrimmedClientMapApi;
+import dev.dhyces.trimmed.api.TrimmedClientTagApi;
+import dev.dhyces.trimmed.api.maps.LimitedMap;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Items;

@@ -1,14 +1,14 @@
 {
   "required": true,
   "minVersion": "0.8",
-  "package": "dhyces.trimmed.impl.mixin",
+  "package": "dev.dhyces.trimmed.impl.mixin",
   "compatibilityLevel": "JAVA_17",
   "refmap": "trimmed.refmap.json",
   "mixins": [
-    "TagEntryAccessor",
-    "client.ReloadableResourceManagerImplAccessor"
+    "TagEntryAccessor"
   ],
   "client": [
+    "client.ReloadableResourceManagerImplAccessor",
     "client.ArmorTrimMixin",
     "client.AtlasSourceManagerAccessor",
     "client.ModelOverrideListMixin"

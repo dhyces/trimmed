@@ -13,7 +13,7 @@ import dhyces.testmod.data.trimmed.registrymaps.EntityToEntityProvider;
 import dhyces.testmod.data.trimmed.registrytags.TestClientCustomObjTagProvider;
 import dhyces.testmod.data.trimmed.registrytags.TestClientItemTagProvider;
 import dhyces.testmod.item.AdamantiumArmorItem;
-import dhyces.trimmed.api.data.TrimDatagenSuite;
+import dev.dhyces.trimmed.api.data.TrimDatagenSuite;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.PackOutput;

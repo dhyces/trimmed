@@ -2,7 +2,7 @@ package dhyces.testmod.data.trimmed;
 
 import dhyces.testmod.TrimmedTest;
 import dhyces.testmod.client.providers.BlockStateItemOverrideProvider;
-import dhyces.trimmed.api.data.ItemOverrideDataProvider;
+import dev.dhyces.trimmed.api.data.ItemOverrideDataProvider;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.data.PackOutput;
 import net.minecraft.nbt.CompoundTag;

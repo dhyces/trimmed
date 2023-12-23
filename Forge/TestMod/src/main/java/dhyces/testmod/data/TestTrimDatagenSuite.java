@@ -2,7 +2,7 @@ package dhyces.testmod.data;
 
 import dhyces.testmod.ModItems;
 import dhyces.testmod.TrimmedTest;
-import dhyces.trimmed.api.data.TrimDatagenSuite;
+import dev.dhyces.trimmed.api.data.TrimDatagenSuite;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.Items;
