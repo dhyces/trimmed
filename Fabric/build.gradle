@@ -62,13 +62,24 @@ idea {
     }
 }
 
+tasks.withType(JavaCompile) {
+    source(project(":Common").sourceSets.main.allSource)
+}
+
 processResources {
     from project(":Common").sourceSets.main.resources
     exclude("mods.groovy")
 }
 
-tasks.withType(JavaCompile) {
-    source(project(":Common").sourceSets.main.allSource)
+java {
+    withSourcesJar()
+    withJavadocJar()
+}
+
+sourcesJar {
+    from(rootProject.file("LICENSE")) {
+        rename { "${it}_${mod_name}" }
+    }
 }
 
 sourcesJar {
@@ -93,7 +104,8 @@ publishing {
 if (findProperty("modrinth_write_version_pat")) {
     modrinth {
         token = findProperty("modrinth_write_version_pat")
-        projectId = "q8k4zHw5"
+        projectId = modrinth_project_id
+        versionName = "Fabric-${libs.versions.minecraft.release.get()}-${mod_version}"
         versionNumber = "${libs.versions.minecraft.release.get()}-${mod_version}+fabric"
         versionType = publish_type
         uploadFile = remapJar
@@ -102,6 +114,31 @@ if (findProperty("modrinth_write_version_pat")) {
         changelog = rootProject.file("changelog.md").newReader().text
         additionalFiles = [sourcesJar, javadocJar]
         detectLoaders = false
-        debugMode = publish_debug.equals("true")
+        debugMode = publish_debug == "true"
+    }
+}
+
+import net.darkhax.curseforgegradle.TaskPublishCurseForge
+
+if (findProperty("curseforge_publishing_token")) {
+    tasks.register("curseforge", TaskPublishCurseForge) {
+        group = "publishing"
+
+        disableVersionDetection()
+        apiToken = findProperty('curseforge_publishing_token')
+        def projectId = curseforge_project_id
+        def mainFile = upload(projectId, remapJar)
+        mainFile.displayName = "Fabric-${libs.versions.minecraft.release.get()}-${mod_version}"
+        mainFile.releaseType = publish_type
+        mainFile.changelog = rootProject.file("changelog.md").newReader().text
+        mainFile.changelogType = 'markdown'
+        mainFile.addModLoader("Fabric")
+        mainFile.addJavaVersion("Java ${java.toolchain.languageVersion.get()}")
+        mainFile.addGameVersion(libs.versions.minecraft.release.get())
+        debugMode = publish_debug == "true"
+    }
+
+    afterEvaluate {
+        tasks.curseforge.dependsOn tasks.remapJar
     }
 }

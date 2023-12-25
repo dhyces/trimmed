@@ -77,15 +77,6 @@ mixin {
 	debug.export = true
 }
 
-tasks.withType(JavaCompile).configureEach {
-	it.options.encoding = 'UTF-8'
-	it.options.release = 17
-}
-
-tasks.withType(GenerateModuleMetadata).configureEach {
-	enabled = false
-}
-
 //tasks.withType(JavaCompile) {
 //	source(project(":Common").sourceSets.main.allSource)
 //	source(project(":Forge").sourceSets.main.allSource)

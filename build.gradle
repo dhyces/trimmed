@@ -1,6 +1,8 @@
 plugins {
     alias libs.plugins.mdg
     alias libs.plugins.archloom apply(false)
+    alias libs.plugins.forgegradle apply(false)
+    alias libs.plugins.mixingradle apply(false)
 }
 
 modsDotGroovy {
@@ -31,8 +33,6 @@ subprojects {
 
     java {
         toolchain.languageVersion = JavaLanguageVersion.of(17)
-        withSourcesJar()
-        withJavadocJar()
     }
 
     version = mod_version
@@ -54,12 +54,6 @@ subprojects {
                 'Built-On-Java'           : "${System.getProperty('java.vm.version')} (${System.getProperty('java.vm.vendor')})",
                 'Built-On-Minecraft'      : libs.versions.minecraft.release.get()
             ])
-        }
-    }
-
-    sourcesJar {
-        from(rootProject.file("LICENSE")) {
-            rename { "${it}_${mod_name}" }
         }
     }
 

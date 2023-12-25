@@ -13,6 +13,7 @@ base {
 	archivesName = "${mod_id}-forge-${libs.versions.minecraft.release.get()}"
 }
 
+// compileTestJava fails from MixinExtras not being present if this is missing
 configurations {
 	testCompileOnly.extendsFrom(compileOnly)
 }
@@ -80,6 +81,16 @@ minecraft {
 	}
 }
 
+mixin {
+	add sourceSets.main, 'trimmed.refmap.json'
+
+	config 'trimmed.forge.mixins.json'
+	config 'trimmed.mixins.json'
+
+	debug.verbose = true
+	debug.export = true
+}
+
 jarJar.enable()
 
 repositories {
@@ -96,17 +107,7 @@ dependencies {
 
 	compileOnly(project(path: ":Common", configuration: "namedElements"))
 
-	annotationProcessor "${libs.sponge.mixin.get()}:processor"
-}
-
-mixin {
-	add sourceSets.main, 'trimmed.refmap.json'
-
-	config 'trimmed.forge.mixins.json'
-	config 'trimmed.mixins.json'
-
-	debug.verbose = true
-	debug.export = true
+	annotationProcessor("${libs.sponge.mixin.get()}:processor")
 }
 
 tasks.withType(JavaCompile).configureEach {
@@ -116,6 +117,17 @@ tasks.withType(JavaCompile).configureEach {
 processResources {
 	from project(":Common").sourceSets.main.resources
 	exclude("trimmed.accesswidener")
+}
+
+java {
+	withSourcesJar()
+	withJavadocJar()
+}
+
+sourcesJar {
+	from(rootProject.file("LICENSE")) {
+		rename { "${it}_${mod_name}" }
+	}
 }
 
 jar.finalizedBy('reobfJar')
@@ -143,7 +155,8 @@ sourceSets.each {
 if (findProperty("modrinth_write_version_pat")) {
 	modrinth {
 		token = findProperty("modrinth_write_version_pat")
-		projectId = "q8k4zHw5"
+		projectId = modrinth_project_id
+		versionName = "Forge-${libs.versions.minecraft.release.get()}-${mod_version}"
 		versionNumber = "${libs.versions.minecraft.release.get()}-${mod_version}+forge"
 		versionType = publish_type
 		uploadFile = jar
@@ -152,6 +165,27 @@ if (findProperty("modrinth_write_version_pat")) {
 		changelog = rootProject.file("changelog.md").newReader().text
 		additionalFiles = [sourcesJar, javadocJar]
 		detectLoaders = false
-		debugMode = publish_debug.equals("true")
+		debugMode = publish_debug == "true"
+	}
+}
+
+import net.darkhax.curseforgegradle.TaskPublishCurseForge
+
+if (findProperty("curseforge_publishing_token")) {
+	tasks.register("curseforge", TaskPublishCurseForge) {
+		group = "publishing"
+
+		disableVersionDetection()
+		apiToken = findProperty('curseforge_publishing_token')
+		def projectId = curseforge_project_id
+		def mainFile = upload(projectId, jar)
+		mainFile.displayName = "Forge-${libs.versions.minecraft.release.get()}-${mod_version}"
+		mainFile.releaseType = publish_type
+		mainFile.changelog = rootProject.file("changelog.md").newReader().text
+		mainFile.changelogType = 'markdown'
+		mainFile.addModLoader("Forge")
+		mainFile.addJavaVersion("Java ${java.toolchain.languageVersion.get()}")
+		mainFile.addGameVersion(libs.versions.minecraft.release.get())
+		debugMode = publish_debug == "true"
 	}
 }

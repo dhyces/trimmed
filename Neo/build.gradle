@@ -66,6 +66,17 @@ processResources {
 	from project(":Common").sourceSets.main.resources
 }
 
+java {
+	withSourcesJar()
+	withJavadocJar()
+}
+
+sourcesJar {
+	from(rootProject.file("LICENSE")) {
+		rename { "${it}_${mod_name}" }
+	}
+}
+
 publishing {
 	publications {
 		register('mavenJava', MavenPublication) {
@@ -83,7 +94,8 @@ publishing {
 if (findProperty("modrinth_write_version_pat")) {
 	modrinth {
 		token = findProperty("modrinth_write_version_pat")
-		projectId = "q8k4zHw5"
+		projectId = modrinth_project_id
+		versionName = "NeoForge-${libs.versions.minecraft.release.get()}-${mod_version}"
 		versionNumber = "${libs.versions.minecraft.release.get()}-${mod_version}+neoforge"
 		versionType = publish_type
 		uploadFile = remapJar
@@ -92,6 +104,31 @@ if (findProperty("modrinth_write_version_pat")) {
 		changelog = rootProject.file("changelog.md").newReader().text
 		additionalFiles = [sourcesJar, javadocJar]
 		detectLoaders = false
-		debugMode = publish_debug.equals("true")
+		debugMode = publish_debug == "true"
+	}
+}
+
+import net.darkhax.curseforgegradle.TaskPublishCurseForge
+
+if (findProperty("curseforge_publishing_token")) {
+	tasks.register("curseforge", TaskPublishCurseForge) {
+		group = "publishing"
+
+		disableVersionDetection()
+		apiToken = findProperty('curseforge_publishing_token')
+		def projectId = curseforge_project_id
+		def mainFile = upload(projectId, remapJar)
+		mainFile.displayName = "NeoForge-${libs.versions.minecraft.release.get()}-${mod_version}"
+		mainFile.releaseType = publish_type
+		mainFile.changelog = rootProject.file("changelog.md").newReader().text
+		mainFile.changelogType = 'markdown'
+		mainFile.addModLoader("NeoForge")
+		mainFile.addJavaVersion("Java ${java.toolchain.languageVersion.get()}")
+		mainFile.addGameVersion(libs.versions.minecraft.release.get())
+		debugMode = publish_debug == "true"
+	}
+
+	afterEvaluate {
+		tasks.curseforge.dependsOn tasks.remapJar
 	}
 }

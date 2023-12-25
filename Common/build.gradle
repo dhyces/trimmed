@@ -72,6 +72,17 @@ processResources {
     }
 }
 
+java {
+    withSourcesJar()
+    withJavadocJar()
+}
+
+sourcesJar {
+    from(rootProject.file("LICENSE")) {
+        rename { "${it}_${mod_name}" }
+    }
+}
+
 publishing {
     publications {
         mavenJava(MavenPublication) {
