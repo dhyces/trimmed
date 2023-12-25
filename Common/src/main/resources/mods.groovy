@@ -48,7 +48,7 @@ ModsDotGroovy.make {
                 fabricloader = ">=${this.fabricLoaderVersion}"
                 mod {
                     modId = 'fabric-api'
-                    versionRange = '>=0.86.0'
+                    versionRange = ">=${(this.libs.versions.fabric.api as String).split("\\+")[0]}"
                 }
             }
 
