@@ -24,15 +24,15 @@ ModsDotGroovy.make {
 
         onFabric {
             entrypoints {
-                main = "dhyces.trimmed.FabricTrimmed"
-                client = "dhyces.trimmed.FabricTrimmedClient"
+                main = "dev.dhyces.trimmed.FabricTrimmed"
+                client = "dev.dhyces.trimmed.FabricTrimmedClient"
             }
         }
 
         onQuilt {
             entrypoints {
-                init = "dhyces.trimmed.QuiltTrimmed"
-                client_init = "dhyces.trimmed.QuiltTrimmedClient"
+                init = "dev.dhyces.trimmed.QuiltTrimmed"
+                client_init = "dev.dhyces.trimmed.QuiltTrimmedClient"
             }
             intermediateMappings = "net.fabricmc:intermediary"
         }
