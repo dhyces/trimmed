@@ -64,6 +64,7 @@ tasks.withType(JavaCompile).configureEach {
 
 processResources {
 	from project(":Common").sourceSets.main.resources
+	exclude("mods.groovy", "trimmed.accesswidener")
 }
 
 java {
