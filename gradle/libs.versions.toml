@@ -1,6 +1,7 @@
 [versions]
 minecraft_release = "1.20.4"
 minecraft_range = "[1.20.4,1.21)"
+publish_range = "1.20.4"
 
 neoforge = "20.4.49-beta"
 
@@ -23,7 +24,7 @@ jetbrains_annotations = "24.0.0"
 
 mdg_release = "1.4.3"
 mdg_dsl = "1.5.1"
-archloom = "1.4.367"
+archloom = "1.4.373"
 
 forgegradle = "[6.0.16,6.2)"
 librarian = "1.+"

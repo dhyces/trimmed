@@ -2,9 +2,9 @@ plugins {
     id 'idea'
     id 'java'
     id 'maven-publish'
+    alias libs.plugins.archloom
     alias libs.plugins.curseforgegradle
     alias libs.plugins.minotaur
-    alias libs.plugins.archloom
 }
 
 base {
@@ -64,11 +64,7 @@ idea {
 
 processResources {
     from project(":Common").sourceSets.main.resources
-    inputs.property "version", project.version
-
-    filesMatching("fabric.mod.json") {
-        expand "version": project.version
-    }
+    exclude("mods.groovy")
 }
 
 tasks.withType(JavaCompile) {
@@ -82,7 +78,7 @@ sourcesJar {
 
 publishing {
     publications {
-        mavenJava(MavenPublication) {
+        register("mavenJava", MavenPublication) {
             groupId project.maven_group
             artifactId project.archivesBaseName
             version project.mod_version
@@ -91,5 +87,21 @@ publishing {
                 asNode().remove(asNode().dependencies)
             }
         }
+    }
+}
+
+if (findProperty("modrinth_write_version_pat")) {
+    modrinth {
+        token = findProperty("modrinth_write_version_pat")
+        projectId = "q8k4zHw5"
+        versionNumber = "${libs.versions.minecraft.release.get()}-${mod_version}+fabric"
+        versionType = publish_type
+        uploadFile = remapJar
+        gameVersions = List.of(libs.versions.publish.range.get().split(","))
+        loaders = ["fabric"]
+        changelog = rootProject.file("changelog.md").newReader().text
+        additionalFiles = [sourcesJar, javadocJar]
+        detectLoaders = false
+        debugMode = publish_debug.equals("true")
     }
 }

@@ -58,10 +58,10 @@ idea {
     }
 }
 
-import net.fabricmc.loom.task.AbstractRemapJarTask
-tasks.withType(AbstractRemapJarTask).each {
-    it.targetNamespace = "named"
-}
+//import net.fabricmc.loom.task.AbstractRemapJarTask
+//tasks.withType(AbstractRemapJarTask).each {
+//    it.targetNamespace = "named"
+//}
 
 processResources {
     def buildProps = project.properties.clone()

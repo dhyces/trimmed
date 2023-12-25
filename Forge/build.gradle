@@ -110,26 +110,6 @@ mixin {
 }
 
 tasks.withType(JavaCompile).configureEach {
-	it.options.encoding = 'UTF-8'
-	it.options.release = 17
-}
-
-tasks.withType(GenerateModuleMetadata).configureEach {
-	enabled = false
-}
-
-java {
-	toolchain.languageVersion = JavaLanguageVersion.of(17)
-	withSourcesJar()
-	withJavadocJar()
-	sourcesJar {
-		from(rootProject.file("LICENSE")) {
-			rename { "${it}_${mod_id}" }
-		}
-	}
-}
-
-tasks.withType(JavaCompile).configureEach {
 	source(project(":Common").sourceSets.main.allSource)
 }
 
@@ -138,9 +118,7 @@ processResources {
 	exclude("trimmed.accesswidener")
 }
 
-tasks.named('publish').configure {
-    dependsOn 'reobfJar'
-}
+jar.finalizedBy('reobfJar')
 
 publishing {
 	publications {
@@ -160,4 +138,20 @@ sourceSets.each {
 	def dir = layout.buildDirectory.dir("sourcesSets/$it.name")
 	it.output.resourcesDir = dir
 	it.java.destinationDirectory = dir
+}
+
+if (findProperty("modrinth_write_version_pat")) {
+	modrinth {
+		token = findProperty("modrinth_write_version_pat")
+		projectId = "q8k4zHw5"
+		versionNumber = "${libs.versions.minecraft.release.get()}-${mod_version}+forge"
+		versionType = publish_type
+		uploadFile = jar
+		gameVersions = List.of(libs.versions.publish.range.get().split(","))
+		loaders = ["forge"]
+		changelog = rootProject.file("changelog.md").newReader().text
+		additionalFiles = [sourcesJar, javadocJar]
+		detectLoaders = false
+		debugMode = publish_debug.equals("true")
+	}
 }
