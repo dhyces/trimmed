@@ -1,7 +1,11 @@
+import org.groovymc.modsdotgroovy.core.Platform
+import org.groovymc.modsdotgroovy.gradle.tasks.AbstractGatherPlatformDetailsTask
+
 plugins {
 	id 'idea'
 	id 'java'
 	id 'maven-publish'
+	alias libs.plugins.mdg
 	alias libs.plugins.curseforgegradle
 	alias libs.plugins.minotaur
 	alias libs.plugins.archloom
@@ -36,6 +40,20 @@ loom {
 	}
 }
 
+modsDotGroovy {
+	platform = Platform.NEOFORGE
+	inferGather.set false
+	multiplatform {
+		from ':Common'
+	}
+	apply()
+}
+
+tasks.named('gatherNeoForgePlatformDetails', AbstractGatherPlatformDetailsTask).configure {
+	minecraftVersion = '24w12a'
+	platformVersion = '20.4.55-beta'
+}
+
 //remapJar {
 //	atAccessWideners.add('src/main/resources/trimmed.accesswidener')
 //}
@@ -65,6 +83,7 @@ tasks.withType(JavaCompile).configureEach {
 processResources {
 	from project(":Common").sourceSets.main.resources
 	exclude("mods.groovy", "trimmed.accesswidener")
+	rename "mods.toml", "neoforge.mods.toml" // TODO: remove when MDG supports this
 }
 
 java {

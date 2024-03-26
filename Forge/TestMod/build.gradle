@@ -61,7 +61,7 @@ dependencies {
 	compileOnly(annotationProcessor(libs.mixinextras.common.get()))
 	implementation(libs.mixinextras.forge.get())
 
-	compileOnly(project(":Common"))
+	implementation(project(":Common"))
 	implementation(project(":Forge"))
 
 	annotationProcessor "${libs.sponge.mixin.get()}:processor"

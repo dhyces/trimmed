@@ -1,7 +1,11 @@
+import org.groovymc.modsdotgroovy.core.Platform
+import org.groovymc.modsdotgroovy.gradle.tasks.AbstractGatherPlatformDetailsTask
+
 plugins {
     id 'idea'
     id 'java'
     id 'maven-publish'
+    alias libs.plugins.mdg
     alias libs.plugins.archloom
     alias libs.plugins.curseforgegradle
     alias libs.plugins.minotaur
@@ -39,6 +43,20 @@ loom {
             sourceSet project(":Common").sourceSets.main
         }
     }
+}
+
+modsDotGroovy {
+    platform = Platform.FABRIC
+    inferGather.set false
+    multiplatform {
+        from ':Common'
+    }
+    apply()
+}
+
+tasks.named('gatherFabricPlatformDetails', AbstractGatherPlatformDetailsTask).configure {
+    minecraftVersion = '24w12a'
+    platformVersion = '1.15.7'
 }
 
 dependencies {
