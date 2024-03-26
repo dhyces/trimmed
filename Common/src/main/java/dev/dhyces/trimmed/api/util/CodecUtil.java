@@ -22,7 +22,7 @@ public final class CodecUtil {
                     try {
                         ResourceLocation id = new ResourceLocation(identifierModelSplit[0]);
                         return DataResult.success(new ModelResourceLocation(id, identifierModelSplit[1]));
-                    } catch (ResourceLocationException e) {
+                    } catch (Exception e) {
                         return DataResult.error(e::getMessage);
                     }
                 }
