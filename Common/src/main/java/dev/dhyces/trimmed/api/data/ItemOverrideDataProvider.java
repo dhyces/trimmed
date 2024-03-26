@@ -9,16 +9,13 @@ import dev.dhyces.trimmed.Trimmed;
 import dev.dhyces.trimmed.api.client.override.provider.ItemOverrideProvider;
 import dev.dhyces.trimmed.api.client.override.provider.providers.AnyTrimItemOverrideProvider;
 import dev.dhyces.trimmed.api.client.override.provider.providers.NbtItemOverrideProvider;
-import dev.dhyces.trimmed.api.client.override.provider.providers.TrimItemOverrideProvider;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.armortrim.TrimMaterial;
 import net.minecraft.world.level.ItemLike;
 
 import java.util.*;
@@ -46,36 +43,6 @@ public abstract class ItemOverrideDataProvider implements DataProvider {
 
     protected void addNbtOverride(ItemLike item, CompoundTag nbt, ModelResourceLocation modelId) {
         addItemOverrides(item, new NbtItemOverrideProvider(nbt, modelId));
-    }
-
-    @Deprecated(forRemoval = true, since = "2.1.5")
-    protected void addTrimOverride(ItemLike item, ResourceKey<TrimMaterial> materialRegistryKey) {
-        addTrimOverride(item, materialRegistryKey.location());
-    }
-
-    @Deprecated(forRemoval = true, since = "2.1.5")
-    protected void addTrimOverride(ItemLike item, ResourceLocation materialId) {
-        ResourceLocation itemId = BuiltInRegistries.ITEM.getKey(item.asItem());
-        ModelResourceLocation itemModelId = new ModelResourceLocation(modid, "%s_%s_trim".formatted(itemId.getPath(), materialId.getPath()), "inventory");
-        addTrimOverride(item, materialId, itemModelId);
-    }
-
-    @Deprecated(forRemoval = true, since = "2.1.5")
-    protected void addTrimOverride(ItemLike item, ResourceLocation materialId, ResourceLocation itemModelId) {
-        addTrimOverride(item, materialId, new ModelResourceLocation(itemModelId, "inventory"));
-    }
-
-    @Deprecated(forRemoval = true, since = "2.1.5")
-    protected void addTrimOverride(ItemLike item, ResourceKey<TrimMaterial> materialRegistryKey, ModelResourceLocation modelId) {
-        addTrimOverride(item, materialRegistryKey.location(), modelId);
-    }
-
-    /**
-     * Use addAnyTrimOverride
-     */
-    @Deprecated(forRemoval = true, since = "2.1.5")
-    protected void addTrimOverride(ItemLike item, ResourceLocation materialId, ModelResourceLocation modelId) {
-        addItemOverrides(item, new TrimItemOverrideProvider(materialId, modelId));
     }
 
     protected ArmorSetTrimBuilder anyTrimBuilder(ArmorSet armorSet) {
