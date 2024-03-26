@@ -1,7 +1,7 @@
 package dev.dhyces.trimmed.impl;
 
 import dev.dhyces.trimmed.api.TrimmedClientMapApi;
-import dev.dhyces.trimmed.api.maps.LimitedMap;
+import dev.dhyces.trimmed.api.maps.MapAccess;
 import dev.dhyces.trimmed.api.maps.OptionalMapEntry;
 import dev.dhyces.trimmed.impl.client.maps.ClientMapKey;
 import dev.dhyces.trimmed.impl.client.maps.ClientRegistryMapKey;
@@ -12,7 +12,7 @@ import java.util.stream.Stream;
 
 public final class TrimmedClientMapApiImpl implements TrimmedClientMapApi {
     @Override
-    public LimitedMap<ResourceLocation, String> map(ClientMapKey clientMapKey) {
+    public MapAccess<ResourceLocation, String> map(ClientMapKey clientMapKey) {
         return ClientMapManager.getUncheckedHandler().getMap(clientMapKey);
     }
 
@@ -26,7 +26,7 @@ public final class TrimmedClientMapApiImpl implements TrimmedClientMapApi {
     }
 
     @Override
-    public <K> LimitedMap<K, String> map(ClientRegistryMapKey<K> clientRegistryMapKey) {
+    public <K> MapAccess<K, String> map(ClientRegistryMapKey<K> clientRegistryMapKey) {
         return ClientMapManager.getRegistryHandler(clientRegistryMapKey.getRegistryKey()).getMap(clientRegistryMapKey);
     }
 

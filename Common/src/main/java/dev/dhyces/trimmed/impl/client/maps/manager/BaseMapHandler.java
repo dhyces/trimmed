@@ -7,8 +7,8 @@ import dev.dhyces.trimmed.Trimmed;
 import dev.dhyces.trimmed.api.data.maps.MapAppendElement;
 import dev.dhyces.trimmed.api.data.maps.MapFile;
 import dev.dhyces.trimmed.api.data.maps.MapValue;
-import dev.dhyces.trimmed.api.maps.LimitedBiMap;
-import dev.dhyces.trimmed.api.maps.LimitedMap;
+import dev.dhyces.trimmed.api.maps.BiMapAccess;
+import dev.dhyces.trimmed.api.maps.MapAccess;
 import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ReferenceLinkedOpenHashSet;
 import it.unimi.dsi.fastutil.objects.ReferenceSet;
@@ -31,11 +31,11 @@ public abstract class BaseMapHandler<MAPKEY, KEY, VAL> {
         this.holderMapSupplier = mapSupplier;
     }
 
-    public LimitedMap<KEY, VAL> getMap(MAPKEY mapKey) {
+    public MapAccess<KEY, VAL> getMap(MAPKEY mapKey) {
         return internal.computeIfAbsent(mapKey, mapkey -> new MapHolder<>(holderMapSupplier.get(), new HashSet<>())).get();
     }
 
-    public LimitedBiMap<KEY, VAL> getBiMap(MAPKEY mapKey) {
+    public BiMapAccess<KEY, VAL> getBiMap(MAPKEY mapKey) {
         return internal.computeIfAbsent(mapKey, mapkey -> new MapHolder<>(holderMapSupplier.get(), new HashSet<>())).getBiMap();
     }
 

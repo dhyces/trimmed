@@ -4,12 +4,12 @@ import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.dhyces.trimmed.api.TrimmedClientApi;
+import dev.dhyces.trimmed.api.maps.MapAccess;
 import dev.dhyces.trimmed.impl.client.models.template.GroovyReplacer;
 import dev.dhyces.trimmed.api.client.UncheckedClientMaps;
 import dev.dhyces.trimmed.api.client.override.provider.ItemOverrideProviderType;
 import dev.dhyces.trimmed.api.client.override.provider.SimpleItemOverrideProvider;
 import dev.dhyces.trimmed.api.maps.ImmutableEntry;
-import dev.dhyces.trimmed.api.maps.LimitedMap;
 import dev.dhyces.trimmed.api.util.CodecUtil;
 import dev.dhyces.trimmed.impl.client.maps.manager.ClientMapManager;
 import dev.dhyces.trimmed.impl.client.models.template.ModelTemplateManager;
@@ -46,7 +46,7 @@ public class AnyTrimItemOverrideProvider extends SimpleItemOverrideProvider {
     private final Set<ResourceLocation> excludedTextures;
     private ResourceLocation id;
 
-    private static final LimitedMap<ResourceLocation, String> PERMUTATIONS = ClientMapManager.getUncheckedHandler().getMap(UncheckedClientMaps.ALL_TRIM_PERMUTATIONS);
+    private static final MapAccess<ResourceLocation, String> PERMUTATIONS = ClientMapManager.getUncheckedHandler().getMap(UncheckedClientMaps.ALL_TRIM_PERMUTATIONS);
 
     public AnyTrimItemOverrideProvider(ResourceLocation templateId, ResourceLocation trimTexture, Set<ResourceLocation> excludedTextures) {
         this.templateId = templateId;

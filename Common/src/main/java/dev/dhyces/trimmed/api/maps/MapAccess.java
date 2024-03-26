@@ -1,6 +1,6 @@
 package dev.dhyces.trimmed.api.maps;
 
-import dev.dhyces.trimmed.impl.client.maps.ApiLimitedMapImpl;
+import dev.dhyces.trimmed.impl.client.maps.ApiMapAccessImpl;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
@@ -13,7 +13,7 @@ import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 @ApiStatus.Experimental
-public interface LimitedMap<K, V> extends Iterable<ImmutableEntry<K, V>>, MapObserver<K, V> {
+public interface MapAccess<K, V> extends Iterable<ImmutableEntry<K, V>>, MapObserver<K, V> {
 
     V get(Object key);
     V getOrDefault(Object key, V defaultValue);
@@ -26,16 +26,16 @@ public interface LimitedMap<K, V> extends Iterable<ImmutableEntry<K, V>>, MapObs
 
     boolean isRequired(K key);
 
-    static <K, V> LimitedMap<K, V> adapter(OperableSupplier<Map<K, V>> backing, Predicate<K> requiredPredicate) {
-        return new ApiLimitedMapImpl<>(backing, requiredPredicate);
+    static <K, V> MapAccess<K, V> adapter(OperableSupplier<Map<K, V>> backing, Predicate<K> requiredPredicate) {
+        return new ApiMapAccessImpl<>(backing, requiredPredicate);
     }
 
     @Deprecated(forRemoval = true, since = "2.1.0")
-    static <K, O, V> LimitedMap<K, V> mappingAdapter(Supplier<Map<K, O>> backing, Predicate<K> requiredPredicate, Function<O, V> mappingFunc) {
+    static <K, O, V> MapAccess<K, V> mappingAdapter(Supplier<Map<K, O>> backing, Predicate<K> requiredPredicate, Function<O, V> mappingFunc) {
         return new MappingAdapter<>(backing, requiredPredicate, mappingFunc);
     }
 
-    final class MappingAdapter<K, O, V> implements LimitedMap<K, V> {
+    final class MappingAdapter<K, O, V> implements MapAccess<K, V> {
         private final Supplier<Map<K, O>> backing;
         private final Predicate<K> requiredPredicate;
         private final Function<O, V> mappingFunction;

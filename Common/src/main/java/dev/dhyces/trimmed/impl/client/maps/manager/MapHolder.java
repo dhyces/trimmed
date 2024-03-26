@@ -1,7 +1,7 @@
 package dev.dhyces.trimmed.impl.client.maps.manager;
 
-import dev.dhyces.trimmed.api.maps.LimitedBiMap;
-import dev.dhyces.trimmed.api.maps.LimitedMap;
+import dev.dhyces.trimmed.api.maps.BiMapAccess;
+import dev.dhyces.trimmed.api.maps.MapAccess;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
@@ -13,8 +13,8 @@ import java.util.Set;
 public class MapHolder<K, V> {
     private Map<K, V> backing;
     private Set<K> optionalKeys;
-    private SoftReference<LimitedBiMap<K, V>> bimapRef;
-    private SoftReference<LimitedMap<K, V>> mapRef;
+    private SoftReference<BiMapAccess<K, V>> bimapRef;
+    private SoftReference<MapAccess<K, V>> mapRef;
 
     public MapHolder(Map<K, V> backing, Set<K> optionalKeys) {
         this.backing = backing;
@@ -52,16 +52,16 @@ public class MapHolder<K, V> {
         return backing;
     }
 
-    public LimitedMap<K, V> get() {
+    public MapAccess<K, V> get() {
         if (mapRef == null || mapRef.get() == null) {
-            mapRef = new SoftReference<>(LimitedMap.adapter(this::getBacking, this::isRequired));
+            mapRef = new SoftReference<>(MapAccess.adapter(this::getBacking, this::isRequired));
         }
         return mapRef.get();
     }
 
-    public LimitedBiMap<K, V> getBiMap() {
+    public BiMapAccess<K, V> getBiMap() {
         if (bimapRef == null || bimapRef.get() == null) {
-            bimapRef = new SoftReference<>(LimitedBiMap.biMapAdapter(backing, this::isRequired));
+            bimapRef = new SoftReference<>(BiMapAccess.biMapAdapter(backing, this::isRequired));
         }
         return bimapRef.get();
     }

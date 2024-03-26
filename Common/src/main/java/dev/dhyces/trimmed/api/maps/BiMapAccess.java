@@ -12,30 +12,30 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
-public interface LimitedBiMap<K, V> extends LimitedMap<K, V> {
-    LimitedBiMap<V, K> inverse();
+public interface BiMapAccess<K, V> extends MapAccess<K, V> {
+    BiMapAccess<V, K> inverse();
 
-    static <K, V> LimitedBiMap<K, V> biMapAdapter(Map<K, V> map, Predicate<K> requiredPredicate) {
-        return new BiMapAdapter<>(map, requiredPredicate);
+    static <K, V> BiMapAccess<K, V> biMapAdapter(Map<K, V> map, Predicate<K> requiredPredicate) {
+        return new BiMapAccessAdapter<>(map, requiredPredicate);
     }
 
-    final class BiMapAdapter<K, V> implements LimitedBiMap<K, V> {
+    final class BiMapAccessAdapter<K, V> implements BiMapAccess<K, V> {
 
         private BiMap<K, V> backing;
         private final Predicate<K> requiredPredicate;
-        private LimitedBiMap<V, K> inverse;
+        private BiMapAccess<V, K> inverse;
 
-        BiMapAdapter(Map<K, V> backed, Predicate<K> requiredPredicate) {
+        BiMapAccessAdapter(Map<K, V> backed, Predicate<K> requiredPredicate) {
             this(HashBiMap.create(backed), requiredPredicate);
         }
 
-        BiMapAdapter(BiMap<K, V> backing, Predicate<K> requiredPredicate) {
+        BiMapAccessAdapter(BiMap<K, V> backing, Predicate<K> requiredPredicate) {
             this.backing = backing;
             this.requiredPredicate = requiredPredicate;
         }
 
         @Override
-        public LimitedBiMap<V, K> inverse() {
+        public BiMapAccess<V, K> inverse() {
             if (inverse == null) {
                 inverse = new Inverse();
             }
@@ -96,10 +96,10 @@ public interface LimitedBiMap<K, V> extends LimitedMap<K, V> {
             backing = HashBiMap.create(map);
         }
 
-        final class Inverse implements LimitedBiMap<V, K> {
+        final class Inverse implements BiMapAccess<V, K> {
 
-            private BiMapAdapter<K, V> forward() {
-                return BiMapAdapter.this;
+            private BiMapAccessAdapter<K, V> forward() {
+                return BiMapAccessAdapter.this;
             }
 
             private BiMap<V, K> adaptedInverse() {
@@ -107,7 +107,7 @@ public interface LimitedBiMap<K, V> extends LimitedMap<K, V> {
             }
 
             @Override
-            public LimitedBiMap<K, V> inverse() {
+            public BiMapAccess<K, V> inverse() {
                 return forward();
             }
 

@@ -1,7 +1,7 @@
 package dev.dhyces.trimmed.impl.client.maps;
 
 import dev.dhyces.trimmed.api.maps.ImmutableEntry;
-import dev.dhyces.trimmed.api.maps.LimitedMap;
+import dev.dhyces.trimmed.api.maps.MapAccess;
 import dev.dhyces.trimmed.api.maps.OperableSupplier;
 import org.jetbrains.annotations.NotNull;
 
@@ -13,11 +13,11 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
-public class ApiLimitedMapImpl<K, V> implements LimitedMap<K, V> {
+public class ApiMapAccessImpl<K, V> implements MapAccess<K, V> {
     private final OperableSupplier<Map<K, V>> backing;
     private final Predicate<K> requiredPredicate;
 
-    public ApiLimitedMapImpl(OperableSupplier<Map<K, V>> underlying, Predicate<K> requiredPredicate) {
+    public ApiMapAccessImpl(OperableSupplier<Map<K, V>> underlying, Predicate<K> requiredPredicate) {
         this.backing = underlying;
         this.requiredPredicate = requiredPredicate;
     }
