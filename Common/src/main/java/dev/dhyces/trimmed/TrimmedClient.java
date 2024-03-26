@@ -32,7 +32,6 @@ public class TrimmedClient {
 
     public static void registerClientReloadListener(BiConsumer<String, PreparableReloadListener> eventConsumer) {
         eventConsumer.accept("item_model_overrides", new ItemOverrideReloadListener());
-        eventConsumer.accept("model_templates", ModelTemplateManager.getInstance());
     }
 
     public static void injectListenersAtBeginning() {

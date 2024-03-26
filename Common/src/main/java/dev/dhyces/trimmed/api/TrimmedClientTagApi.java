@@ -13,7 +13,9 @@ import java.util.Optional;
 import java.util.Set;
 
 public interface TrimmedClientTagApi {
-    TrimmedClientTagApi INSTANCE = new TrimmedClientTagApiImpl();
+    static TrimmedClientTagApi getInstance() {
+        return TrimmedClientTagApiImpl.INSTANCE;
+    }
 
     /**
      * Convenience method to test unchecked tags

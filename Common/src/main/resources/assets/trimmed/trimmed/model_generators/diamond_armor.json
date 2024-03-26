@@ -1,0 +1,11 @@
+{
+	"type": "trimmed:trim_generator",
+	"template": "trimmed:item/two_layer_trim",
+	"textures": {
+		"minecraft:item/diamond_helmet": "minecraft:trims/items/helmet_trim",
+		"minecraft:item/diamond_chestplate": "minecraft:trims/items/chestplate_trim",
+		"minecraft:item/diamond_leggings": "minecraft:trims/items/leggings_trim",
+		"minecraft:item/diamond_boots": "minecraft:trims/items/boots_trim"
+	},
+	"overridden_textures": "trimmed:texture_overrides/diamond_overrides"
+}

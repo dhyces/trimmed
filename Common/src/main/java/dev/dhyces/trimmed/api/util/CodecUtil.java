@@ -1,7 +1,6 @@
 package dev.dhyces.trimmed.api.util;
 
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.DataResult;
+import com.mojang.serialization.*;
 import dev.dhyces.trimmed.Trimmed;
 import dev.dhyces.trimmed.api.codec.SetCodec;
 import net.minecraft.ResourceLocationException;

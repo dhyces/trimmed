@@ -1,0 +1,11 @@
+{
+	"type": "trimmed:trim_generator",
+	"template": "trimmed:item/two_layer_trim",
+	"textures": {
+		"minecraft:item/chainmail_helmet": "minecraft:trims/items/helmet_trim",
+		"minecraft:item/chainmail_chestplate": "minecraft:trims/items/chestplate_trim",
+		"minecraft:item/chainmail_leggings": "minecraft:trims/items/leggings_trim",
+		"minecraft:item/chainmail_boots": "minecraft:trims/items/boots_trim"
+	},
+	"overridden_textures": "trimmed:texture_overrides/chainmail_overrides"
+}

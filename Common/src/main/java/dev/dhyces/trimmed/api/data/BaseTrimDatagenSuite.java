@@ -145,7 +145,7 @@ public abstract class BaseTrimDatagenSuite {
         return this;
     }
 
-    private SmithingTrimRecipeBuilder makeTrimRecipe(ItemLike templateItem) {
+    protected SmithingTrimRecipeBuilder makeTrimRecipe(ItemLike templateItem) {
         return SmithingTrimRecipeBuilder.smithingTrim(
                         Ingredient.of(templateItem),
                         Ingredient.of(ItemTags.TRIMMABLE_ARMOR),

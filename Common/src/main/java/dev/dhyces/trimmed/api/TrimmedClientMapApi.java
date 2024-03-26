@@ -3,16 +3,15 @@ package dev.dhyces.trimmed.api;
 import dev.dhyces.trimmed.api.maps.MapAccess;
 import dev.dhyces.trimmed.impl.TrimmedClientMapApiImpl;
 import dev.dhyces.trimmed.api.maps.OptionalMapEntry;
+import com.mojang.serialization.Codec;
 import dev.dhyces.trimmed.impl.client.maps.ClientMapKey;
-import dev.dhyces.trimmed.impl.client.maps.ClientRegistryMapKey;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.ApiStatus;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.stream.Stream;
 
 public interface TrimmedClientMapApi {
-    TrimmedClientMapApi INSTANCE = new TrimmedClientMapApiImpl();
+    static TrimmedClientMapApi getInstance() {
+        return TrimmedClientMapApiImpl.INSTANCE;
+    }
 
     @ApiStatus.Experimental
     MapAccess<ResourceLocation, String> map(ClientMapKey clientMapKey);
@@ -28,4 +27,5 @@ public interface TrimmedClientMapApi {
 
     @Nullable
     <K> String getRegistryClientValue(ClientRegistryMapKey<K> clientRegistryMapKey, K key);
+    <T> ClientMapKeyType<T> registerKeyLoader(ResourceLocation key, Codec<T> keyCodec);
 }

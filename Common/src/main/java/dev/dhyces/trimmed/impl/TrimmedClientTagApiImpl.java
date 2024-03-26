@@ -12,6 +12,8 @@ import java.util.Optional;
 import java.util.Set;
 
 public final class TrimmedClientTagApiImpl implements TrimmedClientTagApi {
+    public static final TrimmedClientTagApi INSTANCE = new TrimmedClientTagApiImpl();
+
     @Override
     public boolean uncheckedTagContains(ClientTagKey tagKey, ResourceLocation value) {
         return OptionalId.checkEither(value, optionalTagElement -> ClientTagManager.getUncheckedHandler().doesTagContain(tagKey, optionalTagElement));

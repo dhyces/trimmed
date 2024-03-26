@@ -1,6 +1,6 @@
 package dev.dhyces.trimmed.api.maps;
 
-import dev.dhyces.trimmed.impl.client.maps.ApiMapAccessImpl;
+import dev.dhyces.trimmed.impl.client.maps.MapAccessImpl;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
@@ -27,7 +27,7 @@ public interface MapAccess<K, V> extends Iterable<ImmutableEntry<K, V>>, MapObse
     boolean isRequired(K key);
 
     static <K, V> MapAccess<K, V> adapter(OperableSupplier<Map<K, V>> backing, Predicate<K> requiredPredicate) {
-        return new ApiMapAccessImpl<>(backing, requiredPredicate);
+        return new MapAccessImpl<>(backing, requiredPredicate);
     }
 
     @Deprecated(forRemoval = true, since = "2.1.0")

@@ -1,16 +1,18 @@
 package dev.dhyces.trimmed.impl.client.models.template;
 
 import com.google.common.collect.HashMultimap;
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Multimap;
-import dev.dhyces.trimmed.Trimmed;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
+import dev.dhyces.trimmed.impl.client.models.source.ModelSource;
 import net.minecraft.client.renderer.block.model.BlockModel;
 import net.minecraft.resources.FileToIdConverter;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.IoSupplier;
-import net.minecraft.server.packs.resources.PreparableReloadListener;
+import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
-import net.minecraft.util.Unit;
-import net.minecraft.util.profiling.ProfilerFiller;
+import net.minecraft.util.GsonHelper;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -21,27 +23,16 @@ import java.util.concurrent.Executor;
 import java.util.function.BiConsumer;
 import java.util.function.Supplier;
 
-public final class ModelTemplateManager implements PreparableReloadListener {
-    private static ModelTemplateManager INSTANCE;
-
+public final class ModelTemplateManager {
     private static Map<ResourceLocation, IoSupplier<BufferedReader>> rawTemplates;
     private static Multimap<ResourceLocation, Template> templates;
 
-    private static final FileToIdConverter PRE_PROCESSOR_CONVERTER = FileToIdConverter.json("trimmed/pre_processors");
+    private static final FileToIdConverter TEMPLATE_CONVERTER = new FileToIdConverter("trimmed/model_templates", ".json");
 
-//    public static final Codec<PreProcessor> PRE_PROCESSOR_CODEC = CodecUtil.TRIMMED_IDENTIFIER.dispatch(PRE_PROCESSORS.inverse()::get, PRE_PROCESSORS::get);
+    private ModelTemplateManager() {}
 
     public static void init() {
     }
-
-    public static ModelTemplateManager getInstance() {
-        if (INSTANCE == null) {
-            INSTANCE = new ModelTemplateManager();
-        }
-        return INSTANCE;
-    }
-
-    private ModelTemplateManager() {}
 
     public static void addTemplateResource(ResourceLocation templatePath, IoSupplier<BufferedReader> resource) {
         if (rawTemplates == null) {
@@ -62,7 +53,7 @@ public final class ModelTemplateManager implements PreparableReloadListener {
             return;
         }
         for (Map.Entry<ResourceLocation, Template> entry : templates.entries()) {
-            IoSupplier<BufferedReader> readerSupplier = rawTemplates.get(entry.getKey().withPrefix("models/").withPath(s -> s + ".trimmed_template.json"));
+            IoSupplier<BufferedReader> readerSupplier = rawTemplates.get(TEMPLATE_CONVERTER.idToFile(entry.getKey()));
             if (readerSupplier == null) {
                 throw new IllegalStateException("No template file found for " + entry.getKey());
             }
@@ -75,16 +66,35 @@ public final class ModelTemplateManager implements PreparableReloadListener {
         rawTemplates.clear();
     }
 
-    @Override
-    public CompletableFuture<Void> reload(PreparationBarrier preparationBarrier, ResourceManager resourceManager, ProfilerFiller preparationsProfiler, ProfilerFiller reloadProfiler, Executor backgroundExecutor, Executor gameExecutor) {
-        return CompletableFuture.completedFuture(Unit.INSTANCE).thenCompose(preparationBarrier::wait).thenAccept(unit -> Trimmed.logInDev("Trimmed templates are prepared!"));
-//        return load(resourceManager).thenCompose(preparationBarrier::wait).thenAccept(unit -> Trimmed.logInDev("Template pre-processors are prepared!"));
+    public static CompletableFuture<Map<ResourceLocation, ModelSource>> generatorPreparer(ResourceManager resourceManager, Executor backgroundExecutor) {
+        return CompletableFuture.supplyAsync(() -> {
+            ImmutableMap.Builder<ResourceLocation, Template> templates = ImmutableMap.builder();
+            for (Map.Entry<ResourceLocation, Resource> entry : TEMPLATE_CONVERTER.listMatchingResources(resourceManager).entrySet()) {
+                ResourceLocation id = TEMPLATE_CONVERTER.fileToId(entry.getKey());
+                try (BufferedReader reader = entry.getValue().openAsReader()) {
+                    JsonObject jsonObject = GsonHelper.parse(reader);
+                    templates.put(id, new GroovyTemplate(jsonObject.getAsString()));
+                } catch (JsonParseException | IOException e) {
+                    throw new RuntimeException("Failed to read %s from %s: ".formatted(entry.getKey(), entry.getValue().source().packId()), e);
+                }
+            }
+            return templates.build();
+        }, backgroundExecutor);
     }
 
-//    private CompletableFuture<Unit> load(ResourceManager manager) {
-//        for (Map.Entry<ResourceLocation, Resource> entry : PRE_PROCESSOR_CONVERTER.listMatchingResources(manager).entrySet()) {
-//
-//        }
-//        return CompletableFuture.completedFuture(Unit.INSTANCE);
-//    }
+    public static CompletableFuture<Map<ResourceLocation, Template>> templatePreparer(ResourceManager resourceManager, Executor backgroundExecutor) {
+        return CompletableFuture.supplyAsync(() -> {
+            ImmutableMap.Builder<ResourceLocation, Template> templates = ImmutableMap.builder();
+            for (Map.Entry<ResourceLocation, Resource> entry : TEMPLATE_CONVERTER.listMatchingResources(resourceManager).entrySet()) {
+                ResourceLocation id = TEMPLATE_CONVERTER.fileToId(entry.getKey());
+                try (BufferedReader reader = entry.getValue().openAsReader()) {
+                    JsonObject jsonObject = GsonHelper.parse(reader);
+                    templates.put(id, new GroovyTemplate(jsonObject.getAsString()));
+                } catch (JsonParseException | IOException e) {
+                    throw new RuntimeException("Failed to read %s from %s: ".formatted(entry.getKey(), entry.getValue().source().packId()), e);
+                }
+            }
+            return templates.build();
+        }, backgroundExecutor);
+    }
 }

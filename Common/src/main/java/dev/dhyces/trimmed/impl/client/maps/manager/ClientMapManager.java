@@ -28,11 +28,13 @@ import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 
+// Maps have types, which determine key and value. Then there can be many of those maps which can be accessed via key.
+// Getting a map from a key before maps have been loaded should return the MapAccess which is then later filled when
+// data is loaded.
 public class ClientMapManager implements PreparableReloadListener {
+    private static final
     private static final UncheckedMapHandler UNCHECKED_HANDLER = new UncheckedMapHandler();
     private static final Map<ResourceKey<? extends Registry<?>>, RegistryMapHandler<?>> REGISTRY_HANDLERS = new HashMap<>();
-
-    private static final FileToIdConverter FILE_TO_ID_CONVERTER = FileToIdConverter.json("maps");
 
     public static UncheckedMapHandler getUncheckedHandler() {
 //        if (!UNCHECKED_HANDLERS.hasLoaded()) {
@@ -60,7 +62,7 @@ public class ClientMapManager implements PreparableReloadListener {
         final Collection<PathInfo> foldersToSearch = PathInfo.gatherAllInfos(ClientUtil.getRegistryAccess());
 
         for (PathInfo pathInfo : foldersToSearch) {
-            FileToIdConverter converter = FileToIdConverter.json("maps/" + pathInfo.getPath());
+            FileToIdConverter converter = FileToIdConverter.json("trimmed/maps/" + pathInfo.getPath());
             Map<ResourceLocation, MapFile> unresolved = readResources(converter, resourceManager);
 
             if (!(pathInfo instanceof RegistryPathInfo registryPathInfo)) {

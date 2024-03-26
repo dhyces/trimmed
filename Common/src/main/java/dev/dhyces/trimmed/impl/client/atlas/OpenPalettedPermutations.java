@@ -53,7 +53,7 @@ public class OpenPalettedPermutations implements SpriteSource {
         );
         Map<ResourceLocation, OptionalSupplier> replacePixelsMap = new HashMap<>();
 
-        TrimmedClientMapApi.INSTANCE.mapStream(permutations).forEach(entry -> {
+        TrimmedClientMapApi.getInstance().mapStream(permutations).forEach(entry -> {
             replacePixelsMap.put(new ResourceLocation(entry.key().getNamespace(), entry.value()),
                     new OptionalSupplier(entry.isRequired(), Suppliers.memoize(() ->
                             PalettedPermutations.createPaletteMapping(rawPaletteKeyImage.get(), PalettedPermutations.loadPaletteEntryFromImage(pResourceManager, entry.key()))
@@ -61,7 +61,7 @@ public class OpenPalettedPermutations implements SpriteSource {
             );
         });
 
-        TrimmedClientTagApi.INSTANCE.getSafeUncheckedTag(textures).ifPresentOrElse(optionalIds -> {
+        TrimmedClientTagApi.getInstance().getSafeUncheckedTag(textures).ifPresentOrElse(optionalIds -> {
             optionalIds.forEach(optionalTagElement -> {
                 Optional<Resource> imageOptional = pResourceManager.getResource(TEXTURE_ID_CONVERTER.idToFile(optionalTagElement.elementId()));
                 if (imageOptional.isEmpty() && optionalTagElement.isRequired()) {
@@ -87,6 +87,7 @@ public class OpenPalettedPermutations implements SpriteSource {
 
     public record OptionalSupplier(boolean isRequired, Supplier<IntUnaryOperator> mapper) {}
 
+    // TODO: come back to this with the new sprite loader thing, might be able to leverage that
     public record OpenPalettedSpriteSupplier(LazyLoadedImage lazyLoadedImage, OptionalSupplier optionalSupplier, ResourceLocation permutedId) implements SpriteSupplier {
 
         @Override

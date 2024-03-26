@@ -1,6 +1,6 @@
 package dev.dhyces.trimmed.api.data;
 
-import dev.dhyces.trimmed.api.client.UncheckedClientMaps;
+import dev.dhyces.trimmed.api.client.ClientMaps;
 import dev.dhyces.trimmed.api.client.UncheckedClientTags;
 import dev.dhyces.trimmed.api.data.maps.ClientMapDataProvider;
 import dev.dhyces.trimmed.api.data.tags.ClientTagDataProvider;
@@ -93,10 +93,10 @@ public class TrimDatagenSuite extends BaseTrimDatagenSuite {
             @Override
             protected void addMaps() {
                 if (!materialTexturePermutations.isEmpty()) {
-                    map(UncheckedClientMaps.CUSTOM_TRIM_PERMUTATIONS).putAll(materialTexturePermutations);
+                    map(ClientMaps.CUSTOM_TRIM_PERMUTATIONS).putAll(materialTexturePermutations);
                 }
                 armorMaterialOverrides.forEach((trimMaterialResourceKey, armorMaterialOverride) -> {
-                    map(UncheckedClientMaps.armorMaterialOverride(trimMaterialResourceKey))
+                    map(ClientMaps.armorMaterialOverride(trimMaterialResourceKey))
                             .put(armorMaterialOverride.armorMaterial(), armorMaterialOverride.overrideSuffix());
                 });
             }

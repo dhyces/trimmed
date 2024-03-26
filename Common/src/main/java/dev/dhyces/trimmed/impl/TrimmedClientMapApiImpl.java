@@ -11,12 +11,13 @@ import net.minecraft.resources.ResourceLocation;
 import java.util.stream.Stream;
 
 public final class TrimmedClientMapApiImpl implements TrimmedClientMapApi {
+    public static final TrimmedClientMapApi INSTANCE = new TrimmedClientMapApiImpl();
+
     @Override
     public MapAccess<ResourceLocation, String> map(ClientMapKey clientMapKey) {
         return ClientMapManager.getUncheckedHandler().getMap(clientMapKey);
     }
 
-    @Override
     public Stream<OptionalMapEntry<ResourceLocation, String>> mapStream(ClientMapKey clientMapKey) {
         return ClientMapManager.getUncheckedHandler().getHolder(clientMapKey)
                 .map(holder ->
@@ -30,12 +31,10 @@ public final class TrimmedClientMapApiImpl implements TrimmedClientMapApi {
         return ClientMapManager.getRegistryHandler(clientRegistryMapKey.getRegistryKey()).getMap(clientRegistryMapKey);
     }
 
-    @Override
     public String getUncheckedClientValue(ClientMapKey clientMapKey, ResourceLocation key) {
         return ClientMapManager.getUncheckedHandler().getValue(clientMapKey, key);
     }
 
-    @Override
     public <K> String getRegistryClientValue(ClientRegistryMapKey<K> clientRegistryMapKey, K key) {
         return ClientMapManager.getRegistryHandler(clientRegistryMapKey.getRegistryKey()).getValue(clientRegistryMapKey, key);
     }

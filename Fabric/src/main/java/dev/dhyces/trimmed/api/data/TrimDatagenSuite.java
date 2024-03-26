@@ -4,7 +4,7 @@ import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import com.mojang.datafixers.util.Pair;
 import dev.dhyces.trimmed.api.data.maps.ClientMapDataProvider;
-import dev.dhyces.trimmed.api.client.UncheckedClientMaps;
+import dev.dhyces.trimmed.api.client.ClientMapTypes;
 import dev.dhyces.trimmed.api.client.UncheckedClientTags;
 import dev.dhyces.trimmed.api.data.tags.ClientTagDataProvider;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
@@ -101,10 +101,10 @@ public class TrimDatagenSuite extends BaseTrimDatagenSuite {
                 @Override
                 protected void addMaps() {
                     if (!materialTexturePermutations.isEmpty()) {
-                        map(UncheckedClientMaps.CUSTOM_TRIM_PERMUTATIONS).putAll(materialTexturePermutations);
+                        map(ClientMapTypes.CUSTOM_TRIM_PERMUTATIONS).putAll(materialTexturePermutations);
                     }
                     armorMaterialOverrides.forEach((trimMaterialResourceKey, armorMaterialOverride) -> {
-                        map(UncheckedClientMaps.armorMaterialOverride(trimMaterialResourceKey))
+                        map(ClientMapTypes.armorMaterialOverride(trimMaterialResourceKey))
                                 .put(armorMaterialOverride.armorMaterial(), armorMaterialOverride.overrideSuffix());
                     });
                 }

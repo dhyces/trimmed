@@ -2,7 +2,7 @@ package dev.dhyces.trimmed.impl;
 
 import dev.dhyces.trimmed.api.TrimmedClientApi;
 import dev.dhyces.trimmed.api.TrimmedClientMapApi;
-import dev.dhyces.trimmed.api.client.UncheckedClientMaps;
+import dev.dhyces.trimmed.api.client.ClientMapTypes;
 import dev.dhyces.trimmed.api.client.override.provider.ItemOverrideProvider;
 import dev.dhyces.trimmed.api.client.override.provider.ItemOverrideProviderType;
 import dev.dhyces.trimmed.impl.client.maps.ClientMapKey;
@@ -35,8 +35,8 @@ public final class TrimmedClientApiImpl implements TrimmedClientApi {
                         ArmorMaterial armorMaterial = armorItem.getMaterial();
 
                         // Support overriding vanilla armor material overrides
-                        ClientMapKey mapKey = UncheckedClientMaps.armorMaterialOverride(holder.unwrapKey().get());
-                        String value = TrimmedClientMapApi.INSTANCE.getUncheckedClientValue(mapKey, new ResourceLocation(armorMaterial.getName()));
+                        ClientMapKey mapKey = ClientMapTypes.armorMaterialOverride(holder.unwrapKey().get());
+                        String value = TrimmedClientMapApi.getInstance().getUncheckedClientValue(mapKey, new ResourceLocation(armorMaterial.getName()));
 
                         if (value != null) {
                             return value;

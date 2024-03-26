@@ -48,24 +48,32 @@ public abstract class ItemOverrideDataProvider implements DataProvider {
         addItemOverrides(item, new NbtItemOverrideProvider(nbt, modelId));
     }
 
+    @Deprecated(forRemoval = true, since = "2.1.5")
     protected void addTrimOverride(ItemLike item, ResourceKey<TrimMaterial> materialRegistryKey) {
         addTrimOverride(item, materialRegistryKey.location());
     }
 
+    @Deprecated(forRemoval = true, since = "2.1.5")
     protected void addTrimOverride(ItemLike item, ResourceLocation materialId) {
         ResourceLocation itemId = BuiltInRegistries.ITEM.getKey(item.asItem());
         ModelResourceLocation itemModelId = new ModelResourceLocation(modid, "%s_%s_trim".formatted(itemId.getPath(), materialId.getPath()), "inventory");
         addTrimOverride(item, materialId, itemModelId);
     }
 
+    @Deprecated(forRemoval = true, since = "2.1.5")
     protected void addTrimOverride(ItemLike item, ResourceLocation materialId, ResourceLocation itemModelId) {
         addTrimOverride(item, materialId, new ModelResourceLocation(itemModelId, "inventory"));
     }
 
+    @Deprecated(forRemoval = true, since = "2.1.5")
     protected void addTrimOverride(ItemLike item, ResourceKey<TrimMaterial> materialRegistryKey, ModelResourceLocation modelId) {
         addTrimOverride(item, materialRegistryKey.location(), modelId);
     }
 
+    /**
+     * Use addAnyTrimOverride
+     */
+    @Deprecated(forRemoval = true, since = "2.1.5")
     protected void addTrimOverride(ItemLike item, ResourceLocation materialId, ModelResourceLocation modelId) {
         addItemOverrides(item, new TrimItemOverrideProvider(materialId, modelId));
     }

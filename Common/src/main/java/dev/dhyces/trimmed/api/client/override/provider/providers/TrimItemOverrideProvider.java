@@ -18,6 +18,12 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Optional;
 import java.util.stream.Stream;
 
+/**
+ * @deprecated Requires the material be specified, which does not solve compatibitility if every mod needs to add to
+ * every other mod and as such will be removed in 1.21 in favor of the any_trim item override provider, which does
+ * allow for fully compatible obtainment of models.
+ */
+@Deprecated(forRemoval = true, since = "2.1.5")
 public final class TrimItemOverrideProvider extends SimpleItemOverrideProvider {
     public static final Codec<TrimItemOverrideProvider> CODEC = RecordCodecBuilder.create(instance ->
             instance.group(

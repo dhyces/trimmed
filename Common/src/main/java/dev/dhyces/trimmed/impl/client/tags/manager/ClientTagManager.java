@@ -76,7 +76,7 @@ public class ClientTagManager implements PreparableReloadListener {
         final Collection<PathInfo> foldersToSearch = PathInfo.gatherAllInfos(ClientUtil.getRegistryAccess());
 
         for (PathInfo pathInfo : foldersToSearch) {
-            FileToIdConverter converter = FileToIdConverter.json("tags/" + pathInfo.getPath());
+            FileToIdConverter converter = FileToIdConverter.json("trimmed/tags/" + pathInfo.getPath());
             Map<ResourceLocation, Set<TagEntry>> unresolved = readMap(converter, resourceManager);
 
             if (!(pathInfo instanceof RegistryPathInfo registryPathInfo)) {

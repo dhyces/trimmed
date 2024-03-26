@@ -3,8 +3,8 @@ package dhyces.testmod;
 import dhyces.testmod.client.providers.MyProviderTypes;
 import dhyces.testmod.data.TestDatagen;
 import dhyces.testmod.registry.CustomRegistration;
-import dev.dhyces.trimmed.api.maps.LimitedBiMap;
-import dev.dhyces.trimmed.api.maps.LimitedMap;
+import dev.dhyces.trimmed.api.maps.BiMapAccess;
+import dev.dhyces.trimmed.api.maps.MapAccess;
 import dev.dhyces.trimmed.impl.client.maps.manager.ClientMapManager;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
@@ -29,9 +29,9 @@ public class TrimmedTest {
         return new ResourceLocation(MODID, id);
     }
 
-    public static final LimitedMap<DamageType, String> TEST_DELEGATE = ClientMapManager.getRegistryHandler(Registries.DAMAGE_TYPE).getMap(TestClientMaps.DATAGEN_TEST_DAMAGE_TYPE_MAP);
+    public static final MapAccess<DamageType, String> TEST_DELEGATE = ClientMapManager.getRegistryHandler(Registries.DAMAGE_TYPE).getMap(TestClientMaps.DATAGEN_TEST_DAMAGE_TYPE_MAP);
 
-    public static final LimitedBiMap<EntityType<?>, String> TEST_DELEGATE_2 = ClientMapManager.getRegistryHandler(Registries.ENTITY_TYPE).getBiMap(TestClientMaps.DATAGEN_ENTITY_TRANSFORM);
+    public static final BiMapAccess<EntityType<?>, String> TEST_DELEGATE_2 = ClientMapManager.getRegistryHandler(Registries.ENTITY_TYPE).getBiMap(TestClientMaps.DATAGEN_ENTITY_TRANSFORM);
 
     public TrimmedTest() {
         MyProviderTypes.init();
@@ -49,6 +49,6 @@ public class TrimmedTest {
             TestDatagen.init(modBus);
         }
 
-        LimitedMap<ResourceLocation, String> test = ClientMapManager.getUncheckedHandler().getMap(TestClientMaps.DATAGEN_TEST_MAP_2);
+        MapAccess<ResourceLocation, String> test = ClientMapManager.getUncheckedHandler().getMap(TestClientMaps.DATAGEN_TEST_MAP_2);
     }
 }

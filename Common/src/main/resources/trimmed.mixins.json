@@ -8,10 +8,10 @@
     "TagEntryAccessor"
   ],
   "client": [
-    "client.ReloadableResourceManagerImplAccessor",
     "client.ArmorTrimMixin",
     "client.AtlasSourceManagerAccessor",
-    "client.ModelOverrideListMixin"
+    "client.ModelOverrideListMixin",
+    "client.ReloadableResourceManagerImplAccessor"
   ],
   "injectors": {
     "defaultRequire": 1

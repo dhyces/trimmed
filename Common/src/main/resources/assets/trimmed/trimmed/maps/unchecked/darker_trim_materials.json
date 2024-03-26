@@ -1,0 +1,8 @@
+{
+  "pairs": {
+    "minecraft:trims/color_palettes/iron_darker": "iron_darker",
+    "minecraft:trims/color_palettes/gold_darker": "gold_darker",
+    "minecraft:trims/color_palettes/diamond_darker": "diamond_darker",
+    "minecraft:trims/color_palettes/netherite_darker": "netherite_darker"
+  }
+}
