@@ -1,12 +1,12 @@
 [versions]
-minecraft_release = "24w12a"
+minecraft_release = "1.20.5-pre4"
 minecraft_range = "[1.20.4,1.21)"
 publish_range = "1.20.4"
 
-neoforge = "20.5.0-alpha.24w12a.20240325.204623"
+neoforge = "20.5.0-alpha.1.20.5-pre4.20240418.073611"
 
-fabric_loader = "0.15.7"
-fabric_api = "0.96.12+1.20.5"
+fabric_loader = "0.15.10"
+fabric_api = "0.97.3+1.20.5"
 
 forge = "1.20.4-49.0.11"
 
@@ -23,7 +23,7 @@ mixinextras = "0.3.5"
 jetbrains_annotations = "24.0.0"
 
 mdg_release = "2.0.0-beta.17"
-archloom = "1.5.389"
+archloom = "1.6.394"
 
 forgegradle = "[6.0.16,6.2)"
 librarian = "1.+"
