@@ -3,7 +3,8 @@ minecraft_release = "1.20.5-pre4"
 minecraft_range = "[1.20.4,1.21)"
 publish_range = "1.20.4"
 
-neoforge = "20.5.0-alpha.1.20.5-pre4.20240418.073611"
+neoforge_release = "20.5.0-alpha.1.20.5-pre4.20240418.073611"
+neoforge_range = "[20.4,21.0)"
 
 fabric_loader = "0.15.10"
 fabric_api = "0.97.3+1.20.5"
@@ -22,7 +23,7 @@ mixinextras = "0.3.5"
 
 jetbrains_annotations = "24.0.0"
 
-mdg_release = "2.0.0-beta.17"
+mdg_release = "2.0.0-beta.22"
 archloom = "1.6.394"
 
 forgegradle = "[6.0.16,6.2)"
@@ -34,7 +35,7 @@ minotaur = "2.+"
 
 [libraries]
 minecraft = { module = "com.mojang:minecraft", version.ref = "minecraft_release" }
-neoforge = { module = "net.neoforged:neoforge", version.ref = "neoforge" }
+neoforge = { module = "net.neoforged:neoforge", version.ref = "neoforge_release" }
 fabric_api = { module = "net.fabricmc.fabric-api:fabric-api", version.ref = "fabric_api" }
 fabric_loader = { module = "net.fabricmc:fabric-loader", version.ref = "fabric_loader" }
 forge = { module = "net.minecraftforge:forge", version.ref = "forge" }
