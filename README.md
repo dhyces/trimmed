@@ -1,7 +1,5 @@
 # Trimmed API
 
-Depends on: [MixinExtras 0.3.2](https://github.com/LlamaLad7/MixinExtras)
-
 ## NeoForge Only
 ```groovy
 repositories {
@@ -12,7 +10,7 @@ repositories {
 }
 
 dependencies {
-    implementation fg.deobf("maven.modrinth:trimmed:1.20.4-2.1.5+neoforge")
+    implementation("maven.modrinth:trimmed:1.20.4-2.1.5+neoforge")
 }
 ```
 
@@ -30,6 +28,7 @@ dependencies {
 }
 ```
 
+Forge version depends on: [MixinExtras 0.3.2](https://github.com/LlamaLad7/MixinExtras)
 ## Forge Only
 ```groovy
 repositories {
