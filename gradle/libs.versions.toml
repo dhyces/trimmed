@@ -15,8 +15,8 @@ forge = "1.20.4-49.0.11"
 #quilt_qsl = "6.2.1"
 #quilt_fabric = "7.2.1+0.88.1"
 
-parchment_release = "2023.12.10"
-parchment_mc = "1.20.2"
+parchment_release = "2024.04.14"
+parchment_mc = "1.20.4"
 
 mixin = "0.8.5"
 mixinextras = "0.3.5"
