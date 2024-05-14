@@ -34,7 +34,16 @@ loom {
     }
 }
 
-modsDotGroovy.multiplatform.expose()
+modsDotGroovy {
+    multiplatform {
+        gather {
+            projectProperty("mod_id")
+            projectProperty("mod_name")
+            projectProperty("mod_author")
+        }
+        expose()
+    }
+}
 
 dependencies {
     minecraft libs.minecraft

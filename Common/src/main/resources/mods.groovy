@@ -1,6 +1,6 @@
-ModsDotGroovy.make {
-    def modid = this.buildProperties["mod_id"]
-    def majorForgeVersion = (this.libs.versions.forge as String).split("-")[1].split("\\.")[0]
+MultiplatformModsDotGroovy.make {
+    def modid = buildProperties["mod_id"]
+    def majorForgeVersion = (libs.versions.forge as String).split("-")[1].split("\\.")[0]
 
     modLoader = "javafml"
     loaderVersion = "[${majorForgeVersion},)"
@@ -12,10 +12,9 @@ ModsDotGroovy.make {
 
     mod {
         modId = modid
-        displayName = this.buildProperties["mod_name"]
-        version = this.version
-        group = this.group
-        authors = [this.buildProperties["mod_author"] as String]
+        displayName = buildProperties["mod_name"]
+        authors = [buildProperties["mod_author"] as String]
+        version = environmentInfo.version
 
         displayUrl = "https://modrinth.com/mod/trimmed/"
         sourcesUrl = "https://github.com/dhyces/trimmed/"
@@ -38,39 +37,42 @@ ModsDotGroovy.make {
         }
 
         dependencies {
-            onForge {
-                minecraft = "${this.libs.versions.minecraft.range}"
-                forge = "[${majorForgeVersion},)"
-            }
-
-            onFabric {
-                minecraft = "${this.libs.versions.minecraft.range}"
-                fabricloader = ">=${this.fabricLoaderVersion}"
-                mod {
-                    modId = 'fabric-api'
-                    versionRange = ">=${(this.libs.versions.fabric.api as String).split("\\+")[0]}"
+            onNeoForge {
+                mod("neoforge") {
+                    versionRange = "${libs.versions.get("neoforge_range")}"
                 }
             }
-
+            onForge {
+                minecraft = "${libs.versions.get("minecraft_range")}"
+                forge = "[${majorForgeVersion},)"
+            }
+            onFabric {
+                minecraft = "${libs.versions.get("minecraft_range")}"
+                fabricloader = ">=${libs.versions.get("fabric_loader")}"
+                mod {
+                    modId = 'fabric-api'
+                    versionRange = ">=${(libs.versions.get("fabric_api") as String).split("\\+")[0]}"
+                }
+            }
             onQuilt {
-                minecraft = "${this.libs.versions.minecraft.range}"
+                minecraft = "${libs.versions.get("minecraft_range")}"
                 quilt_loader = ">=${this.quiltLoaderVersion}"
-                quilted_fabric_api = ">=${this.libs.versions.quilt.fabric}"
-                quilt_base = ">=${this.libs.versions.quilt.qsl}"
+                quilted_fabric_api = ">=${libs.versions.quilt.fabric}"
+                quilt_base = ">=${libs.versions.quilt.qsl}"
             }
         }
     }
 
-    onFabricAndQuilt {
-        environment = "*"
-        mixin = [
-                modid + ".mixins.json"
-        ]
+    onFabric {
+        environment = Environment.ANY
+        mixins {
+            mixin("${modid}.mixins.json")
+        }
     }
 
     onFabric {
-        mixin = [
-                modid + ".fabric.mixins.json"
-        ]
+        mixins {
+            mixin("${modid}.fabric.mixins.json")
+        }
     }
 }

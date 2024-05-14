@@ -55,8 +55,8 @@ modsDotGroovy {
 }
 
 tasks.named('gatherFabricPlatformDetails', AbstractGatherPlatformDetailsTask).configure {
-    minecraftVersion = '24w12a'
-    platformVersion = '1.15.7'
+    minecraftVersion = libs.versions.minecraft.release
+    platformVersion = libs.versions.fabric.loader
 }
 
 dependencies {

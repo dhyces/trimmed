@@ -43,6 +43,9 @@ loom {
 modsDotGroovy {
 	platform = Platform.NEOFORGE
 	inferGather.set false
+	gather {
+
+	}
 	multiplatform {
 		from ':Common'
 	}
@@ -91,7 +94,6 @@ tasks.withType(JavaCompile).configureEach {
 processResources {
 	from project(":Common").sourceSets.main.resources
 	exclude("mods.groovy", "trimmed.accesswidener")
-	rename "mods.toml", "neoforge.mods.toml" // TODO: remove when MDG supports this
 }
 
 java {
