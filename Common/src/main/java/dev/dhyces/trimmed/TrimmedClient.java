@@ -1,6 +1,10 @@
 package dev.dhyces.trimmed;
 
+import dev.dhyces.trimmed.api.client.ClientMapKeyResolvers;
+import dev.dhyces.trimmed.api.client.ClientMapKeys;
+import dev.dhyces.trimmed.api.client.ClientMapTypes;
 import dev.dhyces.trimmed.impl.client.atlas.TrimmedSpriteSourceTypes;
+import dev.dhyces.trimmed.impl.client.maps.MapKeyResolvers;
 import dev.dhyces.trimmed.impl.client.models.override.ItemOverrideReloadListener;
 import dev.dhyces.trimmed.impl.client.models.override.provider.ItemOverrideProviderRegistry;
 import dev.dhyces.trimmed.impl.client.tags.manager.ClientTagManager;
@@ -11,6 +15,7 @@ import dev.dhyces.trimmed.impl.client.models.template.ModelTemplateManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.core.RegistryAccess;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.PreparableReloadListener;
 
 import java.util.function.BiConsumer;
@@ -26,8 +31,10 @@ public class TrimmedClient {
 
     public static void init() {
         TrimmedSpriteSourceTypes.bootstrap();
-        ModelTemplateManager.init();
+//        ModelTemplateManager.init();
         ItemOverrideProviderRegistry.init();
+        MapKeyResolvers.register(Trimmed.id("trim_textures"), ClientMapKeyResolvers.TRIM_MATERIAL_TEXTURES);
+        ClientMapManager.registerBaseKey(ClientMapKeys.TRIM_MATERIALS);
     }
 
     public static void registerClientReloadListener(BiConsumer<String, PreparableReloadListener> eventConsumer) {

@@ -1,14 +1,26 @@
 MultiplatformModsDotGroovy.make {
     def modid = buildProperties["mod_id"]
-    def majorForgeVersion = (libs.versions.forge as String).split("-")[1].split("\\.")[0]
 
     modLoader = "javafml"
-    loaderVersion = "[${majorForgeVersion},)"
+    onNeoForge {
+        loaderVersion = "[3,)"
+    }
+    onForge {
+        def majorForgeVersion = (libs.versions.forge as String).split("-")[1].split("\\.")[0]
+        loaderVersion = "[${majorForgeVersion},)"
+    }
 
     license = "MIT"
     issueTrackerUrl = "https://github.com/dhyces/trimmed/issues/"
 
-    accessWidener = "trimmed.accesswidener"
+    accessTransformers {
+        onFabric {
+            accessWidener = "trimmed.accesswidener"
+        }
+        onNeoForge {
+            accessTransformer("META-INF/accesstransformer.cfg")
+        }
+    }
 
     mod {
         modId = modid
@@ -63,15 +75,17 @@ MultiplatformModsDotGroovy.make {
         }
     }
 
-    onFabric {
-        environment = Environment.ANY
+    onNeoForge {
         mixins {
             mixin("${modid}.mixins.json")
+            mixin("${modid}.neo.mixins.json")
         }
     }
 
     onFabric {
+        environment = Environment.ANY
         mixins {
+            mixin("${modid}.mixins.json")
             mixin("${modid}.fabric.mixins.json")
         }
     }

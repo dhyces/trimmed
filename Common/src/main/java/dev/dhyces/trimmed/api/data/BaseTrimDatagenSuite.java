@@ -1,7 +1,5 @@
 package dev.dhyces.trimmed.api.data;
 
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.Multimap;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.Util;
 import net.minecraft.advancements.critereon.InventoryChangeTrigger;
@@ -14,7 +12,6 @@ import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.ItemTags;
-import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.armortrim.TrimMaterial;
 import net.minecraft.world.item.armortrim.TrimPattern;
@@ -43,8 +40,7 @@ public abstract class BaseTrimDatagenSuite {
     protected List<Pair<ResourceKey<TrimMaterial>, TrimMaterial>> materials = new ArrayList<>();
 
     protected List<ResourceLocation> patternTextures = new ArrayList<>();
-    protected Map<ResourceLocation, String> materialTexturePermutations = new LinkedHashMap<>();
-    protected Multimap<ResourceKey<TrimMaterial>, ArmorMaterialOverride> armorMaterialOverrides = HashMultimap.create();
+    protected Map<ResourceLocation, ResourceLocation> materialTexturePermutations = new LinkedHashMap<>();
 
     public BaseTrimDatagenSuite(String modid, @Nullable BiConsumer<String, String> translationConsumer) {
         this.modid = modid;
@@ -203,7 +199,7 @@ public abstract class BaseTrimDatagenSuite {
         materialConfigConsumer.accept(config);
 
         String translationKey = Util.makeDescriptionId("trim_pattern", materialKey.location());
-        materials.add(Pair.of(materialKey, new TrimMaterial(config.assetName, materialItem.asItem().builtInRegistryHolder(), -1.0f, Map.of(), Component.translatable(translationKey).withStyle(config.materialStyle))));
+        materials.add(Pair.of(materialKey, new TrimMaterial(config.assetName.toString(), materialItem.asItem().builtInRegistryHolder(), -1.0f, Map.of(), Component.translatable(translationKey).withStyle(config.materialStyle))));
 
         if (mainTranslationConsumer != null) {
             String translation;
@@ -225,13 +221,6 @@ public abstract class BaseTrimDatagenSuite {
         } else {
             ResourceLocation key = materialKey.location().withPrefix("trims/color_palettes/");
             materialTexturePermutations.put(key, config.assetName);
-        }
-
-        if (!config.armorOverrides.isEmpty()) {
-            config.armorOverrides.forEach(armorMaterialOverride -> {
-                armorMaterialOverrides.put(materialKey, armorMaterialOverride);
-                materialTexturePermutations.put(armorMaterialOverride.textureLocation, armorMaterialOverride.overrideSuffix);
-            });
         }
 
         return this;
@@ -313,12 +302,11 @@ public abstract class BaseTrimDatagenSuite {
         protected String mainTranslation;
         protected Set<AltTranslation> altTranslations = new HashSet<>();
         protected ResourceLocation paletteTexture;
-        protected List<ArmorMaterialOverride> armorOverrides = new ArrayList<>();
-        protected String assetName;
+        protected ResourceLocation assetName;
 
         private MaterialConfig(ResourceKey<TrimMaterial> materialKey, Style materialStyle) {
             this.materialKey = materialKey;
-            this.assetName = materialKey.location().toString().replace(':', '-');
+            this.assetName = materialKey.location();
             this.materialStyle = materialStyle;
         }
 
@@ -349,28 +337,6 @@ public abstract class BaseTrimDatagenSuite {
         }
 
         /**
-         * Override for {@link MaterialConfig#armorOverride(ArmorMaterial, ResourceLocation, String)}, but it assumes
-         * the texture location is "{modid}:trims/color_palettes/{material}_darker".
-         * @param overrideSuffix Suffix for the override. It's encouraged to use the "modid-suffix" format.
-         */
-        public MaterialConfig armorOverride(ArmorMaterial armorMaterial, String overrideSuffix) {
-            return armorOverride(armorMaterial, materialKey.location().withPath(s -> "trims/color_palettes/" + s + "_darker"), overrideSuffix);
-        }
-
-        /**
-         * Allows users to specify texture overrides for armor materials, for example, using a darker texture when the
-         * material is applied to an armor of the same color/crafting material. Vanilla hardcodes an enum into their
-         * TrimMaterial class, which means that enum extension would be mandatory for modders and everyone would have
-         * to migrate their 'ArmorMaterial's to it. Trimmed provides an alternate system outside the material class
-         * as a resource-pack element.
-         * @param overrideSuffix Suffix for the override. It's encouraged to use the "modid-suffix" format.
-         */
-        public MaterialConfig armorOverride(ArmorMaterial armorMaterial, ResourceLocation textureLocation, String overrideSuffix) {
-            armorOverrides.add(new ArmorMaterialOverride(new ResourceLocation(armorMaterial.getName()), textureLocation, overrideSuffix));
-            return this;
-        }
-
-        /**
          * Allows modification of the style used in the material's component. This style is already colored with what
          * was passed into the {@link BaseTrimDatagenSuite#makeMaterial(ResourceKey, ItemLike, int, Consumer)} method.
          * Vanilla only applies color to their components, but modders may want to do more.
@@ -387,7 +353,7 @@ public abstract class BaseTrimDatagenSuite {
          * @param name The new asset name
          * @return This instance for chaining method calls
          */
-        public MaterialConfig assetName(String name) {
+        public MaterialConfig assetName(ResourceLocation name) {
             assetName = name;
             return this;
         }
@@ -398,6 +364,4 @@ public abstract class BaseTrimDatagenSuite {
             consumer.accept(key, translation);
         }
     }
-
-    record ArmorMaterialOverride(ResourceLocation armorMaterial, ResourceLocation textureLocation, String overrideSuffix) {}
 }

@@ -3,11 +3,15 @@ package dev.dhyces.trimmed.modhelper.services.helpers;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.DataResult;
 import com.mojang.serialization.JsonOps;
 import net.fabricmc.api.EnvType;
+import net.fabricmc.fabric.api.resource.conditions.v1.ResourceCondition;
 import net.fabricmc.fabric.api.resource.conditions.v1.ResourceConditions;
+import net.fabricmc.fabric.impl.resource.conditions.ResourceConditionsImpl;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.Util;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -15,6 +19,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.List;
 import java.util.Optional;
 
 public final class FabricPlatformHelper implements PlatformHelper {
@@ -49,10 +54,14 @@ public final class FabricPlatformHelper implements PlatformHelper {
 
     @Override
     public <T> Optional<T> decodeWithConditions(Codec<T> codec, JsonObject jsonObject) {
-        if (!ResourceConditions.objectMatchesConditions(jsonObject)) {
-            return Optional.empty();
+        if (jsonObject.has(ResourceConditions.CONDITIONS_KEY)) {
+            DataResult<List<ResourceCondition>> conditions = ResourceCondition.LIST_CODEC.parse(JsonOps.INSTANCE, jsonObject.get(ResourceConditions.CONDITIONS_KEY));
+
+            if (conditions.isSuccess() && !ResourceConditionsImpl.conditionsMet(conditions.getOrThrow(), null, true)) {
+                return Optional.empty();
+            }
         }
-        return Optional.of(Util.getOrThrow(codec.parse(JsonOps.INSTANCE, jsonObject).promotePartial(s -> {}), JsonParseException::new));
+        return Optional.of(codec.parse(JsonOps.INSTANCE, jsonObject).getOrThrow(JsonParseException::new));
     }
 
     @Override

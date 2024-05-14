@@ -6,7 +6,7 @@ import com.mojang.serialization.JsonOps;
 import dev.dhyces.trimmed.Trimmed;
 import dev.dhyces.trimmed.api.data.maps.appenders.ClientRegistryMapAppender;
 import dev.dhyces.trimmed.api.util.Utils;
-import dev.dhyces.trimmed.impl.client.maps.ClientRegistryMapKey;
+import dev.dhyces.trimmed.impl.client.maps.MapKey;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Registry;
 import net.minecraft.data.CachedOutput;
@@ -20,30 +20,18 @@ import java.nio.file.Path;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 
-public abstract class ClientRegistryMapDataProvider<T> extends BaseMapDataProvider {
-    private final ResourceKey<? extends Registry<T>> registryKey;
+public abstract class ClientRegistryMapDataProvider<K> extends BaseMapDataProvider<K> {
+    private final ResourceKey<? extends Registry<K>> registryKey;
     private final CompletableFuture<HolderLookup.Provider> lookupProviderFuture;
 
-    public ClientRegistryMapDataProvider(PackOutput packOutput, String modid, CompletableFuture<HolderLookup.Provider> lookupProviderFuture, ResourceKey<? extends Registry<T>> registryKey, ExistingFileHelper existingFileHelper) {
+    public ClientRegistryMapDataProvider(PackOutput packOutput, String modid, CompletableFuture<HolderLookup.Provider> lookupProviderFuture, ResourceKey<? extends Registry<K>> registryKey, ExistingFileHelper existingFileHelper) {
         super(packOutput, modid, new ExistingFileHelper.ResourceType(PackType.CLIENT_RESOURCES, ".json", "maps/" + Utils.prefix(registryKey)), existingFileHelper);
         this.lookupProviderFuture = lookupProviderFuture;
         this.registryKey = registryKey;
     }
 
-    public ClientRegistryMapAppender<T, String> map(ClientRegistryMapKey<T> clientRegistryMapKey) {
-        return new ClientRegistryMapAppender<>(getOrCreateBuilder(clientRegistryMapKey.getMapId()), Function.identity(), registryKey);
-    }
-
-    public <V> ClientRegistryMapAppender<T, V> mapWithMapper(ClientRegistryMapKey<T> clientRegistryMapKey, Function<V, String> mapper) {
-        return new ClientRegistryMapAppender<>(getOrCreateBuilder(clientRegistryMapKey.getMapId()), mapper, registryKey);
-    }
-
-    public ClientRegistryMapAppender.RegistryAware<T, String> registryAware(ClientRegistryMapKey<T> clientRegistryMapKey, HolderLookup.Provider lookupProvider) {
-        return new ClientRegistryMapAppender.RegistryAware<>(getOrCreateBuilder(clientRegistryMapKey.getMapId()), Function.identity(), registryKey, lookupProvider);
-    }
-
-    public <V> ClientRegistryMapAppender.RegistryAware<T, V> registryAwareWithMapper(ClientRegistryMapKey<T> clientRegistryMapKey, Function<V, String> mapper, HolderLookup.Provider lookupProvider) {
-        return new ClientRegistryMapAppender.RegistryAware<>(getOrCreateBuilder(clientRegistryMapKey.getMapId()), mapper, registryKey, lookupProvider);
+    public <V> ClientRegistryMapAppender<K, V> map(MapKey<K, V> mapKey, HolderLookup.Provider lookupProvider) {
+        return new ClientRegistryMapAppender<>(getOrCreateBuilder(mapKey), lookupProvider.lookupOrThrow(registryKey));
     }
 
     protected abstract void addMaps(HolderLookup.Provider lookupProvider);
@@ -55,21 +43,26 @@ public abstract class ClientRegistryMapDataProvider<T> extends BaseMapDataProvid
             complete();
             return provider;
         }).thenCompose(provider -> {
-            HolderLookup.RegistryLookup<T> registryLookup = provider.lookupOrThrow(registryKey);
+            HolderLookup.RegistryLookup<K> registryLookup = provider.lookupOrThrow(registryKey);
 
             return CompletableFuture.allOf(builders.entrySet().stream().map(entry -> {
-                if (exists(registryLookup, ResourceKey.create(registryKey, entry.getKey()))) {
+                if (exists(registryLookup, ResourceKey.create(registryKey, entry.getKey().getMapId()))) {
                     throw new IllegalStateException("Element %s does not exist in %s".formatted(entry.getKey(), registryKey));
                 }
+                var codec = MapFile.codec(entry.getKey().getType().getKeyResolver().getCodec(), entry.getKey().getType().getValueCodec());
 
-                DataResult<JsonElement> element = MapFile.CODEC.encodeStart(JsonOps.INSTANCE, entry.getValue().build());
-                Path path = pathProvider.json(entry.getKey());
-                return DataProvider.saveStable(pOutput, element.getOrThrow(false, Trimmed.LOGGER::error), path);
+                DataResult<JsonElement> element = codec.encodeStart(JsonOps.INSTANCE, cast(entry.getValue().build()));
+                Path path = pathProvider.json(entry.getKey().getMapId());
+                return DataProvider.saveStable(pOutput, element.getOrThrow(), path);
             }).toArray(CompletableFuture[]::new));
         });
     }
 
-    protected boolean exists(HolderLookup.RegistryLookup<T> firstLookup, ResourceKey<T> resourceKey) {
+    private static <T> T cast(Object o) {
+        return (T) o;
+    }
+
+    protected boolean exists(HolderLookup.RegistryLookup<K> firstLookup, ResourceKey<K> resourceKey) {
         return firstLookup.get(resourceKey).isPresent();
     }
 

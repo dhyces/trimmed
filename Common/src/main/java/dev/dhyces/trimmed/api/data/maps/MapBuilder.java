@@ -6,9 +6,8 @@ import net.minecraft.resources.ResourceLocation;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MapBuilder {
-
-    private final ImmutableMap.Builder<ResourceLocation, MapValue> builder;
+public class MapBuilder<K, V> {
+    private final ImmutableMap.Builder<K, MapValue<V>> builder;
     private final List<MapAppendElement> appendedMaps;
     private boolean isReplace;
 
@@ -17,36 +16,36 @@ public class MapBuilder {
         this.appendedMaps = new ArrayList<>();
     }
 
-    public MapBuilder put(ResourceLocation key, String val) {
-        builder.put(key, new MapValue(val, true));
+    public MapBuilder<K, V> put(K key, V val) {
+        builder.put(key, new MapValue<>(val, true));
         return this;
     }
 
-    public MapBuilder putOptional(ResourceLocation key, String val) {
-        builder.put(key, new MapValue(val, false));
+    public MapBuilder<K, V> putOptional(K key, V val) {
+        builder.put(key, new MapValue<>(val, false));
         return this;
     }
 
-    public MapBuilder append(ResourceLocation map) {
+    public MapBuilder<K, V> append(ResourceLocation map) {
         appendedMaps.add(new MapAppendElement(map, true));
         return this;
     }
 
-    public MapBuilder appendOptional(ResourceLocation map) {
+    public MapBuilder<K, V> appendOptional(ResourceLocation map) {
         appendedMaps.add(new MapAppendElement(map, false));
         return this;
     }
 
-    public MapBuilder setReplace(boolean shouldReplace) {
+    public MapBuilder<K, V> setReplace(boolean shouldReplace) {
         this.isReplace = shouldReplace;
         return this;
     }
 
-    public MapValue get(ResourceLocation key) {
+    public MapValue<V> get(K key) {
         return builder.build().get(key);
     }
 
-    public MapFile build() {
-        return new MapFile(builder.build(), appendedMaps, isReplace);
+    public MapFile<K, V> build() {
+        return new MapFile<>(builder.build(), appendedMaps, isReplace);
     }
 }

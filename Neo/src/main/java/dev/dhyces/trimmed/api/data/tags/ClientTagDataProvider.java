@@ -35,7 +35,7 @@ public abstract class ClientTagDataProvider extends BaseClientTagDataProvider {
         this.addTags();
         return CompletableFuture.allOf(builders.entrySet().stream().map(entry -> {
             DataResult<JsonElement> jsonResult = TagFile.CODEC.encodeStart(JsonOps.INSTANCE, new TagFile(entry.getValue().build(), entry.getValue().isReplace()));
-            JsonElement json = jsonResult.getOrThrow(false, Trimmed.LOGGER::error);
+            JsonElement json = jsonResult.getOrThrow();
             Path filePath = pathProvider.json(entry.getKey());
             return DataProvider.saveStable(pOutput, json, filePath);
         }).toArray(CompletableFuture[]::new));

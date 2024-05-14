@@ -82,7 +82,7 @@ public abstract class ClientRegistryTagDataProvider<T> extends BaseClientTagData
                             throw new IllegalStateException("Tag entries [%s] were not found for registry %s".formatted(errors.stream().map(Object::toString).collect(Collectors.joining(",")), registryResourceKey));
                         } else {
                             DataResult<JsonElement> jsonResult = TagFile.CODEC.encodeStart(JsonOps.INSTANCE, new TagFile(entry.getValue().build(), ((FabricTagBuilder)entry.getValue()).fabric_isReplaced()));
-                            JsonElement json = jsonResult.getOrThrow(false, Trimmed.LOGGER::error);
+                            JsonElement json = jsonResult.getOrThrow();
                             Path filePath = pathProvider.json(entry.getKey());
                             return DataProvider.saveStable(pOutput, json, filePath);
                         }

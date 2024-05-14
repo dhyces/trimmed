@@ -7,7 +7,7 @@ import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 @ApiStatus.Experimental
-public interface MapAccess<K, V> extends Iterable<ImmutableEntry<K, V>>, MapObserver<K, V> {
+public interface MapAccess<K, V> extends Iterable<ImmutableEntry<K, V>> {
     V get(Object key);
     V getOrDefault(Object key, V defaultValue);
     V getOrElse(Object key, Supplier<V> defaultSupplier);

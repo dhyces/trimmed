@@ -1,53 +1,48 @@
 package dev.dhyces.trimmed.impl.client.maps.manager;
 
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParseException;
-import com.mojang.serialization.JsonOps;
 import dev.dhyces.trimmed.Trimmed;
-import dev.dhyces.trimmed.api.client.util.ClientUtil;
-import dev.dhyces.trimmed.api.data.maps.MapFile;
+import dev.dhyces.trimmed.api.maps.MapHolder;
+import dev.dhyces.trimmed.api.maps.types.MapType;
 import dev.dhyces.trimmed.api.util.Utils;
-import dev.dhyces.trimmed.impl.resources.PathInfo;
-import dev.dhyces.trimmed.impl.resources.RegistryPathInfo;
-import dev.dhyces.trimmed.modhelper.services.Services;
-import net.minecraft.Util;
-import net.minecraft.core.Registry;
+import dev.dhyces.trimmed.impl.client.maps.MapKey;
+import dev.dhyces.trimmed.impl.client.maps.MapKeyResolvers;
+import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
 import net.minecraft.resources.FileToIdConverter;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.PreparableReloadListener;
-import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
-import net.minecraft.util.GsonHelper;
 import net.minecraft.util.Unit;
 import net.minecraft.util.profiling.ProfilerFiller;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.util.*;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 
 // Maps have types, which determine key and value. Then there can be many of those maps which can be accessed via key.
 // Getting a map from a key before maps have been loaded should return the MapAccess which is then later filled when
-// data is loaded.
+// data is loaded. All map types support groups, where the subdirectories are the same as the names.
 public class ClientMapManager implements PreparableReloadListener {
-    private static final
-    private static final UncheckedMapHandler UNCHECKED_HANDLER = new UncheckedMapHandler();
-    private static final Map<ResourceKey<? extends Registry<?>>, RegistryMapHandler<?>> REGISTRY_HANDLERS = new HashMap<>();
+    private static final Map<MapKey<?, ?>, MapHandler<?, ?>> REGISTRY = new Reference2ObjectOpenHashMap<>();
 
-    public static UncheckedMapHandler getUncheckedHandler() {
-//        if (!UNCHECKED_HANDLERS.hasLoaded()) {
-//            Trimmed.LOGGER.error("Client maps aren't loaded yet! May result in unexpected behavior");
-//        }
-        return UNCHECKED_HANDLER;
+    public static <K, V> void registerBaseKey(MapKey<K, V> key) {
+        if (key.getMapId().getPath().contains("/")) {
+            throw new IllegalArgumentException("Illegal id {%s}. Id cannot contain sub-paths \"/\".".formatted(key));
+        }
+        if (MapKeyResolvers.getId(key.getType().getKeyResolver()) == null) {
+            throw new IllegalArgumentException("MapKeyResolver for %s is not registered".formatted(key));
+        }
+        if (REGISTRY.containsKey(key)) {
+            throw new IllegalArgumentException("MapType already registered for " + key);
+        }
+        REGISTRY.put(key, new MapHandler<>(key));
     }
 
-    public static <T> RegistryMapHandler<T> getRegistryHandler(ResourceKey<? extends Registry<T>> registryKey) {
-//        if (REGISTRY_HANDLERS.isEmpty()) {
-//            Trimmed.LOGGER.error("Client maps aren't loaded yet! May result in unexpected behavior");
-//        }
-        return Utils.unsafeCast(REGISTRY_HANDLERS.computeIfAbsent(registryKey, resourceKey -> new RegistryMapHandler<>(registryKey)));
+    public static <K, V, M extends Map<K, V>> MapHolder<K, V, M> getHolder(MapKey<K, V> key) {
+        return (MapHolder<K, V, M>) REGISTRY.get(key).getHolder(cast(key));
+    }
+
+    private static <T> T cast(Object o) {
+        return (T) o;
     }
 
     @Override
@@ -56,54 +51,17 @@ public class ClientMapManager implements PreparableReloadListener {
     }
 
     private CompletableFuture<Unit> load(ResourceManager resourceManager) {
-        UNCHECKED_HANDLER.clear();
-        REGISTRY_HANDLERS.values().forEach(BaseMapHandler::clear);
+        // TODO: Test if this can be safely moved into the later iteration. Current thought is that if an error occurs
+        //  that isn't caught here, it won't clear later handlers and make things weird
+        REGISTRY.values().forEach(MapHandler::clear);
 
-        final Collection<PathInfo> foldersToSearch = PathInfo.gatherAllInfos(ClientUtil.getRegistryAccess());
+        for (Map.Entry<MapKey<?, ?>, MapHandler<?, ?>> entry : REGISTRY.entrySet()) {
+            ResourceLocation resolverPath = entry.getKey().getMapId().withPrefix(Utils.namespacedPath(MapKeyResolvers.getId(entry.getKey().getType().getKeyResolver()), '/'));
 
-        for (PathInfo pathInfo : foldersToSearch) {
-            FileToIdConverter converter = FileToIdConverter.json("trimmed/maps/" + pathInfo.getPath());
-            Map<ResourceLocation, MapFile> unresolved = readResources(converter, resourceManager);
-
-            if (!(pathInfo instanceof RegistryPathInfo registryPathInfo)) {
-                UNCHECKED_HANDLER.resolveMaps(unresolved);
-            } else {
-                final ResourceKey<? extends Registry<?>> key = registryPathInfo.resourceKey();
-
-                REGISTRY_HANDLERS.computeIfAbsent(key, resourceKey -> new RegistryMapHandler<>(registryPathInfo.castRegistryKey())).resolveMaps(unresolved);
-            }
+            FileToIdConverter converter = FileToIdConverter.json("trimmed/maps/" + resolverPath.getPath());
+            entry.getValue().parse(resolverPath, converter, resourceManager);
         }
 
         return CompletableFuture.completedFuture(Unit.INSTANCE);
-    }
-
-    private Map<ResourceLocation, MapFile> readResources(FileToIdConverter converter, ResourceManager resourceManager) {
-        return converter.listMatchingResourceStacks(resourceManager).entrySet().stream()
-                .map(entry -> {
-                    ResourceLocation id = converter.fileToId(entry.getKey());
-                    return Map.entry(id, readStack(id, entry.getValue()));
-                }).collect(Util.toMap());
-    }
-
-    private MapFile readStack(ResourceLocation fileName, List<Resource> resourceStack) {
-        MapFile.Builder builder = new MapFile.Builder();
-        for (Resource resource : resourceStack) {
-            try (BufferedReader reader = resource.openAsReader()) {
-                JsonObject json = GsonHelper.parse(reader);
-                Optional<MapFile> result = Services.PLATFORM_HELPER.decodeWithConditions(MapFile.CODEC, json);
-                if (result.isEmpty()) {
-                    Trimmed.LOGGER.debug("Skipping loading client map {} as its conditions were not met", fileName);
-                    continue;
-                }
-                MapFile mapFile = result.get();
-                if (mapFile.shouldReplace()) {
-                    builder = new MapFile.Builder();
-                }
-                builder.merge(mapFile);
-            } catch (JsonParseException | IOException e) {
-                throw new RuntimeException("Failed to read %s from %s: ".formatted(fileName, resource.source().packId()), e);
-            }
-        }
-        return builder.build();
     }
 }

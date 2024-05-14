@@ -3,6 +3,7 @@ package dev.dhyces.trimmed.api.data;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import com.mojang.datafixers.util.Pair;
+import dev.dhyces.trimmed.api.client.ClientMapKeys;
 import dev.dhyces.trimmed.api.data.maps.ClientMapDataProvider;
 import dev.dhyces.trimmed.api.client.ClientMapTypes;
 import dev.dhyces.trimmed.api.client.UncheckedClientTags;
@@ -33,8 +34,8 @@ public class TrimDatagenSuite extends BaseTrimDatagenSuite {
                 TRANSLATIONS.put(new ResourceLocation(modid, mainLanguageCode), Pair.of(key, translation));
             }
         });
-        pack.addProvider((output, registriesFuture) -> {
-            return new FabricDynamicRegistryProvider(output, registriesFuture) {
+        pack.addProvider((output, registriesFuture) ->
+            new FabricDynamicRegistryProvider(output, registriesFuture) {
                 @Override
                 protected void configure(HolderLookup.Provider registries, Entries entries) {
                     patterns.forEach(pair -> entries.add(pair.getFirst(), pair.getSecond()));
@@ -45,10 +46,10 @@ public class TrimDatagenSuite extends BaseTrimDatagenSuite {
                 public String getName() {
                     return "TrimDatagenSuite / FabricDynamicRegistryProvider for " + modid;
                 }
-            };
-        });
+            }
+        );
 
-        pack.addProvider((FabricDataOutput output) -> new FabricRecipeProvider(output) {
+        pack.addProvider((FabricDataOutput output, CompletableFuture<HolderLookup.Provider> registriesFuture) -> new FabricRecipeProvider(output, registriesFuture) {
             @Override
             public void buildRecipes(RecipeOutput output) {
                 trimRecipes.forEach(pair -> pair.getSecond().save(output, pair.getFirst()));
@@ -80,8 +81,8 @@ public class TrimDatagenSuite extends BaseTrimDatagenSuite {
             };
         });
 
-        pack.addProvider((FabricDataOutput output) -> {
-            return new ClientTagDataProvider(output, modid) {
+        pack.addProvider((FabricDataOutput output) ->
+            new ClientTagDataProvider(output, modid) {
                 @Override
                 protected void addTags() {
                     if (!patternTextures.isEmpty()) {
@@ -93,28 +94,24 @@ public class TrimDatagenSuite extends BaseTrimDatagenSuite {
                 public String getName() {
                     return "TrimDatagenSuite / " + super.getName();
                 }
-            };
-        });
+            }
+        );
 
-        pack.addProvider((FabricDataOutput output) -> {
-            return new ClientMapDataProvider(output, modid) {
+        pack.addProvider((FabricDataOutput output) ->
+            new ClientMapDataProvider(output, modid) {
                 @Override
                 protected void addMaps() {
                     if (!materialTexturePermutations.isEmpty()) {
-                        map(ClientMapTypes.CUSTOM_TRIM_PERMUTATIONS).putAll(materialTexturePermutations);
+                        map(ClientMapKeys.TRIM_MATERIALS).putAll(materialTexturePermutations);
                     }
-                    armorMaterialOverrides.forEach((trimMaterialResourceKey, armorMaterialOverride) -> {
-                        map(ClientMapTypes.armorMaterialOverride(trimMaterialResourceKey))
-                                .put(armorMaterialOverride.armorMaterial(), armorMaterialOverride.overrideSuffix());
-                    });
                 }
 
                 @Override
                 public String getName() {
                     return "TrimDatagenSuite / " + super.getName();
                 }
-            };
-        });
+            }
+        );
     }
 
     public static TrimDatagenSuite create(FabricDataGenerator.Pack pack, String modid) {

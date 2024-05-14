@@ -1,41 +1,23 @@
 package dev.dhyces.trimmed.impl;
 
 import dev.dhyces.trimmed.api.TrimmedClientMapApi;
-import dev.dhyces.trimmed.api.maps.MapAccess;
-import dev.dhyces.trimmed.api.maps.OptionalMapEntry;
-import dev.dhyces.trimmed.impl.client.maps.ClientMapKey;
-import dev.dhyces.trimmed.impl.client.maps.ClientRegistryMapKey;
+import dev.dhyces.trimmed.api.maps.MapHolder;
+import dev.dhyces.trimmed.api.maps.types.AdvancedMapType;
+import dev.dhyces.trimmed.impl.client.maps.MapKey;
 import dev.dhyces.trimmed.impl.client.maps.manager.ClientMapManager;
-import net.minecraft.resources.ResourceLocation;
 
-import java.util.stream.Stream;
+import java.util.Map;
 
 public final class TrimmedClientMapApiImpl implements TrimmedClientMapApi {
     public static final TrimmedClientMapApi INSTANCE = new TrimmedClientMapApiImpl();
 
     @Override
-    public MapAccess<ResourceLocation, String> map(ClientMapKey clientMapKey) {
-        return ClientMapManager.getUncheckedHandler().getMap(clientMapKey);
-    }
-
-    public Stream<OptionalMapEntry<ResourceLocation, String>> mapStream(ClientMapKey clientMapKey) {
-        return ClientMapManager.getUncheckedHandler().getHolder(clientMapKey)
-                .map(holder ->
-                        holder.getBacking().entrySet().stream()
-                        .map(entry -> new OptionalMapEntry<>(entry.getKey(), entry.getValue(), holder.isRequired(entry.getKey()))))
-                .orElse(Stream.empty());
+    public <K, V> MapHolder<K, V, Map<K, V>> getSimpleMap(MapKey<K, V> key) {
+        return ClientMapManager.getHolder(key);
     }
 
     @Override
-    public <K> MapAccess<K, String> map(ClientRegistryMapKey<K> clientRegistryMapKey) {
-        return ClientMapManager.getRegistryHandler(clientRegistryMapKey.getRegistryKey()).getMap(clientRegistryMapKey);
-    }
-
-    public String getUncheckedClientValue(ClientMapKey clientMapKey, ResourceLocation key) {
-        return ClientMapManager.getUncheckedHandler().getValue(clientMapKey, key);
-    }
-
-    public <K> String getRegistryClientValue(ClientRegistryMapKey<K> clientRegistryMapKey, K key) {
-        return ClientMapManager.getRegistryHandler(clientRegistryMapKey.getRegistryKey()).getValue(clientRegistryMapKey, key);
+    public <K, V, M extends Map<K, V>> MapHolder<K, V, M> getAdvancedMap(MapKey<K, V> key, AdvancedMapType<K, V, M> mapType) {
+        return ClientMapManager.getHolder(key);
     }
 }

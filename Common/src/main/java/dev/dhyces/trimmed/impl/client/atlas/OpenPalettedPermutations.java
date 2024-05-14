@@ -3,11 +3,14 @@ package dev.dhyces.trimmed.impl.client.atlas;
 import com.google.common.base.Suppliers;
 import com.mojang.blaze3d.platform.NativeImage;
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.dhyces.trimmed.Trimmed;
 import dev.dhyces.trimmed.api.TrimmedClientMapApi;
 import dev.dhyces.trimmed.api.TrimmedClientTagApi;
-import dev.dhyces.trimmed.impl.client.maps.ClientMapKey;
+import dev.dhyces.trimmed.api.client.ClientMapTypes;
+import dev.dhyces.trimmed.api.maps.MapHolder;
+import dev.dhyces.trimmed.impl.client.maps.MapKey;
 import dev.dhyces.trimmed.impl.client.tags.ClientTagKey;
 import dev.dhyces.trimmed.modhelper.services.Services;
 import net.minecraft.client.renderer.texture.SpriteContents;
@@ -28,21 +31,21 @@ import java.util.function.IntUnaryOperator;
 import java.util.function.Supplier;
 
 public class OpenPalettedPermutations implements SpriteSource {
-    public static final Codec<OpenPalettedPermutations> CODEC = RecordCodecBuilder.create(instance ->
+    public static final MapCodec<OpenPalettedPermutations> CODEC = RecordCodecBuilder.mapCodec(instance ->
             instance.group(
                     ResourceLocation.CODEC.fieldOf("palette_key").forGetter(openPalettedPermutations -> openPalettedPermutations.paletteKey),
-                    ClientMapKey.CODEC.fieldOf("permutation_map").forGetter(openPalettedPermutations -> openPalettedPermutations.permutations),
+                    MapKey.codec(ClientMapTypes.TRIM_MATERIALS).fieldOf("permutation_map").forGetter(openPalettedPermutations -> openPalettedPermutations.permutations.getKey()),
                     ClientTagKey.CODEC.fieldOf("texture_set").forGetter(openPalettedPermutations -> openPalettedPermutations.textures)
             ).apply(instance, OpenPalettedPermutations::new)
     );
 
     private final ResourceLocation paletteKey;
-    private final ClientMapKey permutations;
+    private final MapHolder<ResourceLocation, ResourceLocation, Map<ResourceLocation, ResourceLocation>> permutations;
     private final ClientTagKey textures;
 
-    public OpenPalettedPermutations(ResourceLocation paletteKey, ClientMapKey permutations, ClientTagKey textures) {
+    public OpenPalettedPermutations(ResourceLocation paletteKey, MapKey<ResourceLocation, ResourceLocation> permutations, ClientTagKey textures) {
         this.paletteKey = paletteKey;
-        this.permutations = permutations;
+        this.permutations = TrimmedClientMapApi.getInstance().getSimpleMap(permutations);
         this.textures = textures;
     }
 
@@ -53,10 +56,10 @@ public class OpenPalettedPermutations implements SpriteSource {
         );
         Map<ResourceLocation, OptionalSupplier> replacePixelsMap = new HashMap<>();
 
-        TrimmedClientMapApi.getInstance().mapStream(permutations).forEach(entry -> {
-            replacePixelsMap.put(new ResourceLocation(entry.key().getNamespace(), entry.value()),
-                    new OptionalSupplier(entry.isRequired(), Suppliers.memoize(() ->
-                            PalettedPermutations.createPaletteMapping(rawPaletteKeyImage.get(), PalettedPermutations.loadPaletteEntryFromImage(pResourceManager, entry.key()))
+        permutations.getMap().forEach((id, permuteString) -> {
+            replacePixelsMap.put(id.withPath(permuteString.getPath()),
+                    new OptionalSupplier(permutations.isRequired(id), Suppliers.memoize(() ->
+                            PalettedPermutations.createPaletteMapping(rawPaletteKeyImage.get(), PalettedPermutations.loadPaletteEntryFromImage(pResourceManager, id))
                     ))
             );
         });

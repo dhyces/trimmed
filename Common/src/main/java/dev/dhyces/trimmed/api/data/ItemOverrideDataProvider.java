@@ -8,8 +8,9 @@ import com.mojang.serialization.JsonOps;
 import dev.dhyces.trimmed.Trimmed;
 import dev.dhyces.trimmed.api.client.override.provider.ItemOverrideProvider;
 import dev.dhyces.trimmed.api.client.override.provider.providers.AnyTrimItemOverrideProvider;
-import dev.dhyces.trimmed.api.client.override.provider.providers.NbtItemOverrideProvider;
+import dev.dhyces.trimmed.api.client.override.provider.providers.ComponentItemOverrideProvider;
 import net.minecraft.client.resources.model.ModelResourceLocation;
+import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
@@ -21,6 +22,7 @@ import net.minecraft.world.level.ItemLike;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Supplier;
+import java.util.function.UnaryOperator;
 
 public abstract class ItemOverrideDataProvider implements DataProvider {
 
@@ -37,12 +39,12 @@ public abstract class ItemOverrideDataProvider implements DataProvider {
 
     protected abstract void addItemOverrides();
 
-    protected void addNbtOverride(ItemLike item, CompoundTag nbt, ResourceLocation itemModelId) {
-        addItemOverrides(item, new NbtItemOverrideProvider(nbt, new ModelResourceLocation(itemModelId, "inventory")));
+    protected void addComponentOverride(ItemLike item, UnaryOperator<DataComponentPatch.Builder> patchBuilder, ResourceLocation itemModelId) {
+        addItemOverrides(item, new ComponentItemOverrideProvider(patchBuilder.apply(DataComponentPatch.builder()).build(), new ModelResourceLocation(itemModelId, "inventory")));
     }
 
-    protected void addNbtOverride(ItemLike item, CompoundTag nbt, ModelResourceLocation modelId) {
-        addItemOverrides(item, new NbtItemOverrideProvider(nbt, modelId));
+    protected void addComponentOverride(ItemLike item, UnaryOperator<DataComponentPatch.Builder> patchBuilder, ModelResourceLocation modelId) {
+        addItemOverrides(item, new ComponentItemOverrideProvider(patchBuilder.apply(DataComponentPatch.builder()).build(), modelId));
     }
 
     protected ArmorSetTrimBuilder anyTrimBuilder(ArmorSet armorSet) {
@@ -64,7 +66,7 @@ public abstract class ItemOverrideDataProvider implements DataProvider {
         addItemOverrides();
         return CompletableFuture.allOf(providerMap.entrySet().stream().map((entry) -> {
             DataResult<JsonElement> encoded = ItemOverrideProvider.LIST_CODEC.encodeStart(JsonOps.INSTANCE, entry.getValue());
-            JsonElement json = encoded.getOrThrow(false, Trimmed.LOGGER::error);
+            JsonElement json = encoded.getOrThrow();
             ResourceLocation id = BuiltInRegistries.ITEM.getKey(entry.getKey().asItem());
             return DataProvider.saveStable(writer, json, pathResolver.json(id));
         }).toArray(CompletableFuture[]::new));

@@ -18,7 +18,7 @@ public class BakedModelManagerMixinUtil {
         cancelAdd.set(false);
         if (entry.getKey().getPath().endsWith(".trimmed_template.json")) {
             cancelAdd.set(true);
-            ModelTemplateManager.addTemplateResource(entry.getKey(), () -> entry.getValue().openAsReader());
+//            ModelTemplateManager.addTemplateResource(entry.getKey(), () -> entry.getValue().openAsReader());
         }
         return entry;
     }

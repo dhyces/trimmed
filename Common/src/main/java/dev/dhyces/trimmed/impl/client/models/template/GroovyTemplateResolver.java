@@ -3,7 +3,7 @@ package dev.dhyces.trimmed.impl.client.models.template;
 import java.util.function.Function;
 import java.util.regex.Pattern;
 
-public record GroovyTemplate(String template) implements Template {
+public record GroovyTemplateResolver(String template) implements TemplateResolver {
     private static final Pattern TEMPLATE_PATTERN = Pattern.compile("\\$\\{[a-z_0-9]+\\}");
 
     @Override

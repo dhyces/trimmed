@@ -35,15 +35,15 @@ public abstract class ModelLoaderMixin {
             modelResources = new HashMap<>(modelResources);
             generatedModels = new HashMap<>();
             try {
-                ModelTemplateManager.generateTemplates((resourceLocation, modelSupplier) -> {
-                    ResourceLocation fileId = ModelBakery.MODEL_LISTER.idToFile(resourceLocation.withPrefix("item/"));
-                    if (!modelResources.containsKey(fileId)) {
-                        BlockModel model = modelSupplier.get();
-                        generatedModels.put(fileId, model);
-                        modelResources.put(fileId, model);
-                        loadTopLevel(new ModelResourceLocation(resourceLocation, "inventory"));
-                    }
-                });
+//                ModelTemplateManager.generateTemplates((resourceLocation, modelSupplier) -> {
+//                    ResourceLocation fileId = ModelBakery.MODEL_LISTER.idToFile(resourceLocation.withPrefix("item/"));
+//                    if (!modelResources.containsKey(fileId)) {
+//                        BlockModel model = modelSupplier.get();
+//                        generatedModels.put(fileId, model);
+//                        modelResources.put(fileId, model);
+//                        loadTopLevel(new ModelResourceLocation(resourceLocation, "inventory"));
+//                    }
+//                });
             } catch (RuntimeException e) {
                 Trimmed.LOGGER.error(e.getMessage());
             }

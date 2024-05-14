@@ -2,14 +2,16 @@ package dev.dhyces.trimmed;
 
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
+import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.registries.datamaps.DataMapFile;
 
 import java.util.function.Supplier;
 
 @Mod(Trimmed.MODID)
 public class NeoTrimmed {
-    public NeoTrimmed(IEventBus modBus, Dist dist) {
+    public NeoTrimmed(IEventBus modBus, ModContainer container, Dist dist) {
         Trimmed.init();
 
         if (dist.isClient()) {

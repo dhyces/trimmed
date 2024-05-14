@@ -28,7 +28,7 @@ public class FabricTrimmedClient implements ClientModInitializer {
         PreparableModelLoadingPlugin.register((resourceManager, executor) -> {
             return CompletableFuture.supplyAsync(() -> {
                 Map<ResourceLocation, Supplier<BlockModel>> models = new HashMap<>();
-                ModelTemplateManager.generateTemplates(models::put);
+//                ModelTemplateManager.generateTemplates(models::put);
                 return models;
             }, executor);
         }, (data, pluginContext) -> {

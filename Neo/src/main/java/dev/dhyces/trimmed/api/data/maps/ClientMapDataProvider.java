@@ -5,7 +5,7 @@ import com.mojang.serialization.DataResult;
 import com.mojang.serialization.JsonOps;
 import dev.dhyces.trimmed.Trimmed;
 import dev.dhyces.trimmed.api.data.maps.appenders.ClientMapAppender;
-import dev.dhyces.trimmed.impl.client.maps.ClientMapKey;
+import dev.dhyces.trimmed.impl.client.maps.MapKey;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
@@ -16,18 +16,14 @@ import java.nio.file.Path;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 
-public abstract class ClientMapDataProvider extends BaseMapDataProvider {
+public abstract class ClientMapDataProvider<K> extends BaseMapDataProvider<K> {
 
     public ClientMapDataProvider(PackOutput packOutput, String modid, ExistingFileHelper existingFileHelper) {
         super(packOutput, modid, new ExistingFileHelper.ResourceType(PackType.CLIENT_RESOURCES, ".json", "maps/unchecked"), existingFileHelper);
     }
 
-    public ClientMapAppender<String> map(ClientMapKey clientMapKey) {
-        return new ClientMapAppender<>(getOrCreateBuilder(clientMapKey.getMapId()), Function.identity());
-    }
-
-    public <V> ClientMapAppender<V> mapWithMapper(ClientMapKey clientMapKey, Class<V> valueClass, Function<V, String> mapper) {
-        return new ClientMapAppender<>(getOrCreateBuilder(clientMapKey.getMapId()), mapper);
+    public <V> ClientMapAppender<K, V> map(MapKey<K, V> mapKey) {
+        return new ClientMapAppender<>(getOrCreateBuilder(mapKey));
     }
 
     protected abstract void addMaps();
@@ -37,10 +33,16 @@ public abstract class ClientMapDataProvider extends BaseMapDataProvider {
         this.addMaps();
         complete();
         return CompletableFuture.allOf(builders.entrySet().stream().map(entry -> {
-            DataResult<JsonElement> elementResult = MapFile.CODEC.encodeStart(JsonOps.INSTANCE, entry.getValue().build());
-            Path path = pathProvider.json(entry.getKey());
-            return DataProvider.saveStable(pOutput, elementResult.getOrThrow(false, Trimmed.LOGGER::error), path);
+            var codec = MapFile.codec(entry.getKey().getType().getKeyResolver().getCodec(), entry.getKey().getType().getValueCodec());
+
+            DataResult<JsonElement> elementResult = codec.encodeStart(JsonOps.INSTANCE, cast(entry.getValue().build()));
+            Path path = pathProvider.json(entry.getKey().getMapId());
+            return DataProvider.saveStable(pOutput, elementResult.getOrThrow(), path);
         }).toArray(CompletableFuture[]::new));
+    }
+
+    private static <T> T cast(Object o) {
+        return (T) o;
     }
 
     @Override

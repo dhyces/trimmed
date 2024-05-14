@@ -1,5 +1,6 @@
 package dev.dhyces.trimmed.api.data.maps;
 
+import dev.dhyces.trimmed.impl.client.maps.MapKey;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
@@ -13,7 +14,7 @@ public abstract class BaseMapDataProvider implements DataProvider {
     protected final FabricDataOutput packOutput;
     protected final PackOutput.PathProvider pathProvider;
     protected final String modid;
-    protected final Map<ResourceLocation, MapBuilder> builders;
+    protected final Map<MapKey<?, ?>, MapBuilder<?, ?>> builders;
 
     public BaseMapDataProvider(FabricDataOutput packOutput, String modid, String prefix) {
         this.packOutput = packOutput;
@@ -22,7 +23,7 @@ public abstract class BaseMapDataProvider implements DataProvider {
         this.builders = new LinkedHashMap<>();
     }
 
-    protected MapBuilder getOrCreateBuilder(ResourceLocation mapLocation) {
-        return this.builders.computeIfAbsent(mapLocation, resourceLocation -> new MapBuilder());
+    protected <K, V> MapBuilder<K, V> getOrCreateBuilder(MapKey<K, V> mapKey) {
+        return (MapBuilder<K, V>) this.builders.computeIfAbsent(mapKey, resourceLocation -> new MapBuilder<>());
     }
 }

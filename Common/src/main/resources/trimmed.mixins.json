@@ -8,7 +8,6 @@
     "TagEntryAccessor"
   ],
   "client": [
-    "client.ArmorTrimMixin",
     "client.AtlasSourceManagerAccessor",
     "client.ModelOverrideListMixin",
     "client.ReloadableResourceManagerImplAccessor"

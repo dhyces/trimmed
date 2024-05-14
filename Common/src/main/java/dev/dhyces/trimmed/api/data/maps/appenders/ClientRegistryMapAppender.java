@@ -1,7 +1,7 @@
 package dev.dhyces.trimmed.api.data.maps.appenders;
 
 import dev.dhyces.trimmed.api.data.maps.MapBuilder;
-import dev.dhyces.trimmed.impl.client.maps.ClientRegistryMapKey;
+import dev.dhyces.trimmed.impl.client.maps.MapKey;
 import net.minecraft.Util;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Registry;
@@ -12,57 +12,33 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-public class ClientRegistryMapAppender<T, V> extends BaseMapAppender<ClientRegistryMapKey<T>, V> {
-    private final ResourceKey<? extends Registry<T>> registryKey;
+public class ClientRegistryMapAppender<K, V> extends BaseMapAppender<K, V> {
+    private final HolderLookup.RegistryLookup<K> lookup;
 
-    public ClientRegistryMapAppender(MapBuilder builder, Function<V, String> mappingFunction, ResourceKey<? extends Registry<T>> registryKey) {
-        super(builder, mappingFunction);
-        this.registryKey = registryKey;
+    public ClientRegistryMapAppender(MapBuilder<K, V> builder, HolderLookup.RegistryLookup<K> lookup) {
+        super(builder);
+        this.lookup = lookup;
     }
 
-    public <S extends ClientRegistryMapAppender<T, V>> S put(ResourceKey<T> key, V value) {
-        if (!key.registry().equals(registryKey.location())) {
-            throw new IllegalArgumentException("Key " + key.location() + " is not for registry " + registryKey + "!");
+    public <S extends ClientRegistryMapAppender<K, V>> S put(ResourceKey<K> key, V value) {
+        if (!key.registry().equals(lookup.key().location())) {
+            throw new IllegalArgumentException("Key " + key.location() + " is not for registry " + lookup.key() + "!");
         }
-        return put(key.location(), value);
+        return put(lookup.getOrThrow(key).value(), value);
     }
 
-    public <S extends ClientRegistryMapAppender<T, V>> S putOptional(ResourceKey<T> key, V value) {
-        if (!key.registry().equals(registryKey.location())) {
-            throw new IllegalArgumentException("Key " + key.location() + " is not for registry " + registryKey + "!");
+    public <S extends ClientRegistryMapAppender<K, V>> S putOptional(ResourceKey<K> key, V value) {
+        if (!key.registry().equals(lookup.key().location())) {
+            throw new IllegalArgumentException("Key " + key.location() + " is not for registry " + lookup.key() + "!");
         }
-        return putOptional(key.location(), value);
+        return putOptional(lookup.getOrThrow(key).value(), value);
     }
 
-    @Override
-    protected ResourceLocation keyToRL(ClientRegistryMapKey<T> key) {
-        return key.getMapId();
+    public ClientRegistryMapAppender<K, V> put(Supplier<K> key, V value) {
+        return put(key.get(), value);
     }
 
-    public static final class RegistryAware<T, V> extends ClientRegistryMapAppender<T, V> {
-        private final Map<T, ResourceLocation> lookup;
-
-        public RegistryAware(MapBuilder builder, Function<V, String> mappingFunction, ResourceKey<? extends Registry<T>> registryResourceKey, HolderLookup.Provider lookupProvider) {
-            super(builder, mappingFunction, registryResourceKey);
-            this.lookup = lookupProvider.lookupOrThrow(registryResourceKey).listElements().map(tReference -> Map.entry(tReference.value(), tReference.key().location())).collect(Util.toMap());
-        }
-
-        public RegistryAware<T, V> put(T key, V value) {
-            put(lookup.get(key), value);
-            return self();
-        }
-
-        public RegistryAware<T, V> put(Supplier<T> key, V value) {
-            return put(key.get(), value);
-        }
-
-        public RegistryAware<T, V> putOptional(T key, V value) {
-            putOptional(lookup.get(key), value);
-            return self();
-        }
-
-        public RegistryAware<T, V> putOptional(Supplier<T> key, V value) {
-            return putOptional(key.get(), value);
-        }
+    public ClientRegistryMapAppender<K, V> putOptional(Supplier<K> key, V value) {
+        return putOptional(key.get(), value);
     }
 }

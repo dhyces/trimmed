@@ -16,6 +16,10 @@ base {
 }
 
 loom {
+	neoForge {
+		accessTransformer(file("src/main/resources/META-INF/accesstransformer.cfg"))
+	}
+
 	runs {
 		client {
 			client()
@@ -43,9 +47,6 @@ loom {
 modsDotGroovy {
 	platform = Platform.NEOFORGE
 	inferGather.set false
-	gather {
-
-	}
 	multiplatform {
 		from ':Common'
 	}
@@ -53,8 +54,8 @@ modsDotGroovy {
 }
 
 tasks.named('gatherNeoForgePlatformDetails', AbstractGatherPlatformDetailsTask).configure {
-	minecraftVersion = '24w12a'
-	platformVersion = '20.4.55-beta'
+	minecraftVersion = '1.20.6'
+	platformVersion = '20.6.62-beta'
 }
 
 //remapJar {
