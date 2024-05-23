@@ -3,11 +3,11 @@ minecraft_release = "1.20.6"
 minecraft_range = "[1.20.5,1.21)"
 publish_range = "1.20.5"
 
-neoforge_release = "20.6.62-beta"
+neoforge_release = "20.6.75-beta"
 neoforge_range = "[20.6,21.0)"
 
 fabric_loader = "0.15.11"
-fabric_api = "0.98.0+1.20.6"
+fabric_api = "0.99.0+1.20.6"
 
 forge = "1.20.4-49.0.11"
 
@@ -21,9 +21,9 @@ parchment_mc = "1.20.6"
 mixin = "0.8.5"
 mixinextras = "0.3.5"
 
-jetbrains_annotations = "24.0.0"
+jetbrains_annotations = "24.1.0"
 
-mdg_release = "2.0.0-beta.22"
+mdg_release = "2.0.0-beta.24"
 archloom = "1.6.397"
 
 forgegradle = "[6.0.16,6.2)"
