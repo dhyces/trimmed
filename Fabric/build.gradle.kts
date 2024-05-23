@@ -1,4 +1,4 @@
-import org.groovymc.modsdotgroovy.core.Platform
+import org.groovymc.modsdotgroovy.types.core.Platform
 import org.groovymc.modsdotgroovy.gradle.tasks.AbstractGatherPlatformDetailsTask
 import net.darkhax.curseforgegradle.TaskPublishCurseForge
 
@@ -14,7 +14,7 @@ plugins {
 }
 
 base {
-    archivesName = "${extra["mod_id"]}-fabric-${libs.versions.minecraft.release.get()}"
+    archivesName = "${properties["mod_id"]}-fabric-${libs.versions.minecraft.release.get()}"
 }
 
 val commonJava by configurations
@@ -100,17 +100,17 @@ publishing {
 
 if (hasProperty("modrinth_write_version_pat")) {
     modrinth {
-        token.set(findProperty("modrinth_write_version_pat") as String)
-        projectId.set(properties["modrinth_project_id"] as String)
-        versionName.set("Fabric-${libs.versions.minecraft.release.get()}-${properties["mod_version"]}")
-        versionNumber.set("${libs.versions.minecraft.release.get()}-${properties["mod_version"]}+fabric")
-        versionType.set(properties["publish_type"] as String)
+        token = findProperty("modrinth_write_version_pat") as String
+        projectId = properties["modrinth_project_id"] as String
+        versionName = "Fabric-${libs.versions.minecraft.release.get()}-${properties["mod_version"]}"
+        versionNumber = "${libs.versions.minecraft.release.get()}-${properties["mod_version"]}+fabric"
+        versionType = properties["publish_type"] as String
         uploadFile.set(tasks.remapJar)
-        gameVersions.set(libs.versions.publish.range.get().split(","))
-        loaders.set(listOf("fabric"))
+        gameVersions = libs.versions.publish.range.get().split(",")
+        loaders = listOf("fabric")
         changelog = rootProject.file("changelog.md").reader().use { it.readText() }
-        additionalFiles.set(listOf(tasks.named("sourcesJar"), tasks.named("javadocJar")))
-        detectLoaders.set(false)
+        additionalFiles = listOf(tasks.named("sourcesJar"), tasks.named("javadocJar"))
+        detectLoaders = false
         debugMode = properties["publish_debug"].toString().toBoolean()
     }
 }

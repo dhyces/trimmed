@@ -1,4 +1,4 @@
-import org.groovymc.modsdotgroovy.core.Platform
+import org.groovymc.modsdotgroovy.types.core.Platform
 import org.groovymc.modsdotgroovy.gradle.tasks.AbstractGatherPlatformDetailsTask
 import net.darkhax.curseforgegradle.TaskPublishCurseForge
 
@@ -81,8 +81,8 @@ modsDotGroovy {
 }
 
 tasks.named<AbstractGatherPlatformDetailsTask>("gatherNeoForgePlatformDetails").configure {
-	minecraftVersion = "1.20.6"
-	platformVersion = "20.6.62-beta"
+	minecraftVersion = libs.versions.minecraft.release
+	platformVersion = libs.versions.neoforge.release
 }
 
 publishing {
@@ -101,17 +101,17 @@ publishing {
 
 if (hasProperty("modrinth_write_version_pat")) {
 	modrinth {
-		token.set(findProperty("modrinth_write_version_pat") as String)
-		projectId.set(properties["modrinth_project_id"] as String)
-		versionName.set("NeoForge-${libs.versions.minecraft.release.get()}-${properties["mod_version"]}")
-		versionNumber.set("${libs.versions.minecraft.release.get()}-${properties["mod_version"]}+neoforge")
-		versionType.set(properties["publish_type"] as String)
+		token = findProperty("modrinth_write_version_pat") as String
+		projectId = properties["modrinth_project_id"] as String
+		versionName = "NeoForge-${libs.versions.minecraft.release.get()}-${properties["mod_version"]}"
+		versionNumber = "${libs.versions.minecraft.release.get()}-${properties["mod_version"]}+neoforge"
+		versionType = properties["publish_type"] as String
 		uploadFile.set(tasks.remapJar)
-		gameVersions.set(libs.versions.publish.range.get().split(","))
-		loaders.set(listOf("neoforge"))
+		gameVersions = libs.versions.publish.range.get().split(",")
+		loaders = listOf("neoforge")
 		changelog = rootProject.file("changelog.md").reader().use { it.readText() }
-		additionalFiles.set(listOf(tasks.named("sourcesJar"), tasks.named("javadocJar")))
-		detectLoaders.set(false)
+		additionalFiles = listOf(tasks.named("sourcesJar"), tasks.named("javadocJar"))
+		detectLoaders = false
 		debugMode = properties["publish_debug"].toString().toBoolean()
 	}
 }
