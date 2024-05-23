@@ -1,0 +1,138 @@
+import org.groovymc.modsdotgroovy.core.Platform
+import org.groovymc.modsdotgroovy.gradle.tasks.AbstractGatherPlatformDetailsTask
+import net.darkhax.curseforgegradle.TaskPublishCurseForge
+
+plugins {
+	idea
+	java
+	`maven-publish`
+	alias(libs.plugins.mdg)
+	alias(libs.plugins.curseforgegradle)
+	alias(libs.plugins.minotaur)
+	alias(libs.plugins.archloom)
+	id("consumer.conventions")
+}
+
+base {
+	archivesName = "${properties["mod_name"]}-neo-${libs.versions.minecraft.release.get()}"
+}
+
+loom {
+	neoForge {
+		accessTransformer(file("src/main/resources/META-INF/accesstransformer.cfg"))
+	}
+
+	runs {
+		named("client") {
+			client()
+			configName = "Neo Client"
+			ideConfigGenerated(true)
+			runDir("run")
+		}
+		named("server") {
+			server()
+			configName = "Neo Server"
+			ideConfigGenerated(true)
+			runDir("run")
+		}
+		create("data") {
+			data()
+			configName = "Neo Data"
+			ideConfigGenerated(true)
+			runDir("run")
+
+			programArgs("--mod", properties["mod_id"] as String, "--all", "--output", project(":Common").file("src/generated/resources/").path, "--existing", file("src/main/resources/").path)
+		}
+	}
+}
+
+//remapJar {
+//	atAccessWideners.add('src/main/resources/trimmed.accesswidener')
+//}
+
+repositories {
+	maven {
+		name = "Neo"
+		url = uri("https://maven.neoforged.net/releases")
+	}
+}
+
+dependencies {
+	minecraft(libs.minecraft)
+	neoForge(libs.neoforge)
+	mappings(loom.layered() {
+		officialMojangMappings()
+		parchment("org.parchmentmc.data:parchment-${libs.versions.parchment.mc.get()}:${libs.versions.parchment.release.get()}@zip")
+	})
+}
+
+
+tasks.processResources {
+	exclude("trimmed.accesswidener")
+}
+
+modsDotGroovy {
+	platform(Platform.NEOFORGE)
+	inferGather.set(false)
+	multiplatform {
+		from(":Common")
+	}
+	apply()
+}
+
+tasks.named<AbstractGatherPlatformDetailsTask>("gatherNeoForgePlatformDetails").configure {
+	minecraftVersion = "1.20.6"
+	platformVersion = "20.6.62-beta"
+}
+
+publishing {
+	publications {
+		create<MavenPublication>("mavenJava") {
+			groupId = properties["maven_group"] as String
+			artifactId = base.archivesName.get()
+			version = properties["mod_version"] as String
+			from(components["java"])
+//			pom.withXml {
+//				asNode().remove(asNode().dependencies)
+//			}
+		}
+	}
+}
+
+if (hasProperty("modrinth_write_version_pat")) {
+	modrinth {
+		token.set(findProperty("modrinth_write_version_pat") as String)
+		projectId.set(properties["modrinth_project_id"] as String)
+		versionName.set("NeoForge-${libs.versions.minecraft.release.get()}-${properties["mod_version"]}")
+		versionNumber.set("${libs.versions.minecraft.release.get()}-${properties["mod_version"]}+neoforge")
+		versionType.set(properties["publish_type"] as String)
+		uploadFile.set(tasks.remapJar)
+		gameVersions.set(libs.versions.publish.range.get().split(","))
+		loaders.set(listOf("neoforge"))
+		changelog = rootProject.file("changelog.md").reader().use { it.readText() }
+		additionalFiles.set(listOf(tasks.named("sourcesJar"), tasks.named("javadocJar")))
+		detectLoaders.set(false)
+		debugMode = properties["publish_debug"].toString().toBoolean()
+	}
+}
+
+if (hasProperty("curseforge_publishing_token")) {
+	tasks.register<TaskPublishCurseForge>("curseforge") {
+		group = "publishing"
+
+		disableVersionDetection()
+		apiToken = findProperty("curseforge_publishing_token")
+		val projectId = properties["curseforge_project_id"]
+		val mainFile = upload(projectId, tasks.remapJar)
+		mainFile.displayName = "NeoForge-${libs.versions.minecraft.release.get()}-${properties["mod_version"]}"
+		mainFile.releaseType = properties["publish_type"]
+		mainFile.changelog = rootProject.file("changelog.md").reader().use { it.readText() }
+		mainFile.changelogType = "markdown"
+		mainFile.addModLoader("NeoForge")
+		mainFile.addJavaVersion("Java ${java.toolchain.languageVersion.get()}")
+		mainFile.addGameVersion(libs.versions.minecraft.release.get())
+		debugMode = properties["publish_debug"].toString().toBoolean()
+
+		dependsOn(tasks.remapJar)
+	}
+}

@@ -24,7 +24,7 @@ mixinextras = "0.3.5"
 jetbrains_annotations = "24.0.0"
 
 mdg_release = "2.0.0-beta.22"
-archloom = "1.6.396"
+archloom = "1.6.397"
 
 forgegradle = "[6.0.16,6.2)"
 librarian = "1.+"
