@@ -13,11 +13,11 @@ MultiplatformModsDotGroovy.make {
     license = "MIT"
     issueTrackerUrl = "https://github.com/dhyces/trimmed/issues/"
 
-    accessTransformers {
-        onFabric {
-            accessWidener = "trimmed.accesswidener"
-        }
-        onNeoForge {
+    onFabric {
+        accessWidener = "trimmed.accesswidener"
+    }
+    onNeoForge {
+        accessTransformers {
             accessTransformer("META-INF/accesstransformer.cfg")
         }
     }
