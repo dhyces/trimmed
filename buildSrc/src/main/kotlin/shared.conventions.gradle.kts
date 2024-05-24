@@ -77,26 +77,32 @@ tasks.withType<JavaCompile>().configureEach {
 //    enabled = false
 //}
 
-publishing {
-    repositories {
-        maven {
-            name = "Local"
-            url  = uri("file://" + findProperty("local_maven"))
-        }
-        maven {
-            name = "Maven"
-            url  = findProperty("mavenUrl")?.let { uri(it) }!!
-            credentials(PasswordCredentials::class) {
-                username = findProperty("mavenUsername")?.toString()
-                password = findProperty("mavenPassword")?.toString()
+if (hasProperty("publisher")) {
+    publishing {
+        repositories {
+            maven {
+                name = "Local"
+                url  = uri("file://" + findProperty("local_maven"))
             }
-        }
-        maven {
-            name = "GitHubPackages"
-            url  = uri("https://maven.pkg.github.com/dhyces/trimmed")
-            credentials {
-                username = (project.findProperty("gpr.user") ?: System.getenv("USERNAME")) as String
-                password = (project.findProperty("gpr.key") ?: System.getenv("TOKEN")) as String
+            if (hasProperty("mavenUrl")) {
+                maven {
+                    name = "Maven"
+                    url  = findProperty("mavenUrl")?.let { uri(it) }!!
+                    credentials(PasswordCredentials::class) {
+                        username = findProperty("mavenUsername")?.toString()
+                        password = findProperty("mavenPassword")?.toString()
+                    }
+                }
+            }
+            if (hasProperty("trimmedGithubPackages")) {
+                maven {
+                    name = "GitHubPackages"
+                    url  = uri(findProperty("trimmedGithubPackages")?.let { uri(it) }!!)
+                    credentials {
+                        username = (project.findProperty("gpr.user") ?: System.getenv("USERNAME")) as String
+                        password = (project.findProperty("gpr.key") ?: System.getenv("TOKEN")) as String
+                    }
+                }
             }
         }
     }
