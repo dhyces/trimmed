@@ -1,6 +1,5 @@
 package dev.dhyces.trimmed.api.client;
 
-import dev.dhyces.trimmed.api.maps.MapKeyResolver;
 import dev.dhyces.trimmed.api.maps.types.MapType;
 import net.minecraft.resources.ResourceLocation;
 
@@ -10,5 +9,5 @@ import net.minecraft.resources.ResourceLocation;
 public final class ClientMapTypes {
     private ClientMapTypes() {}
 
-    public static final MapType<ResourceLocation, ResourceLocation> TRIM_MATERIALS = MapType.simpleBuilder(ClientMapKeyResolvers.TRIM_MATERIAL_TEXTURES, ResourceLocation.CODEC.fieldOf("texture")).build();
+    public static final MapType<ResourceLocation, ResourceLocation> TRIM_MATERIALS = MapType.simpleBuilder(ClientMapKeyResolvers.TRIM_MATERIAL_TEXTURES, ResourceLocation.CODEC).build();
 }

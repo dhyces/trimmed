@@ -2,7 +2,6 @@ package dev.dhyces.trimmed.impl.client.atlas;
 
 import com.google.common.base.Suppliers;
 import com.mojang.blaze3d.platform.NativeImage;
-import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.dhyces.trimmed.Trimmed;
@@ -13,6 +12,7 @@ import dev.dhyces.trimmed.api.maps.MapHolder;
 import dev.dhyces.trimmed.impl.client.maps.MapKey;
 import dev.dhyces.trimmed.impl.client.tags.ClientTagKey;
 import dev.dhyces.trimmed.modhelper.services.Services;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.client.renderer.texture.SpriteContents;
 import net.minecraft.client.renderer.texture.atlas.SpriteResourceLoader;
 import net.minecraft.client.renderer.texture.atlas.SpriteSource;
@@ -40,7 +40,7 @@ public class OpenPalettedPermutations implements SpriteSource {
     );
 
     private final ResourceLocation paletteKey;
-    private final MapHolder<ResourceLocation, ResourceLocation, Map<ResourceLocation, ResourceLocation>> permutations;
+    private final MapHolder<ResourceLocation, ResourceLocation> permutations;
     private final ClientTagKey textures;
 
     public OpenPalettedPermutations(ResourceLocation paletteKey, MapKey<ResourceLocation, ResourceLocation> permutations, ClientTagKey textures) {
@@ -54,7 +54,7 @@ public class OpenPalettedPermutations implements SpriteSource {
         Supplier<int[]> rawPaletteKeyImage = Suppliers.memoize(() ->
             PalettedPermutations.loadPaletteEntryFromImage(pResourceManager, paletteKey)
         );
-        Map<ResourceLocation, OptionalSupplier> replacePixelsMap = new HashMap<>();
+        Map<ResourceLocation, OptionalSupplier> replacePixelsMap = new Object2ObjectOpenHashMap<>();
 
         permutations.getMap().forEach((id, permuteString) -> {
             replacePixelsMap.put(id.withPath(permuteString.getPath()),

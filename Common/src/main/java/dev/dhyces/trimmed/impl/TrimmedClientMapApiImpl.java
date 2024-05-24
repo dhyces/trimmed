@@ -12,12 +12,12 @@ public final class TrimmedClientMapApiImpl implements TrimmedClientMapApi {
     public static final TrimmedClientMapApi INSTANCE = new TrimmedClientMapApiImpl();
 
     @Override
-    public <K, V> MapHolder<K, V, Map<K, V>> getSimpleMap(MapKey<K, V> key) {
+    public <K, V> MapHolder<K, V> getSimpleMap(MapKey<K, V> key) {
         return ClientMapManager.getHolder(key);
     }
 
     @Override
-    public <K, V, M extends Map<K, V>> MapHolder<K, V, M> getAdvancedMap(MapKey<K, V> key, AdvancedMapType<K, V, M> mapType) {
-        return ClientMapManager.getHolder(key);
+    public <K, V, M extends Map<K, V>> MapHolder.Typed<K, V, M> getAdvancedMap(MapKey<K, V> key, AdvancedMapType<K, V, M> mapType) {
+        return (MapHolder.Typed<K, V, M>) ClientMapManager.getHolder(key);
     }
 }

@@ -33,7 +33,7 @@ public final class MapHandler<K, V> {
         this.map = new Reference2ObjectOpenHashMap<>();
     }
 
-    MapHolder<K, V, Map<K, V>> getHolder(MapKey<K, V> mapKey) {
+    MapHolder<K, V> getHolder(MapKey<K, V> mapKey) {
         return map.get(mapKey);
     }
 
@@ -44,15 +44,22 @@ public final class MapHandler<K, V> {
         });
     }
 
+    private ClientMapHolder<K, V, Map<K, V>> getOrCreateHolder(MapKey<K, V> key) {
+        return map.computeIfAbsent(key, ClientMapHolder::new);
+    }
+
     void parse(ResourceLocation resolverPath, FileToIdConverter converter, ResourceManager resourceManager) {
-        MapFile<K, V> base = readStack(baseKey.getMapId(), resourceManager.getResourceStack(resolverPath.withPath(".json")));
+        MapFile<K, V> base = readStack(baseKey.getMapId(), resourceManager.getResourceStack(resolverPath.withSuffix(".json")));
         Map<ResourceLocation, MapFile<K, V>> children = readResources(converter, resourceManager);
+        if (base.map().isEmpty() && base.appendElements().isEmpty() && children.isEmpty()) {
+            throw new IllegalStateException("No maps to read, skipping %s".formatted(resolverPath));
+        }
 
         DependencySorter<ResourceLocation, Entry<K, V>> dependencySorter = new DependencySorter<>();
         dependencySorter.addEntry(baseKey.getMapId(), new Entry<>(base));
         children.forEach((resourceLocation, vMapFile) -> dependencySorter.addEntry(resourceLocation, new Entry<>(vMapFile)));
         dependencySorter.orderByDependencies((resourceLocation, vEntry) -> {
-            var holder = map.computeIfAbsent(MapKey.of(baseKey.getType(), resourceLocation), ClientMapHolder::new);
+            ClientMapHolder<K, V, Map<K, V>> holder = getOrCreateHolder(MapKey.of(baseKey.getType(), resourceLocation));
             Set<K> optionalElements = new HashSet<>();
             Map<K, V> finishedMap = vEntry.file().map().entrySet().stream()
                     .peek(kvEntry -> {
@@ -63,7 +70,10 @@ public final class MapHandler<K, V> {
                     .map(kMapValueEntry -> Map.entry(kMapValueEntry.getKey(), kMapValueEntry.getValue().value()))
                     .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (v, v2) -> v, baseKey.getType()::createMap));
             for (MapAppendElement element : vEntry.file().appendElements()) {
-                finishedMap.putAll(map.get(MapKey.of(baseKey.getType(), element.mapId())).getMap());
+                Map<K, V> map = getOrCreateHolder(MapKey.of(baseKey.getType(), element.mapId())).getMap();
+                if (map != null) {
+                    finishedMap.putAll(map);
+                }
             }
             holder.backing = finishedMap;
             holder.optionalKeys = optionalElements;
@@ -121,7 +131,7 @@ public final class MapHandler<K, V> {
         }
     }
 
-    static class ClientMapHolder<K, V, M extends Map<K, V>> implements MapHolder<K, V, M> {
+    static class ClientMapHolder<K, V, M extends Map<K, V>> implements MapHolder.Typed<K, V, M> {
         private final MapKey<K, V> key;
         M backing;
         Set<K> optionalKeys;

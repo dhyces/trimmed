@@ -1,5 +1,6 @@
 package dev.dhyces.trimmed.api.maps.types;
 
+import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import dev.dhyces.trimmed.api.maps.MapKeyResolver;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
@@ -15,7 +16,7 @@ import java.util.function.Supplier;
 // TODO: Add optional validator
 public sealed interface MapType<K, V> permits SimpleMapType, AdvancedMapType {
     MapKeyResolver<K> getKeyResolver();
-    MapCodec<V> getValueCodec();
+    Codec<V> getValueCodec();
     @Nullable
     StreamCodec<RegistryFriendlyByteBuf, V> getValueStreamCodec();
     boolean isDataPackSynced();
@@ -28,30 +29,30 @@ public sealed interface MapType<K, V> permits SimpleMapType, AdvancedMapType {
         }
     }
 
-    static <K, V> SimpleMapType<K, V> simple(MapKeyResolver<K> keyResolver, MapCodec<V> valueCodec) {
+    static <K, V> SimpleMapType<K, V> simple(MapKeyResolver<K> keyResolver, Codec<V> valueCodec) {
         return new SimpleMapType<>(keyResolver, valueCodec, null, false);
     }
 
-    static <K, V> SimpleMapType.Builder<K, V> simpleBuilder(MapKeyResolver<K> keyResolver, MapCodec<V> valueCodec) {
+    static <K, V> SimpleMapType.Builder<K, V> simpleBuilder(MapKeyResolver<K> keyResolver, Codec<V> valueCodec) {
         return SimpleMapType.builder(keyResolver, valueCodec);
     }
 
-    static <K, V, M extends Map<K, V>> AdvancedMapType<K, V, M> advancedCollection(MapKeyResolver<K> keyResolver, MapCodec<V> valueCodec, Supplier<M> mapSupplier) {
+    static <K, V, M extends Map<K, V>> AdvancedMapType<K, V, M> advancedCollection(MapKeyResolver<K> keyResolver, Codec<V> valueCodec, Supplier<M> mapSupplier) {
         return new AdvancedMapType<>(keyResolver, valueCodec, null, false, mapSupplier);
     }
 
-    static <K, V, M extends Map<K, V>> AdvancedMapType.Builder<K, V, M> advancedBuilder(MapKeyResolver<K> keyResolver, MapCodec<V> valueCodec) {
+    static <K, V, M extends Map<K, V>> AdvancedMapType.Builder<K, V, M> advancedBuilder(MapKeyResolver<K> keyResolver, Codec<V> valueCodec) {
         return AdvancedMapType.builder(keyResolver, valueCodec);
     }
 
     abstract class BaseBuilder<K, V> {
         protected final MapKeyResolver<K> keyResolver;
-        protected final MapCodec<V> valueCodec;
+        protected final Codec<V> valueCodec;
         @Nullable
         protected StreamCodec<RegistryFriendlyByteBuf, V> valueStreamCodec;
         protected boolean dataPackSynced = false;
 
-        protected BaseBuilder(MapKeyResolver<K> keyResolver, MapCodec<V> valueCodec) {
+        protected BaseBuilder(MapKeyResolver<K> keyResolver, Codec<V> valueCodec) {
             this.keyResolver = keyResolver;
             this.valueCodec = valueCodec;
         }
@@ -81,7 +82,7 @@ public sealed interface MapType<K, V> permits SimpleMapType, AdvancedMapType {
          * @return this builder
          */
         public BaseBuilder<K, V> networked() {
-            this.valueStreamCodec = ByteBufCodecs.fromCodecWithRegistries(valueCodec.codec());
+            this.valueStreamCodec = ByteBufCodecs.fromCodecWithRegistries(valueCodec);
             return dataPackSynced();
         }
 

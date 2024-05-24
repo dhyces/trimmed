@@ -14,19 +14,19 @@ import java.util.Objects;
 
 public final class SimpleMapType<K, V> implements MapType<K, V> {
     private final MapKeyResolver<K> keyResolver;
-    private final MapCodec<V> valueCodec;
+    private final Codec<V> valueCodec;
     @Nullable
     private final StreamCodec<RegistryFriendlyByteBuf, V> valueStreamCodec;
     private final boolean dataPackSynced;
 
-    SimpleMapType(MapKeyResolver<K> keyResolver, MapCodec<V> valueCodec, @Nullable StreamCodec<RegistryFriendlyByteBuf, V> valueStreamCodec, boolean dataPackSynced) {
+    SimpleMapType(MapKeyResolver<K> keyResolver, Codec<V> valueCodec, @Nullable StreamCodec<RegistryFriendlyByteBuf, V> valueStreamCodec, boolean dataPackSynced) {
         this.keyResolver = keyResolver;
         this.valueCodec = valueCodec;
         this.valueStreamCodec = valueStreamCodec;
         this.dataPackSynced = dataPackSynced;
     }
 
-    public static <K, V> SimpleMapType.Builder<K, V> builder(MapKeyResolver<K> keyResolver, MapCodec<V> valueCodec) {
+    public static <K, V> SimpleMapType.Builder<K, V> builder(MapKeyResolver<K> keyResolver, Codec<V> valueCodec) {
         return new SimpleMapType.Builder<>(keyResolver, valueCodec);
     }
 
@@ -36,7 +36,7 @@ public final class SimpleMapType<K, V> implements MapType<K, V> {
     }
 
     @Override
-    public MapCodec<V> getValueCodec() {
+    public Codec<V> getValueCodec() {
         return valueCodec;
     }
 
@@ -70,7 +70,7 @@ public final class SimpleMapType<K, V> implements MapType<K, V> {
     }
 
     public static class Builder<K, V> extends BaseBuilder<K, V> {
-        protected Builder(MapKeyResolver<K> keyResolver, MapCodec<V> valueCodec) {
+        protected Builder(MapKeyResolver<K> keyResolver, Codec<V> valueCodec) {
             super(keyResolver, valueCodec);
         }
 

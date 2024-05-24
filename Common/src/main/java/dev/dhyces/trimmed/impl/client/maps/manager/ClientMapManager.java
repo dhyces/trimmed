@@ -37,12 +37,8 @@ public class ClientMapManager implements PreparableReloadListener {
         REGISTRY.put(key, new MapHandler<>(key));
     }
 
-    public static <K, V, M extends Map<K, V>> MapHolder<K, V, M> getHolder(MapKey<K, V> key) {
-        return (MapHolder<K, V, M>) REGISTRY.get(key).getHolder(cast(key));
-    }
-
-    private static <T> T cast(Object o) {
-        return (T) o;
+    public static <K, V> MapHolder<K, V> getHolder(MapKey<K, V> key) {
+        return (MapHolder<K, V>) REGISTRY.get(key).getHolder(Utils.unsafeCast(key));
     }
 
     @Override
@@ -56,9 +52,9 @@ public class ClientMapManager implements PreparableReloadListener {
         REGISTRY.values().forEach(MapHandler::clear);
 
         for (Map.Entry<MapKey<?, ?>, MapHandler<?, ?>> entry : REGISTRY.entrySet()) {
-            ResourceLocation resolverPath = entry.getKey().getMapId().withPrefix(Utils.namespacedPath(MapKeyResolvers.getId(entry.getKey().getType().getKeyResolver()), '/'));
+            ResourceLocation resolverPath = entry.getKey().getMapId().withPrefix("trimmed/maps/" + Utils.namespacedPath(MapKeyResolvers.getId(entry.getKey().getType().getKeyResolver()), '/') + "/");
 
-            FileToIdConverter converter = FileToIdConverter.json("trimmed/maps/" + resolverPath.getPath());
+            FileToIdConverter converter = FileToIdConverter.json(resolverPath.getPath());
             entry.getValue().parse(resolverPath, converter, resourceManager);
         }
 

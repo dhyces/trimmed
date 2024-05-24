@@ -1,5 +1,6 @@
 package dev.dhyces.trimmed.api.maps.types;
 
+import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import dev.dhyces.trimmed.api.maps.MapKeyResolver;
 import dev.dhyces.trimmed.impl.client.maps.MapKeyResolvers;
@@ -14,13 +15,13 @@ import java.util.function.Supplier;
 
 public final class AdvancedMapType<K, V, M extends Map<K, V>> implements MapType<K, V> {
     private final MapKeyResolver<K> keyResolver;
-    private final MapCodec<V> valueCodec;
+    private final Codec<V> valueCodec;
     @Nullable
     private final StreamCodec<RegistryFriendlyByteBuf, V> valueStreamCodec;
     private final boolean dataPackSynced;
     private final Supplier<M> mapSupplier;
 
-    AdvancedMapType(MapKeyResolver<K> keyResolver, MapCodec<V> valueCodec, @Nullable StreamCodec<RegistryFriendlyByteBuf, V> valueStreamCodec, boolean dataPackSynced, @Nullable Supplier<M> mapSupplier) {
+    AdvancedMapType(MapKeyResolver<K> keyResolver, Codec<V> valueCodec, @Nullable StreamCodec<RegistryFriendlyByteBuf, V> valueStreamCodec, boolean dataPackSynced, @Nullable Supplier<M> mapSupplier) {
         this.keyResolver = keyResolver;
         this.valueCodec = valueCodec;
         this.valueStreamCodec = valueStreamCodec;
@@ -28,7 +29,7 @@ public final class AdvancedMapType<K, V, M extends Map<K, V>> implements MapType
         this.mapSupplier = mapSupplier;
     }
 
-    public static <K, V, M extends Map<K, V>> Builder<K, V, M> builder(MapKeyResolver<K> keyResolver, MapCodec<V> valueCodec) {
+    public static <K, V, M extends Map<K, V>> Builder<K, V, M> builder(MapKeyResolver<K> keyResolver, Codec<V> valueCodec) {
         return new Builder<>(keyResolver, valueCodec);
     }
 
@@ -38,7 +39,7 @@ public final class AdvancedMapType<K, V, M extends Map<K, V>> implements MapType
     }
 
     @Override
-    public MapCodec<V> getValueCodec() {
+    public Codec<V> getValueCodec() {
         return valueCodec;
     }
 
@@ -81,7 +82,7 @@ public final class AdvancedMapType<K, V, M extends Map<K, V>> implements MapType
 
     public static class Builder<K, V, M extends Map<K, V>> extends BaseBuilder<K, V> {
         private Supplier<M> mapSupplier;
-        protected Builder(MapKeyResolver<K> keyResolver, MapCodec<V> valueCodec) {
+        protected Builder(MapKeyResolver<K> keyResolver, Codec<V> valueCodec) {
             super(keyResolver, valueCodec);
         }
 

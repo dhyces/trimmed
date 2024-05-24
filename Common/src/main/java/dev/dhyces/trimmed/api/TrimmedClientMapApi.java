@@ -12,7 +12,7 @@ public interface TrimmedClientMapApi {
         return TrimmedClientMapApiImpl.INSTANCE;
     }
 
-    <K, V> MapHolder<K, V, Map<K, V>> getSimpleMap(MapKey<K, V> key);
+    <K, V> MapHolder<K, V> getSimpleMap(MapKey<K, V> key);
 
-    <K, V, M extends Map<K, V>> MapHolder<K, V, M> getAdvancedMap(MapKey<K, V> key, AdvancedMapType<K, V, M> mapType);
+    <K, V, M extends Map<K, V>> MapHolder.Typed<K, V, M> getAdvancedMap(MapKey<K, V> key, AdvancedMapType<K, V, M> mapType);
 }
