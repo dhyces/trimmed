@@ -1,29 +1,34 @@
 package dev.dhyces.trimmed;
 
+import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
+import net.neoforged.fml.ModContainer;
+import net.neoforged.fml.common.Mod;
 import net.neoforged.neoforge.client.event.ModelEvent;
 import net.neoforged.neoforge.client.event.RegisterClientReloadListenersEvent;
+import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.TagsUpdatedEvent;
 
+@Mod(value = Trimmed.MODID, dist = Dist.CLIENT)
 public class NeoTrimmedClient {
-    static void init(IEventBus neoBus, IEventBus modBus) {
+    public NeoTrimmedClient(IEventBus modBus, ModContainer container) {
         TrimmedClient.init();
-        modBus.addListener(NeoTrimmedClient::registerClientReloadListener);
-        modBus.addListener(NeoTrimmedClient::addModels);
+        modBus.addListener(this::registerClientReloadListener);
+        modBus.addListener(this::addModels);
 
-        neoBus.addListener(NeoTrimmedClient::tagsSynced);
+        NeoForge.EVENT_BUS.addListener(this::tagsSynced);
     }
 
-    private static void registerClientReloadListener(final RegisterClientReloadListenersEvent event) {
+    private void registerClientReloadListener(final RegisterClientReloadListenersEvent event) {
         TrimmedClient.registerClientReloadListener((s, preparableReloadListener) -> event.registerReloadListener(preparableReloadListener));
         TrimmedClient.injectListenersAtBeginning();
     }
 
-    private static void addModels(final ModelEvent.RegisterAdditional event) {
+    private void addModels(final ModelEvent.RegisterAdditional event) {
         TrimmedClient.addModels(event::register);
     }
 
-    private static void tagsSynced(final TagsUpdatedEvent event) {
+    private void tagsSynced(final TagsUpdatedEvent event) {
         TrimmedClient.onTagsSynced(event.getRegistryAccess(), event.shouldUpdateStaticData());
     }
 }
