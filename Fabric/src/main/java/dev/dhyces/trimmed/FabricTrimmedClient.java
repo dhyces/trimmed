@@ -18,6 +18,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 import java.util.function.Supplier;
 
+@SuppressWarnings("unused")
 public class FabricTrimmedClient implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
@@ -41,21 +42,6 @@ public class FabricTrimmedClient implements ClientModInitializer {
                 return null;
             });
         });
-//        ModelLoadingPlugin.register(pluginContext -> {
-//            TrimmedClient.addModels(pluginContext::addModels);
-//            pluginContext.resolveModel().register((context) -> {
-//                if (context.id() == ModelBakery.MISSING_MODEL_LOCATION) {
-//                    try {
-//                        ModelTemplateManager.generateTemplates((resourceLocation, modelSupplier) -> {
-//                            ((ModelLoaderAccessor)context.loader()).invokeLoadTopLevel(new ModelResourceLocation(resourceLocation, "inventory"));
-//                        });
-//                    } catch (RuntimeException e) {
-//                        Trimmed.LOGGER.error(e.getMessage());
-//                    }
-//                }
-//                return null;
-//            });
-//        });
         CommonLifecycleEvents.TAGS_LOADED.register(TrimmedClient::onTagsSynced);
     }
 
