@@ -1,7 +1,8 @@
-Ported to 1.20.4
+Ported to 1.20.6
 Release for NeoForge
 
-Note for modders:
-There will be some breaking changes in the 1.21 release, so I urge you to use datagen to make the json changes as 
-painless as possible. For example, the armor trim texture maps will be moved to `trimmed/maps/textures/` and renamed,
-for example `trimmed/maps/textures/all_trim_materials`.
+Many things have changed in this version. Firstly, trim related maps have moved from the several maps found in
+`maps/unchecked/whatever` to just `trimmed/maps/trimmed/trim_textures/material_suffixes.json` and 
+`trimmed/maps/trimmed/trim_textures/material_suffixes/darker_material_suffixes.json`. The latter is used for any trim
+material textures that are meant to be applied instead of the default, for example an iron ingot on iron armor will use 
+the `iron_darker` texture instead.
