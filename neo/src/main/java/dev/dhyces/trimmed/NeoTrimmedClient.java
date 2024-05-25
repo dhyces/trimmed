@@ -9,6 +9,7 @@ import net.neoforged.neoforge.client.event.RegisterClientReloadListenersEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.TagsUpdatedEvent;
 
+@SuppressWarnings("unused")
 @Mod(value = Trimmed.MODID, dist = Dist.CLIENT)
 public class NeoTrimmedClient {
     public NeoTrimmedClient(IEventBus modBus, ModContainer container) {
