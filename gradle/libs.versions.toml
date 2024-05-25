@@ -19,7 +19,7 @@ parchment_release = "2024.05.01"
 parchment_mc = "1.20.6"
 
 mixin = "0.8.5"
-mixinextras = "0.3.5"
+mixinextras = "0.3.6"
 
 jetbrains_annotations = "24.1.0"
 
