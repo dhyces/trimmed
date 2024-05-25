@@ -17,6 +17,7 @@ import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.DependencySorter;
 import net.minecraft.util.GsonHelper;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -34,7 +35,7 @@ public final class MapHandler<K, V> {
     }
 
     MapHolder<K, V> getHolder(MapKey<K, V> mapKey) {
-        return map.get(mapKey);
+        return getOrCreateHolder(mapKey);
     }
 
     public void clear() {
@@ -141,7 +142,7 @@ public final class MapHandler<K, V> {
         }
 
         @Override
-        public MapKey<K, V> getKey() {
+        public MapKey<K, V> unwrapKey() {
             return key;
         }
 
