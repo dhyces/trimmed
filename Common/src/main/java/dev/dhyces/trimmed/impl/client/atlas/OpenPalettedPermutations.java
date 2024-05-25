@@ -33,7 +33,7 @@ public class OpenPalettedPermutations implements SpriteSource {
     public static final MapCodec<OpenPalettedPermutations> CODEC = RecordCodecBuilder.mapCodec(instance ->
             instance.group(
                     ResourceLocation.CODEC.fieldOf("palette_key").forGetter(openPalettedPermutations -> openPalettedPermutations.paletteKey),
-                    MapKey.codec(ClientMapTypes.MATERIAL_SUFFIXES).fieldOf("permutation_map").forGetter(openPalettedPermutations -> openPalettedPermutations.permutations.getKey()),
+                    MapKey.codec(ClientMapTypes.MATERIAL_SUFFIXES).fieldOf("permutation_map").forGetter(openPalettedPermutations -> openPalettedPermutations.permutations.unwrapKeyOrThrow()),
                     ClientTagKey.CODEC.fieldOf("texture_set").forGetter(openPalettedPermutations -> openPalettedPermutations.textures)
             ).apply(instance, OpenPalettedPermutations::new)
     );
