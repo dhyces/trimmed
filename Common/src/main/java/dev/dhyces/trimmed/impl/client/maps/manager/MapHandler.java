@@ -53,7 +53,8 @@ public final class MapHandler<K, V> {
         MapFile<K, V> base = readStack(baseKey.getMapId(), resourceManager.getResourceStack(resolverPath.withSuffix(".json")));
         Map<ResourceLocation, MapFile<K, V>> children = readResources(converter, resourceManager);
         if (base.map().isEmpty() && base.appendElements().isEmpty() && children.isEmpty()) {
-            throw new IllegalStateException("No maps to read, skipping %s".formatted(resolverPath));
+            Trimmed.LOGGER.debug("No maps to read, skipping %s".formatted(resolverPath));
+            return;
         }
 
         DependencySorter<ResourceLocation, Entry<K, V>> dependencySorter = new DependencySorter<>();
