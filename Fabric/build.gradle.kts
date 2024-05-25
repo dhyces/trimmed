@@ -21,7 +21,7 @@ val commonJava by configurations
 val commonResources by configurations
 
 loom {
-    accessWidenerPath = project(":Common").file("src/main/resources/trimmed.accesswidener")
+    accessWidenerPath = project(":common").file("src/main/resources/trimmed.accesswidener")
 
     runs {
         named("client"){
@@ -74,7 +74,7 @@ modsDotGroovy {
     platform(Platform.FABRIC)
     inferGather.set(false)
     multiplatform {
-        from(":Common")
+        from(":common")
     }
     apply()
 }

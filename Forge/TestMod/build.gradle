@@ -23,8 +23,8 @@ minecraft {
 
 			mods {
 				mod {
-					source project(":Common").sourceSets.main
-					source project(":Forge").sourceSets.main
+					source project(":common").sourceSets.main
+					source project(":forge").sourceSets.main
 				}
 				testmod {
 					source sourceSets.main
@@ -61,8 +61,8 @@ dependencies {
 	compileOnly(annotationProcessor(libs.mixinextras.common.get()))
 	implementation(libs.mixinextras.forge.get())
 
-	implementation(project(":Common"))
-	implementation(project(":Forge"))
+	implementation(project(":common"))
+	implementation(project(":forge"))
 
 	annotationProcessor "${libs.sponge.mixin.get()}:processor"
 
@@ -78,8 +78,8 @@ mixin {
 }
 
 //tasks.withType(JavaCompile) {
-//	source(project(":Common").sourceSets.main.allSource)
-//	source(project(":Forge").sourceSets.main.allSource)
+//	source(project(":common").sourceSets.main.allSource)
+//	source(project(":forge").sourceSets.main.allSource)
 //}
 
 sourceSets.each {

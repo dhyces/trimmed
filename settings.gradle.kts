@@ -37,4 +37,4 @@ plugins {
 }
 
 rootProject.name = "trimmed"
-include("Common", "Neo", /*"Forge", "Forge:TestMod",*/ "Fabric") // "Quilt"
+include("common", "neo", /*"forge", "forge:testmod",*/ "fabric") // "quilt"

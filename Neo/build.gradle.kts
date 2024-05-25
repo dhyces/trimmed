@@ -41,7 +41,7 @@ loom {
 			ideConfigGenerated(true)
 			runDir("run")
 
-			programArgs("--mod", properties["mod_id"] as String, "--all", "--output", project(":Common").file("src/generated/resources/").path, "--existing", file("src/main/resources/").path)
+			programArgs("--mod", properties["mod_id"] as String, "--all", "--output", project(":common").file("src/generated/resources/").path, "--existing", file("src/main/resources/").path)
 		}
 	}
 }
@@ -75,7 +75,7 @@ modsDotGroovy {
 	platform(Platform.NEOFORGE)
 	inferGather.set(false)
 	multiplatform {
-		from(":Common")
+		from(":common")
 	}
 	apply()
 }
