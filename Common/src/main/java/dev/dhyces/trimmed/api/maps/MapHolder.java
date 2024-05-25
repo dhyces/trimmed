@@ -17,6 +17,7 @@ public interface MapHolder<K, V> {
     MapKey<K, V> unwrapKey();
     Map<K, V> getMap();
     boolean isRequired(K key);
+    boolean isBound();
 
     interface Typed<K, V, M extends Map<K, V>> extends MapHolder<K, V> {
         M getMap();
@@ -37,6 +38,11 @@ public interface MapHolder<K, V> {
 
             @Override
             public boolean isRequired(K key) {
+                return true;
+            }
+
+            @Override
+            public boolean isBound() {
                 return true;
             }
         };

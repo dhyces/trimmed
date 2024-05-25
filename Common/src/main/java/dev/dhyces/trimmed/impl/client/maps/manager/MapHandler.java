@@ -72,9 +72,9 @@ public final class MapHandler<K, V> {
                     .map(kMapValueEntry -> Map.entry(kMapValueEntry.getKey(), kMapValueEntry.getValue().value()))
                     .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (v, v2) -> v, baseKey.getType()::createMap));
             for (MapAppendElement element : vEntry.file().appendElements()) {
-                Map<K, V> map = getOrCreateHolder(MapKey.of(baseKey.getType(), element.mapId())).getMap();
-                if (map != null) {
-                    finishedMap.putAll(map);
+                MapHolder<K, V> mapHolder = getOrCreateHolder(MapKey.of(baseKey.getType(), element.mapId()));
+                if (mapHolder.isBound()) {
+                    finishedMap.putAll(mapHolder.getMap());
                 }
             }
             holder.backing = finishedMap;
@@ -149,12 +149,20 @@ public final class MapHandler<K, V> {
 
         @Override
         public M getMap() {
+            if (backing == null) {
+                throw new IllegalStateException("Cannot access map because it doesn't exist!");
+            }
             return backing;
         }
 
         @Override
         public boolean isRequired(K key) {
             return optionalKeys.contains(key);
+        }
+
+        @Override
+        public boolean isBound() {
+            return backing != null;
         }
     }
 }
