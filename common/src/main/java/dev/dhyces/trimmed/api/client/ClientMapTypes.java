@@ -1,5 +1,6 @@
 package dev.dhyces.trimmed.api.client;
 
+import com.mojang.serialization.Codec;
 import dev.dhyces.trimmed.api.maps.types.MapType;
 import net.minecraft.resources.ResourceLocation;
 
@@ -9,5 +10,5 @@ import net.minecraft.resources.ResourceLocation;
 public final class ClientMapTypes {
     private ClientMapTypes() {}
 
-    public static final MapType<ResourceLocation, ResourceLocation> MATERIAL_SUFFIXES = MapType.simpleBuilder(ClientMapKeyResolvers.TEXTURE, ResourceLocation.CODEC).build();
+    public static final MapType<ResourceLocation, String> MATERIAL_SUFFIXES = MapType.simpleBuilder(ClientMapKeyResolvers.TEXTURE, Codec.STRING).build();
 }

@@ -39,10 +39,10 @@ public class OpenPalettedPermutations implements SpriteSource {
     );
 
     private final ResourceLocation paletteKey;
-    private final MapHolder<ResourceLocation, ResourceLocation> permutations;
+    private final MapHolder<ResourceLocation, String> permutations;
     private final ClientTagKey textures;
 
-    public OpenPalettedPermutations(ResourceLocation paletteKey, MapKey<ResourceLocation, ResourceLocation> permutations, ClientTagKey textures) {
+    public OpenPalettedPermutations(ResourceLocation paletteKey, MapKey<ResourceLocation, String> permutations, ClientTagKey textures) {
         this.paletteKey = paletteKey;
         this.permutations = TrimmedClientMapApi.getInstance().getSimpleMap(permutations);
         this.textures = textures;
@@ -56,7 +56,7 @@ public class OpenPalettedPermutations implements SpriteSource {
         Map<ResourceLocation, OptionalSupplier> replacePixelsMap = new Object2ObjectOpenHashMap<>();
 
         permutations.getMap().forEach((id, permuteString) -> {
-            replacePixelsMap.put(id.withPath(permuteString.getPath()),
+            replacePixelsMap.put(id.withPath(permuteString),
                     new OptionalSupplier(permutations.isRequired(id), Suppliers.memoize(() ->
                             PalettedPermutations.createPaletteMapping(rawPaletteKeyImage.get(), PalettedPermutations.loadPaletteEntryFromImage(pResourceManager, id))
                     ))

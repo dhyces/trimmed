@@ -40,7 +40,7 @@ public abstract class BaseTrimDatagenSuite {
     protected List<Pair<ResourceKey<TrimMaterial>, TrimMaterial>> materials = new ArrayList<>();
 
     protected List<ResourceLocation> patternTextures = new ArrayList<>();
-    protected Map<ResourceLocation, ResourceLocation> materialTexturePermutations = new LinkedHashMap<>();
+    protected Map<ResourceLocation, String> materialTexturePermutations = new LinkedHashMap<>();
 
     public BaseTrimDatagenSuite(String modid, @Nullable BiConsumer<String, String> translationConsumer) {
         this.modid = modid;
@@ -302,11 +302,11 @@ public abstract class BaseTrimDatagenSuite {
         protected String mainTranslation;
         protected Set<AltTranslation> altTranslations = new HashSet<>();
         protected ResourceLocation paletteTexture;
-        protected ResourceLocation assetName;
+        protected String assetName;
 
         private MaterialConfig(ResourceKey<TrimMaterial> materialKey, Style materialStyle) {
             this.materialKey = materialKey;
-            this.assetName = materialKey.location();
+            this.assetName = materialKey.location().toString().replace(":", "_");
             this.materialStyle = materialStyle;
         }
 
@@ -349,12 +349,12 @@ public abstract class BaseTrimDatagenSuite {
         /**
          * Changes the asset name for the material. Highly discouraged to change it from the generated name, as it
          * prefixes the name with the modid to prevent collision with other sources. If changed, it is encouraged to
-         * follow this format "modid-material_name"
+         * follow this format "modid_material_name"
          * @param name The new asset name
          * @return This instance for chaining method calls
          */
         public MaterialConfig assetName(ResourceLocation name) {
-            assetName = name;
+            assetName = name.toString().replace(":", "_");
             return this;
         }
     }
