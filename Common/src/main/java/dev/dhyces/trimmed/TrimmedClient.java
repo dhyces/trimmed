@@ -30,7 +30,7 @@ public class TrimmedClient {
         TrimmedSpriteSourceTypes.bootstrap();
 //        ModelTemplateManager.init();
         ItemOverrideProviderRegistry.init();
-        MapKeyResolvers.register(Trimmed.id("trim_texture"), ClientMapKeyResolvers.TEXTURE);
+        MapKeyResolvers.register(Trimmed.id("texture"), ClientMapKeyResolvers.TEXTURE);
         ClientMapManager.registerBaseKey(ClientMapKeys.TRIM_MATERIALS);
     }
 
