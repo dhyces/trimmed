@@ -6,5 +6,5 @@ import net.minecraft.resources.ResourceLocation;
 public final class ClientMapKeyResolvers {
     private ClientMapKeyResolvers() {}
 
-    public static final MapKeyResolver<ResourceLocation> TRIM_MATERIAL_TEXTURE = new ClientMapKeyResolver<>(ResourceLocation.CODEC);
+    public static final MapKeyResolver<ResourceLocation> TEXTURE = new ClientMapKeyResolver<>(ResourceLocation.CODEC);
 }

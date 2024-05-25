@@ -9,5 +9,5 @@ import net.minecraft.resources.ResourceLocation;
 public final class ClientMapTypes {
     private ClientMapTypes() {}
 
-    public static final MapType<ResourceLocation, ResourceLocation> MATERIAL_SUFFIXES = MapType.simpleBuilder(ClientMapKeyResolvers.TRIM_MATERIAL_TEXTURE, ResourceLocation.CODEC).build();
+    public static final MapType<ResourceLocation, ResourceLocation> MATERIAL_SUFFIXES = MapType.simpleBuilder(ClientMapKeyResolvers.TEXTURE, ResourceLocation.CODEC).build();
 }
