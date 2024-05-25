@@ -10,7 +10,7 @@ repositories {
 }
 
 dependencies {
-    implementation("maven.modrinth:trimmed:1.20.4-2.1.5+neoforge")
+    implementation("maven.modrinth:trimmed:1.20.6-3.0.0+neoforge")
 }
 ```
 
@@ -24,25 +24,25 @@ repositories {
 }
 
 dependencies {
-    modImplementation("maven.modrinth:trimmed:1.20.4-2.1.5+fabric")
+    modImplementation("maven.modrinth:trimmed:1.20.6-3.0.0+fabric")
 }
 ```
 
-Forge version depends on: [MixinExtras 0.3.2](https://github.com/LlamaLad7/MixinExtras)
+Forge version depends on: [MixinExtras 0.3.6](https://github.com/LlamaLad7/MixinExtras)
 ## Forge Only
 ```groovy
 repositories {
+    mavenCentral()
     maven {
         name = "Modrinth"
         url = "https://api.modrinth.com/maven"
     }
-    maven { url = "https://jitpack.io/" }
 }
 
 dependencies {
-    runtimeOnly("io.github.llamalad7:mixinextras-common:0.3.2")
-    runtimeOnly("io.github.llamalad7:mixinextras-forge:0.3.2")
-    implementation fg.deobf("maven.modrinth:trimmed:1.20.4-2.1.5+forge")
+    runtimeOnly("io.github.llamalad7:mixinextras-common:0.3.6")
+    runtimeOnly("io.github.llamalad7:mixinextras-forge:0.3.6")
+    implementation fg.deobf("maven.modrinth:trimmed:1.20.6-3.0.0+forge")
 }
 ```
 
@@ -58,7 +58,6 @@ repositories {
             password = project.findProperty("gpr.key") ?: System.getenv("TOKEN")
         }
     }
-    maven { url = "https://jitpack.io/" }
     maven {
         url = "https://jm.gserv.me/repository/maven-public/"
     }
@@ -67,26 +66,26 @@ repositories {
 ### Common
 ```groovy
 dependencies {
-    runtimeOnly("io.github.llamalad7:mixinextras-common:0.3.2")
-    implementation("dev.dhyces.trimmed:trimmed-common-1.20.4:2.1.5")
+    runtimeOnly("io.github.llamalad7:mixinextras-common:0.3.6")
+    implementation("dev.dhyces.trimmed:trimmed-common-1.20.6-3.0.0")
 }
 ```
 ### Neo
 ```groovy
 dependencies {
-    implementation fg.deobf("dev.dhyces.trimmed:trimmed-neoforge-1.20.4:2.1.5")
+    implementation fg.deobf("dev.dhyces.trimmed:trimmed-neoforge-1.20.6-3.0.0")
 }
 ```
 ### Fabric
 ```groovy
 dependencies {
-    modImplementation("dev.dhyces.trimmed:trimmed-fabric-1.20.4:2.1.5")
+    modImplementation("dev.dhyces.trimmed:trimmed-fabric-1.20.6-3.0.0")
 }
 ```
 ### Forge
 ```groovy
 dependencies {
-    runtimeOnly("io.github.llamalad7:mixinextras-forge:0.3.2")
-    implementation fg.deobf("dev.dhyces.trimmed:trimmed-forge-1.20.4:2.1.5")
+    runtimeOnly("io.github.llamalad7:mixinextras-forge:0.3.6")
+    implementation fg.deobf("dev.dhyces.trimmed:trimmed-forge-1.20.6-3.0.0")
 }
 ```
