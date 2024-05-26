@@ -5,7 +5,6 @@ import com.google.common.collect.Multimap;
 import com.mojang.datafixers.util.Pair;
 import dev.dhyces.trimmed.api.client.ClientMapKeys;
 import dev.dhyces.trimmed.api.data.maps.ClientMapDataProvider;
-import dev.dhyces.trimmed.api.client.ClientMapTypes;
 import dev.dhyces.trimmed.api.client.UncheckedClientTags;
 import dev.dhyces.trimmed.api.data.tags.ClientTagDataProvider;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
@@ -102,7 +101,7 @@ public class TrimDatagenSuite extends BaseTrimDatagenSuite {
                 @Override
                 protected void addMaps() {
                     if (!materialTexturePermutations.isEmpty()) {
-                        map(ClientMapKeys.TRIM_MATERIALS).putAll(materialTexturePermutations);
+                        map(ClientMapKeys.MATERIAL_SUFFIXES).putAll(materialTexturePermutations);
                     }
                 }
 

@@ -93,7 +93,7 @@ public class TrimDatagenSuite extends BaseTrimDatagenSuite {
             @Override
             protected void addMaps() {
                 if (!materialTexturePermutations.isEmpty()) {
-                    map(ClientMapKeys.TRIM_MATERIALS).putAll(materialTexturePermutations);
+                    map(ClientMapKeys.MATERIAL_SUFFIXES).putAll(materialTexturePermutations);
                 }
             }
 

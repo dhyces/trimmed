@@ -31,7 +31,7 @@ public class TrimmedClient {
 //        ModelTemplateManager.init();
         ItemOverrideProviderRegistry.init();
         MapKeyResolvers.register(Trimmed.id("texture"), ClientMapKeyResolvers.TEXTURE);
-        ClientMapManager.registerBaseKey(ClientMapKeys.TRIM_MATERIALS);
+        ClientMapManager.registerBaseKey(ClientMapKeys.MATERIAL_SUFFIXES);
     }
 
     public static void registerClientReloadListener(BiConsumer<String, PreparableReloadListener> eventConsumer) {
