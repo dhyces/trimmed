@@ -1,11 +1,6 @@
 {
-	"type": "trimmed:trim_generator",
+	"type": "trimmed:trims",
 	"template": "trimmed:item/two_layer_trim",
-	"textures": {
-		"minecraft:item/iron_helmet": "minecraft:trims/items/helmet_trim",
-		"minecraft:item/iron_chestplate": "minecraft:trims/items/chestplate_trim",
-		"minecraft:item/iron_leggings": "minecraft:trims/items/leggings_trim",
-		"minecraft:item/iron_boots": "minecraft:trims/items/boots_trim"
-	},
-	"overridden_textures": "trimmed:texture_overrides/iron_overrides"
+	"textures": "trimmed:trim_overlays/iron_armor",
+	"override_textures": "trimmed:trim_material_overrides/iron"
 }

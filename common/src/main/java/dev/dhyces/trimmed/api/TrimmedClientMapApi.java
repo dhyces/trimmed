@@ -1,7 +1,9 @@
 package dev.dhyces.trimmed.api;
 
+import com.mojang.serialization.Codec;
 import dev.dhyces.trimmed.api.maps.MapHolder;
 import dev.dhyces.trimmed.api.maps.types.AdvancedMapType;
+import dev.dhyces.trimmed.api.maps.types.MapType;
 import dev.dhyces.trimmed.impl.TrimmedClientMapApiImpl;
 import dev.dhyces.trimmed.impl.client.maps.MapKey;
 
@@ -13,6 +15,8 @@ public interface TrimmedClientMapApi {
     }
 
     <K, V> MapHolder<K, V> getSimpleMap(MapKey<K, V> key);
+
+    <K, V> Codec<MapHolder<K, V>> simpleCodec(MapType<K, V> mapType);
 
     <K, V, M extends Map<K, V>> MapHolder.Typed<K, V, M> getAdvancedMap(MapKey<K, V> key, AdvancedMapType<K, V, M> mapType);
 }

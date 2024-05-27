@@ -2,10 +2,13 @@ package dev.dhyces.trimmed;
 
 import dev.dhyces.trimmed.api.client.ClientMapKeyResolvers;
 import dev.dhyces.trimmed.api.client.ClientMapKeys;
+import dev.dhyces.trimmed.api.client.ClientMapTypes;
 import dev.dhyces.trimmed.impl.client.atlas.TrimmedSpriteSourceTypes;
 import dev.dhyces.trimmed.impl.client.maps.MapKeyResolvers;
 import dev.dhyces.trimmed.impl.client.models.override.ItemOverrideReloadListener;
 import dev.dhyces.trimmed.impl.client.models.override.provider.ItemOverrideProviderRegistry;
+import dev.dhyces.trimmed.impl.client.models.source.ModelSourceRegistry;
+import dev.dhyces.trimmed.impl.client.models.source.replacement.StringReplacementManager;
 import dev.dhyces.trimmed.impl.client.tags.manager.ClientTagManager;
 import dev.dhyces.trimmed.impl.mixin.client.ReloadableResourceManagerImplAccessor;
 import dev.dhyces.trimmed.impl.client.maps.manager.ClientMapManager;
@@ -27,11 +30,16 @@ public class TrimmedClient {
 //    });
 
     public static void init() {
+        MapKeyResolvers.register(Trimmed.id("texture"), ClientMapKeyResolvers.TEXTURE);
+        ClientMapTypes.init();
+        ClientMapManager.registerBaseKey(ClientMapKeys.MATERIAL_SUFFIXES);
+        ClientMapManager.registerBaseKey(ClientMapKeys.TRIM_MATERIAL_OVERRIDES);
+        ClientMapManager.registerBaseKey(ClientMapKeys.TRIM_OVERLAYS);
+        StringReplacementManager.init();
+        ModelSourceRegistry.init();
         TrimmedSpriteSourceTypes.bootstrap();
 //        ModelTemplateManager.init();
         ItemOverrideProviderRegistry.init();
-        MapKeyResolvers.register(Trimmed.id("texture"), ClientMapKeyResolvers.TEXTURE);
-        ClientMapManager.registerBaseKey(ClientMapKeys.MATERIAL_SUFFIXES);
     }
 
     public static void registerClientReloadListener(BiConsumer<String, PreparableReloadListener> eventConsumer) {

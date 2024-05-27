@@ -1,0 +1,8 @@
+{
+  "values": {
+    "minecraft:item/golden_helmet": "minecraft:trims/items/helmet_trim",
+    "minecraft:item/golden_chestplate": "minecraft:trims/items/chestplate_trim",
+    "minecraft:item/golden_leggings": "minecraft:trims/items/leggings_trim",
+    "minecraft:item/golden_boots": "minecraft:trims/items/boots_trim"
+  }
+}

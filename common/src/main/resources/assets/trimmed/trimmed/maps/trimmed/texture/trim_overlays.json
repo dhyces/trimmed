@@ -1,0 +1,12 @@
+{
+  "values": {},
+  "append": [
+    "trimmed:trim_overlays/iron_armor",
+    "trimmed:trim_overlays/gold_armor",
+    "trimmed:trim_overlays/diamond_armor",
+    "trimmed:trim_overlays/netherite_armor",
+    "trimmed:trim_overlays/leather_armor",
+    "trimmed:trim_overlays/chainmail_armor",
+    "trimmed:trim_overlays/turtle_armor"
+  ]
+}

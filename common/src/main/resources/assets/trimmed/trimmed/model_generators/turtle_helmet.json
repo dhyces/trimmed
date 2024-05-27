@@ -1,8 +1,0 @@
-{
-	"type": "trimmed:trim_generator",
-	"template": "trimmed:item/two_layer_trim",
-	"textures": {
-		"minecraft:item/turtle_helmet": "minecraft:trims/items/helmet_trim"
-	},
-	"overridden_textures": "trimmed:texture_overrides/turtle_overrides"
-}

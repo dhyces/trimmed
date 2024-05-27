@@ -1,11 +1,6 @@
 {
-	"type": "trimmed:trim_generator",
+	"type": "trimmed:trims",
 	"template": "trimmed:item/two_layer_trim",
-	"textures": {
-		"minecraft:item/netherite_helmet": "minecraft:trims/items/helmet_trim",
-		"minecraft:item/netherite_chestplate": "minecraft:trims/items/chestplate_trim",
-		"minecraft:item/netherite_leggings": "minecraft:trims/items/leggings_trim",
-		"minecraft:item/netherite_boots": "minecraft:trims/items/boots_trim"
-	},
-	"overridden_textures": "trimmed:texture_overrides/netherite_overrides"
+	"textures": "trimmed:trim_overlays/netherite_armor",
+	"override_textures": "trimmed:trim_material_overrides/netherite"
 }

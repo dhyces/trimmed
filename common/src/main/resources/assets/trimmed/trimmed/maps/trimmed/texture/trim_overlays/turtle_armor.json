@@ -1,0 +1,5 @@
+{
+  "values": {
+    "minecraft:item/turtle_helmet": "minecraft:trims/items/helmet_trim"
+  }
+}

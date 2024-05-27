@@ -2,7 +2,6 @@ package dev.dhyces.trimmed.impl.client.maps.manager;
 
 import dev.dhyces.trimmed.Trimmed;
 import dev.dhyces.trimmed.api.maps.MapHolder;
-import dev.dhyces.trimmed.api.maps.types.MapType;
 import dev.dhyces.trimmed.api.util.Utils;
 import dev.dhyces.trimmed.impl.client.maps.MapKey;
 import dev.dhyces.trimmed.impl.client.maps.MapKeyResolvers;
@@ -22,6 +21,7 @@ import java.util.concurrent.Executor;
 // Getting a map from a key before maps have been loaded should return the MapAccess which is then later filled when
 // data is loaded. All map types support groups, where the subdirectories are the same as the names.
 public class ClientMapManager implements PreparableReloadListener {
+    private static final CompletableFuture<Unit> COMPLETABLE = new CompletableFuture<>();
     private static final Map<MapKey<?, ?>, MapHandler<?, ?>> REGISTRY = new Reference2ObjectOpenHashMap<>();
 
     public static <K, V> void registerBaseKey(MapKey<K, V> key) {
@@ -38,12 +38,16 @@ public class ClientMapManager implements PreparableReloadListener {
     }
 
     public static <K, V> MapHolder<K, V> getHolder(MapKey<K, V> key) {
-        return (MapHolder<K, V>) REGISTRY.get(key).getHolder(Utils.unsafeCast(key));
+        return (MapHolder<K, V>) REGISTRY.computeIfAbsent(key.isSubKey() ? key.getBaseKey() : key, MapHandler::new).getHolder(Utils.unsafeCast(key));
+    }
+
+    public static CompletableFuture<Unit> future() {
+        return COMPLETABLE;
     }
 
     @Override
     public CompletableFuture<Void> reload(PreparationBarrier pPreparationBarrier, ResourceManager pResourceManager, ProfilerFiller pPreparationsProfiler, ProfilerFiller pReloadProfiler, Executor pBackgroundExecutor, Executor pGameExecutor) {
-        return load(pResourceManager).thenCompose(pPreparationBarrier::wait).thenRun(() -> Trimmed.logInDev("Client maps loaded!"));
+        return load(pResourceManager).thenApply(COMPLETABLE::complete).thenCompose(pPreparationBarrier::wait).thenRun(() -> Trimmed.logInDev("Client maps loaded!"));
     }
 
     private CompletableFuture<Unit> load(ResourceManager resourceManager) {
@@ -55,7 +59,11 @@ public class ClientMapManager implements PreparableReloadListener {
             ResourceLocation resolverPath = entry.getKey().getMapId().withPrefix("trimmed/maps/" + Utils.namespacedPath(MapKeyResolvers.getId(entry.getKey().getType().getKeyResolver()), '/') + "/");
 
             FileToIdConverter converter = FileToIdConverter.json(resolverPath.getPath());
-            entry.getValue().parse(resolverPath, converter, resourceManager);
+            try {
+                entry.getValue().parse(resolverPath, converter, resourceManager);
+            } catch (RuntimeException e) {
+                Trimmed.LOGGER.error("Could not read map", e);
+            }
         }
 
         return CompletableFuture.completedFuture(Unit.INSTANCE);

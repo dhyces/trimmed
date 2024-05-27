@@ -1,11 +1,20 @@
 package dev.dhyces.trimmed;
 
+import com.mojang.serialization.JsonOps;
+import dev.dhyces.trimmed.api.client.ClientMapTypes;
+import dev.dhyces.trimmed.impl.client.maps.MapKey;
+import dev.dhyces.trimmed.impl.client.maps.manager.MapHandler;
+import dev.dhyces.trimmed.impl.client.models.source.ModelSourceLoader;
+import dev.dhyces.trimmed.impl.client.models.source.replacement.StringReplacementManager;
+import dev.dhyces.trimmed.impl.client.models.source.replacement.providers.MapKeyReplacementProvider;
 import dev.dhyces.trimmed.impl.client.models.template.ModelTemplateManager;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.model.loading.v1.PreparableModelLoadingPlugin;
+import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.CommonLifecycleEvents;
 import net.fabricmc.fabric.api.resource.IdentifiableResourceReloadListener;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
+import net.minecraft.client.gui.screens.TitleScreen;
 import net.minecraft.client.renderer.block.model.BlockModel;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.PackType;
@@ -26,22 +35,22 @@ public class FabricTrimmedClient implements ClientModInitializer {
         TrimmedClient.registerClientReloadListener((id, listener) -> {
             ResourceManagerHelper.get(PackType.CLIENT_RESOURCES).registerReloadListener(new WrappedReloadListener(Trimmed.id(id), listener));
         });
-        PreparableModelLoadingPlugin.register((resourceManager, executor) -> {
-            return CompletableFuture.supplyAsync(() -> {
-                Map<ResourceLocation, Supplier<BlockModel>> models = new HashMap<>();
-//                ModelTemplateManager.generateTemplates(models::put);
-                return models;
-            }, executor);
-        }, (data, pluginContext) -> {
+        PreparableModelLoadingPlugin.register((resourceManager, executor) ->
+                ModelTemplateManager.load(resourceManager, executor)
+                        .thenCompose(templateManager ->
+                            ModelSourceLoader.load(templateManager, resourceManager, executor)
+                        )
+                , (data, pluginContext) -> {
             Set<ResourceLocation> ids = data.keySet();
             pluginContext.addModels(ids);
             pluginContext.resolveModel().register(context -> {
                 if (ids.contains(context.id())) {
-                    return data.get(context.id()).get();
+                    return data.get(context.id());
                 }
                 return null;
             });
         });
+
         CommonLifecycleEvents.TAGS_LOADED.register(TrimmedClient::onTagsSynced);
     }
 

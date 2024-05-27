@@ -10,6 +10,7 @@ import net.minecraft.resources.ResourceLocation;
 
 public final class ClientMapTypes {
     private ClientMapTypes() {}
+    public static void init() {}
 
     private static final BiMap<ResourceLocation, MapType<?, ?>> REGISTERED_TYPES = HashBiMap.create();
     public static final Codec<MapType<?, ?>> CODEC = CodecUtil.TRIMMED_IDENTIFIER.xmap(REGISTERED_TYPES::get, REGISTERED_TYPES.inverse()::get);

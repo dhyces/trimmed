@@ -1,0 +1,21 @@
+{
+  "values": {},
+  "append": [
+    "trimmed:trim_material_overrides/iron",
+    "trimmed:trim_material_overrides/gold",
+    "trimmed:trim_material_overrides/diamond",
+    "trimmed:trim_material_overrides/netherite",
+    {
+      "map": "trimmed:trim_material_overrides/chainmail",
+      "required": false
+    },
+    {
+      "map": "trimmed:trim_material_overrides/leather",
+      "required": false
+    },
+    {
+      "map": "trimmed:trim_material_overrides/turtle",
+      "required": false
+    }
+  ]
+}

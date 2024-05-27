@@ -9,6 +9,7 @@ import dev.dhyces.trimmed.api.maps.MapHolder;
 import dev.dhyces.trimmed.api.maps.types.MapType;
 import dev.dhyces.trimmed.impl.client.maps.MapKey;
 import dev.dhyces.trimmed.modhelper.services.Services;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
 import net.minecraft.Util;
 import net.minecraft.resources.FileToIdConverter;
@@ -17,7 +18,6 @@ import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.DependencySorter;
 import net.minecraft.util.GsonHelper;
-import org.jetbrains.annotations.Nullable;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -38,7 +38,7 @@ public final class MapHandler<K, V> {
         return getOrCreateHolder(mapKey);
     }
 
-    public void clear() {
+    void clear() {
         map.values().forEach(kvMapClientMapHolder -> {
             kvMapClientMapHolder.backing = null;
             kvMapClientMapHolder.optionalKeys = null;
@@ -59,10 +59,10 @@ public final class MapHandler<K, V> {
 
         DependencySorter<ResourceLocation, Entry<K, V>> dependencySorter = new DependencySorter<>();
         dependencySorter.addEntry(baseKey.getMapId(), new Entry<>(base));
-        children.forEach((resourceLocation, vMapFile) -> dependencySorter.addEntry(resourceLocation, new Entry<>(vMapFile)));
+        children.forEach((resourceLocation, vMapFile) -> dependencySorter.addEntry(resourceLocation.withPrefix(baseKey.getMapId().getPath() + "/"), new Entry<>(vMapFile)));
         dependencySorter.orderByDependencies((resourceLocation, vEntry) -> {
             ClientMapHolder<K, V, Map<K, V>> holder = getOrCreateHolder(MapKey.of(baseKey.getType(), resourceLocation));
-            Set<K> optionalElements = new HashSet<>();
+            Set<K> optionalElements = new ObjectOpenHashSet<>();
             Map<K, V> finishedMap = vEntry.file().map().entrySet().stream()
                     .peek(kvEntry -> {
                         if (!kvEntry.getValue().isRequired()) {
@@ -75,6 +75,10 @@ public final class MapHandler<K, V> {
                 MapHolder<K, V> mapHolder = getOrCreateHolder(MapKey.of(baseKey.getType(), element.mapId()));
                 if (mapHolder.isBound()) {
                     finishedMap.putAll(mapHolder.getMap());
+                } else {
+                    if (element.isRequired()) {
+                        throw new IllegalStateException("Required entry \"%s\" cannot be found for \"%s\"".formatted(element.mapId(), resourceLocation));
+                    }
                 }
             }
             holder.backing = finishedMap;
@@ -157,7 +161,7 @@ public final class MapHandler<K, V> {
 
         @Override
         public boolean isRequired(K key) {
-            return optionalKeys.contains(key);
+            return !optionalKeys.contains(key);
         }
 
         @Override

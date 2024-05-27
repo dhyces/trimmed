@@ -1,0 +1,8 @@
+{
+  "values": {
+    "minecraft:item/leather_helmet": "minecraft:trims/items/helmet_trim",
+    "minecraft:item/leather_chestplate": "minecraft:trims/items/chestplate_trim",
+    "minecraft:item/leather_leggings": "minecraft:trims/items/leggings_trim",
+    "minecraft:item/leather_boots": "minecraft:trims/items/boots_trim"
+  }
+}

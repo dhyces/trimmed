@@ -27,10 +27,12 @@ public final class MapKey<K, V> {
 
     private final MapType<K, V> type;
     private final ResourceLocation id;
+    private final boolean isSubKey;
 
     private MapKey(MapType<K, V> mapType, ResourceLocation id) {
         this.type = mapType;
         this.id = id;
+        this.isSubKey = id.getPath().contains("/");
     }
 
     @SuppressWarnings("unchecked")
@@ -52,6 +54,18 @@ public final class MapKey<K, V> {
 
     public MapKey<K, V> makeSubKeyFromPath(ResourceLocation subId) {
         return makeSubKey(subId.getPath().replace(id.getPath(), ""));
+    }
+
+    public MapKey<K, V> getParentKey() {
+        return of(type, id.withPath(s -> s.substring(0, s.lastIndexOf("/"))));
+    }
+
+    public MapKey<K, V> getBaseKey() {
+        return of(type, id.withPath(s -> s.substring(0, s.indexOf("/"))));
+    }
+
+    public boolean isSubKey() {
+        return isSubKey;
     }
 
     @Override
