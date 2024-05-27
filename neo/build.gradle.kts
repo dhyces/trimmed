@@ -61,10 +61,7 @@ loom {
 
 			mods {
 				named("trimmed") {
-					sourceSet(sourceSets.main.get())
 					sourceSet(sourceSets.named("datagen").get())
-					configuration(commonJava)
-					configuration(commonResources)
 				}
 			}
 		}
