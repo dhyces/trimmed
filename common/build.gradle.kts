@@ -61,14 +61,16 @@ dependencies {
     implementation(libs.mixinextras.common.get())
 }
 
-artifacts {
-    add(commonJava.name, sourceSets.main.get().java.sourceDirectories.singleFile)
-    add(commonResources.name, sourceSets.main.get().resources.sourceDirectories.singleFile)
-}
-
 sourceSets.main {
     resources {
         srcDir("src/generated/resources")
+    }
+}
+
+artifacts {
+    add(commonJava.name, sourceSets.main.get().java.sourceDirectories.singleFile)
+    sourceSets.main.get().resources.sourceDirectories.forEach {
+        add(commonResources.name, it)
     }
 }
 
