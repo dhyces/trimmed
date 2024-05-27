@@ -8,7 +8,7 @@ import java.util.Optional;
 
 public interface MapHolder<K, V> {
     default MapKey<K, V> unwrapKeyOrThrow() {
-        return getKey().orElseThrow();
+        return getKey().orElseThrow(() -> new IllegalStateException("No key is present for map holder"));
     }
     default Optional<MapKey<K, V>> getKey() {
         return Optional.ofNullable(unwrapKey());
