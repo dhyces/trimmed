@@ -35,7 +35,6 @@ public class TrimmedClient {
         ClientMapManager.registerBaseKey(ClientMapKeys.MATERIAL_SUFFIXES);
         ClientMapManager.registerBaseKey(ClientMapKeys.TRIM_MATERIAL_OVERRIDES);
         ClientMapManager.registerBaseKey(ClientMapKeys.TRIM_OVERLAYS);
-        StringReplacementManager.init();
         ModelSourceRegistry.init();
         TrimmedSpriteSourceTypes.bootstrap();
 //        ModelTemplateManager.init();
