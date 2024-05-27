@@ -3,7 +3,9 @@ package dev.dhyces.trimmed.api.maps.types;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import dev.dhyces.trimmed.api.maps.MapKeyResolver;
+import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Reference2ObjectLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
@@ -23,9 +25,9 @@ public sealed interface MapType<K, V> permits SimpleMapType, AdvancedMapType {
 
     default Map<K, V> createMap() {
         if (getKeyResolver() instanceof MapKeyResolver.RegistryWrapper<K>) {
-            return new Reference2ObjectOpenHashMap<>();
+            return new Reference2ObjectLinkedOpenHashMap<>();
         } else {
-            return new Object2ObjectOpenHashMap<>();
+            return new Object2ObjectLinkedOpenHashMap<>();
         }
     }
 
