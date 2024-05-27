@@ -3,12 +3,22 @@ package dev.dhyces.trimmed.impl.client.maps;
 import com.google.common.collect.Interner;
 import com.google.common.collect.Interners;
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import dev.dhyces.trimmed.api.client.ClientMapTypes;
 import dev.dhyces.trimmed.api.maps.types.MapType;
+import dev.dhyces.trimmed.api.util.CodecUtil;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.Objects;
 
 public final class MapKey<K, V> {
+    public static final MapCodec<MapKey<?, ?>> REGISTERED_CODEC = RecordCodecBuilder.mapCodec(instance ->
+            instance.group(
+                    ClientMapTypes.CODEC.fieldOf("map_type").forGetter(MapKey::getType),
+                    CodecUtil.TRIMMED_IDENTIFIER.fieldOf("map_key").forGetter(MapKey::getMapId)
+            ).apply(instance, MapKey::of)
+    );
     public static <K, V> Codec<MapKey<K, V>> codec(MapType<K, V> mapType) {
         return ResourceLocation.CODEC.xmap(resourceLocation -> MapKey.of(mapType, resourceLocation), MapKey::getMapId);
     }
