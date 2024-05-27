@@ -1,21 +1,12 @@
 package dev.dhyces.trimmed;
 
-import com.mojang.serialization.JsonOps;
-import dev.dhyces.trimmed.api.client.ClientMapTypes;
-import dev.dhyces.trimmed.impl.client.maps.MapKey;
-import dev.dhyces.trimmed.impl.client.maps.manager.MapHandler;
 import dev.dhyces.trimmed.impl.client.models.source.ModelSourceLoader;
-import dev.dhyces.trimmed.impl.client.models.source.replacement.StringReplacementManager;
-import dev.dhyces.trimmed.impl.client.models.source.replacement.providers.MapKeyReplacementProvider;
 import dev.dhyces.trimmed.impl.client.models.template.ModelTemplateManager;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.model.loading.v1.PreparableModelLoadingPlugin;
-import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.CommonLifecycleEvents;
 import net.fabricmc.fabric.api.resource.IdentifiableResourceReloadListener;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
-import net.minecraft.client.gui.screens.TitleScreen;
-import net.minecraft.client.renderer.block.model.BlockModel;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.resources.PreparableReloadListener;
@@ -25,7 +16,6 @@ import net.minecraft.util.profiling.ProfilerFiller;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
-import java.util.function.Supplier;
 
 @SuppressWarnings("unused")
 public class FabricTrimmedClient implements ClientModInitializer {
