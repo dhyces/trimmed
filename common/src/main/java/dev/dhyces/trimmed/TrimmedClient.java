@@ -8,11 +8,10 @@ import dev.dhyces.trimmed.impl.client.maps.MapKeyResolvers;
 import dev.dhyces.trimmed.impl.client.models.override.ItemOverrideReloadListener;
 import dev.dhyces.trimmed.impl.client.models.override.provider.ItemOverrideProviderRegistry;
 import dev.dhyces.trimmed.impl.client.models.source.ModelSourceRegistry;
-import dev.dhyces.trimmed.impl.client.models.source.replacement.StringReplacementManager;
+import dev.dhyces.trimmed.impl.client.models.template.ModelTemplateManager;
 import dev.dhyces.trimmed.impl.client.tags.manager.ClientTagManager;
 import dev.dhyces.trimmed.impl.mixin.client.ReloadableResourceManagerImplAccessor;
 import dev.dhyces.trimmed.impl.client.maps.manager.ClientMapManager;
-//import dhyces.trimmed.impl.network.Networking;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.core.RegistryAccess;
@@ -23,12 +22,6 @@ import java.util.function.Consumer;
 
 public class TrimmedClient {
 
-//    public static final SimplePacketHandler CLIENT_HANDLER = Util.make(new SimplePacketHandler(), handler -> {
-//        handler.registerPacketConsumer(Networking.SYNC_MAPS, context -> {
-//            Minecraft.getInstance().player.displayClientMessage(context.message().stack.getDisplayName(), false);
-//        });
-//    });
-
     public static void init() {
         MapKeyResolvers.register(Trimmed.id("texture"), ClientMapKeyResolvers.TEXTURE);
         ClientMapTypes.init();
@@ -37,7 +30,6 @@ public class TrimmedClient {
         ClientMapManager.registerBaseKey(ClientMapKeys.TRIM_OVERLAYS);
         ModelSourceRegistry.init();
         TrimmedSpriteSourceTypes.bootstrap();
-//        ModelTemplateManager.init();
         ItemOverrideProviderRegistry.init();
     }
 
