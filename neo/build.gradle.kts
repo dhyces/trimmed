@@ -17,31 +17,56 @@ base {
 	archivesName = "${properties["mod_name"]}-neo-${libs.versions.minecraft.release.get()}"
 }
 
+val commonJava by configurations
+val commonResources by configurations
+
+sourceSets {
+	val main = sourceSets.named("main").get()
+	create("datagen") {
+		compileClasspath += main.compileClasspath + main.output
+		runtimeClasspath += main.runtimeClasspath + main.output
+	}
+}
+
 loom {
 	neoForge {
 		accessTransformer(file("src/main/resources/META-INF/accesstransformer.cfg"))
 	}
 
 	runs {
+		configureEach {
+			ideConfigGenerated(true)
+			runDir("run")
+			mods {
+				create("trimmed") {
+					sourceSet(sourceSets.main.get())
+					configuration(commonJava)
+					configuration(commonResources)
+				}
+			}
+		}
 		named("client") {
 			client()
 			configName = "Neo Client"
-			ideConfigGenerated(true)
-			runDir("run")
 		}
 		named("server") {
 			server()
 			configName = "Neo Server"
-			ideConfigGenerated(true)
-			runDir("run")
 		}
 		create("data") {
 			data()
 			configName = "Neo Data"
-			ideConfigGenerated(true)
-			runDir("run")
 
 			programArgs("--mod", properties["mod_id"] as String, "--all", "--output", project(":common").file("src/generated/resources/").path, "--existing", file("src/main/resources/").path)
+
+			mods {
+				named("trimmed") {
+					sourceSet(sourceSets.main.get())
+					sourceSet(sourceSets.named("datagen").get())
+					configuration(commonJava)
+					configuration(commonResources)
+				}
+			}
 		}
 	}
 }

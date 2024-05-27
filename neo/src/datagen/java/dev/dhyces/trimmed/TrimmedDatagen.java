@@ -1,15 +1,14 @@
-package dhyces.trimmed;
+package dev.dhyces.trimmed;
 
-import dev.dhyces.trimmed.Trimmed;
-import dhyces.trimmed.model.VanillaItemModelOverrideProvider;
+import dev.dhyces.trimmed.model.VanillaItemModelOverrideProvider;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.PackOutput;
-import net.minecraftforge.data.event.GatherDataEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.data.event.GatherDataEvent;
 
 // as much as I dislike EBS magic annotations, it is the only way I see of actually separating datagen from main src
-@Mod.EventBusSubscriber(modid = Trimmed.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
+@EventBusSubscriber(modid = Trimmed.MODID, bus = EventBusSubscriber.Bus.MOD)
 public class TrimmedDatagen {
 
     @SubscribeEvent
