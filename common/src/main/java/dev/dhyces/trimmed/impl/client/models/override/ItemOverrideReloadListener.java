@@ -4,10 +4,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import dev.dhyces.trimmed.modhelper.services.Services;
 import dev.dhyces.trimmed.api.client.override.provider.ItemOverrideProvider;
-import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
+import it.unimi.dsi.fastutil.objects.*;
 import net.minecraft.resources.FileToIdConverter;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.Resource;
@@ -50,7 +47,7 @@ public class ItemOverrideReloadListener extends SimplePreparableReloadListener<M
     protected void apply(Map<ResourceLocation, List<JsonObject>> jsonFiles, ResourceManager resourceManager, ProfilerFiller profiler) {
         ItemOverrideRegistry.clearRegistry();
         for (Map.Entry<ResourceLocation, List<JsonObject>> entry : jsonFiles.entrySet()) {
-            Set<ItemOverrideProvider> combined = new ObjectOpenHashSet<>();
+            ObjectSet<ItemOverrideProvider> combined = new ObjectOpenHashSet<>();
             try {
                 for (JsonObject json : entry.getValue()) {
                     Optional<Set<ItemOverrideProvider>> result = Services.PLATFORM_HELPER.decodeWithConditions(ItemOverrideProvider.SET_MAP_CODEC_CODEC, json);
@@ -63,7 +60,7 @@ public class ItemOverrideReloadListener extends SimplePreparableReloadListener<M
             } catch (JsonParseException e) {
                 LOGGER.error("Could not read %s: ".formatted(entry.getKey()), e);
             }
-            ItemOverrideRegistry.addOverrideSet(entry.getKey(), combined);
+            ItemOverrideRegistry.addOverrideSet(entry.getKey(), ObjectSets.unmodifiable(combined));
         }
     }
 }
