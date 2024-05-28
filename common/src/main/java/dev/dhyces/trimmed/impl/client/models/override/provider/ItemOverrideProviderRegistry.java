@@ -24,7 +24,9 @@ public class ItemOverrideProviderRegistry {
         ItemOverrideProviderType.bootstrap();
     }
 
-    public static void register(ResourceLocation identifier, ItemOverrideProviderType<?> providerType) {
-        PROVIDER_TYPE_MAP.put(identifier, providerType);
+    public static void register(ResourceLocation id, ItemOverrideProviderType<?> providerType) {
+        if (PROVIDER_TYPE_MAP.putIfAbsent(id, providerType) != null) {
+            throw new IllegalArgumentException("ItemOverrideProviderType already registered with id \"" + id + "\"");
+        }
     }
 }

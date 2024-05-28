@@ -12,6 +12,6 @@ public interface AtlasSourceManagerAccessor {
 
     @Invoker
     static SpriteSourceType invokeRegister(String pName, MapCodec<? extends SpriteSource> pCodec) {
-        throw new AssertionError();
+        throw new AssertionError("Implemented by mixin");
     }
 }
