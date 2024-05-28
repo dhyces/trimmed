@@ -5,7 +5,7 @@ import com.google.common.collect.Multimap;
 import com.mojang.datafixers.util.Pair;
 import dev.dhyces.trimmed.api.client.map.ClientMapKeys;
 import dev.dhyces.trimmed.api.data.maps.ClientMapDataProvider;
-import dev.dhyces.trimmed.api.client.UncheckedClientTags;
+import dev.dhyces.trimmed.api.client.tag.UncheckedClientTags;
 import dev.dhyces.trimmed.api.data.tags.ClientTagDataProvider;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
