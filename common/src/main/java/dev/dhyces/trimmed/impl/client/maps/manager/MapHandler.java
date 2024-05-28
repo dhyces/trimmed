@@ -7,7 +7,7 @@ import dev.dhyces.trimmed.api.data.maps.MapAppendElement;
 import dev.dhyces.trimmed.api.data.maps.MapFile;
 import dev.dhyces.trimmed.api.maps.MapHolder;
 import dev.dhyces.trimmed.api.maps.types.MapType;
-import dev.dhyces.trimmed.impl.client.maps.MapKey;
+import dev.dhyces.trimmed.api.maps.MapKey;
 import dev.dhyces.trimmed.modhelper.services.Services;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;

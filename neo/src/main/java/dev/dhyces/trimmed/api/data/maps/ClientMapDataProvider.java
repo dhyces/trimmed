@@ -3,9 +3,8 @@ package dev.dhyces.trimmed.api.data.maps;
 import com.google.gson.JsonElement;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.JsonOps;
-import dev.dhyces.trimmed.Trimmed;
 import dev.dhyces.trimmed.api.data.maps.appenders.ClientMapAppender;
-import dev.dhyces.trimmed.impl.client.maps.MapKey;
+import dev.dhyces.trimmed.api.maps.MapKey;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
@@ -14,7 +13,6 @@ import net.neoforged.neoforge.common.data.ExistingFileHelper;
 
 import java.nio.file.Path;
 import java.util.concurrent.CompletableFuture;
-import java.util.function.Function;
 
 public abstract class ClientMapDataProvider<K> extends BaseMapDataProvider<K> {
 

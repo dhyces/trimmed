@@ -3,7 +3,7 @@ package dev.dhyces.trimmed.impl.client.maps.manager;
 import dev.dhyces.trimmed.Trimmed;
 import dev.dhyces.trimmed.api.maps.MapHolder;
 import dev.dhyces.trimmed.api.util.Utils;
-import dev.dhyces.trimmed.impl.client.maps.MapKey;
+import dev.dhyces.trimmed.api.maps.MapKey;
 import dev.dhyces.trimmed.impl.client.maps.MapKeyResolvers;
 import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
 import net.minecraft.resources.FileToIdConverter;

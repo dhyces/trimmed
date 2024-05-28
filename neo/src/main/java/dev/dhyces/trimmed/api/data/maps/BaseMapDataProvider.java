@@ -1,6 +1,6 @@
 package dev.dhyces.trimmed.api.data.maps;
 
-import dev.dhyces.trimmed.impl.client.maps.MapKey;
+import dev.dhyces.trimmed.api.maps.MapKey;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;

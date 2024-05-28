@@ -5,7 +5,7 @@ import dev.dhyces.trimmed.api.TrimmedClientMapApi;
 import dev.dhyces.trimmed.api.maps.MapHolder;
 import dev.dhyces.trimmed.api.maps.types.AdvancedMapType;
 import dev.dhyces.trimmed.api.maps.types.MapType;
-import dev.dhyces.trimmed.impl.client.maps.MapKey;
+import dev.dhyces.trimmed.api.maps.MapKey;
 import dev.dhyces.trimmed.impl.client.maps.manager.ClientMapManager;
 
 import java.util.Map;

@@ -3,10 +3,9 @@ package dev.dhyces.trimmed.api.data.maps;
 import com.google.gson.JsonElement;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.JsonOps;
-import dev.dhyces.trimmed.Trimmed;
 import dev.dhyces.trimmed.api.data.maps.appenders.ClientRegistryMapAppender;
 import dev.dhyces.trimmed.api.util.Utils;
-import dev.dhyces.trimmed.impl.client.maps.MapKey;
+import dev.dhyces.trimmed.api.maps.MapKey;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Registry;
 import net.minecraft.data.CachedOutput;
@@ -18,7 +17,6 @@ import net.neoforged.neoforge.common.data.ExistingFileHelper;
 
 import java.nio.file.Path;
 import java.util.concurrent.CompletableFuture;
-import java.util.function.Function;
 
 public abstract class ClientRegistryMapDataProvider<K> extends BaseMapDataProvider<K> {
     private final ResourceKey<? extends Registry<K>> registryKey;

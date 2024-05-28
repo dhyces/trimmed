@@ -1,4 +1,4 @@
-package dev.dhyces.trimmed.impl.client.maps;
+package dev.dhyces.trimmed.api.maps;
 
 import com.google.common.collect.Interner;
 import com.google.common.collect.Interners;

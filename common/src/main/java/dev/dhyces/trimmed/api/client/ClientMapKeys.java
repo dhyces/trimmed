@@ -1,7 +1,7 @@
 package dev.dhyces.trimmed.api.client;
 
 import dev.dhyces.trimmed.Trimmed;
-import dev.dhyces.trimmed.impl.client.maps.MapKey;
+import dev.dhyces.trimmed.api.maps.MapKey;
 import net.minecraft.resources.ResourceLocation;
 
 public class ClientMapKeys {

@@ -1,15 +1,9 @@
 package dev.dhyces.trimmed.api.data.maps.appenders;
 
 import dev.dhyces.trimmed.api.data.maps.MapBuilder;
-import dev.dhyces.trimmed.impl.client.maps.MapKey;
-import net.minecraft.Util;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 
-import java.util.Map;
-import java.util.function.Function;
 import java.util.function.Supplier;
 
 public class ClientRegistryMapAppender<K, V> extends BaseMapAppender<K, V> {

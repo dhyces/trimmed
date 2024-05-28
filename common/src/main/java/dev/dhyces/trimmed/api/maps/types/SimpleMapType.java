@@ -1,9 +1,7 @@
 package dev.dhyces.trimmed.api.maps.types;
 
 import com.mojang.serialization.Codec;
-import com.mojang.serialization.MapCodec;
 import dev.dhyces.trimmed.api.maps.MapKeyResolver;
-import dev.dhyces.trimmed.impl.client.maps.MapKey;
 import dev.dhyces.trimmed.impl.client.maps.MapKeyResolvers;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;

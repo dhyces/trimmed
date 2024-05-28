@@ -4,10 +4,9 @@ import com.google.gson.JsonElement;
 import com.mojang.datafixers.util.Unit;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.JsonOps;
-import dev.dhyces.trimmed.Trimmed;
 import dev.dhyces.trimmed.api.data.maps.appenders.ClientRegistryMapAppender;
 import dev.dhyces.trimmed.api.util.Utils;
-import dev.dhyces.trimmed.impl.client.maps.MapKey;
+import dev.dhyces.trimmed.api.maps.MapKey;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Registry;
@@ -16,10 +15,8 @@ import net.minecraft.data.DataProvider;
 import net.minecraft.resources.ResourceKey;
 
 import java.nio.file.Path;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
-import java.util.function.Function;
 
 public abstract class ClientRegistryMapDataProvider<K> extends BaseMapDataProvider {
     private final ResourceKey<? extends Registry<K>> registryKey;

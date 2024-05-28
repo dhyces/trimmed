@@ -9,7 +9,7 @@ import dev.dhyces.trimmed.api.TrimmedClientMapApi;
 import dev.dhyces.trimmed.api.TrimmedClientTagApi;
 import dev.dhyces.trimmed.api.client.ClientMapTypes;
 import dev.dhyces.trimmed.api.maps.MapHolder;
-import dev.dhyces.trimmed.impl.client.maps.MapKey;
+import dev.dhyces.trimmed.api.maps.MapKey;
 import dev.dhyces.trimmed.impl.client.tags.ClientTagKey;
 import dev.dhyces.trimmed.modhelper.services.Services;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;

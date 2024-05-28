@@ -1,6 +1,5 @@
 package dev.dhyces.trimmed.api.maps;
 
-import dev.dhyces.trimmed.impl.client.maps.MapKey;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
