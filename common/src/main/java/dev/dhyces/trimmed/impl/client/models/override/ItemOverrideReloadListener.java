@@ -22,7 +22,7 @@ import java.util.*;
 public class ItemOverrideReloadListener extends SimplePreparableReloadListener<Map<ResourceLocation, List<JsonObject>>> {
     private static final Logger LOGGER = LoggerFactory.getLogger("Trimmed/Item Model Overrides");
 
-    public static final String OVERRIDES_DIRECTORY = "trimmed/model_overrides";
+    public static final String OVERRIDES_DIRECTORY = "trimmed/item_model_overrides";
     private static final FileToIdConverter OVERRIDES_FINDER = FileToIdConverter.json(OVERRIDES_DIRECTORY);
 
     @Override
