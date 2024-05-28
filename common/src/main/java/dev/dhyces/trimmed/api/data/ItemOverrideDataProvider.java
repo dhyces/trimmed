@@ -6,6 +6,7 @@ import com.mojang.serialization.JsonOps;
 import dev.dhyces.trimmed.api.client.override.provider.ItemOverrideProvider;
 import dev.dhyces.trimmed.api.client.override.provider.providers.AnyTrimItemOverrideProvider;
 import dev.dhyces.trimmed.api.client.override.provider.providers.ComponentItemOverrideProvider;
+import dev.dhyces.trimmed.api.data.models.override.ItemOverrideFile;
 import dev.dhyces.trimmed.impl.client.models.override.ItemOverrideReloadListener;
 import dev.dhyces.trimmed.impl.client.models.template.StringTemplate;
 import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
@@ -27,7 +28,7 @@ public abstract class ItemOverrideDataProvider implements DataProvider {
     protected final String modid;
     protected final PackOutput dataOutput;
     protected final PackOutput.PathProvider pathResolver;
-    private final Map<ItemLike, Set<ItemOverrideProvider>> providerMap = new Object2ObjectLinkedOpenHashMap<>();
+    private final Map<ItemLike, ItemOverrideFile> providerMap = new Object2ObjectLinkedOpenHashMap<>();
 
     public ItemOverrideDataProvider(PackOutput output, String modid) {
         this.dataOutput = output;
@@ -67,7 +68,7 @@ public abstract class ItemOverrideDataProvider implements DataProvider {
 
     protected void addItemOverrides(ItemLike item, ItemOverrideProvider... providers) {
         for (ItemOverrideProvider provider : providers) {
-            providerMap.computeIfAbsent(item, itemConvertible -> new ObjectLinkedOpenHashSet<>()).add(provider);
+            providerMap.computeIfAbsent(item, itemConvertible -> new ItemOverrideFile(new ObjectLinkedOpenHashSet<>(), false)).overrideProviders().add(provider);
         }
     }
 
@@ -79,7 +80,7 @@ public abstract class ItemOverrideDataProvider implements DataProvider {
     public CompletableFuture<?> run(CachedOutput writer) {
         addItemOverrides();
         return CompletableFuture.allOf(providerMap.entrySet().stream().map((entry) -> {
-            DataResult<JsonElement> encoded = ItemOverrideProvider.SET_MAP_CODEC_CODEC.encodeStart(JsonOps.INSTANCE, entry.getValue());
+            DataResult<JsonElement> encoded = ItemOverrideFile.CODEC.encodeStart(JsonOps.INSTANCE, entry.getValue());
             JsonElement json = encoded.getOrThrow();
             ResourceLocation id = BuiltInRegistries.ITEM.getKey(entry.getKey().asItem());
             return DataProvider.saveStable(writer, json, pathResolver.json(id));
