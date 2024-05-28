@@ -17,6 +17,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.armortrim.ArmorTrim;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Objects;
 import java.util.Optional;
 
 public class AnyTrimItemOverrideProvider extends SimpleItemOverrideProvider {
@@ -48,14 +49,14 @@ public class AnyTrimItemOverrideProvider extends SimpleItemOverrideProvider {
                 .map(ArmorTrim::material)
                 .flatMap(holder -> holder.unwrapKey().map(key -> key.location().withPath(holder.value().overrideArmorMaterials().getOrDefault(armorItem.getMaterial(), holder.value().assetName()))));
         if (materialIdOptional.isPresent()) {
-            ResourceLocation materialId = materialIdOptional.get();
-            return Optional.of(new ModelResourceLocation(new ResourceLocation(modelIdTemplate.process(s -> {
+            ResourceLocation id = new ResourceLocation(modelIdTemplate.process(s -> {
                 if (s.equals("material_suffix")) {
-                    return materialId.getPath();
+                    return materialIdOptional.get().getPath();
                 } else {
                     return null;
                 }
-            })), "inventory"));
+            })).withPath(s -> s.substring(s.indexOf("/")+1));
+            return Optional.of(new ModelResourceLocation(id, "inventory"));
         }
         return Optional.empty();
     }
@@ -63,5 +64,18 @@ public class AnyTrimItemOverrideProvider extends SimpleItemOverrideProvider {
     @Override
     public ItemOverrideProviderType<?> getType() {
         return ItemOverrideProviderType.ANY_TRIM;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        AnyTrimItemOverrideProvider that = (AnyTrimItemOverrideProvider) o;
+        return Objects.equals(modelIdTemplate, that.modelIdTemplate);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(modelIdTemplate);
     }
 }

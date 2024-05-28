@@ -14,8 +14,8 @@ import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.Stream;
 
 public final class ComponentItemOverrideProvider extends SimpleItemOverrideProvider {
     public static final MapCodec<ComponentItemOverrideProvider> CODEC = RecordCodecBuilder.mapCodec(instance ->
@@ -56,12 +56,20 @@ public final class ComponentItemOverrideProvider extends SimpleItemOverrideProvi
     }
 
     @Override
-    public Stream<ModelResourceLocation> getModelsToBake() {
-        return Stream.of(model);
+    public ItemOverrideProviderType<?> getType() {
+        return ItemOverrideProviderType.COMPONENT;
     }
 
     @Override
-    public ItemOverrideProviderType<?> getType() {
-        return ItemOverrideProviderType.NBT;
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ComponentItemOverrideProvider that = (ComponentItemOverrideProvider) o;
+        return Objects.equals(componentPatch, that.componentPatch) && Objects.equals(model, that.model);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(componentPatch, model);
     }
 }
