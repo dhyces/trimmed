@@ -1,0 +1,8 @@
+{
+  "values": [
+    {
+      "type": "trimmed:any_trim",
+      "model_id_template": "minecraft:item/netherite_boots_${material_suffix}_trim"
+    }
+  ]
+}
