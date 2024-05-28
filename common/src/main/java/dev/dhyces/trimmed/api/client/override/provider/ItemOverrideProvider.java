@@ -14,7 +14,7 @@ import java.util.Optional;
 import java.util.Set;
 
 public interface ItemOverrideProvider {
-    Codec<ItemOverrideProvider> CODEC = ItemOverrideProviderRegistry.CODEC.dispatch("type", ItemOverrideProvider::getType, ItemOverrideProviderType::getCodec);
+    Codec<ItemOverrideProvider> CODEC = ItemOverrideProviderRegistry.CODEC.dispatch(ItemOverrideProvider::getType, ItemOverrideProviderType::getCodec);
     MapCodec<Set<ItemOverrideProvider>> SET_MAP_CODEC = CodecUtil.setOf(CODEC).fieldOf("values");
     Codec<Set<ItemOverrideProvider>> SET_MAP_CODEC_CODEC = SET_MAP_CODEC.codec();
 
