@@ -3,7 +3,7 @@ package dev.dhyces.trimmed.api.data;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import com.mojang.datafixers.util.Pair;
-import dev.dhyces.trimmed.api.client.ClientMapKeys;
+import dev.dhyces.trimmed.api.client.map.ClientMapKeys;
 import dev.dhyces.trimmed.api.data.maps.ClientMapDataProvider;
 import dev.dhyces.trimmed.api.client.UncheckedClientTags;
 import dev.dhyces.trimmed.api.data.tags.ClientTagDataProvider;

@@ -5,7 +5,7 @@ import com.google.common.collect.Interners;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import dev.dhyces.trimmed.api.client.ClientMapTypes;
+import dev.dhyces.trimmed.api.client.map.ClientMapTypes;
 import dev.dhyces.trimmed.api.maps.types.MapType;
 import dev.dhyces.trimmed.api.util.CodecUtil;
 import net.minecraft.resources.ResourceLocation;

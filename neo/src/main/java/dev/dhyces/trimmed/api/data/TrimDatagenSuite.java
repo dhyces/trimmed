@@ -1,6 +1,6 @@
 package dev.dhyces.trimmed.api.data;
 
-import dev.dhyces.trimmed.api.client.ClientMapKeys;
+import dev.dhyces.trimmed.api.client.map.ClientMapKeys;
 import dev.dhyces.trimmed.api.client.UncheckedClientTags;
 import dev.dhyces.trimmed.api.data.maps.ClientMapDataProvider;
 import dev.dhyces.trimmed.api.data.tags.ClientTagDataProvider;

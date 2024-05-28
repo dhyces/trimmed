@@ -1,4 +1,4 @@
-package dev.dhyces.trimmed.api.client;
+package dev.dhyces.trimmed.api.client.map;
 
 import dev.dhyces.trimmed.Trimmed;
 import dev.dhyces.trimmed.api.maps.MapKey;

@@ -1,4 +1,4 @@
-package dev.dhyces.trimmed.api.client;
+package dev.dhyces.trimmed.api.client.map;
 
 import com.mojang.serialization.Codec;
 import dev.dhyces.trimmed.api.maps.MapKeyResolver;

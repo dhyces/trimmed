@@ -1,24 +1,21 @@
 package dev.dhyces.trimmed;
 
-import dev.dhyces.trimmed.api.client.ClientMapKeyResolvers;
-import dev.dhyces.trimmed.api.client.ClientMapKeys;
-import dev.dhyces.trimmed.api.client.ClientMapTypes;
+import dev.dhyces.trimmed.api.client.map.ClientMapKeyResolvers;
+import dev.dhyces.trimmed.api.client.map.ClientMapKeys;
+import dev.dhyces.trimmed.api.client.map.ClientMapTypes;
 import dev.dhyces.trimmed.impl.client.atlas.TrimmedSpriteSourceTypes;
 import dev.dhyces.trimmed.impl.client.maps.MapKeyResolvers;
 import dev.dhyces.trimmed.impl.client.models.override.ItemOverrideReloadListener;
 import dev.dhyces.trimmed.impl.client.models.override.provider.ItemOverrideProviderRegistry;
 import dev.dhyces.trimmed.impl.client.models.source.ModelSourceRegistry;
-import dev.dhyces.trimmed.impl.client.models.template.ModelTemplateManager;
 import dev.dhyces.trimmed.impl.client.tags.manager.ClientTagManager;
 import dev.dhyces.trimmed.impl.mixin.client.ReloadableResourceManagerImplAccessor;
 import dev.dhyces.trimmed.impl.client.maps.manager.ClientMapManager;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.server.packs.resources.PreparableReloadListener;
 
 import java.util.function.BiConsumer;
-import java.util.function.Consumer;
 
 public class TrimmedClient {
 

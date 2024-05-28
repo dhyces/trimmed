@@ -1,7 +1,7 @@
 package dev.dhyces.trimmed.impl;
 
 import com.mojang.serialization.Codec;
-import dev.dhyces.trimmed.api.TrimmedClientMapApi;
+import dev.dhyces.trimmed.api.client.TrimmedClientMapApi;
 import dev.dhyces.trimmed.api.maps.MapHolder;
 import dev.dhyces.trimmed.api.maps.types.AdvancedMapType;
 import dev.dhyces.trimmed.api.maps.types.MapType;

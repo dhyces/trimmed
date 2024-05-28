@@ -1,4 +1,4 @@
-package dev.dhyces.trimmed.api;
+package dev.dhyces.trimmed.api.client;
 
 import com.mojang.serialization.Codec;
 import dev.dhyces.trimmed.api.maps.MapHolder;
