@@ -19,4 +19,6 @@ public interface TrimmedClientMapApi {
     <K, V> Codec<MapHolder<K, V>> simpleCodec(MapType<K, V> mapType);
 
     <K, V, M extends Map<K, V>> MapHolder.Typed<K, V, M> getAdvancedMap(MapKey<K, V> key, AdvancedMapType<K, V, M> mapType);
+
+    <K, V, M extends Map<K, V>> Codec<MapHolder.Typed<K, V, M>> advancedCodec(AdvancedMapType<K, V, M> mapType);
 }

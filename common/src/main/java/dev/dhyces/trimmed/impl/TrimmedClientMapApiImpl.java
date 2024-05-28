@@ -27,4 +27,9 @@ public final class TrimmedClientMapApiImpl implements TrimmedClientMapApi {
     public <K, V, M extends Map<K, V>> MapHolder.Typed<K, V, M> getAdvancedMap(MapKey<K, V> key, AdvancedMapType<K, V, M> mapType) {
         return (MapHolder.Typed<K, V, M>) ClientMapManager.getHolder(key);
     }
+
+    @Override
+    public <K, V, M extends Map<K, V>> Codec<MapHolder.Typed<K, V, M>> advancedCodec(AdvancedMapType<K, V, M> mapType) {
+        return MapKey.codec(mapType).xmap(kvMapKey -> (MapHolder.Typed<K, V, M>) ClientMapManager.getHolder(kvMapKey), MapHolder::unwrapKeyOrThrow);
+    }
 }
