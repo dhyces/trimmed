@@ -1,11 +1,14 @@
 package dev.dhyces.trimmed.impl.client.models.override;
 
 import dev.dhyces.trimmed.api.client.override.provider.ItemOverrideProvider;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
@@ -15,10 +18,10 @@ import java.util.Optional;
 import java.util.Set;
 
 public class ItemOverrideRegistry {
-    private static final Map<ResourceLocation, Set<ItemOverrideProvider>> OVERRIDE_SET_MAP = new HashMap<>();
+    private static final Map<Item, Set<ItemOverrideProvider>> OVERRIDE_SET_MAP = new Reference2ObjectOpenHashMap<>();
 
     public static Optional<BakedModel> getOverrideModel(ItemStack itemStack, @Nullable ClientLevel world, @Nullable LivingEntity entity, int seed) {
-        Set<ItemOverrideProvider> providers = OVERRIDE_SET_MAP.get(BuiltInRegistries.ITEM.getKey(itemStack.getItem()));
+        Set<ItemOverrideProvider> providers = OVERRIDE_SET_MAP.get(itemStack.getItem());
         if (providers == null) {
             return Optional.empty();
         }
@@ -37,7 +40,7 @@ public class ItemOverrideRegistry {
     }
 
     static void addOverrideSet(ResourceLocation identifier, Set<ItemOverrideProvider> set) {
-        OVERRIDE_SET_MAP.put(identifier, set);
+        OVERRIDE_SET_MAP.put(BuiltInRegistries.ITEM.get(identifier), set);
     }
 
     static void clearRegistry() {
