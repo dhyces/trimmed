@@ -36,7 +36,7 @@ public class ItemOverrideRegistry {
     }
 
     public static Optional<Set<ItemOverrideProvider>> getOverrides(ResourceLocation modelId) {
-        return Optional.ofNullable(OVERRIDE_SET_MAP.get(modelId));
+        return Optional.ofNullable(OVERRIDE_SET_MAP.get(BuiltInRegistries.ITEM.get(modelId)));
     }
 
     static void addOverrideSet(ResourceLocation identifier, Set<ItemOverrideProvider> set) {
