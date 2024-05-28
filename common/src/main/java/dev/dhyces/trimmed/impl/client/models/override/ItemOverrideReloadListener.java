@@ -2,75 +2,68 @@ package dev.dhyces.trimmed.impl.client.models.override;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
-import com.mojang.datafixers.util.Pair;
-import com.mojang.serialization.DataResult;
-import com.mojang.serialization.JsonOps;
-import dev.dhyces.trimmed.Trimmed;
 import dev.dhyces.trimmed.modhelper.services.Services;
 import dev.dhyces.trimmed.api.client.override.provider.ItemOverrideProvider;
-import net.minecraft.client.resources.model.ModelResourceLocation;
+import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import net.minecraft.resources.FileToIdConverter;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.packs.resources.PreparableReloadListener;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.server.packs.resources.SimplePreparableReloadListener;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.util.profiling.ProfilerFiller;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.util.*;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Executor;
 
-public class ItemOverrideReloadListener implements PreparableReloadListener {
+public class ItemOverrideReloadListener extends SimplePreparableReloadListener<Map<ResourceLocation, List<JsonObject>>> {
     private static final Logger LOGGER = LoggerFactory.getLogger("Trimmed/Item Model Overrides");
-    private static final Set<ModelResourceLocation> MODELS_TO_ADD = new HashSet<>();
 
-    private static final FileToIdConverter OVERRIDES_FINDER = FileToIdConverter.json("models/item/overrides");
+    public static final String OVERRIDES_DIRECTORY = "trimmed/model_overrides";
+    private static final FileToIdConverter OVERRIDES_FINDER = FileToIdConverter.json(OVERRIDES_DIRECTORY);
 
     @Override
-    public CompletableFuture<Void> reload(PreparableReloadListener.PreparationBarrier synchronizer, ResourceManager manager, ProfilerFiller prepareProfiler, ProfilerFiller applyProfiler, Executor prepareExecutor, Executor applyExecutor) {
-        MODELS_TO_ADD.clear();
-        ItemOverrideRegistry.clearRegistry();
-        return parseAll(manager)
-                .thenCompose(synchronizer::wait)
-                .thenAccept(pairs -> {
-                    pairs.forEach(pair -> ItemOverrideRegistry.addOverrideSet(pair.getFirst(), pair.getSecond()));
-                    Trimmed.logInDev("Item model overrides loaded!");
-                });
-    }
-
-    private CompletableFuture<List<Pair<ResourceLocation, Set<ItemOverrideProvider>>>> parseAll(ResourceManager manager) {
-        List<Pair<ResourceLocation, Set<ItemOverrideProvider>>> list = new ArrayList<>();
-        for (Map.Entry<ResourceLocation, List<Resource>> entry : OVERRIDES_FINDER.listMatchingResourceStacks(manager).entrySet()) {
+    protected Map<ResourceLocation, List<JsonObject>> prepare(ResourceManager resourceManager, ProfilerFiller profiler) {
+        Object2ObjectMap<ResourceLocation, List<JsonObject>> files = new Object2ObjectOpenHashMap<>();
+        for (Map.Entry<ResourceLocation, List<Resource>> entry : OVERRIDES_FINDER.listMatchingResourceStacks(resourceManager).entrySet()) {
             ResourceLocation id = OVERRIDES_FINDER.fileToId(entry.getKey());
-            Set<ItemOverrideProvider> providers = new LinkedHashSet<>();
+            List<JsonObject> jsons = new ObjectArrayList<>();
             for (Resource resource : entry.getValue()) {
                 try (BufferedReader reader = resource.openAsReader()) {
-                    JsonObject jsonObject = GsonHelper.parse(reader, true);
-                    Optional<List<ItemOverrideProvider>> result = Services.PLATFORM_HELPER.decodeWithConditions(ItemOverrideProvider.LIST_CODEC, jsonObject);
-                    if (result.isEmpty()) {
-                        Trimmed.LOGGER.debug("Skipping loading item overrides from {} as its conditions were not met", id);
-                        continue;
-                    }
-                    List<ItemOverrideProvider> providerList = result.get();
-                    providerList.forEach(itemOverrideProvider -> {
-                        itemOverrideProvider.finish(id);
-                        providers.add(itemOverrideProvider);
-                    });
-                } catch (Exception e) {
+                    jsons.add(GsonHelper.parse(reader, true));
+                } catch (JsonParseException | IOException e) {
                     LOGGER.error("Could not read %s: ".formatted(entry.getKey()), e);
                 }
             }
-            providers.stream().flatMap(ItemOverrideProvider::getModelsToBake).forEachOrdered(MODELS_TO_ADD::add);
-            list.add(Pair.of(id, providers));
+            files.put(id, jsons);
         }
-        return CompletableFuture.completedFuture(list);
+        return files;
     }
 
-    public static Collection<ModelResourceLocation> getModelsToBake() {
-        return Collections.unmodifiableCollection(MODELS_TO_ADD);
+    @Override
+    protected void apply(Map<ResourceLocation, List<JsonObject>> jsonFiles, ResourceManager resourceManager, ProfilerFiller profiler) {
+        ItemOverrideRegistry.clearRegistry();
+        for (Map.Entry<ResourceLocation, List<JsonObject>> entry : jsonFiles.entrySet()) {
+            Set<ItemOverrideProvider> combined = new ObjectOpenHashSet<>();
+            try {
+                for (JsonObject json : entry.getValue()) {
+                    Optional<Set<ItemOverrideProvider>> result = Services.PLATFORM_HELPER.decodeWithConditions(ItemOverrideProvider.SET_MAP_CODEC_CODEC, json);
+                    if (result.isEmpty()) {
+                        LOGGER.debug("Skipping loading item overrides from {} as its conditions were not met", entry.getKey());
+                        continue;
+                    }
+                    combined.addAll(result.get());
+                }
+            } catch (JsonParseException e) {
+                LOGGER.error("Could not read %s: ".formatted(entry.getKey()), e);
+            }
+            ItemOverrideRegistry.addOverrideSet(entry.getKey(), combined);
+        }
     }
 }
