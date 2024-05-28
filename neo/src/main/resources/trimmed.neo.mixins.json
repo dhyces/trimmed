@@ -7,8 +7,7 @@
   "mixins": [
   ],
   "client": [
-    "client.BakedModelManagerMixin",
-    "client.ModelLoaderMixin"
+    "client.BakedModelManagerMixin"
   ],
   "injectors": {
     "defaultRequire": 1

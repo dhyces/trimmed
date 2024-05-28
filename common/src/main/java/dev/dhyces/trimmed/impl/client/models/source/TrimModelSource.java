@@ -51,12 +51,8 @@ public record TrimModelSource(ResourceLocation template, MapHolder<ResourceLocat
                 }
                 replacer.put(MATERIAL_SUFFIX, suffix);
                 String processed = templateManager.process(template, replacer);
-                modelBuilder.add(
-                        NamedModel.of(
-                                textureEntry.getKey().withSuffix("_" + suffix + "_trim"),
-                                BlockModel.fromString(processed)
-                        )
-                );
+                ResourceLocation id = textureEntry.getKey().withSuffix("_" + suffix + "_trim");
+                modelBuilder.add(NamedModel.item(id, BlockModel.fromString(processed)));
             }
         }
         return modelBuilder.build();

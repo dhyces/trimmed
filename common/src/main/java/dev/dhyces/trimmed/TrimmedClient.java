@@ -42,10 +42,6 @@ public class TrimmedClient {
         ((ReloadableResourceManagerImplAccessor)Minecraft.getInstance().getResourceManager()).getListeners().add(0, new ClientTagManager());
     }
 
-    public static void addModels(Consumer<ModelResourceLocation> eventConsumer) {
-        ItemOverrideReloadListener.getModelsToBake().forEach(eventConsumer);
-    }
-
     public static void onTagsSynced(RegistryAccess registryAccess, boolean shouldUpdateStatic) {
         if (shouldUpdateStatic) { //TODO: Disabled the toast for now. Use toast later when a datapack registry queued
 //            if (Minecraft.getInstance().player != null) {
