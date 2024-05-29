@@ -1,4 +1,4 @@
-package dev.dhyces.trimmed.impl;
+package dev.dhyces.trimmed.impl.client;
 
 import com.mojang.serialization.Codec;
 import dev.dhyces.trimmed.api.client.TrimmedClientMapApi;

@@ -1,6 +1,6 @@
 package dev.dhyces.trimmed.api.client;
 
-import dev.dhyces.trimmed.impl.TrimmedClientTagApiImpl;
+import dev.dhyces.trimmed.impl.client.TrimmedClientTagApiImpl;
 import dev.dhyces.trimmed.impl.util.OptionalId;
 import dev.dhyces.trimmed.impl.client.tags.ClientRegistryTagKey;
 import dev.dhyces.trimmed.impl.client.tags.ClientTagKey;

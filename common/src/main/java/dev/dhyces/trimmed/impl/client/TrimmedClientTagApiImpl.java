@@ -1,4 +1,4 @@
-package dev.dhyces.trimmed.impl;
+package dev.dhyces.trimmed.impl.client;
 
 import dev.dhyces.trimmed.impl.util.OptionalId;
 import dev.dhyces.trimmed.api.client.TrimmedClientTagApi;
