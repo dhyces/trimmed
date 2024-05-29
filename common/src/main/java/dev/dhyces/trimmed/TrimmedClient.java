@@ -7,14 +7,21 @@ import dev.dhyces.trimmed.impl.client.atlas.TrimmedSpriteSourceTypes;
 import dev.dhyces.trimmed.impl.client.maps.MapKeyResolvers;
 import dev.dhyces.trimmed.impl.client.models.override.ItemOverrideReloadListener;
 import dev.dhyces.trimmed.impl.client.models.override.provider.ItemOverrideProviderRegistry;
+import dev.dhyces.trimmed.impl.client.models.source.ModelSourceLoader;
 import dev.dhyces.trimmed.impl.client.models.source.ModelSourceRegistry;
+import dev.dhyces.trimmed.impl.client.models.source.NamedModel;
+import dev.dhyces.trimmed.impl.client.models.template.ModelTemplateManager;
 import dev.dhyces.trimmed.impl.client.tags.manager.ClientTagManager;
 import dev.dhyces.trimmed.impl.mixin.client.ReloadableResourceManagerImplAccessor;
 import dev.dhyces.trimmed.impl.client.maps.manager.ClientMapManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.server.packs.resources.PreparableReloadListener;
+import net.minecraft.server.packs.resources.ResourceManager;
 
+import java.util.Collection;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executor;
 import java.util.function.BiConsumer;
 
 public class TrimmedClient {
@@ -46,5 +53,10 @@ public class TrimmedClient {
 //            }
             ClientTagManager.updateDatapacksSynced(registryAccess);
         }
+    }
+
+    public static CompletableFuture<Collection<NamedModel>> startGeneratingModels(ResourceManager resourceManager, Executor executor) {
+        return ModelTemplateManager.load(resourceManager, executor)
+                .thenComposeAsync(templateManager -> ModelSourceLoader.load(templateManager, resourceManager, executor));
     }
 }

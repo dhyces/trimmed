@@ -2,6 +2,7 @@ package dev.dhyces.trimmed.impl.mixin.client;
 
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import dev.dhyces.trimmed.NeoTrimmedClient;
+import dev.dhyces.trimmed.TrimmedClient;
 import dev.dhyces.trimmed.impl.client.models.source.ModelSourceLoader;
 import dev.dhyces.trimmed.impl.client.models.source.NamedModel;
 import dev.dhyces.trimmed.impl.client.models.template.ModelTemplateManager;
@@ -24,18 +25,17 @@ public abstract class BakedModelManagerMixin {
 
     @ModifyReturnValue(method = "loadBlockModels", at = @At("RETURN"))
     private static CompletableFuture<Map<ResourceLocation, BlockModel>> injectGenerators(CompletableFuture<Map<ResourceLocation, BlockModel>> original, ResourceManager resourceManager, Executor executor) {
-        CompletableFuture<Collection<NamedModel>> generatedFuture = ModelTemplateManager.load(resourceManager, executor)
-                .thenComposeAsync(templateManager -> ModelSourceLoader.load(templateManager, resourceManager, executor));
-        return original.thenCombineAsync(generatedFuture, (originalMap, generatedModels) -> {
-            Object2ObjectMap<ResourceLocation, BlockModel> newMap = new Object2ObjectOpenHashMap<>();
-            Set<ResourceLocation> generatedModelIds = new ObjectOpenHashSet<>();
-            generatedModels.forEach(namedModel -> {
-                newMap.put(namedModel.id().withPrefix("models/").withSuffix(".json"), namedModel.model());
-                generatedModelIds.add(namedModel.modelId());
-            });
-            NeoTrimmedClient.setModels(generatedModelIds);
-            newMap.putAll(originalMap);
-            return Object2ObjectMaps.unmodifiable(newMap);
+        return original.thenCombineAsync(TrimmedClient.startGeneratingModels(resourceManager, executor),
+                (originalMap, generatedModels) -> {
+                    Object2ObjectMap<ResourceLocation, BlockModel> newMap = new Object2ObjectOpenHashMap<>();
+                    Set<ResourceLocation> generatedModelIds = new ObjectOpenHashSet<>();
+                    generatedModels.forEach(namedModel -> {
+                        newMap.put(namedModel.id().withPrefix("models/").withSuffix(".json"), namedModel.model());
+                        generatedModelIds.add(namedModel.modelId());
+                    });
+                    NeoTrimmedClient.setModels(generatedModelIds);
+                    newMap.putAll(originalMap);
+                    return Object2ObjectMaps.unmodifiable(newMap);
         });
     }
 }
