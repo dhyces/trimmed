@@ -3,6 +3,7 @@ package dev.dhyces.trimmed.impl.client.tags;
 import com.google.common.collect.Interner;
 import com.google.common.collect.Interners;
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.DataResult;
 import dev.dhyces.trimmed.api.KeyResolver;
 import net.minecraft.resources.ResourceLocation;
 
@@ -14,7 +15,7 @@ public final class ClientTagKey<T> {
         return ResourceLocation.CODEC.xmap(resourceLocation -> of(keyResolver, resourceLocation), ClientTagKey::getTagId);
     }
     public static <T> Codec<ClientTagKey<T>> tagCodec(KeyResolver<T> keyResolver) {
-        return ResourceLocation.CODEC.xmap(resourceLocation -> of(keyResolver, resourceLocation), ClientTagKey::getTagId);
+        return Codec.STRING.comapFlatMap(s -> (s.startsWith("#") ? ResourceLocation.read(s.substring(1)) : DataResult.<ResourceLocation>error(() -> "Not a tag id")).map(id -> of(keyResolver, id)), clientTagKey -> clientTagKey.getTagId().toString());
     }
     private final KeyResolver<T> keyResolver;
     private final ResourceLocation id;
