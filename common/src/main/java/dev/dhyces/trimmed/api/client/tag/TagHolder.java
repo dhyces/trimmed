@@ -1,6 +1,5 @@
 package dev.dhyces.trimmed.api.client.tag;
 
-import dev.dhyces.trimmed.impl.client.tags.ClientTagKey;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;

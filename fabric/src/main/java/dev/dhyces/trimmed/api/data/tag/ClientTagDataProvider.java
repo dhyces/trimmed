@@ -4,7 +4,7 @@ import com.google.gson.JsonElement;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.JsonOps;
 import dev.dhyces.trimmed.api.data.client.tag.appenders.ClientTagAppender;
-import dev.dhyces.trimmed.impl.client.tags.ClientTagKey;
+import dev.dhyces.trimmed.api.client.tag.ClientTagKey;
 import dev.dhyces.trimmed.impl.client.tags.manager.ClientTagManager;
 import net.fabricmc.fabric.impl.datagen.FabricTagBuilder;
 import net.minecraft.data.CachedOutput;

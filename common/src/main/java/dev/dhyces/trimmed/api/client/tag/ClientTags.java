@@ -2,7 +2,6 @@ package dev.dhyces.trimmed.api.client.tag;
 
 import dev.dhyces.trimmed.Trimmed;
 import dev.dhyces.trimmed.api.client.ClientKeyResolvers;
-import dev.dhyces.trimmed.impl.client.tags.ClientTagKey;
 import net.minecraft.resources.ResourceLocation;
 
 public final class ClientTags {

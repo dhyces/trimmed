@@ -1,4 +1,4 @@
-package dev.dhyces.trimmed.impl.client.tags;
+package dev.dhyces.trimmed.api.client.tag;
 
 import com.google.common.collect.Interner;
 import com.google.common.collect.Interners;

@@ -8,7 +8,7 @@ import com.mojang.serialization.JsonOps;
 import dev.dhyces.trimmed.api.client.tag.TagHolder;
 import dev.dhyces.trimmed.api.KeyResolver;
 import dev.dhyces.trimmed.impl.client.maps.KeyResolvers;
-import dev.dhyces.trimmed.impl.client.tags.ClientTagKey;
+import dev.dhyces.trimmed.api.client.tag.ClientTagKey;
 import dev.dhyces.trimmed.impl.mixin.TagEntryAccessor;
 import dev.dhyces.trimmed.modhelper.services.Services;
 import dev.dhyces.trimmed.Trimmed;

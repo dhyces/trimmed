@@ -4,7 +4,7 @@ import com.mojang.serialization.Codec;
 import dev.dhyces.trimmed.api.client.tag.TagHolder;
 import dev.dhyces.trimmed.api.KeyResolver;
 import dev.dhyces.trimmed.impl.client.TrimmedClientTagApiImpl;
-import dev.dhyces.trimmed.impl.client.tags.ClientTagKey;
+import dev.dhyces.trimmed.api.client.tag.ClientTagKey;
 
 public interface TrimmedClientTagApi {
     static TrimmedClientTagApi getInstance() {

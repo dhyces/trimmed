@@ -1,6 +1,6 @@
 package dev.dhyces.trimmed.api.data.client.tag.appenders;
 
-import dev.dhyces.trimmed.impl.client.tags.ClientTagKey;
+import dev.dhyces.trimmed.api.client.tag.ClientTagKey;
 import net.minecraft.Util;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.resources.ResourceKey;
