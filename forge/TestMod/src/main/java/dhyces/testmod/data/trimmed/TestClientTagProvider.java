@@ -1,7 +1,7 @@
 package dhyces.testmod.data.trimmed;
 
 import dhyces.testmod.TrimmedTest;
-import dev.dhyces.trimmed.api.data.tags.ClientTagDataProvider;
+import dev.dhyces.trimmed.api.data.tag.ClientTagDataProvider;
 import dev.dhyces.trimmed.impl.client.tags.ClientTagKey;
 import net.minecraft.data.PackOutput;
 import net.minecraftforge.common.data.ExistingFileHelper;

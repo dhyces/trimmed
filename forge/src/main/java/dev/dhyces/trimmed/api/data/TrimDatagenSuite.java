@@ -2,8 +2,8 @@ package dev.dhyces.trimmed.api.data;
 
 import dev.dhyces.trimmed.api.client.ClientMaps;
 import dev.dhyces.trimmed.api.client.UncheckedClientTags;
-import dev.dhyces.trimmed.api.data.maps.ClientMapDataProvider;
-import dev.dhyces.trimmed.api.data.tags.ClientTagDataProvider;
+import dev.dhyces.trimmed.api.data.map.ClientMapDataProvider;
+import dev.dhyces.trimmed.api.data.tag.ClientTagDataProvider;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.RegistrySetBuilder;
 import net.minecraft.core.registries.Registries;

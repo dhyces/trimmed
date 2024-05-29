@@ -4,7 +4,7 @@ import dhyces.testmod.TestClientTags;
 import dhyces.testmod.TrimmedTest;
 import dhyces.testmod.registry.CustomObj;
 import dhyces.testmod.registry.CustomRegistration;
-import dev.dhyces.trimmed.api.data.tags.ClientRegistryTagDataProvider;
+import dev.dhyces.trimmed.api.data.tag.ClientRegistryTagDataProvider;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraftforge.common.data.ExistingFileHelper;

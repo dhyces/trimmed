@@ -1,23 +1,24 @@
 package dev.dhyces.trimmed.api.data.map;
 
+import dev.dhyces.trimmed.api.maps.MapKey;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.common.data.ExistingFileHelper;
+import net.neoforged.neoforge.common.data.ExistingFileHelper;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 
-public abstract class BaseMapDataProvider implements DataProvider {
+public abstract class BaseMapDataProvider<K> implements DataProvider {
 
     protected final PackOutput packOutput;
     protected final PackOutput.PathProvider pathProvider;
     protected final String modid;
     protected final ExistingFileHelper existingFileHelper;
     protected final ExistingFileHelper.IResourceType resourceType;
-    protected final Map<ResourceLocation, MapBuilder> builders;
+    protected final Map<MapKey<?, ?>, MapBuilder<?, ?>> builders;
     protected final CompletableFuture<MapLookup> futureLookup;
 
     public BaseMapDataProvider(PackOutput packOutput, String modid, ExistingFileHelper.IResourceType resourceType, ExistingFileHelper existingFileHelper) {
@@ -38,14 +39,14 @@ public abstract class BaseMapDataProvider implements DataProvider {
         futureLookup.complete(builders::get);
     }
 
-    protected MapBuilder getOrCreateBuilder(ResourceLocation clientMapLocation) {
-        return this.builders.computeIfAbsent(clientMapLocation, resourceLocation -> {
-            existingFileHelper.trackGenerated(resourceLocation, resourceType);
-            return new MapBuilder();
+    protected <V> MapBuilder<K, V> getOrCreateBuilder(MapKey<K, V> mapKey) {
+        return (MapBuilder<K, V>) this.builders.computeIfAbsent(mapKey, resourceLocation -> {
+            existingFileHelper.trackGenerated(mapKey.getMapId(), resourceType);
+            return new MapBuilder<>();
         });
     }
 
-    public interface MapLookup extends Function<ResourceLocation, MapBuilder> {
+    public interface MapLookup<K, V> extends Function<ResourceLocation, MapBuilder<K, V>> {
         default boolean containsKey(ResourceLocation mapKey) {
             return apply(mapKey) != null;
         }

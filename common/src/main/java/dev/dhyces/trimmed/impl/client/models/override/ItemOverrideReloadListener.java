@@ -2,7 +2,7 @@ package dev.dhyces.trimmed.impl.client.models.override;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
-import dev.dhyces.trimmed.api.data.models.override.ItemOverrideFile;
+import dev.dhyces.trimmed.api.data.model.override.ItemOverrideFile;
 import dev.dhyces.trimmed.modhelper.services.Services;
 import dev.dhyces.trimmed.api.client.override.provider.ItemOverrideProvider;
 import it.unimi.dsi.fastutil.objects.*;

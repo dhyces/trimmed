@@ -3,9 +3,10 @@ package dev.dhyces.trimmed.api.data.tag;
 import com.google.gson.JsonElement;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.JsonOps;
-import dev.dhyces.trimmed.Trimmed;
-import dev.dhyces.trimmed.api.data.tag.appenders.ClientRegistryTagAppender;
-import dev.dhyces.trimmed.impl.client.tags.ClientRegistryTagKey;
+import dev.dhyces.trimmed.api.data.client.tag.appenders.ClientRegistryTagAppender;
+import dev.dhyces.trimmed.api.util.Utils;
+import dev.dhyces.trimmed.impl.client.tags.ClientTagKey;
+import dev.dhyces.trimmed.impl.client.tags.manager.ClientTagManager;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Registry;
 import net.minecraft.data.CachedOutput;
@@ -17,8 +18,7 @@ import net.minecraft.server.packs.PackType;
 import net.minecraft.tags.TagEntry;
 import net.minecraft.tags.TagFile;
 import net.minecraft.util.Unit;
-import net.minecraftforge.common.data.ExistingFileHelper;
-import net.minecraftforge.registries.RegistryManager;
+import net.neoforged.neoforge.common.data.ExistingFileHelper;
 
 import java.nio.file.Path;
 import java.util.List;
@@ -34,25 +34,16 @@ public abstract class ClientRegistryTagDataProvider<T> extends BaseClientTagData
 
 
     public ClientRegistryTagDataProvider(PackOutput packOutput, String modid, CompletableFuture<HolderLookup.Provider> lookupProviderFuture, ResourceKey<? extends Registry<T>> registryResourceKey, ExistingFileHelper existingFileHelper) {
-        super(packOutput, modid, new ExistingFileHelper.ResourceType(PackType.CLIENT_RESOURCES, ".json", "tags/" + prefix(registryResourceKey)), existingFileHelper);
+        super(packOutput, modid, new ExistingFileHelper.ResourceType(PackType.CLIENT_RESOURCES, ".json", ClientTagManager.PATH + Utils.namespacedLocation(registryResourceKey)), existingFileHelper);
         this.lookupProviderFuture = lookupProviderFuture;
         this.completed = new CompletableFuture<>();
         this.registryResourceKey = registryResourceKey;
     }
 
-    private static <T> String prefix(ResourceKey<? extends Registry<T>> registryResourceKey) {
-        ResourceLocation location = registryResourceKey.location();
-        return location.getNamespace().equals("minecraft") ? location.getPath() : location.getNamespace() + "/" + location.getPath();
-    }
-
     protected abstract void addTags(HolderLookup.Provider lookupProvider);
 
-    public ClientRegistryTagAppender<T> tag(ClientRegistryTagKey<T> clientRegistryTagKey) {
-        return new ClientRegistryTagAppender<>(getOrCreateBuilder(clientRegistryTagKey.getTagId()), registryResourceKey);
-    }
-
-    public ClientRegistryTagAppender.RegistryAware<T> registryAwareTag(ClientRegistryTagKey<T> clientRegistryTagKey, HolderLookup.Provider lookupProvider) {
-        return new ClientRegistryTagAppender.RegistryAware<>(getOrCreateBuilder(clientRegistryTagKey.getTagId()), registryResourceKey, lookupProvider);
+    public ClientRegistryTagAppender<T> tag(ClientTagKey<T> clientTagKey, HolderLookup.Provider lookupProvider) {
+        return new ClientRegistryTagAppender<>(getOrCreateBuilder(clientTagKey.getTagId()), lookupProvider.lookupOrThrow(registryResourceKey));
     }
 
     protected CompletableFuture<HolderLookup.Provider> createContentProvider() {
@@ -68,12 +59,9 @@ public abstract class ClientRegistryTagDataProvider<T> extends BaseClientTagData
             this.completed.complete(Unit.INSTANCE);
             return provider;
         }).thenCompose(provider -> {
-                    HolderLookup.RegistryLookup<T> registryLookup = provider.lookup(registryResourceKey).orElseThrow(() -> {
-                        if (RegistryManager.ACTIVE.getRegistry(this.registryResourceKey) != null) {
-                            return new IllegalStateException("Forge registry " + this.registryResourceKey.location() + " does not have support for tags");
-                        }
-                        return new IllegalStateException("Vanilla registry " + registryResourceKey.location() + " is not present.");
-                    });
+                    HolderLookup.RegistryLookup<T> registryLookup = provider.lookup(registryResourceKey).orElseThrow(() ->
+                        new IllegalStateException("Vanilla registry " + registryResourceKey.location() + " is not present.")
+                    );
                     Predicate<ResourceLocation> elementPredicate = elementLocation -> {
                         return registryLookup.get(ResourceKey.create(registryResourceKey, elementLocation)).isPresent();
                     };
@@ -87,7 +75,7 @@ public abstract class ClientRegistryTagDataProvider<T> extends BaseClientTagData
                             throw new IllegalStateException("Tag entries [%s] were not found for registry %s".formatted(errors.stream().map(Object::toString).collect(Collectors.joining(",")), registryResourceKey));
                         } else {
                             DataResult<JsonElement> jsonResult = TagFile.CODEC.encodeStart(JsonOps.INSTANCE, new TagFile(entry.getValue().build(), entry.getValue().isReplace()));
-                            JsonElement json = jsonResult.getOrThrow(false, Trimmed.LOGGER::error);
+                            JsonElement json = jsonResult.getOrThrow();
                             Path filePath = pathProvider.json(entry.getKey());
                             return DataProvider.saveStable(pOutput, json, filePath);
                         }

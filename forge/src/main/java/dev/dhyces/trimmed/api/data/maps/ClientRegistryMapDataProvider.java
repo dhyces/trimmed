@@ -1,10 +1,10 @@
-package dev.dhyces.trimmed.api.data.maps;
+package dev.dhyces.trimmed.api.data.map;
 
 import com.google.gson.JsonElement;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.JsonOps;
 import dev.dhyces.trimmed.Trimmed;
-import dev.dhyces.trimmed.api.data.maps.appenders.ClientRegistryMapAppender;
+import dev.dhyces.trimmed.api.data.map.appenders.ClientRegistryMapAppender;
 import dev.dhyces.trimmed.api.util.Utils;
 import dev.dhyces.trimmed.impl.client.maps.ClientRegistryMapKey;
 import net.minecraft.core.HolderLookup;

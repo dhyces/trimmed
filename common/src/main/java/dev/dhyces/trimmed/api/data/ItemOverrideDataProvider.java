@@ -6,7 +6,7 @@ import com.mojang.serialization.JsonOps;
 import dev.dhyces.trimmed.api.client.override.provider.ItemOverrideProvider;
 import dev.dhyces.trimmed.api.client.override.provider.providers.AnyTrimItemOverrideProvider;
 import dev.dhyces.trimmed.api.client.override.provider.providers.ComponentItemOverrideProvider;
-import dev.dhyces.trimmed.api.data.models.override.ItemOverrideFile;
+import dev.dhyces.trimmed.api.data.model.override.ItemOverrideFile;
 import dev.dhyces.trimmed.impl.client.models.override.ItemOverrideReloadListener;
 import dev.dhyces.trimmed.impl.client.models.template.StringTemplate;
 import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;

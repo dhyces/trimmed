@@ -13,6 +13,9 @@ public final class ClientTagKey<T> {
     public static <T> Codec<ClientTagKey<T>> codec(KeyResolver<T> keyResolver) {
         return ResourceLocation.CODEC.xmap(resourceLocation -> of(keyResolver, resourceLocation), ClientTagKey::getTagId);
     }
+    public static <T> Codec<ClientTagKey<T>> tagCodec(KeyResolver<T> keyResolver) {
+        return ResourceLocation.CODEC.xmap(resourceLocation -> of(keyResolver, resourceLocation), ClientTagKey::getTagId);
+    }
     private final KeyResolver<T> keyResolver;
     private final ResourceLocation id;
 
