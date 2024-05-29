@@ -3,6 +3,7 @@ package dev.dhyces.trimmed.api.data;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import com.mojang.datafixers.util.Pair;
+import dev.dhyces.trimmed.api.client.ClientKeyResolvers;
 import dev.dhyces.trimmed.api.client.map.ClientMapKeys;
 import dev.dhyces.trimmed.api.data.map.ClientMapDataProvider;
 import dev.dhyces.trimmed.api.client.tag.ClientTags;
@@ -81,7 +82,7 @@ public class TrimDatagenSuite extends BaseTrimDatagenSuite {
         });
 
         pack.addProvider((FabricDataOutput output) ->
-            new ClientTagDataProvider(output, modid) {
+            new ClientTagDataProvider<>(output, modid, ClientKeyResolvers.TEXTURE) {
                 @Override
                 protected void addTags() {
                     if (!patternTextures.isEmpty()) {

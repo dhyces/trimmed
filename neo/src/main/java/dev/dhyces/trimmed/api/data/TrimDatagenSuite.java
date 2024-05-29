@@ -1,5 +1,6 @@
 package dev.dhyces.trimmed.api.data;
 
+import dev.dhyces.trimmed.api.client.ClientKeyResolvers;
 import dev.dhyces.trimmed.api.client.map.ClientMapKeys;
 import dev.dhyces.trimmed.api.client.tag.ClientTags;
 import dev.dhyces.trimmed.api.data.map.ClientMapDataProvider;
@@ -76,7 +77,7 @@ public class TrimDatagenSuite extends BaseTrimDatagenSuite {
             }
         });
 
-        generator.addProvider(event.includeClient(), new ClientTagDataProvider(packOutput, modid, event.getExistingFileHelper()) {
+        generator.addProvider(event.includeClient(), new ClientTagDataProvider<>(packOutput, modid, event.getExistingFileHelper(), ClientKeyResolvers.TEXTURE) {
             @Override
             protected void addTags() {
                 if (!patternTextures.isEmpty()) {

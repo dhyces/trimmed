@@ -93,7 +93,7 @@ public final class KeyResolvers {
     static {
         // TODO: Add data pack registry resolvers
         for (Registry<?> registry : BuiltInRegistries.REGISTRY) {
-            RESOLVERS.put(registry.key().location(), new KeyResolver.RegistryWrapper<>(registry, false));
+            RESOLVERS.put(registry.key().location(), KeyResolver.RegistryWrapper.createStatic(registry));
         }
     }
 

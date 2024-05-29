@@ -5,6 +5,7 @@ import net.minecraft.core.Registry;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.resources.ResourceKey;
 import org.jetbrains.annotations.Nullable;
 
 public interface KeyResolver<T> {
@@ -13,16 +14,20 @@ public interface KeyResolver<T> {
     StreamCodec<RegistryFriendlyByteBuf, T> getStreamCodec();
     boolean requiresActiveWorld();
 
-    record RegistryWrapper<T>(Registry<T> registry, boolean requiresActiveWorld) implements KeyResolver<T> {
+    record RegistryWrapper<T>(ResourceKey<? extends Registry<T>> registryKey, Codec<T> byNameCodec, boolean requiresActiveWorld) implements KeyResolver<T> {
+        public static <T> RegistryWrapper<T> createStatic(Registry<T> registry) {
+            return new RegistryWrapper<>(registry.key(), registry.byNameCodec(), false);
+        }
+
 
         @Override
         public Codec<T> getCodec() {
-            return registry.byNameCodec();
+            return byNameCodec;
         }
 
         @Override
         public StreamCodec<RegistryFriendlyByteBuf, T> getStreamCodec() {
-            return ByteBufCodecs.registry(registry.key());
+            return ByteBufCodecs.registry(registryKey);
         }
 
         @Override

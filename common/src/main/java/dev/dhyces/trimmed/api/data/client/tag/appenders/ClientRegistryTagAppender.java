@@ -1,28 +1,40 @@
 package dev.dhyces.trimmed.api.data.client.tag.appenders;
 
 import dev.dhyces.trimmed.api.client.tag.ClientTagKey;
+import dev.dhyces.trimmed.api.data.tag.ClientTagBuilder;
 import net.minecraft.Util;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.TagBuilder;
 
 import java.util.Map;
 import java.util.function.Supplier;
 
 public class ClientRegistryTagAppender<T> {
-    private final TagBuilder backed;
+    private final ClientTagBuilder<T> builder;
     private final HolderLookup.RegistryLookup<T> lookup;
     private final Map<T, ResourceLocation> reverseLookup;
 
-    public ClientRegistryTagAppender(TagBuilder builder, HolderLookup.RegistryLookup<T> lookup) {
-        this.backed = builder;
+    public ClientRegistryTagAppender(ClientTagBuilder<T> builder, HolderLookup.RegistryLookup<T> lookup) {
+        this.builder = builder;
         this.lookup = lookup;
         this.reverseLookup = lookup.listElements().map(tReference -> Map.entry(tReference.value(), tReference.key().location())).collect(Util.toMap());
     }
 
+    protected T lookupOrThrow(ResourceKey<T> key) {
+        return lookup.getOrThrow(key).value();
+    }
+
+    public ClientRegistryTagAppender<T> add(T element, boolean isRequired) {
+        if (!reverseLookup.containsKey(element)) {
+            throw new IllegalArgumentException("Element is not a member of the registry \"" + lookup.key() + "\"");
+        }
+        builder.add(element, isRequired);
+        return this;
+    }
+
     public ClientRegistryTagAppender<T> add(T element) {
-        add(reverseLookup.get(element));
+        add(element, true);
         return this;
     }
 
@@ -32,7 +44,7 @@ public class ClientRegistryTagAppender<T> {
     }
 
     public ClientRegistryTagAppender<T> addOptional(T element) {
-        addOptional(reverseLookup.get(element));
+        addOptional(element);
         return this;
     }
 
@@ -41,45 +53,34 @@ public class ClientRegistryTagAppender<T> {
         return this;
     }
 
-    public ClientRegistryTagAppender<T> add(ResourceLocation element) {
-        backed.addElement(element);
-        return this;
-    }
-
     public ClientRegistryTagAppender<T> add(ResourceKey<T> element) {
         if (!element.registry().equals(lookup.key().location())) {
             throw new IllegalArgumentException("Element " + element.location() + " is not for registry " + lookup.key() + "!");
         }
-        backed.addElement(element.location());
+        add(lookupOrThrow(element));
+        return this;
+    }
+
+    public ClientRegistryTagAppender<T> addTag(ClientTagKey<T> tagKey, boolean isRequired) {
+        if (!tagKey.getTagId().equals(lookup.key().location())) {
+            throw new IllegalArgumentException("TagKey " + tagKey + " is not for registry " + lookup.key() + "!");
+        }
+        builder.addTag(tagKey, isRequired);
         return this;
     }
 
     public ClientRegistryTagAppender<T> addTag(ClientTagKey<T> tagKey) {
-        if (!tagKey.getTagId().equals(lookup.key().location())) {
-            throw new IllegalArgumentException("TagKey " + tagKey + " is not for registry " + lookup.key() + "!");
-        }
-        backed.addTag(tagKey.getTagId());
-        return this;
-    }
-
-    public ClientRegistryTagAppender<T> addOptional(ResourceLocation optionalElement) {
-        backed.addOptionalElement(optionalElement);
+        addTag(tagKey, true);
         return this;
     }
 
     public ClientRegistryTagAppender<T> addOptional(ResourceKey<T> element) {
-        if (!element.registry().equals(lookup.key().location())) {
-            throw new IllegalArgumentException("Element " + element.location() + " is not for registry " + lookup.key() + "!");
-        }
-        backed.addOptionalElement(element.location());
+        add(lookupOrThrow(element), false);
         return this;
     }
 
     public ClientRegistryTagAppender<T> addOptionalTag(ClientTagKey<T> optionalTagKey) {
-        if (!optionalTagKey.getTagId().equals(lookup.key().location())) {
-            throw new IllegalArgumentException("TagKey " + optionalTagKey + " is not for registry " + lookup.key() + "!");
-        }
-        backed.addOptionalTag(optionalTagKey.getTagId());
+        addTag(optionalTagKey, false);
         return this;
     }
 }

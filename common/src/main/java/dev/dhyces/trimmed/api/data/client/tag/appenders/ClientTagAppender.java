@@ -1,86 +1,64 @@
 package dev.dhyces.trimmed.api.data.client.tag.appenders;
 
 import dev.dhyces.trimmed.api.client.tag.ClientTagKey;
+import dev.dhyces.trimmed.api.data.tag.ClientTagBuilder;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.TagBuilder;
 
-public class ClientTagAppender {
-    private final TagBuilder backed;
-    private final String namespace;
+public class ClientTagAppender<T> {
+    private final ClientTagBuilder<T> builder;
 
-    public ClientTagAppender(String namespace, TagBuilder builder) {
-        this.backed = builder;
-        this.namespace = namespace;
+    public ClientTagAppender(ClientTagBuilder<T> builder) {
+        this.builder = builder;
     }
 
-    public ClientTagAppender add(String element) {
-        backed.addElement(new ResourceLocation(namespace, element));
+    public ClientTagAppender<T> add(T element) {
+        builder.add(element, true);
         return this;
     }
 
-    public ClientTagAppender add(String... elements) {
-        for (String s : elements) {
-            backed.addElement(new ResourceLocation(namespace, s));
+    @SafeVarargs
+    public final ClientTagAppender<T> add(T... elements) {
+        for (T element : elements) {
+            builder.add(element, true);
         }
         return this;
     }
 
-    public ClientTagAppender add(ResourceLocation element) {
-        backed.addElement(element);
+    public ClientTagAppender<T> addTag(ClientTagKey<T> tagKey) {
+        builder.addTag(tagKey, true);
         return this;
     }
 
-    public ClientTagAppender add(ResourceLocation... elements) {
-        for (ResourceLocation elem : elements) {
-            backed.addElement(elem);
+    @SafeVarargs
+    public final ClientTagAppender<T> addTags(ClientTagKey<T>... tagKeys) {
+        for (ClientTagKey<T> key : tagKeys) {
+            builder.addTag(key, true);
         }
         return this;
     }
 
-    public ClientTagAppender addTag(ClientTagKey tagKey) {
-        backed.addTag(tagKey.getTagId());
+    public ClientTagAppender<T> addOptional(T element) {
+        builder.add(element, false);
         return this;
     }
 
-    public ClientTagAppender addTags(ClientTagKey... tagKeys) {
-        for (ClientTagKey key : tagKeys) {
-            backed.addTag(key.getTagId());
+    @SafeVarargs
+    public final ClientTagAppender<T> addOptional(T... elements) {
+        for (T elem : elements) {
+            builder.add(elem, false);
         }
         return this;
     }
 
-    public ClientTagAppender addOptional(String element) {
-        backed.addOptionalElement(new ResourceLocation(namespace, element));
+    public ClientTagAppender<T> addOptionalTag(ClientTagKey<T> tagKey) {
+        builder.addTag(tagKey, false);
         return this;
     }
 
-    public ClientTagAppender addOptional(String... elements) {
-        for (String elem : elements) {
-            backed.addOptionalElement(new ResourceLocation(namespace, elem));
-        }
-        return this;
-    }
-
-    public ClientTagAppender addOptional(ResourceLocation element) {
-        backed.addOptionalElement(element);
-        return this;
-    }
-
-    public ClientTagAppender addOptional(ResourceLocation... elements) {
-        for (ResourceLocation elem : elements) {
-            backed.addOptionalElement(elem);
-        }
-        return this;
-    }
-
-    public ClientTagAppender addOptionalTag(ClientTagKey tagKey) {
-        backed.addOptionalTag(tagKey.getTagId());
-        return this;
-    }
-
-    public ClientTagAppender addOptionalTags(ClientTagKey... tagKeys) {
-        for (ClientTagKey key : tagKeys) {
-            backed.addOptionalTag(key.getTagId());
+    @SafeVarargs
+    public final ClientTagAppender<T> addOptionalTags(ClientTagKey<T>... tagKeys) {
+        for (ClientTagKey<T> key : tagKeys) {
+            builder.addTag(key, false);
         }
         return this;
     }
