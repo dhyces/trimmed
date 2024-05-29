@@ -55,9 +55,9 @@ public final class FabricPlatformHelper implements PlatformHelper {
     @Override
     public <T> Optional<T> decodeWithConditions(Codec<T> codec, JsonObject jsonObject) {
         if (jsonObject.has(ResourceConditions.CONDITIONS_KEY)) {
-            DataResult<List<ResourceCondition>> conditions = ResourceCondition.LIST_CODEC.parse(JsonOps.INSTANCE, jsonObject.get(ResourceConditions.CONDITIONS_KEY));
+            DataResult<ResourceCondition> conditions = ResourceCondition.CONDITION_CODEC.parse(JsonOps.INSTANCE, jsonObject.get(ResourceConditions.CONDITIONS_KEY));
 
-            if (conditions.isSuccess() && !ResourceConditionsImpl.conditionsMet(conditions.getOrThrow(), null, true)) {
+            if (conditions.isSuccess() && !conditions.getOrThrow().test(null)) {
                 return Optional.empty();
             }
         }
