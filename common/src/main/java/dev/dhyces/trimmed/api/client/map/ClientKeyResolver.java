@@ -1,12 +1,12 @@
 package dev.dhyces.trimmed.api.client.map;
 
 import com.mojang.serialization.Codec;
-import dev.dhyces.trimmed.api.maps.MapKeyResolver;
+import dev.dhyces.trimmed.api.maps.KeyResolver;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import org.jetbrains.annotations.Nullable;
 
-public record ClientMapKeyResolver<T>(Codec<T> codec) implements MapKeyResolver<T> {
+public record ClientKeyResolver<T>(Codec<T> codec) implements KeyResolver<T> {
 
     @Override
     public Codec<T> getCodec() {

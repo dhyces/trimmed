@@ -1,8 +1,8 @@
 package dev.dhyces.trimmed.api.maps.types;
 
 import com.mojang.serialization.Codec;
-import dev.dhyces.trimmed.api.maps.MapKeyResolver;
-import dev.dhyces.trimmed.impl.client.maps.MapKeyResolvers;
+import dev.dhyces.trimmed.api.maps.KeyResolver;
+import dev.dhyces.trimmed.impl.client.maps.KeyResolvers;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
@@ -11,25 +11,25 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Objects;
 
 public final class SimpleMapType<K, V> implements MapType<K, V> {
-    private final MapKeyResolver<K> keyResolver;
+    private final KeyResolver<K> keyResolver;
     private final Codec<V> valueCodec;
     @Nullable
     private final StreamCodec<RegistryFriendlyByteBuf, V> valueStreamCodec;
     private final boolean dataPackSynced;
 
-    SimpleMapType(MapKeyResolver<K> keyResolver, Codec<V> valueCodec, @Nullable StreamCodec<RegistryFriendlyByteBuf, V> valueStreamCodec, boolean dataPackSynced) {
+    SimpleMapType(KeyResolver<K> keyResolver, Codec<V> valueCodec, @Nullable StreamCodec<RegistryFriendlyByteBuf, V> valueStreamCodec, boolean dataPackSynced) {
         this.keyResolver = keyResolver;
         this.valueCodec = valueCodec;
         this.valueStreamCodec = valueStreamCodec;
         this.dataPackSynced = dataPackSynced;
     }
 
-    public static <K, V> SimpleMapType.Builder<K, V> builder(MapKeyResolver<K> keyResolver, Codec<V> valueCodec) {
+    public static <K, V> SimpleMapType.Builder<K, V> builder(KeyResolver<K> keyResolver, Codec<V> valueCodec) {
         return new SimpleMapType.Builder<>(keyResolver, valueCodec);
     }
 
     @Override
-    public MapKeyResolver<K> getKeyResolver() {
+    public KeyResolver<K> getKeyResolver() {
         return keyResolver;
     }
 
@@ -63,12 +63,12 @@ public final class SimpleMapType<K, V> implements MapType<K, V> {
 
     @Override
     public String toString() {
-        ResourceLocation resolverId = MapKeyResolvers.getId(keyResolver);
+        ResourceLocation resolverId = KeyResolvers.getId(keyResolver);
         return "SimpleMapType[map_key_resolver: " + (resolverId == null ? "unregistered" : resolverId) + "]";
     }
 
     public static class Builder<K, V> extends BaseBuilder<K, V> {
-        protected Builder(MapKeyResolver<K> keyResolver, Codec<V> valueCodec) {
+        protected Builder(KeyResolver<K> keyResolver, Codec<V> valueCodec) {
             super(keyResolver, valueCodec);
         }
 

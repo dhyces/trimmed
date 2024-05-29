@@ -26,6 +26,6 @@ public final class ClientMapTypes {
         return mapType;
     }
 
-    public static final MapType<ResourceLocation, String> TEXTURE_SUFFIX = registerType(Trimmed.id("texture_suffix"), MapType.simpleBuilder(ClientMapKeyResolvers.TEXTURE, Codec.STRING).build());
-    public static final MapType<ResourceLocation, ResourceLocation> TEXTURE_MAPPING = registerType(Trimmed.id("texture_mapping"), MapType.simpleBuilder(ClientMapKeyResolvers.TEXTURE, ResourceLocation.CODEC).build());
+    public static final MapType<ResourceLocation, String> TEXTURE_SUFFIX = registerType(Trimmed.id("texture_suffix"), MapType.simpleBuilder(ClientKeyResolvers.TEXTURE, Codec.STRING).build());
+    public static final MapType<ResourceLocation, ResourceLocation> TEXTURE_MAPPING = registerType(Trimmed.id("texture_mapping"), MapType.simpleBuilder(ClientKeyResolvers.TEXTURE, ResourceLocation.CODEC).build());
 }

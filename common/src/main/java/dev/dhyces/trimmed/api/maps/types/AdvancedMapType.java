@@ -1,9 +1,8 @@
 package dev.dhyces.trimmed.api.maps.types;
 
 import com.mojang.serialization.Codec;
-import com.mojang.serialization.MapCodec;
-import dev.dhyces.trimmed.api.maps.MapKeyResolver;
-import dev.dhyces.trimmed.impl.client.maps.MapKeyResolvers;
+import dev.dhyces.trimmed.api.maps.KeyResolver;
+import dev.dhyces.trimmed.impl.client.maps.KeyResolvers;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
@@ -14,14 +13,14 @@ import java.util.Objects;
 import java.util.function.Supplier;
 
 public final class AdvancedMapType<K, V, M extends Map<K, V>> implements MapType<K, V> {
-    private final MapKeyResolver<K> keyResolver;
+    private final KeyResolver<K> keyResolver;
     private final Codec<V> valueCodec;
     @Nullable
     private final StreamCodec<RegistryFriendlyByteBuf, V> valueStreamCodec;
     private final boolean dataPackSynced;
     private final Supplier<M> mapSupplier;
 
-    AdvancedMapType(MapKeyResolver<K> keyResolver, Codec<V> valueCodec, @Nullable StreamCodec<RegistryFriendlyByteBuf, V> valueStreamCodec, boolean dataPackSynced, @Nullable Supplier<M> mapSupplier) {
+    AdvancedMapType(KeyResolver<K> keyResolver, Codec<V> valueCodec, @Nullable StreamCodec<RegistryFriendlyByteBuf, V> valueStreamCodec, boolean dataPackSynced, @Nullable Supplier<M> mapSupplier) {
         this.keyResolver = keyResolver;
         this.valueCodec = valueCodec;
         this.valueStreamCodec = valueStreamCodec;
@@ -29,12 +28,12 @@ public final class AdvancedMapType<K, V, M extends Map<K, V>> implements MapType
         this.mapSupplier = mapSupplier;
     }
 
-    public static <K, V, M extends Map<K, V>> Builder<K, V, M> builder(MapKeyResolver<K> keyResolver, Codec<V> valueCodec) {
+    public static <K, V, M extends Map<K, V>> Builder<K, V, M> builder(KeyResolver<K> keyResolver, Codec<V> valueCodec) {
         return new Builder<>(keyResolver, valueCodec);
     }
 
     @Override
-    public MapKeyResolver<K> getKeyResolver() {
+    public KeyResolver<K> getKeyResolver() {
         return keyResolver;
     }
 
@@ -76,13 +75,13 @@ public final class AdvancedMapType<K, V, M extends Map<K, V>> implements MapType
 
     @Override
     public String toString() {
-        ResourceLocation resolverId = MapKeyResolvers.getId(keyResolver);
+        ResourceLocation resolverId = KeyResolvers.getId(keyResolver);
         return "AdvancedMapType[map_key_resolver: " + (resolverId == null ? "unregistered" : resolverId) + "]";
     }
 
     public static class Builder<K, V, M extends Map<K, V>> extends BaseBuilder<K, V> {
         private Supplier<M> mapSupplier;
-        protected Builder(MapKeyResolver<K> keyResolver, Codec<V> valueCodec) {
+        protected Builder(KeyResolver<K> keyResolver, Codec<V> valueCodec) {
             super(keyResolver, valueCodec);
         }
 

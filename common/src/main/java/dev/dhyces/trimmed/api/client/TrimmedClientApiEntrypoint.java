@@ -3,7 +3,7 @@ package dev.dhyces.trimmed.api.client;
 import dev.dhyces.trimmed.api.client.override.provider.ItemOverrideProvider;
 import dev.dhyces.trimmed.api.client.override.provider.ItemOverrideProviderType;
 import dev.dhyces.trimmed.api.maps.MapKey;
-import dev.dhyces.trimmed.api.maps.MapKeyResolver;
+import dev.dhyces.trimmed.api.maps.KeyResolver;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.function.Supplier;
@@ -30,9 +30,9 @@ public interface TrimmedClientApiEntrypoint {
          * @return
          * @param <T>
          */
-        <T> MapKeyResolver<T> getOrRegisterMapKeyResolver(ResourceLocation id, Supplier<MapKeyResolver<T>> resolverSupplier);
+        <T> KeyResolver<T> getOrRegisterKeyResolver(ResourceLocation id, Supplier<KeyResolver<T>> resolverSupplier);
 
-        <T> MapKeyResolver<T> registerMapKeyResolver(ResourceLocation id, MapKeyResolver<T> resolver);
+        <T> KeyResolver<T> registerKeyResolver(ResourceLocation id, KeyResolver<T> resolver);
 
         <K, V> MapKey<K, V> registerBaseMapKey(MapKey<K, V> mapKey);
     }

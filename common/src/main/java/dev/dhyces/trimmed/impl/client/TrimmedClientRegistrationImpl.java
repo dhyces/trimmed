@@ -4,8 +4,8 @@ import dev.dhyces.trimmed.api.client.TrimmedClientApiEntrypoint;
 import dev.dhyces.trimmed.api.client.override.provider.ItemOverrideProvider;
 import dev.dhyces.trimmed.api.client.override.provider.ItemOverrideProviderType;
 import dev.dhyces.trimmed.api.maps.MapKey;
-import dev.dhyces.trimmed.api.maps.MapKeyResolver;
-import dev.dhyces.trimmed.impl.client.maps.MapKeyResolvers;
+import dev.dhyces.trimmed.api.maps.KeyResolver;
+import dev.dhyces.trimmed.impl.client.maps.KeyResolvers;
 import dev.dhyces.trimmed.impl.client.maps.manager.ClientMapManager;
 import dev.dhyces.trimmed.impl.client.models.override.provider.ItemOverrideProviderRegistry;
 import net.minecraft.resources.ResourceLocation;
@@ -20,23 +20,23 @@ public final class TrimmedClientRegistrationImpl implements TrimmedClientApiEntr
     }
 
     @Override
-    public <T> MapKeyResolver<T> getOrRegisterMapKeyResolver(ResourceLocation id, Supplier<MapKeyResolver<T>> resolverSupplier) {
-        MapKeyResolver<T> resolver;
+    public <T> KeyResolver<T> getOrRegisterKeyResolver(ResourceLocation id, Supplier<KeyResolver<T>> resolverSupplier) {
+        KeyResolver<T> resolver;
         try {
-            resolver = MapKeyResolvers.getResolver(id);
+            resolver = KeyResolvers.getResolver(id);
         } catch (ClassCastException e) {
-            throw new IllegalArgumentException("Tried to cast " + MapKeyResolvers.getResolver(id) + " for the ID " + id);
+            throw new IllegalArgumentException("Tried to cast " + KeyResolvers.getResolver(id) + " for the ID " + id);
         }
         if (resolver == null) {
             resolver = resolverSupplier.get();
-            MapKeyResolvers.register(id, resolver);
+            KeyResolvers.register(id, resolver);
         }
         return resolver;
     }
 
     @Override
-    public <T> MapKeyResolver<T> registerMapKeyResolver(ResourceLocation id, MapKeyResolver<T> resolver) {
-        MapKeyResolvers.register(id, resolver);
+    public <T> KeyResolver<T> registerKeyResolver(ResourceLocation id, KeyResolver<T> resolver) {
+        KeyResolvers.register(id, resolver);
         return resolver;
     }
 

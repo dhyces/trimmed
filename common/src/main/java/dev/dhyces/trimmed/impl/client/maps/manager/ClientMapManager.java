@@ -4,7 +4,7 @@ import dev.dhyces.trimmed.Trimmed;
 import dev.dhyces.trimmed.api.maps.MapHolder;
 import dev.dhyces.trimmed.api.util.Utils;
 import dev.dhyces.trimmed.api.maps.MapKey;
-import dev.dhyces.trimmed.impl.client.maps.MapKeyResolvers;
+import dev.dhyces.trimmed.impl.client.maps.KeyResolvers;
 import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
 import net.minecraft.resources.FileToIdConverter;
 import net.minecraft.resources.ResourceLocation;
@@ -28,8 +28,8 @@ public class ClientMapManager implements PreparableReloadListener {
         if (key.isSubKey()) {
             throw new IllegalArgumentException("Illegal id {%s}. Id cannot contain sub-paths \"/\".".formatted(key));
         }
-        if (MapKeyResolvers.getId(key.getType().getKeyResolver()) == null) {
-            throw new IllegalArgumentException("MapKeyResolver for %s is not registered".formatted(key));
+        if (KeyResolvers.getId(key.getType().getKeyResolver()) == null) {
+            throw new IllegalArgumentException("KeyResolver for %s is not registered".formatted(key));
         }
         if (REGISTRY.containsKey(key)) {
             throw new IllegalArgumentException("Base MapKey already registered for " + key);
@@ -60,7 +60,7 @@ public class ClientMapManager implements PreparableReloadListener {
         REGISTRY.values().forEach(MapHandler::clear);
 
         for (Map.Entry<MapKey<?, ?>, MapHandler<?, ?>> entry : REGISTRY.entrySet()) {
-            ResourceLocation resolverPath = entry.getKey().getMapId().withPrefix("trimmed/maps/" + Utils.namespacedPath(MapKeyResolvers.getId(entry.getKey().getType().getKeyResolver()), '/') + "/");
+            ResourceLocation resolverPath = entry.getKey().getMapId().withPrefix("trimmed/maps/" + Utils.namespacedPath(KeyResolvers.getId(entry.getKey().getType().getKeyResolver()), '/') + "/");
 
             FileToIdConverter converter = FileToIdConverter.json(resolverPath.getPath());
             try {

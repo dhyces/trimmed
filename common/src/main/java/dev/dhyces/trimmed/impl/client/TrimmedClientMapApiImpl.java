@@ -3,11 +3,11 @@ package dev.dhyces.trimmed.impl.client;
 import com.mojang.serialization.Codec;
 import dev.dhyces.trimmed.api.client.TrimmedClientMapApi;
 import dev.dhyces.trimmed.api.maps.MapHolder;
-import dev.dhyces.trimmed.api.maps.MapKeyResolver;
+import dev.dhyces.trimmed.api.maps.KeyResolver;
 import dev.dhyces.trimmed.api.maps.types.AdvancedMapType;
 import dev.dhyces.trimmed.api.maps.types.MapType;
 import dev.dhyces.trimmed.api.maps.MapKey;
-import dev.dhyces.trimmed.impl.client.maps.MapKeyResolvers;
+import dev.dhyces.trimmed.impl.client.maps.KeyResolvers;
 import dev.dhyces.trimmed.impl.client.maps.manager.ClientMapManager;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
@@ -40,7 +40,7 @@ public final class TrimmedClientMapApiImpl implements TrimmedClientMapApi {
     }
 
     @Override
-    public @Nullable <T> MapKeyResolver<T> getRegistryMapKeyResolver(ResourceKey<? extends Registry<T>> id) {
-        return MapKeyResolvers.getResolver(id.location());
+    public @Nullable <T> KeyResolver<T> getRegistryKeyResolver(ResourceKey<? extends Registry<T>> id) {
+        return KeyResolvers.getResolver(id.location());
     }
 }

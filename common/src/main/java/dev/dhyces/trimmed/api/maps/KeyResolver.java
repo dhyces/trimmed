@@ -7,12 +7,12 @@ import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import org.jetbrains.annotations.Nullable;
 
-public interface MapKeyResolver<T> {
+public interface KeyResolver<T> {
     Codec<T> getCodec();
     @Nullable
     StreamCodec<RegistryFriendlyByteBuf, T> getStreamCodec();
 
-    record RegistryWrapper<T>(Registry<T> registry) implements MapKeyResolver<T> {
+    record RegistryWrapper<T>(Registry<T> registry) implements KeyResolver<T> {
 
         @Override
         public Codec<T> getCodec() {
