@@ -11,8 +11,9 @@ public interface KeyResolver<T> {
     Codec<T> getCodec();
     @Nullable
     StreamCodec<RegistryFriendlyByteBuf, T> getStreamCodec();
+    boolean requiresActiveWorld();
 
-    record RegistryWrapper<T>(Registry<T> registry) implements KeyResolver<T> {
+    record RegistryWrapper<T>(Registry<T> registry, boolean requiresActiveWorld) implements KeyResolver<T> {
 
         @Override
         public Codec<T> getCodec() {
@@ -22,6 +23,11 @@ public interface KeyResolver<T> {
         @Override
         public StreamCodec<RegistryFriendlyByteBuf, T> getStreamCodec() {
             return ByteBufCodecs.registry(registry.key());
+        }
+
+        @Override
+        public boolean requiresActiveWorld() {
+            return requiresActiveWorld;
         }
     }
 }

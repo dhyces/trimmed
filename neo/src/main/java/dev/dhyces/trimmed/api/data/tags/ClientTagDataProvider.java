@@ -6,6 +6,7 @@ import com.mojang.serialization.JsonOps;
 import dev.dhyces.trimmed.Trimmed;
 import dev.dhyces.trimmed.api.data.tags.appenders.ClientTagAppender;
 import dev.dhyces.trimmed.impl.client.tags.ClientTagKey;
+import dev.dhyces.trimmed.impl.client.tags.manager.ClientTagManager;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
@@ -16,9 +17,9 @@ import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import java.nio.file.Path;
 import java.util.concurrent.CompletableFuture;
 
-public abstract class ClientTagDataProvider extends BaseClientTagDataProvider {
+public abstract class ClientTagDataProvider<T> extends BaseClientTagDataProvider {
 
-    protected static final ExistingFileHelper.IResourceType UNCHECKED_RESOURCE_TYPE = new ExistingFileHelper.ResourceType(PackType.CLIENT_RESOURCES, ".json", "tags/unchecked");
+    protected static final ExistingFileHelper.IResourceType UNCHECKED_RESOURCE_TYPE = new ExistingFileHelper.ResourceType(PackType.CLIENT_RESOURCES, ".json", ClientTagManager.PATH);
 
     public ClientTagDataProvider(PackOutput packOutput, String modid, ExistingFileHelper existingFileHelper) {
         super(packOutput, modid, UNCHECKED_RESOURCE_TYPE, existingFileHelper);
@@ -26,7 +27,7 @@ public abstract class ClientTagDataProvider extends BaseClientTagDataProvider {
 
     protected abstract void addTags();
 
-    public ClientTagAppender clientTag(ClientTagKey clientTagKey) {
+    public ClientTagAppender clientTag(ClientTagKey<T> clientTagKey) {
         return new ClientTagAppender(modid, getOrCreateBuilder(clientTagKey.getTagId()));
     }
 

@@ -86,12 +86,14 @@ import net.minecraft.world.level.storage.loot.providers.score.LootScoreProviderT
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Map;
+
 public final class KeyResolvers {
-    private static final BiMap<ResourceLocation, KeyResolver<?>> CUSTOM_RESOLVERS = HashBiMap.create();
+    private static final BiMap<ResourceLocation, KeyResolver<?>> RESOLVERS = HashBiMap.create();
     static {
         // TODO: Add data pack registry resolvers
         for (Registry<?> registry : BuiltInRegistries.REGISTRY) {
-            CUSTOM_RESOLVERS.put(registry.key().location(), new KeyResolver.RegistryWrapper<>(registry));
+            RESOLVERS.put(registry.key().location(), new KeyResolver.RegistryWrapper<>(registry, false));
         }
     }
 
@@ -198,17 +200,22 @@ public final class KeyResolvers {
 
     @ApiStatus.Internal
     public static <T> void register(ResourceLocation key, KeyResolver<T> resolver) {
-        if (CUSTOM_RESOLVERS.putIfAbsent(key, resolver) != null) {
+        if (RESOLVERS.putIfAbsent(key, resolver) != null) {
             throw new IllegalArgumentException("Mapping already registered for %s".formatted(key));
         }
     }
 
+    @ApiStatus.Internal
+    public static Iterable<Map.Entry<ResourceLocation, KeyResolver<?>>> getEntries() {
+        return RESOLVERS.entrySet();
+    }
+
     @Nullable
     public static <T> KeyResolver<T> getResolver(ResourceLocation key) {
-        return (KeyResolver<T>) CUSTOM_RESOLVERS.get(key);
+        return (KeyResolver<T>) RESOLVERS.get(key);
     }
 
     public static <T> ResourceLocation getId(KeyResolver<T> key) {
-        return CUSTOM_RESOLVERS.inverse().get(key);
+        return RESOLVERS.inverse().get(key);
     }
 }

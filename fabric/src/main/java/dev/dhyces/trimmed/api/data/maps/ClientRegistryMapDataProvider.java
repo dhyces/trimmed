@@ -7,6 +7,7 @@ import com.mojang.serialization.JsonOps;
 import dev.dhyces.trimmed.api.data.maps.appenders.ClientRegistryMapAppender;
 import dev.dhyces.trimmed.api.util.Utils;
 import dev.dhyces.trimmed.api.maps.MapKey;
+import dev.dhyces.trimmed.impl.client.maps.manager.ClientMapManager;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Registry;
@@ -24,7 +25,7 @@ public abstract class ClientRegistryMapDataProvider<K> extends BaseMapDataProvid
     private final CompletableFuture<Unit> delayedContent;
 
     public ClientRegistryMapDataProvider(FabricDataOutput packOutput, String modid, CompletableFuture<HolderLookup.Provider> lookupProviderFuture, ResourceKey<? extends Registry<K>> registryKey) {
-        super(packOutput, modid, "maps/" + Utils.prefix(registryKey));
+        super(packOutput, modid, ClientMapManager.PATH + Utils.namespacedLocation(registryKey));
         this.lookupProviderFuture = lookupProviderFuture;
         this.registryKey = registryKey;
         this.delayedContent = new CompletableFuture<>();

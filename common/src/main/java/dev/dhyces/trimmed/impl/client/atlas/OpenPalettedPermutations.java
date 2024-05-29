@@ -7,11 +7,11 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.dhyces.trimmed.Trimmed;
 import dev.dhyces.trimmed.api.client.TrimmedClientMapApi;
 import dev.dhyces.trimmed.api.client.TrimmedClientTagApi;
+import dev.dhyces.trimmed.api.client.map.ClientKeyResolvers;
 import dev.dhyces.trimmed.api.client.map.ClientMapTypes;
+import dev.dhyces.trimmed.api.client.tag.TagHolder;
 import dev.dhyces.trimmed.api.maps.MapHolder;
-import dev.dhyces.trimmed.api.maps.MapKey;
 import dev.dhyces.trimmed.impl.client.tags.ClientTagKey;
-import dev.dhyces.trimmed.modhelper.services.Services;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.client.renderer.texture.SpriteContents;
 import net.minecraft.client.renderer.texture.atlas.SpriteResourceLoader;
@@ -35,18 +35,18 @@ public class OpenPalettedPermutations implements SpriteSource {
     public static final MapCodec<OpenPalettedPermutations> CODEC = RecordCodecBuilder.mapCodec(instance ->
             instance.group(
                     ResourceLocation.CODEC.fieldOf("palette_key").forGetter(openPalettedPermutations -> openPalettedPermutations.paletteKey),
-                    MapKey.codec(ClientMapTypes.TEXTURE_SUFFIX).fieldOf("permutation_map").forGetter(openPalettedPermutations -> openPalettedPermutations.permutations.unwrapKeyOrThrow()),
-                    ClientTagKey.CODEC.fieldOf("texture_set").forGetter(openPalettedPermutations -> openPalettedPermutations.textures)
+                    TrimmedClientMapApi.getInstance().simpleCodec(ClientMapTypes.TEXTURE_SUFFIX).fieldOf("permutation_map").forGetter(openPalettedPermutations -> openPalettedPermutations.permutations),
+                    TrimmedClientTagApi.getInstance().tagCodec(ClientKeyResolvers.TEXTURE).fieldOf("texture_set").forGetter(openPalettedPermutations -> openPalettedPermutations.textures)
             ).apply(instance, OpenPalettedPermutations::new)
     );
 
     private final ResourceLocation paletteKey;
     private final MapHolder<ResourceLocation, String> permutations;
-    private final ClientTagKey textures;
+    private final TagHolder<ResourceLocation> textures;
 
-    public OpenPalettedPermutations(ResourceLocation paletteKey, MapKey<ResourceLocation, String> permutations, ClientTagKey textures) {
+    public OpenPalettedPermutations(ResourceLocation paletteKey, MapHolder<ResourceLocation, String> permutations, TagHolder<ResourceLocation> textures) {
         this.paletteKey = paletteKey;
-        this.permutations = TrimmedClientMapApi.getInstance().getSimpleMap(permutations);
+        this.permutations = permutations;
         this.textures = textures;
     }
 
@@ -65,22 +65,18 @@ public class OpenPalettedPermutations implements SpriteSource {
             );
         });
 
-        TrimmedClientTagApi.getInstance().getSafeUncheckedTag(textures).ifPresentOrElse(optionalIds -> {
-            optionalIds.forEach(optionalTagElement -> {
-                Optional<Resource> imageOptional = pResourceManager.getResource(TEXTURE_ID_CONVERTER.idToFile(optionalTagElement.elementId()));
-                if (imageOptional.isEmpty() && optionalTagElement.isRequired()) {
-                    Trimmed.LOGGER.error("Cannot locate required " + optionalTagElement.elementId());
-                } else if (imageOptional.isPresent()) {
-                    LazyLoadedImage lazyloadedimage = new LazyLoadedImage(optionalTagElement.elementId(), imageOptional.get(), replacePixelsMap.size());
+        textures.getSet().forEach(texture -> {
+            Optional<Resource> imageOptional = pResourceManager.getResource(TEXTURE_ID_CONVERTER.idToFile(texture));
+            if (imageOptional.isEmpty() && textures.isRequired(texture)) {
+                Trimmed.LOGGER.error("Cannot locate required " + texture);
+            } else if (imageOptional.isPresent()) {
+                LazyLoadedImage lazyloadedimage = new LazyLoadedImage(texture, imageOptional.get(), replacePixelsMap.size());
 
-                    for (Map.Entry<ResourceLocation, OptionalSupplier> entry : replacePixelsMap.entrySet()) {
-                        ResourceLocation permutedId = optionalTagElement.elementId().withSuffix("_" + entry.getKey().getPath());
-                        pOutput.add(permutedId, new OpenPalettedSpriteSupplier(lazyloadedimage, entry.getValue(), permutedId));
-                    }
+                for (Map.Entry<ResourceLocation, OptionalSupplier> entry : replacePixelsMap.entrySet()) {
+                    ResourceLocation permutedId = texture.withSuffix("_" + entry.getKey().getPath());
+                    pOutput.add(permutedId, new OpenPalettedSpriteSupplier(lazyloadedimage, entry.getValue(), permutedId));
                 }
-            });
-        }, () -> {
-            throw new IllegalStateException("The client-tag {%s} could not be found!".formatted(textures));
+            }
         });
     }
 

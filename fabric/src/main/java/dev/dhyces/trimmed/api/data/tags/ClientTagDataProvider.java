@@ -6,6 +6,7 @@ import com.mojang.serialization.JsonOps;
 import dev.dhyces.trimmed.Trimmed;
 import dev.dhyces.trimmed.api.data.tags.appenders.ClientTagAppender;
 import dev.dhyces.trimmed.impl.client.tags.ClientTagKey;
+import dev.dhyces.trimmed.impl.client.tags.manager.ClientTagManager;
 import net.fabricmc.fabric.impl.datagen.FabricTagBuilder;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
@@ -19,7 +20,7 @@ public abstract class ClientTagDataProvider extends BaseClientTagDataProvider {
 
 
     public ClientTagDataProvider(PackOutput packOutput, String modid) {
-        super(packOutput, modid, "tags/unchecked");
+        super(packOutput, modid, ClientTagManager.PATH);
     }
 
     protected abstract void addTags();

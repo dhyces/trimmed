@@ -9,7 +9,7 @@ public final class Utils {
      * Creates a directory path for registered objects. Vanilla does not have the namespace, however modded registries
      * should have a parent directory with the mod's namespace
      */
-    public static <T> String prefix(ResourceKey<? extends Registry<T>> registryResourceKey) {
+    public static <T> String namespacedLocation(ResourceKey<? extends Registry<T>> registryResourceKey) {
         return namespacedPath(registryResourceKey.location(), '/');
     }
 

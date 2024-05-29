@@ -5,7 +5,7 @@ import com.google.common.collect.Multimap;
 import com.mojang.datafixers.util.Pair;
 import dev.dhyces.trimmed.api.client.map.ClientMapKeys;
 import dev.dhyces.trimmed.api.data.maps.ClientMapDataProvider;
-import dev.dhyces.trimmed.api.client.tag.UncheckedClientTags;
+import dev.dhyces.trimmed.api.client.tag.ClientTags;
 import dev.dhyces.trimmed.api.data.tags.ClientTagDataProvider;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
@@ -85,7 +85,7 @@ public class TrimDatagenSuite extends BaseTrimDatagenSuite {
                 @Override
                 protected void addTags() {
                     if (!patternTextures.isEmpty()) {
-                        clientTag(UncheckedClientTags.CUSTOM_TRIM_PATTERN_TEXTURES).add(patternTextures.toArray(ResourceLocation[]::new));
+                        clientTag(ClientTags.TRIM_PATTERN_TEXTURES).add(patternTextures.toArray(ResourceLocation[]::new));
                     }
                 }
 
@@ -97,7 +97,7 @@ public class TrimDatagenSuite extends BaseTrimDatagenSuite {
         );
 
         pack.addProvider((FabricDataOutput output) ->
-            new ClientMapDataProvider(output, modid) {
+            new ClientMapDataProvider<ResourceLocation>(output, modid) {
                 @Override
                 protected void addMaps() {
                     if (!materialTexturePermutations.isEmpty()) {

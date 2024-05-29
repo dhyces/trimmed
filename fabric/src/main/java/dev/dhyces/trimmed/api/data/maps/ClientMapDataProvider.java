@@ -5,6 +5,7 @@ import com.mojang.serialization.DataResult;
 import com.mojang.serialization.JsonOps;
 import dev.dhyces.trimmed.api.data.maps.appenders.ClientMapAppender;
 import dev.dhyces.trimmed.api.maps.MapKey;
+import dev.dhyces.trimmed.impl.client.maps.manager.ClientMapManager;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
@@ -15,7 +16,7 @@ import java.util.concurrent.CompletableFuture;
 public abstract class ClientMapDataProvider<K> extends BaseMapDataProvider {
 
     public ClientMapDataProvider(FabricDataOutput packOutput, String modid) {
-        super(packOutput, modid, "maps/unchecked");
+        super(packOutput, modid, ClientMapManager.PATH);
     }
 
     public <V> ClientMapAppender<K, V> map(MapKey<K, V> mapKey) {

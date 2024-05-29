@@ -1,11 +1,25 @@
 package dev.dhyces.trimmed.api.maps;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.BaseMapCodec;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 import java.util.Optional;
 
 public interface MapHolder<K, V> {
+    /**
+     * Used for elements where it could either be deserialized from a MapKey or an actual Map object.
+     * @param baseMapCodec Base codec, must implement both BaseMapCodec and Codec
+     * @return The codec which supplies de/serialization of maps to MapHolder
+     * @param <K> Key object
+     * @param <V> Value object
+     * @param <C> Base codec
+     */
+    static <K, V, C extends BaseMapCodec<K, V> & Codec<Map<K, V>>> Codec<MapHolder<K, V>> fromBaseMapCodec(C baseMapCodec) {
+        return baseMapCodec.xmap(MapHolder::simpleWrapper, MapHolder::getMap);
+    }
+
     default MapKey<K, V> unwrapKeyOrThrow() {
         return getKey().orElseThrow(() -> new IllegalStateException("No key is present for map holder"));
     }

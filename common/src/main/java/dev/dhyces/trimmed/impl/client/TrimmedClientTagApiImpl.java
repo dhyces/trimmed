@@ -1,72 +1,25 @@
 package dev.dhyces.trimmed.impl.client;
 
-import dev.dhyces.trimmed.impl.util.OptionalId;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.DataResult;
+import dev.dhyces.trimmed.api.client.tag.TagHolder;
 import dev.dhyces.trimmed.api.client.TrimmedClientTagApi;
-import dev.dhyces.trimmed.impl.client.tags.ClientRegistryTagKey;
+import dev.dhyces.trimmed.api.maps.KeyResolver;
 import dev.dhyces.trimmed.impl.client.tags.ClientTagKey;
 import dev.dhyces.trimmed.impl.client.tags.manager.ClientTagManager;
-import net.minecraft.core.Holder;
-import net.minecraft.resources.ResourceLocation;
-
-import java.util.Optional;
-import java.util.Set;
 
 public final class TrimmedClientTagApiImpl implements TrimmedClientTagApi {
     public static final TrimmedClientTagApi INSTANCE = new TrimmedClientTagApiImpl();
 
     @Override
-    public boolean uncheckedTagContains(ClientTagKey tagKey, ResourceLocation value) {
-        return OptionalId.checkEither(value, optionalTagElement -> ClientTagManager.getUncheckedHandler().doesTagContain(tagKey, optionalTagElement));
+    public <T> TagHolder<T> getTag(ClientTagKey<T> clientTagKey) {
+        return ClientTagManager.getHolder(clientTagKey);
     }
 
     @Override
-    public <T> boolean registryTagContains(ClientRegistryTagKey<T> tagKey, T value) {
-        return ClientTagManager.getRegistryHandler(tagKey.getRegistryKey())
-                .map(handler -> handler.doesTagContain(tagKey, value))
-                .orElse(false);
-    }
-
-    @Override
-    public <T> boolean datapackedTagContains(ClientRegistryTagKey<T> tagKey, Holder<T> value) {
-        return ClientTagManager.getDatapackedHandler(tagKey.getRegistryKey())
-                .map(handler -> handler.doesTagContain(tagKey, value))
-                .orElse(false);
-    }
-
-    @Override
-    public Set<OptionalId> getUncheckedTag(ClientTagKey clientTagKey) {
-        Set<OptionalId> tag = ClientTagManager.getUncheckedHandler().getSet(clientTagKey);
-        return tag == null ? Set.of() : tag;
-    }
-
-    @Override
-    public <T> Set<T> getRegistryTag(ClientRegistryTagKey<T> clientRegistryTagKey) {
-        return ClientTagManager.getRegistryHandler(clientRegistryTagKey.getRegistryKey())
-                .map(tRegistryTagHandler -> tRegistryTagHandler.getSet(clientRegistryTagKey))
-                .orElse(Set.of());
-    }
-
-    @Override
-    public <T> Set<Holder<T>> getDatapackedTag(ClientRegistryTagKey<T> clientRegistryTagKey) {
-        return ClientTagManager.getDatapackedHandler(clientRegistryTagKey.getRegistryKey())
-                .map(tDatapackTagHandler -> tDatapackTagHandler.getSet(clientRegistryTagKey))
-                .orElse(Set.of());
-    }
-
-    @Override
-    public Optional<Set<OptionalId>> getSafeUncheckedTag(ClientTagKey clientTagKey) {
-        return Optional.ofNullable(ClientTagManager.getUncheckedHandler().getSet(clientTagKey));
-    }
-
-    @Override
-    public <T> Optional<Set<T>> getSafeRegistryTag(ClientRegistryTagKey<T> clientRegistryTagKey) {
-        return ClientTagManager.getRegistryHandler(clientRegistryTagKey.getRegistryKey())
-                .map(tRegistryTagHandler -> tRegistryTagHandler.getSet(clientRegistryTagKey));
-    }
-
-    @Override
-    public <T> Optional<Set<Holder<T>>> getSafeDatapackedTag(ClientRegistryTagKey<T> clientRegistryTagKey) {
-        return ClientTagManager.getDatapackedHandler(clientRegistryTagKey.getRegistryKey())
-                .map(tDatapackTagHandler -> tDatapackTagHandler.getSet(clientRegistryTagKey));
+    public <T> Codec<TagHolder<T>> tagCodec(KeyResolver<T> keyResolver) {
+        return ClientTagKey.codec(keyResolver).flatComapMap(ClientTagManager::getHolder, tTagHolder ->
+                tTagHolder.getKey().map(DataResult::success).orElseGet(() -> DataResult.error(() -> "No key is present for tag holder"))
+        );
     }
 }

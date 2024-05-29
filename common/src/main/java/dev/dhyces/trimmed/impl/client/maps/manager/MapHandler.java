@@ -27,11 +27,11 @@ import java.util.stream.Collectors;
 
 public final class MapHandler<K, V> {
     private final MapKey<K, V> baseKey;
-    private final Map<MapKey<K, V>, ClientMapHolder<K, V, Map<K, V>>> map;
+    private final Map<MapKey<K, V>, ClientMapHolder<K, V, Map<K, V>>> holders;
 
     public MapHandler(MapKey<K, V> baseKey) {
         this.baseKey = baseKey;
-        this.map = new Reference2ObjectOpenHashMap<>();
+        this.holders = new Reference2ObjectOpenHashMap<>();
     }
 
     MapHolder<K, V> getHolder(MapKey<K, V> mapKey) {
@@ -39,18 +39,19 @@ public final class MapHandler<K, V> {
     }
 
     void clear() {
-        map.values().forEach(kvMapClientMapHolder -> {
+        holders.values().forEach(kvMapClientMapHolder -> {
             kvMapClientMapHolder.backing = null;
             kvMapClientMapHolder.optionalKeys = null;
         });
     }
 
     private ClientMapHolder<K, V, Map<K, V>> getOrCreateHolder(MapKey<K, V> key) {
-        return map.computeIfAbsent(key, ClientMapHolder::new);
+        return holders.computeIfAbsent(key, ClientMapHolder::new);
     }
 
     void parse(ResourceLocation resolverPath, FileToIdConverter converter, ResourceManager resourceManager) {
         MapFile<K, V> base = readStack(baseKey.getMapId(), resourceManager.getResourceStack(resolverPath.withSuffix(".json")));
+        // TODO: look back into this, I believe this will try to parse from any pack, not just the one with this namespace
         Map<ResourceLocation, MapFile<K, V>> children = readResources(converter, resourceManager);
         if (base.map().isEmpty() && base.appendElements().isEmpty() && children.isEmpty()) {
             Trimmed.LOGGER.debug("No maps to read, skipping %s".formatted(resolverPath));
@@ -81,8 +82,7 @@ public final class MapHandler<K, V> {
                     }
                 }
             }
-            holder.backing = finishedMap;
-            holder.optionalKeys = optionalElements;
+            holder.update(finishedMap, optionalElements);
         });
     }
 
@@ -146,6 +146,11 @@ public final class MapHandler<K, V> {
             this.key = key;
         }
 
+        private void update(M backing, Set<K> optionalKeys) {
+            this.backing = backing;
+            this.optionalKeys = optionalKeys;
+        }
+
         @Override
         public MapKey<K, V> unwrapKey() {
             return key;
@@ -154,7 +159,7 @@ public final class MapHandler<K, V> {
         @Override
         public M getMap() {
             if (backing == null) {
-                throw new IllegalStateException("Cannot access map because it doesn't exist!");
+                throw new IllegalStateException("Cannot access map for " + key + " because it doesn't exist!");
             }
             return backing;
         }

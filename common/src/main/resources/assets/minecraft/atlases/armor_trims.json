@@ -4,7 +4,7 @@
       "type": "trimmed:open_paletted_permutations",
       "palette_key": "minecraft:trims/color_palettes/trim_palette",
       "permutation_map": "trimmed:material_suffixes",
-      "texture_set": "trimmed:trim_pattern_textures"
+      "texture_set": "trimmed:trim_armor_patterns"
     }
   ]
 }

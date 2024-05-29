@@ -6,6 +6,7 @@ import com.mojang.serialization.JsonOps;
 import dev.dhyces.trimmed.api.data.maps.appenders.ClientRegistryMapAppender;
 import dev.dhyces.trimmed.api.util.Utils;
 import dev.dhyces.trimmed.api.maps.MapKey;
+import dev.dhyces.trimmed.impl.client.maps.manager.ClientMapManager;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Registry;
 import net.minecraft.data.CachedOutput;
@@ -23,7 +24,7 @@ public abstract class ClientRegistryMapDataProvider<K> extends BaseMapDataProvid
     private final CompletableFuture<HolderLookup.Provider> lookupProviderFuture;
 
     public ClientRegistryMapDataProvider(PackOutput packOutput, String modid, CompletableFuture<HolderLookup.Provider> lookupProviderFuture, ResourceKey<? extends Registry<K>> registryKey, ExistingFileHelper existingFileHelper) {
-        super(packOutput, modid, new ExistingFileHelper.ResourceType(PackType.CLIENT_RESOURCES, ".json", "maps/" + Utils.prefix(registryKey)), existingFileHelper);
+        super(packOutput, modid, new ExistingFileHelper.ResourceType(PackType.CLIENT_RESOURCES, ".json", ClientMapManager.PATH + Utils.namespacedLocation(registryKey)), existingFileHelper);
         this.lookupProviderFuture = lookupProviderFuture;
         this.registryKey = registryKey;
     }

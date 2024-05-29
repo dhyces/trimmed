@@ -62,7 +62,7 @@ public class TrimmedClient {
 //            if (Minecraft.getInstance().player != null) {
 //                Minecraft.getInstance().getToasts().addToast(InfoToast.reloadClientInfo());
 //            }
-            ClientTagManager.updateDatapacksSynced(registryAccess);
+//            ClientTagManager.updateDatapacksSynced(registryAccess);
         }
     }
 

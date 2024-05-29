@@ -1,6 +1,7 @@
 package dev.dhyces.trimmed.impl.client;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.DataResult;
 import dev.dhyces.trimmed.api.client.TrimmedClientMapApi;
 import dev.dhyces.trimmed.api.maps.MapHolder;
 import dev.dhyces.trimmed.api.maps.KeyResolver;
@@ -26,7 +27,9 @@ public final class TrimmedClientMapApiImpl implements TrimmedClientMapApi {
 
     @Override
     public <K, V> Codec<MapHolder<K, V>> simpleCodec(MapType<K, V> mapType) {
-        return MapKey.codec(mapType).xmap(ClientMapManager::getHolder, MapHolder::unwrapKeyOrThrow);
+        return MapKey.codec(mapType).flatComapMap(ClientMapManager::getHolder, kvMapHolder ->
+            kvMapHolder.getKey().map(DataResult::success).orElseGet(() -> DataResult.error(() -> "No key is present for map holder"))
+        );
     }
 
     @Override
@@ -36,7 +39,9 @@ public final class TrimmedClientMapApiImpl implements TrimmedClientMapApi {
 
     @Override
     public <K, V, M extends Map<K, V>> Codec<MapHolder.Typed<K, V, M>> advancedCodec(AdvancedMapType<K, V, M> mapType) {
-        return MapKey.codec(mapType).xmap(kvMapKey -> (MapHolder.Typed<K, V, M>) ClientMapManager.getHolder(kvMapKey), MapHolder::unwrapKeyOrThrow);
+        return MapKey.codec(mapType).flatComapMap(kvMapKey -> (MapHolder.Typed<K, V, M>) ClientMapManager.getHolder(kvMapKey), kvmTyped ->
+                kvmTyped.getKey().map(DataResult::success).orElseGet(() -> DataResult.error(() -> "No key is present for map holder"))
+        );
     }
 
     @Override

@@ -17,4 +17,9 @@ public record ClientKeyResolver<T>(Codec<T> codec) implements KeyResolver<T> {
     public @Nullable StreamCodec<RegistryFriendlyByteBuf, T> getStreamCodec() {
         return null;
     }
+
+    @Override
+    public boolean requiresActiveWorld() {
+        return false;
+    }
 }

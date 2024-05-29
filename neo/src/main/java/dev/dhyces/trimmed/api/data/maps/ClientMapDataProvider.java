@@ -5,6 +5,7 @@ import com.mojang.serialization.DataResult;
 import com.mojang.serialization.JsonOps;
 import dev.dhyces.trimmed.api.data.maps.appenders.ClientMapAppender;
 import dev.dhyces.trimmed.api.maps.MapKey;
+import dev.dhyces.trimmed.impl.client.maps.manager.ClientMapManager;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
@@ -17,7 +18,7 @@ import java.util.concurrent.CompletableFuture;
 public abstract class ClientMapDataProvider<K> extends BaseMapDataProvider<K> {
 
     public ClientMapDataProvider(PackOutput packOutput, String modid, ExistingFileHelper existingFileHelper) {
-        super(packOutput, modid, new ExistingFileHelper.ResourceType(PackType.CLIENT_RESOURCES, ".json", "maps/unchecked"), existingFileHelper);
+        super(packOutput, modid, new ExistingFileHelper.ResourceType(PackType.CLIENT_RESOURCES, ".json", ClientMapManager.PATH), existingFileHelper);
     }
 
     public <V> ClientMapAppender<K, V> map(MapKey<K, V> mapKey) {
