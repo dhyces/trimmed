@@ -104,10 +104,12 @@ import net.minecraft.world.level.storage.loot.providers.nbt.LootNbtProviderType;
 import net.minecraft.world.level.storage.loot.providers.number.LootNumberProviderType;
 import net.minecraft.world.level.storage.loot.providers.score.LootScoreProviderType;
 import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.Nullable;
 
 public final class MapKeyResolvers {
     private static final BiMap<ResourceLocation, MapKeyResolver<?>> CUSTOM_RESOLVERS = HashBiMap.create();
     static {
+        // TODO: Add data pack registry resolvers
         for (Registry<?> registry : BuiltInRegistries.REGISTRY) {
             CUSTOM_RESOLVERS.put(registry.key().location(), new MapKeyResolver.RegistryWrapper<>(registry));
         }
@@ -221,6 +223,7 @@ public final class MapKeyResolvers {
         }
     }
 
+    @Nullable
     public static <T> MapKeyResolver<T> getResolver(ResourceLocation key) {
         return (MapKeyResolver<T>) CUSTOM_RESOLVERS.get(key);
     }

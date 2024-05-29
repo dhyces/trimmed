@@ -13,16 +13,10 @@ import java.util.Optional;
 public interface PlatformHelper {
     boolean isModLoaded(String modid);
     boolean isClientDist();
-
     boolean isProduction();
 
-
     String resolveRegistryPath(ResourceKey<? extends Registry<?>> resourceKey);
-
     <T> boolean modRegistryExists(ResourceKey<? extends Registry<T>> mod);
-
     <T> Optional<T> decodeWithConditions(Codec<T> codec, JsonObject jsonObject);
-
-
     <T> T getRegistryValue(@Nullable RegistryAccess registryAccess, ResourceKey<? extends Registry<T>> registry, ResourceLocation valueKey);
 }

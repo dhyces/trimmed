@@ -19,9 +19,11 @@ import net.minecraft.client.renderer.texture.atlas.SpriteSource;
 import net.minecraft.client.renderer.texture.atlas.SpriteSourceType;
 import net.minecraft.client.renderer.texture.atlas.sources.LazyLoadedImage;
 import net.minecraft.client.renderer.texture.atlas.sources.PalettedPermutations;
+import net.minecraft.client.resources.metadata.animation.FrameSize;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.server.packs.resources.ResourceMetadata;
 
 import java.io.IOException;
 import java.util.Map;
@@ -95,7 +97,7 @@ public class OpenPalettedPermutations implements SpriteSource {
         public SpriteContents apply(SpriteResourceLoader spriteResourceLoader) {
             try {
                 NativeImage image = lazyLoadedImage.get().mappedCopy(optionalSupplier.mapper.get());
-                return Services.CLIENT_HELPER.createSpriteContents(permutedId, image);
+                return new SpriteContents(permutedId, new FrameSize(image.getWidth(), image.getHeight()), image, ResourceMetadata.EMPTY);
             } catch (IOException e) {
                 if (optionalSupplier.isRequired) {
                     Trimmed.LOGGER.error("Could not create paletted image for " + permutedId);

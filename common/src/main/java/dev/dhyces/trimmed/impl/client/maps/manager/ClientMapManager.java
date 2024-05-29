@@ -21,18 +21,18 @@ import java.util.concurrent.Executor;
 // Getting a map from a key before maps have been loaded should return the MapAccess which is then later filled when
 // data is loaded. All map types support groups, where the subdirectories are the same as the names.
 public class ClientMapManager implements PreparableReloadListener {
-    private static final CompletableFuture<Unit> COMPLETABLE = new CompletableFuture<>();
+    private static CompletableFuture<Unit> completable = new CompletableFuture<>();
     private static final Map<MapKey<?, ?>, MapHandler<?, ?>> REGISTRY = new Reference2ObjectOpenHashMap<>();
 
     public static <K, V> void registerBaseKey(MapKey<K, V> key) {
-        if (key.getMapId().getPath().contains("/")) {
+        if (key.isSubKey()) {
             throw new IllegalArgumentException("Illegal id {%s}. Id cannot contain sub-paths \"/\".".formatted(key));
         }
         if (MapKeyResolvers.getId(key.getType().getKeyResolver()) == null) {
             throw new IllegalArgumentException("MapKeyResolver for %s is not registered".formatted(key));
         }
         if (REGISTRY.containsKey(key)) {
-            throw new IllegalArgumentException("MapType already registered for " + key);
+            throw new IllegalArgumentException("Base MapKey already registered for " + key);
         }
         REGISTRY.put(key, new MapHandler<>(key));
     }
@@ -42,17 +42,21 @@ public class ClientMapManager implements PreparableReloadListener {
     }
 
     public static CompletableFuture<Unit> future() {
-        return COMPLETABLE;
+        return completable;
+    }
+
+    private static void finishReload() {
+        Trimmed.logInDev("Client maps loaded!");
+        // Reset this instance to complete for the next reload
+        completable = new CompletableFuture<>();
     }
 
     @Override
     public CompletableFuture<Void> reload(PreparationBarrier pPreparationBarrier, ResourceManager pResourceManager, ProfilerFiller pPreparationsProfiler, ProfilerFiller pReloadProfiler, Executor pBackgroundExecutor, Executor pGameExecutor) {
-        return load(pResourceManager).thenApply(COMPLETABLE::complete).thenCompose(pPreparationBarrier::wait).thenRun(() -> Trimmed.logInDev("Client maps loaded!"));
+        return load(pResourceManager).thenApply(completable::complete).thenCompose(pPreparationBarrier::wait).thenRun(ClientMapManager::finishReload);
     }
 
     private CompletableFuture<Unit> load(ResourceManager resourceManager) {
-        // TODO: Test if this can be safely moved into the later iteration. Current thought is that if an error occurs
-        //  that isn't caught here, it won't clear later handlers and make things weird
         REGISTRY.values().forEach(MapHandler::clear);
 
         for (Map.Entry<MapKey<?, ?>, MapHandler<?, ?>> entry : REGISTRY.entrySet()) {
