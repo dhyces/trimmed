@@ -7,6 +7,7 @@ import net.minecraft.tags.TagEntry;
 
 import java.util.Set;
 
+@Deprecated(forRemoval = true)
 public record ClientTagFile(Set<TagEntry> tags, boolean isReplace) {
     public static final Codec<ClientTagFile> CODEC = RecordCodecBuilder.create(instance ->
             instance.group(
