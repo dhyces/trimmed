@@ -3,7 +3,7 @@ package dev.dhyces.trimmed.impl.client.maps;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import com.mojang.serialization.MapCodec;
-import dev.dhyces.trimmed.api.maps.KeyResolver;
+import dev.dhyces.trimmed.api.KeyResolver;
 import net.minecraft.advancements.CriterionTrigger;
 import net.minecraft.advancements.critereon.EntitySubPredicate;
 import net.minecraft.advancements.critereon.ItemSubPredicate;

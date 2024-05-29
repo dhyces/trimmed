@@ -3,7 +3,7 @@ package dev.dhyces.trimmed.impl.client.tags;
 import com.google.common.collect.Interner;
 import com.google.common.collect.Interners;
 import com.mojang.serialization.Codec;
-import dev.dhyces.trimmed.api.maps.KeyResolver;
+import dev.dhyces.trimmed.api.KeyResolver;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.Objects;

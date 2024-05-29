@@ -4,7 +4,7 @@ import dev.dhyces.trimmed.api.client.TrimmedClientApiEntrypoint;
 import dev.dhyces.trimmed.api.client.override.provider.ItemOverrideProvider;
 import dev.dhyces.trimmed.api.client.override.provider.ItemOverrideProviderType;
 import dev.dhyces.trimmed.api.maps.MapKey;
-import dev.dhyces.trimmed.api.maps.KeyResolver;
+import dev.dhyces.trimmed.api.KeyResolver;
 import dev.dhyces.trimmed.impl.client.maps.KeyResolvers;
 import dev.dhyces.trimmed.impl.client.maps.manager.ClientMapManager;
 import dev.dhyces.trimmed.impl.client.models.override.provider.ItemOverrideProviderRegistry;

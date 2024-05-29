@@ -1,7 +1,7 @@
 package dev.dhyces.trimmed;
 
 import dev.dhyces.trimmed.api.client.TrimmedClientApiEntrypoint;
-import dev.dhyces.trimmed.api.client.map.ClientKeyResolvers;
+import dev.dhyces.trimmed.api.client.ClientKeyResolvers;
 import dev.dhyces.trimmed.api.client.map.ClientMapKeys;
 import dev.dhyces.trimmed.api.client.map.ClientMapTypes;
 import dev.dhyces.trimmed.impl.ModApiConsumer;

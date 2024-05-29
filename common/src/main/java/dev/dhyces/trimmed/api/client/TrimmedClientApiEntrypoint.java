@@ -3,7 +3,7 @@ package dev.dhyces.trimmed.api.client;
 import dev.dhyces.trimmed.api.client.override.provider.ItemOverrideProvider;
 import dev.dhyces.trimmed.api.client.override.provider.ItemOverrideProviderType;
 import dev.dhyces.trimmed.api.maps.MapKey;
-import dev.dhyces.trimmed.api.maps.KeyResolver;
+import dev.dhyces.trimmed.api.KeyResolver;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.function.Supplier;

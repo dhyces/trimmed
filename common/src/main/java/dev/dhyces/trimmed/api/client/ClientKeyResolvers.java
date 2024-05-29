@@ -1,6 +1,6 @@
-package dev.dhyces.trimmed.api.client.map;
+package dev.dhyces.trimmed.api.client;
 
-import dev.dhyces.trimmed.api.maps.KeyResolver;
+import dev.dhyces.trimmed.api.KeyResolver;
 import net.minecraft.resources.ResourceLocation;
 
 public final class ClientKeyResolvers {

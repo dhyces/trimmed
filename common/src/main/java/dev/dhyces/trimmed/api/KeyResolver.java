@@ -1,4 +1,4 @@
-package dev.dhyces.trimmed.api.maps;
+package dev.dhyces.trimmed.api;
 
 import com.mojang.serialization.Codec;
 import net.minecraft.core.Registry;
