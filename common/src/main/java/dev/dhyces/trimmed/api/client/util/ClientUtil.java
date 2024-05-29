@@ -7,6 +7,7 @@ import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
 
+@Deprecated(forRemoval = true)
 public class ClientUtil {
     @Nullable
     public static RegistryAccess getRegistryAccess() {
