@@ -1,6 +1,8 @@
 package dev.dhyces.trimmed.api.data;
 
-import com.mojang.datafixers.util.Pair;
+import it.unimi.dsi.fastutil.objects.Object2ObjectArrayMap;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import it.unimi.dsi.fastutil.objects.Reference2ObjectArrayMap;
 import net.minecraft.Util;
 import net.minecraft.advancements.critereon.InventoryChangeTrigger;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -34,13 +36,13 @@ public abstract class BaseTrimDatagenSuite {
     private final BiConsumer<String, String> mainTranslationConsumer;
     protected final String modid;
 
-    protected List<Pair<ResourceKey<TrimPattern>, TrimPattern>> patterns = new ArrayList<>();
-    protected List<Pair<ResourceLocation, ShapedRecipeBuilder>> copyRecipes = new ArrayList<>();
-    protected List<Pair<ResourceLocation, SmithingTrimRecipeBuilder>> trimRecipes = new ArrayList<>();
-    protected List<Pair<ResourceKey<TrimMaterial>, TrimMaterial>> materials = new ArrayList<>();
+    protected Map<ResourceKey<TrimPattern>, TrimPattern> patterns = new Reference2ObjectArrayMap<>();
+    protected Map<ResourceLocation, ShapedRecipeBuilder> copyRecipes = new Object2ObjectArrayMap<>();
+    protected Map<ResourceLocation, SmithingTrimRecipeBuilder> trimRecipes = new Object2ObjectArrayMap<>();
+    protected Map<ResourceKey<TrimMaterial>, TrimMaterial> materials = new Reference2ObjectArrayMap<>();
 
-    protected List<ResourceLocation> patternTextures = new ArrayList<>();
-    protected Map<ResourceLocation, String> materialTexturePermutations = new LinkedHashMap<>();
+    protected List<ResourceLocation> patternTextures = new ObjectArrayList<>();
+    protected Map<ResourceLocation, String> materialTexturePermutations = new Object2ObjectArrayMap<>();
 
     public BaseTrimDatagenSuite(String modid, @Nullable BiConsumer<String, String> translationConsumer) {
         this.modid = modid;
@@ -56,7 +58,7 @@ public abstract class BaseTrimDatagenSuite {
     }
 
     /**
-     * Creates a new pattern, as well as add to the "trim_templates" tag, add an entry to the custom patterns
+     * Creates a new pattern with decal set to false, as well as add to the "trim_templates" tag, add an entry to the custom patterns
      * client-tag, create a smithing trim recipe, and optionally add a lang entry (if a lang provider is provided)
      * and a "copy" recipe (used for duplicating the template).
      * @param patternKey The pattern key
@@ -74,8 +76,8 @@ public abstract class BaseTrimDatagenSuite {
      * @param templateItem The item that is used to obtain this pattern on armor
      * @param patternConfigConsumer An optional element allowing modification of certain elements
      */
-    public BaseTrimDatagenSuite makePattern(ResourceKey<TrimPattern> patternKey, Supplier<? extends ItemLike> templateItem, Consumer<PatternConfig> patternConfigConsumer) {
-        return makePattern(patternKey, templateItem.get(), patternConfigConsumer);
+    public BaseTrimDatagenSuite makePattern(ResourceKey<TrimPattern> patternKey, Supplier<? extends ItemLike> templateItem, boolean isDecal, Consumer<PatternConfig> patternConfigConsumer) {
+        return makePattern(patternKey, templateItem.get(), isDecal, patternConfigConsumer);
     }
 
     /**
@@ -86,21 +88,22 @@ public abstract class BaseTrimDatagenSuite {
      * @param templateItem The item that is used to obtain this pattern on armor
      */
     public BaseTrimDatagenSuite makePattern(ResourceKey<TrimPattern> patternKey, ItemLike templateItem) {
-        return makePattern(patternKey, templateItem, patternConfig -> {});
+        return makePattern(patternKey, templateItem, false, patternConfig -> {});
     }
 
     /**
      * Creates a new pattern, as well as add to the "trim_templates" tag, add an entry to the custom patterns
      * client-tag, create a smithing trim recipe, and optionally add a lang entry (if a lang provider is provided)
      * and a "copy" recipe (used for duplicating the template).
-     * @param patternKey The pattern key
-     * @param templateItem The item that is used to obtain this pattern on armor
-     * @param patternConfigConsumer An optional element allowing modification of certain elements
+     * @param patternKey The pattern key.
+     * @param templateItem The item that is used to obtain this pattern on armor.
+     * @param isDecal True will make the pattern only render where the armor texture is. False will allow the trim to always render.
+     * @param patternConfigConsumer An optional element allowing modification of certain elements.
      */
-    public BaseTrimDatagenSuite makePattern(ResourceKey<TrimPattern> patternKey, ItemLike templateItem, Consumer<PatternConfig> patternConfigConsumer) {
+    public BaseTrimDatagenSuite makePattern(ResourceKey<TrimPattern> patternKey, ItemLike templateItem, boolean isDecal, Consumer<PatternConfig> patternConfigConsumer) {
 
         String translationKey = Util.makeDescriptionId("trim_pattern", patternKey.location());
-        patterns.add(Pair.of(patternKey, new TrimPattern(patternKey.location(), templateItem.asItem().builtInRegistryHolder(), Component.translatable(translationKey), false)));
+        patterns.put(patternKey, new TrimPattern(patternKey.location(), templateItem.asItem().builtInRegistryHolder(), Component.translatable(translationKey), isDecal));
 
         PatternConfig config = new PatternConfig(templateItem);
         patternConfigConsumer.accept(config);
@@ -131,11 +134,11 @@ public abstract class BaseTrimDatagenSuite {
         ResourceLocation id = BuiltInRegistries.ITEM.getKey(templateItem.asItem());
 
         if (!config.omitTrimRecipe) {
-            trimRecipes.add(Pair.of(id.withSuffix("_smithing_trim"), makeTrimRecipe(templateItem)));
+            trimRecipes.put(id.withSuffix("_smithing_trim"), makeTrimRecipe(templateItem));
         }
 
         if (config.copyRecipe != null) {
-            copyRecipes.add(Pair.of(id, config.copyRecipe));
+            copyRecipes.put(id, config.copyRecipe);
         }
 
         return this;
@@ -199,7 +202,7 @@ public abstract class BaseTrimDatagenSuite {
         materialConfigConsumer.accept(config);
 
         String translationKey = Util.makeDescriptionId("trim_pattern", materialKey.location());
-        materials.add(Pair.of(materialKey, new TrimMaterial(config.assetName.toString(), materialItem.asItem().builtInRegistryHolder(), -1.0f, Map.of(), Component.translatable(translationKey).withStyle(config.materialStyle))));
+        materials.put(materialKey, new TrimMaterial(config.assetName, materialItem.asItem().builtInRegistryHolder(), -1.0f, Map.of(), Component.translatable(translationKey).withStyle(config.materialStyle)));
 
         if (mainTranslationConsumer != null) {
             String translation;
@@ -353,13 +356,13 @@ public abstract class BaseTrimDatagenSuite {
          * @param name The new asset name
          * @return This instance for chaining method calls
          */
-        public MaterialConfig assetName(ResourceLocation name) {
-            assetName = name.toString().replace(":", "_");
+        public MaterialConfig assetName(String name) {
+            assetName = name;
             return this;
         }
     }
 
-    record AltTranslation(BiConsumer<String, String> consumer, String translation) {
+    protected record AltTranslation(BiConsumer<String, String> consumer, String translation) {
         public void finish(String key) {
             consumer.accept(key, translation);
         }

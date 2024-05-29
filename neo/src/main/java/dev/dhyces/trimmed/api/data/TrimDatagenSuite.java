@@ -37,10 +37,10 @@ public class TrimDatagenSuite extends BaseTrimDatagenSuite {
         PackOutput packOutput = event.getGenerator().getPackOutput();
         RegistrySetBuilder builder = new RegistrySetBuilder()
                 .add(Registries.TRIM_PATTERN, pContext -> {
-                    patterns.forEach(pair -> pContext.register(pair.getFirst(), pair.getSecond()));
+                    patterns.forEach(pContext::register);
                 })
                 .add(Registries.TRIM_MATERIAL, pContext -> {
-                    materials.forEach(pair -> pContext.register(pair.getFirst(), pair.getSecond()));
+                    materials.forEach(pContext::register);
                 });
         generator.addProvider(event.includeServer(), (DataProvider.Factory<? extends DataProvider>) pOutput -> new DatapackBuiltinEntriesProvider(packOutput, event.getLookupProvider(), builder, Set.of(modid)) {
             @Override
@@ -51,8 +51,8 @@ public class TrimDatagenSuite extends BaseTrimDatagenSuite {
         generator.addProvider(event.includeServer(), new RecipeProvider(packOutput, event.getLookupProvider()) {
             @Override
             protected void buildRecipes(RecipeOutput output) {
-                trimRecipes.forEach(pair -> pair.getSecond().save(output, pair.getFirst()));
-                copyRecipes.forEach(pair -> pair.getSecond().save(output));
+                trimRecipes.forEach((id, smithingTrimRecipeBuilder) -> smithingTrimRecipeBuilder.save(output, id));
+                copyRecipes.forEach((id, smithingTrimRecipeBuilder) -> smithingTrimRecipeBuilder.save(output));
             }
 
             public String getName() {
@@ -63,10 +63,10 @@ public class TrimDatagenSuite extends BaseTrimDatagenSuite {
             @Override
             protected void addTags(HolderLookup.Provider pProvider) {
                 if (!patterns.isEmpty()) {
-                    tag(ItemTags.TRIM_TEMPLATES).add(patterns.stream().map(pair -> pair.getSecond().templateItem().value()).toArray(Item[]::new));
+                    tag(ItemTags.TRIM_TEMPLATES).add(patterns.values().stream().map(trimPattern -> trimPattern.templateItem().value()).toArray(Item[]::new));
                 }
                 if (!materials.isEmpty()) {
-                    tag(ItemTags.TRIM_MATERIALS).add(materials.stream().map(pair -> pair.getSecond().ingredient().value()).toArray(Item[]::new));
+                    tag(ItemTags.TRIM_MATERIALS).add(materials.values().stream().map(trimMaterial -> trimMaterial.ingredient().value()).toArray(Item[]::new));
                 }
             }
 

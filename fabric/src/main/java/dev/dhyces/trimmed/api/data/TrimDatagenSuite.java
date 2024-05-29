@@ -37,8 +37,8 @@ public class TrimDatagenSuite extends BaseTrimDatagenSuite {
             new FabricDynamicRegistryProvider(output, registriesFuture) {
                 @Override
                 protected void configure(HolderLookup.Provider registries, Entries entries) {
-                    patterns.forEach(pair -> entries.add(pair.getFirst(), pair.getSecond()));
-                    materials.forEach(pair -> entries.add(pair.getFirst(), pair.getSecond()));
+                    patterns.forEach(entries::add);
+                    materials.forEach(entries::add);
                 }
 
                 @Override
@@ -51,8 +51,8 @@ public class TrimDatagenSuite extends BaseTrimDatagenSuite {
         pack.addProvider((FabricDataOutput output, CompletableFuture<HolderLookup.Provider> registriesFuture) -> new FabricRecipeProvider(output, registriesFuture) {
             @Override
             public void buildRecipes(RecipeOutput output) {
-                trimRecipes.forEach(pair -> pair.getSecond().save(output, pair.getFirst()));
-                copyRecipes.forEach(pair -> pair.getSecond().save(output));
+                trimRecipes.forEach((id, smithingTrimRecipeBuilder) -> smithingTrimRecipeBuilder.save(output, id));
+                copyRecipes.forEach((id, smithingTrimRecipeBuilder) -> smithingTrimRecipeBuilder.save(output));
             }
 
             @Override
@@ -66,10 +66,10 @@ public class TrimDatagenSuite extends BaseTrimDatagenSuite {
                 @Override
                 protected void addTags(HolderLookup.Provider provider) {
                     if (!patterns.isEmpty()) {
-                        tag(ItemTags.TRIM_TEMPLATES).add(patterns.stream().map(pair -> pair.getSecond().templateItem().value()).toArray(Item[]::new));
+                        tag(ItemTags.TRIM_TEMPLATES).add(patterns.values().stream().map(trimPattern -> trimPattern.templateItem().value()).toArray(Item[]::new));
                     }
                     if (!materials.isEmpty()) {
-                        tag(ItemTags.TRIM_MATERIALS).add(materials.stream().map(pair -> pair.getSecond().ingredient().value()).toArray(Item[]::new));
+                        tag(ItemTags.TRIM_MATERIALS).add(materials.values().stream().map(trimMaterial -> trimMaterial.ingredient().value()).toArray(Item[]::new));
                     }
                 }
 
