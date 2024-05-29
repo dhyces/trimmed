@@ -1,8 +1,11 @@
 package dev.dhyces.trimmed;
 
+import dev.dhyces.trimmed.api.client.TrimmedClientApiEntrypoint;
 import dev.dhyces.trimmed.api.client.map.ClientMapKeyResolvers;
 import dev.dhyces.trimmed.api.client.map.ClientMapKeys;
 import dev.dhyces.trimmed.api.client.map.ClientMapTypes;
+import dev.dhyces.trimmed.impl.ModApiConsumer;
+import dev.dhyces.trimmed.impl.client.TrimmedClientRegistrationImpl;
 import dev.dhyces.trimmed.impl.client.atlas.TrimmedSpriteSourceTypes;
 import dev.dhyces.trimmed.impl.client.maps.MapKeyResolvers;
 import dev.dhyces.trimmed.impl.client.models.override.ItemOverrideReloadListener;
@@ -14,12 +17,14 @@ import dev.dhyces.trimmed.impl.client.models.template.ModelTemplateManager;
 import dev.dhyces.trimmed.impl.client.tags.manager.ClientTagManager;
 import dev.dhyces.trimmed.impl.mixin.client.ReloadableResourceManagerImplAccessor;
 import dev.dhyces.trimmed.impl.client.maps.manager.ClientMapManager;
+import dev.dhyces.trimmed.modhelper.services.Services;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.server.packs.resources.PreparableReloadListener;
 import net.minecraft.server.packs.resources.ResourceManager;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 import java.util.function.BiConsumer;
@@ -35,6 +40,13 @@ public class TrimmedClient {
         ModelSourceRegistry.init();
         TrimmedSpriteSourceTypes.bootstrap();
         ItemOverrideProviderRegistry.init();
+    }
+
+    public static void initApi() {
+        TrimmedClientApiEntrypoint.TrimmedClientRegistration registration = new TrimmedClientRegistrationImpl();
+        for (ModApiConsumer<TrimmedClientApiEntrypoint> entrypoint : Services.CLIENT_HELPER.getClientApiConsumers()) {
+            entrypoint.entrypoint().registration(registration);
+        }
     }
 
     public static void registerClientReloadListener(BiConsumer<String, PreparableReloadListener> eventConsumer) {

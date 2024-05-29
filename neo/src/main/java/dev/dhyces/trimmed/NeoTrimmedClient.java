@@ -9,7 +9,6 @@ import net.neoforged.neoforge.client.event.ModelEvent;
 import net.neoforged.neoforge.client.event.RegisterClientReloadListenersEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.TagsUpdatedEvent;
-
 import java.util.Set;
 
 @SuppressWarnings("unused")
@@ -23,6 +22,8 @@ public class NeoTrimmedClient {
         modBus.addListener(this::addModels);
 
         NeoForge.EVENT_BUS.addListener(this::tagsSynced);
+
+        TrimmedClient.initApi();
     }
 
     private void registerClientReloadListener(final RegisterClientReloadListenersEvent event) {

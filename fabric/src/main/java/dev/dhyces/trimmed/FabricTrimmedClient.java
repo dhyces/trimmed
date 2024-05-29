@@ -43,6 +43,8 @@ public class FabricTrimmedClient implements ClientModInitializer {
         });
 
         CommonLifecycleEvents.TAGS_LOADED.register(TrimmedClient::onTagsSynced);
+
+        TrimmedClient.initApi();
     }
 
     private record WrappedReloadListener(ResourceLocation id, PreparableReloadListener reloadListener) implements IdentifiableResourceReloadListener {
