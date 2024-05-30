@@ -140,17 +140,18 @@ public class ClientTagManager implements PreparableReloadListener {
 
         for (ClientTagEntry<T> tagEntry : tagSetEntry.entries()) {
             if (tagEntry.isTag()) {
-                ClientTagHolder<T> holder = getExistingHolder(tagEntry.element().right().orElseThrow());
+                ClientTagKey<T> clientTagKey = tagEntry.element().right().orElseThrow();
+                ClientTagHolder<T> holder = getExistingHolder(clientTagKey);
                 if (holder != null && holder.backingSet != null) {
                     holder.mergeInto(set, optionalSet);
                 } else if (tagEntry.isRequired()) {
-                    throw new IllegalStateException("Could not get required tag \"%s\" for \"%s\"".formatted(tagEntry.getTag(), id));
+                    throw new IllegalStateException("Could not get required client tag \"%s\" for \"%s\"".formatted(clientTagKey.getTagId(), id));
                 }
             } else {
                 T element = tagEntry.getElement();
                 if (element == null) {
                     if (tagEntry.isRequired()) {
-                        throw new IllegalStateException("Could not parse required element \"%s\" for \"%s\"".formatted(tagEntry.getElement(), id));
+                        throw new IllegalStateException("Could not parse required element for \"%s\"".formatted(id));
                     }
                 } else {
                     set.add(element);
