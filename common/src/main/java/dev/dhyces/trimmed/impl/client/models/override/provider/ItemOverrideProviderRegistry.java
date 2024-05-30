@@ -10,14 +10,19 @@ import net.minecraft.resources.ResourceLocation;
 
 public class ItemOverrideProviderRegistry {
     private static final BiMap<ResourceLocation, ItemOverrideProviderType<?>> PROVIDER_TYPE_MAP = HashBiMap.create();
-    public static final Codec<ItemOverrideProviderType<?>> CODEC = CodecUtil.TRIMMED_IDENTIFIER.comapFlatMap(
+    public static final Codec<ItemOverrideProviderType<?>> CODEC = CodecUtil.TRIMMED_IDENTIFIER.flatXmap(
             id -> {
                 if (!PROVIDER_TYPE_MAP.containsKey(id)) {
                     return DataResult.error(() -> "Item override provider type %s does not exist!".formatted(id));
                 }
                 return DataResult.success(PROVIDER_TYPE_MAP.get(id));
             },
-            PROVIDER_TYPE_MAP.inverse()::get
+            type -> {
+                if (!PROVIDER_TYPE_MAP.inverse().containsKey(type)) {
+                    return DataResult.error(() -> "Item override provider type is not registered! " + type.getCodec());
+                }
+                return DataResult.success(PROVIDER_TYPE_MAP.inverse().get(type));
+            }
     );
 
     public static void init() {
