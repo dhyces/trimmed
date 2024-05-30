@@ -27,5 +27,5 @@ public interface TrimmedClientMapApi {
     <K, V, M extends Map<K, V>> Codec<MapHolder.Typed<K, V, M>> advancedCodec(AdvancedMapType<K, V, M> mapType);
 
     @Nullable
-    <T> KeyResolver<T> getRegistryKeyResolver(ResourceKey<? extends Registry<T>> id);
+    <T> KeyResolver.RegistryWrapper<T> getRegistryKeyResolver(ResourceKey<? extends Registry<T>> key);
 }

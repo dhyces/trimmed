@@ -12,7 +12,6 @@ import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 
 public abstract class BaseMapDataProvider<K> implements DataProvider {
-
     protected final PackOutput packOutput;
     protected final PackOutput.PathProvider pathProvider;
     protected final String modid;

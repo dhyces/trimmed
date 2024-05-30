@@ -16,7 +16,6 @@ import java.nio.file.Path;
 import java.util.concurrent.CompletableFuture;
 
 public abstract class ClientMapDataProvider<K> extends BaseMapDataProvider<K> {
-
     public ClientMapDataProvider(PackOutput packOutput, String modid, ExistingFileHelper existingFileHelper) {
         super(packOutput, modid, new ExistingFileHelper.ResourceType(PackType.CLIENT_RESOURCES, ".json", ClientMapManager.PATH), existingFileHelper);
     }
