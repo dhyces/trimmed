@@ -40,3 +40,4 @@ replay_*.log
 # MC
 
 /common/src/generated/resources/.cache
+/testmods/neo/src/generated/resources/.cache
