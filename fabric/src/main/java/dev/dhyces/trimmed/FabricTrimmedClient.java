@@ -1,6 +1,7 @@
 package dev.dhyces.trimmed;
 
 import dev.dhyces.trimmed.api.client.TrimmedClientApiEntrypoint;
+import dev.dhyces.trimmed.impl.ModelBakeryHelper;
 import dev.dhyces.trimmed.impl.client.models.source.ModelSourceLoader;
 import dev.dhyces.trimmed.impl.client.models.source.NamedModel;
 import dev.dhyces.trimmed.impl.client.models.template.ModelTemplateManager;
@@ -32,14 +33,20 @@ public class FabricTrimmedClient implements ClientModInitializer {
         });
         PreparableModelLoadingPlugin.register(TrimmedClient::startGeneratingModels,
                 (data, pluginContext) -> {
-                    Map<ResourceLocation, BlockModel> modelMapByFileId = new Object2ObjectOpenHashMap<>();
+                    Map<ResourceLocation, NamedModel> modelMapByFileId = new Object2ObjectOpenHashMap<>();
                     for (NamedModel namedModel : data) {
                         // Need to add as ModelResourceLocations
                         pluginContext.addModels(namedModel.modelId());
                         // But the context ids are in regular ResourceLocations
-                        modelMapByFileId.put(namedModel.id(), namedModel.model());
+                        modelMapByFileId.put(namedModel.id(), namedModel);
                     }
-                    pluginContext.resolveModel().register(context -> modelMapByFileId.get(context.id()));
+                    pluginContext.resolveModel().register(context -> {
+                        NamedModel namedModel = modelMapByFileId.get(context.id());
+                        if (namedModel != null && !((ModelBakeryHelper)context.loader()).trimmed$hasResourceFor(context.id().withPath(s -> "models/" + s + ".json"))) {
+                            return modelMapByFileId.get(context.id()).model().get();
+                        }
+                        return null;
+                    });
         });
 
         CommonLifecycleEvents.TAGS_LOADED.register(TrimmedClient::onTagsSynced);

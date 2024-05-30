@@ -8,7 +8,7 @@
   ],
   "client": [
     "client.MinecraftMixin",
-    "client.ModelLoaderAccessor"
+    "client.ModelBakeryMixin"
   ],
   "injectors": {
     "defaultRequire": 1

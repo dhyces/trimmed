@@ -41,18 +41,17 @@ public record TrimModelSource(ResourceLocation template, MapHolder<ResourceLocat
             replacer.put(ITEM_TEXTURE, textureEntry.getKey().toString());
             replacer.put(TRIM_TEXTURE, textureEntry.getValue().toString());
             for (Map.Entry<ResourceLocation, String> materialEntry : MATERIALS.getMap().entrySet()) {
-                String suffix = materialEntry.getValue();
                 if (DARKER_MATERIALS.getMap().containsKey(materialEntry.getKey())) {
-                    if (overrides.isBound() && overrides.getMap().containsKey(materialEntry.getKey())) {
-                        suffix = MATERIALS.getMap().get(overrides.getMap().get(materialEntry.getKey()));
-                    } else {
-                        continue;
-                    }
+                    continue;
+                }
+                String suffix = materialEntry.getValue();
+                if (overrides.isBound() && overrides.getMap().containsKey(materialEntry.getKey())) {
+                    suffix = MATERIALS.getMap().get(overrides.getMap().get(materialEntry.getKey()));
                 }
                 replacer.put(MATERIAL_SUFFIX, suffix);
                 String processed = templateManager.process(template, replacer);
                 ResourceLocation id = textureEntry.getKey().withSuffix("_" + suffix + "_trim");
-                modelBuilder.add(NamedModel.item(id, BlockModel.fromString(processed)));
+                modelBuilder.add(NamedModel.item(id, () -> BlockModel.fromString(processed)));
             }
         }
         return modelBuilder.build();

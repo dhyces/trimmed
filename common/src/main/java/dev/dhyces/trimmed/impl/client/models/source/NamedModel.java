@@ -5,8 +5,10 @@ import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
 
-public record NamedModel(ResourceLocation id, BlockModel model, @Nullable ModelResourceLocation modelId) {
-    public static NamedModel item(ResourceLocation fileId, BlockModel model) {
+import java.util.function.Supplier;
+
+public record NamedModel(ResourceLocation id, Supplier<BlockModel> model, @Nullable ModelResourceLocation modelId) {
+    public static NamedModel item(ResourceLocation fileId, Supplier<BlockModel> model) {
         return new NamedModel(fileId, model, convertToItemModelId(fileId));
     }
 
