@@ -5,7 +5,7 @@ plugins {
 val commonJava: Configuration by configurations.creating {
     isCanBeResolved = true
 }
-val commonResources by configurations.creating {
+val commonResources: Configuration by configurations.creating {
     isCanBeResolved = true
 }
 
