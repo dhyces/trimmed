@@ -82,7 +82,13 @@ public class ClientTagManager implements PreparableReloadListener {
         Map<ResourceLocation, Set<ClientTagEntry<T>>> unresolved = Utils.unsafeCast(readMap(converter, resourceManager, keyResolver));
         DependencySorter<ResourceLocation, TagSetEntry<T>> sorter = new DependencySorter<>();
         unresolved.forEach((resourceLocation, entries) -> sorter.addEntry(resourceLocation, new TagSetEntry<>(entries)));
-        sorter.orderByDependencies((resourceLocation, tagEntrySet) -> resolveEntry(resourceLocation, tagEntrySet, keyResolver));
+        sorter.orderByDependencies((resourceLocation, tagEntrySet) -> {
+            try {
+                resolveEntry(resourceLocation, tagEntrySet, keyResolver);
+            } catch (IllegalStateException e) {
+                LOGGER.error("Could not resolve entry", e);
+            }
+        });
     }
 
     private <T> Map<ResourceLocation, Set<ClientTagEntry<T>>> readMap(FileToIdConverter converter, ResourceManager resourceManager, KeyResolver<T> keyResolver) {
