@@ -7,6 +7,8 @@ import dev.dhyces.trimmed.api.KeyResolver;
 import dev.dhyces.trimmed.api.data.client.tag.ClientTagFile;
 import dev.dhyces.trimmed.api.data.client.tag.appenders.ClientTagAppender;
 import dev.dhyces.trimmed.api.client.tag.ClientTagKey;
+import dev.dhyces.trimmed.api.util.Utils;
+import dev.dhyces.trimmed.impl.client.maps.KeyResolvers;
 import dev.dhyces.trimmed.impl.client.tags.manager.ClientTagManager;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
@@ -19,10 +21,9 @@ import java.util.concurrent.CompletableFuture;
 
 public abstract class ClientTagDataProvider<T> extends NeoBaseClientTagDataProvider<T, KeyResolver<T>> {
 
-    protected static final ExistingFileHelper.IResourceType UNCHECKED_RESOURCE_TYPE = new ExistingFileHelper.ResourceType(PackType.CLIENT_RESOURCES, ".json", ClientTagManager.PATH);
 
     public ClientTagDataProvider(PackOutput packOutput, String modid, ExistingFileHelper existingFileHelper, KeyResolver<T> keyResolver) {
-        super(packOutput, modid, UNCHECKED_RESOURCE_TYPE, existingFileHelper, keyResolver);
+        super(packOutput, modid, new ExistingFileHelper.ResourceType(PackType.CLIENT_RESOURCES, ".json", ClientTagManager.PATH + Utils.namespacedPath(KeyResolvers.getId(keyResolver), '/')), existingFileHelper, keyResolver);
     }
 
     protected abstract void addTags();
@@ -45,6 +46,6 @@ public abstract class ClientTagDataProvider<T> extends NeoBaseClientTagDataProvi
 
     @Override
     public String getName() {
-        return "ClientTagDataProvider for " + modid;
+        return "ClientTagDataProvider<%s> for %s".formatted(KeyResolvers.getId(keyResolver), modid);
     }
 }

@@ -7,6 +7,8 @@ import dev.dhyces.trimmed.api.KeyResolver;
 import dev.dhyces.trimmed.api.data.client.tag.ClientTagFile;
 import dev.dhyces.trimmed.api.data.client.tag.appenders.ClientTagAppender;
 import dev.dhyces.trimmed.api.client.tag.ClientTagKey;
+import dev.dhyces.trimmed.api.util.Utils;
+import dev.dhyces.trimmed.impl.client.maps.KeyResolvers;
 import dev.dhyces.trimmed.impl.client.tags.manager.ClientTagManager;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
@@ -17,7 +19,7 @@ import java.util.concurrent.CompletableFuture;
 
 public abstract class ClientTagDataProvider<T> extends FabricBaseClientTagDataProvider<T, KeyResolver<T>> {
     public ClientTagDataProvider(PackOutput packOutput, String modid, KeyResolver<T> keyResolver) {
-        super(packOutput, modid, ClientTagManager.PATH, keyResolver);
+        super(packOutput, modid, ClientTagManager.PATH + Utils.namespacedPath(KeyResolvers.getId(keyResolver), '/'), keyResolver);
     }
 
     protected abstract void addTags();
@@ -40,6 +42,6 @@ public abstract class ClientTagDataProvider<T> extends FabricBaseClientTagDataPr
 
     @Override
     public String getName() {
-        return "ClientTagDataProvider for " + modid;
+        return "ClientTagDataProvider<%s> for %s".formatted(KeyResolvers.getId(keyResolver), modid);
     }
 }
