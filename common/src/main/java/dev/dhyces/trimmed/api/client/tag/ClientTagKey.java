@@ -5,6 +5,7 @@ import com.google.common.collect.Interners;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import dev.dhyces.trimmed.api.KeyResolver;
+import dev.dhyces.trimmed.impl.client.maps.KeyResolvers;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.Objects;
@@ -39,7 +40,7 @@ public final class ClientTagKey<T> {
 
     @Override
     public String toString() {
-        return "ClientTagKey[" + id + "]";
+        return "ClientTagKey[" + KeyResolvers.getId(keyResolver) + " / " + id + "]";
     }
 
     @Override

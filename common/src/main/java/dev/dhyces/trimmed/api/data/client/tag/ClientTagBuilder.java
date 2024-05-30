@@ -1,4 +1,4 @@
-package dev.dhyces.trimmed.api.data.tag;
+package dev.dhyces.trimmed.api.data.client.tag;
 
 import dev.dhyces.trimmed.api.KeyResolver;
 import dev.dhyces.trimmed.api.client.tag.ClientTagKey;

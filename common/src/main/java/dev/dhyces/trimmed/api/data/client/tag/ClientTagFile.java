@@ -1,4 +1,4 @@
-package dev.dhyces.trimmed.api.data.tag;
+package dev.dhyces.trimmed.api.data.client.tag;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;

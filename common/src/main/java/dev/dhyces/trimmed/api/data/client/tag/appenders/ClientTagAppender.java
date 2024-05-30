@@ -1,8 +1,7 @@
 package dev.dhyces.trimmed.api.data.client.tag.appenders;
 
 import dev.dhyces.trimmed.api.client.tag.ClientTagKey;
-import dev.dhyces.trimmed.api.data.tag.ClientTagBuilder;
-import net.minecraft.resources.ResourceLocation;
+import dev.dhyces.trimmed.api.data.client.tag.ClientTagBuilder;
 
 public class ClientTagAppender<T> {
     private final ClientTagBuilder<T> builder;

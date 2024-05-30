@@ -2,7 +2,6 @@ package dev.dhyces.trimmed.api.data.client.tag;
 
 import dev.dhyces.trimmed.api.KeyResolver;
 import dev.dhyces.trimmed.api.client.tag.ClientTagKey;
-import dev.dhyces.trimmed.api.data.tag.ClientTagBuilder;
 import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;

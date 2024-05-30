@@ -6,15 +6,14 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import dev.dhyces.trimmed.api.client.tag.TagHolder;
 import dev.dhyces.trimmed.api.KeyResolver;
-import dev.dhyces.trimmed.api.data.tag.ClientTagEntry;
-import dev.dhyces.trimmed.api.data.tag.ClientTagFile;
+import dev.dhyces.trimmed.api.data.client.tag.ClientTagEntry;
+import dev.dhyces.trimmed.api.data.client.tag.ClientTagFile;
 import dev.dhyces.trimmed.impl.client.maps.KeyResolvers;
 import dev.dhyces.trimmed.api.client.tag.ClientTagKey;
 import dev.dhyces.trimmed.modhelper.services.Services;
 import dev.dhyces.trimmed.Trimmed;
 import dev.dhyces.trimmed.api.util.Utils;
 import it.unimi.dsi.fastutil.objects.*;
-import net.minecraft.Util;
 import net.minecraft.resources.FileToIdConverter;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.PreparableReloadListener;
@@ -22,7 +21,6 @@ import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.DependencySorter;
 import net.minecraft.util.GsonHelper;
-import net.minecraft.util.Unit;
 import net.minecraft.util.profiling.ProfilerFiller;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
@@ -219,7 +217,8 @@ public class ClientTagManager implements PreparableReloadListener {
         @Override
         public Set<T> getSet() {
             if (backingSet == null) {
-                throw new IllegalStateException("Cannot access tag set for " + key + " because it doesn't exist!");
+                Trimmed.LOGGER.error("Cannot access tag set for {} because it doesn't exist!", key);
+                return Set.of();
             }
             return backingSet;
         }
