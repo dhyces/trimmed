@@ -1,0 +1,8 @@
+{
+  "asset_id": "testmod:spiral",
+  "decal": false,
+  "description": {
+    "translate": "trim_pattern.testmod.spiral"
+  },
+  "template_item": "testmod:spiral_armor_trim_smithing_template"
+}

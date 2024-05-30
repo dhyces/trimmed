@@ -1,0 +1,10 @@
+{
+  "values": [
+    "minecraft:echo_shard",
+    "minecraft:blaze_powder",
+    "minecraft:nautilus_shell",
+    "minecraft:prismarine_crystals",
+    "minecraft:glow_ink_sac",
+    "testmod:adamantium"
+  ]
+}

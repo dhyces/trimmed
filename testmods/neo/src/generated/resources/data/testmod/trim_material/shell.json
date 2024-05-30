@@ -1,0 +1,9 @@
+{
+  "asset_name": "testmod_shell",
+  "description": {
+    "color": "#D17E7E",
+    "translate": "trim_pattern.testmod.shell"
+  },
+  "ingredient": "minecraft:nautilus_shell",
+  "item_model_index": -1.0
+}

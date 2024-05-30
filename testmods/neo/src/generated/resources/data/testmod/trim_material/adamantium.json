@@ -1,0 +1,9 @@
+{
+  "asset_name": "testmod_adamantium",
+  "description": {
+    "color": "#9D2638",
+    "translate": "trim_pattern.testmod.adamantium"
+  },
+  "ingredient": "testmod:adamantium",
+  "item_model_index": -1.0
+}

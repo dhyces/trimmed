@@ -1,0 +1,13 @@
+{
+  "values": [
+    {
+      "type": "trimmed:component",
+      "components": {
+        "minecraft:block_state": {
+          "snowy": "true"
+        }
+      },
+      "model": "minecraft:grass_block#snowy=true"
+    }
+  ]
+}

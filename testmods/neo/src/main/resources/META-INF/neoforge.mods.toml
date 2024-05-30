@@ -1,0 +1,43 @@
+modLoader="javafml"
+loaderVersion="[3,)"
+license="MIT"
+#issueTrackerURL="https://change.me.to.your.issue.tracker.example.invalid/"
+[[mods]]
+modId="testmod"
+version="${file.jarVersion}"
+displayName="TestMod"
+#displayURL="https://change.me.to.your.mods.homepage.example.invalid/"
+logoFile="icon.png"
+credits=""
+authors="Dhyces"
+description='''Adding more armor trims to test!'''
+
+[[dependencies.testmod]]
+modId = "trimmed"
+versionRange = "[0,)"
+type = "required"
+ordering = "AFTER"
+
+[[accessTransformers]]
+file = "META-INF/accesstransformer.cfg"
+
+[[mods]]
+modId = "trimmed"
+displayName = "Trimmed"
+authors = "dhyces"
+version = "2.1.4"
+displayURL = "https://modrinth.com/mod/trimmed/"
+sourcesUrl = "https://github.com/dhyces/trimmed/"
+logoFile = "logo.png"
+description = "Better item overrides! Better trim support! Override it all!"
+
+[[dependencies.trimmed]]
+modId = "neoforge"
+versionRange = "[20.6,21.0)"
+type = "required"
+
+[[mixins]]
+config = "trimmed.mixins.json"
+
+[[mixins]]
+config = "trimmed.neo.mixins.json"

@@ -1,0 +1,10 @@
+{
+  "values": {
+    "testmod:trims/color_palettes/adamantium": "testmod_adamantium",
+    "testmod:trims/color_palettes/blaze": "testmod_blaze",
+    "testmod:trims/color_palettes/echo": "testmod_echo",
+    "testmod:trims/color_palettes/glow": "testmod_glow",
+    "testmod:trims/color_palettes/prismarine": "testmod_prismarine",
+    "testmod:trims/color_palettes/shell": "testmod_shell"
+  }
+}

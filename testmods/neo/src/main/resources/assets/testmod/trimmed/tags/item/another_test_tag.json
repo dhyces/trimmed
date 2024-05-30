@@ -1,0 +1,6 @@
+{
+  "values": [
+    "minecraft:iron_bars",
+    "#testmod:test_client_tag"
+  ]
+}

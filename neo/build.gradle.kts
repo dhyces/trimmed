@@ -19,6 +19,14 @@ base {
 
 val commonJava by configurations
 val commonResources by configurations
+val neoJava: Configuration by configurations.creating {
+	isCanBeResolved = false
+	isCanBeConsumed = true
+}
+val neoResources: Configuration by configurations.creating {
+	isCanBeResolved = false
+	isCanBeConsumed = true
+}
 
 sourceSets {
 	val main = sourceSets.named("main").get()
@@ -91,6 +99,13 @@ dependencies {
 
 tasks.processResources {
 	exclude("trimmed.accesswidener")
+}
+
+artifacts {
+	add(neoJava.name, sourceSets.main.get().java.sourceDirectories.singleFile)
+	sourceSets.main.get().resources.sourceDirectories.forEach {
+		add(neoResources.name, it)
+	}
 }
 
 modsDotGroovy {

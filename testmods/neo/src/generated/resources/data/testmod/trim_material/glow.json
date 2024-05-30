@@ -1,0 +1,9 @@
+{
+  "asset_name": "testmod_glow",
+  "description": {
+    "color": "#7EFCBE",
+    "translate": "trim_pattern.testmod.glow"
+  },
+  "ingredient": "minecraft:glow_ink_sac",
+  "item_model_index": -1.0
+}
