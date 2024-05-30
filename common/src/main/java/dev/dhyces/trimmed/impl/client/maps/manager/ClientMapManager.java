@@ -32,10 +32,9 @@ public class ClientMapManager implements PreparableReloadListener {
         if (KeyResolvers.getId(key.getType().getKeyResolver()) == null) {
             throw new IllegalArgumentException("KeyResolver for %s is not registered".formatted(key));
         }
-        if (REGISTRY.containsKey(key)) {
-            throw new IllegalArgumentException("Base MapKey already registered for " + key);
+        if (!REGISTRY.containsKey(key)) {
+            REGISTRY.put(key, new MapHandler<>(key));
         }
-        REGISTRY.put(key, new MapHandler<>(key));
     }
 
     public static <K, V> MapHolder<K, V> getHolder(MapKey<K, V> key) {
