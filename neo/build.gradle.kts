@@ -14,7 +14,7 @@ plugins {
 }
 
 base {
-	archivesName = "${properties["mod_name"]}-neo-${libs.versions.minecraft.release.get()}"
+	archivesName = "${properties["mod_id"]}-neo-${libs.versions.minecraft.release.get()}"
 }
 
 val commonJava by configurations
