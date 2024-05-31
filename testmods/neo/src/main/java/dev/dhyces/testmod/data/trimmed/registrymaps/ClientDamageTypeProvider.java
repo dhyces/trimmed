@@ -14,7 +14,7 @@ import java.util.concurrent.CompletableFuture;
 
 public class ClientDamageTypeProvider extends ClientRegistryMapDataProvider<DamageType> {
     public ClientDamageTypeProvider(PackOutput packOutput, CompletableFuture<HolderLookup.Provider> lookupProviderFuture, ExistingFileHelper existingFileHelper) {
-        super(packOutput, TrimmedTest.MODID, lookupProviderFuture, Registries.DAMAGE_TYPE, existingFileHelper);
+        super(packOutput, TrimmedTest.MODID, Registries.DAMAGE_TYPE, lookupProviderFuture, existingFileHelper);
     }
 
     @Override

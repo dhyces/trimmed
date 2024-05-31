@@ -14,7 +14,7 @@ import java.util.concurrent.CompletableFuture;
 
 public class TestClientCustomObjTagProvider extends ClientRegistryTagDataProvider<CustomObj> {
     public TestClientCustomObjTagProvider(PackOutput packOutput, CompletableFuture<HolderLookup.Provider> lookupProviderFuture, ExistingFileHelper existingFileHelper) {
-        super(packOutput, TrimmedTest.MODID, lookupProviderFuture, TestKeyResolvers.CUSTOM_OBJ, existingFileHelper);
+        super(packOutput, TrimmedTest.MODID, CustomRegistration.KEY, lookupProviderFuture, existingFileHelper);
     }
 
     @Override

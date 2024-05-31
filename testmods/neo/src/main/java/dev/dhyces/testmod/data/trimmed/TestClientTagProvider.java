@@ -11,7 +11,7 @@ import net.neoforged.neoforge.common.data.ExistingFileHelper;
 public class TestClientTagProvider extends ClientTagDataProvider<ResourceLocation> {
 
     public TestClientTagProvider(PackOutput packOutput, ExistingFileHelper existingFileHelper) {
-        super(packOutput, TrimmedTest.MODID, existingFileHelper, TestClientKeyResolvers.TEST);
+        super(packOutput, TrimmedTest.MODID, TestClientKeyResolvers.TEST, existingFileHelper);
     }
 
     public static final ClientTagKey<ResourceLocation> TEST_TAG = ClientTagKey.of(TestClientKeyResolvers.TEST, TrimmedTest.id("test_client_tag"));

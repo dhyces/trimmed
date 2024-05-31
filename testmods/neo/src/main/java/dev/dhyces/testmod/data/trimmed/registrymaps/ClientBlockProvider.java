@@ -14,7 +14,7 @@ import java.util.concurrent.CompletableFuture;
 
 public class ClientBlockProvider extends ClientRegistryMapDataProvider<Block> {
     public ClientBlockProvider(PackOutput packOutput, CompletableFuture<HolderLookup.Provider> lookupProviderFuture, ExistingFileHelper existingFileHelper) {
-        super(packOutput, TrimmedTest.MODID, lookupProviderFuture, Registries.BLOCK, existingFileHelper);
+        super(packOutput, TrimmedTest.MODID, Registries.BLOCK, lookupProviderFuture, existingFileHelper);
     }
 
     @Override

@@ -4,12 +4,11 @@ import dev.dhyces.testmod.TestKeyResolvers;
 import dev.dhyces.testmod.TrimmedTest;
 import dev.dhyces.testmod.client.providers.MyProviderTypes;
 import dev.dhyces.testmod.registry.custom.CustomRegistration;
-import dev.dhyces.trimmed.api.KeyResolver;
-import dev.dhyces.trimmed.api.TrimmedClientApi;
+import dev.dhyces.trimmed.api.TrimmedClientApiConsumer;
 import dev.dhyces.trimmed.api.client.TrimmedClientApiEntrypoint;
 
 @SuppressWarnings("unused")
-@TrimmedClientApi(TrimmedTest.MODID)
+@TrimmedClientApiConsumer(TrimmedTest.MODID)
 public class TrimmedApiCompat implements TrimmedClientApiEntrypoint {
     @Override
     public void registration(TrimmedClientRegistration registration) {

@@ -13,7 +13,7 @@ import java.util.concurrent.CompletableFuture;
 
 public class EntityToEntityProvider extends ClientRegistryMapDataProvider<EntityType<?>> {
     public EntityToEntityProvider(PackOutput packOutput, CompletableFuture<HolderLookup.Provider> lookupProviderFuture, ExistingFileHelper existingFileHelper) {
-        super(packOutput, TrimmedTest.MODID, lookupProviderFuture, Registries.ENTITY_TYPE, existingFileHelper);
+        super(packOutput, TrimmedTest.MODID, Registries.ENTITY_TYPE, lookupProviderFuture, existingFileHelper);
     }
 
     @Override
