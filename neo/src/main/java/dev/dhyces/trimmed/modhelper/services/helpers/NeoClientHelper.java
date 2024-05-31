@@ -1,6 +1,6 @@
 package dev.dhyces.trimmed.modhelper.services.helpers;
 
-import dev.dhyces.trimmed.api.TrimmedClientApi;
+import dev.dhyces.trimmed.api.TrimmedClientApiConsumer;
 import dev.dhyces.trimmed.api.client.TrimmedClientApiEntrypoint;
 import dev.dhyces.trimmed.impl.ModApiConsumer;
 import net.neoforged.fml.ModList;
@@ -13,7 +13,7 @@ public class NeoClientHelper implements ClientHelper {
     @Override
     public List<ModApiConsumer<TrimmedClientApiEntrypoint>> getClientApiConsumers() {
         return ModList.get().getAllScanData().stream()
-                .flatMap(modFileScanData -> modFileScanData.getAnnotatedBy(TrimmedClientApi.class, ElementType.TYPE))
+                .flatMap(modFileScanData -> modFileScanData.getAnnotatedBy(TrimmedClientApiConsumer.class, ElementType.TYPE))
                 .map(annotationData -> {
                     String modid = (String) annotationData.annotationData().get("value");
                     Class<?> clazz;

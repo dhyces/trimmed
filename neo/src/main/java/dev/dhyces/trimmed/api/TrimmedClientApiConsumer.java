@@ -7,7 +7,7 @@ import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
-public @interface TrimmedClientApi {
+public @interface TrimmedClientApiConsumer {
     /**
      * Must be a valid mod id for your mod
      * @return A valid mod id
