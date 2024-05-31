@@ -32,8 +32,8 @@ public abstract class ClientRegistryTagDataProvider<T> extends NeoBaseClientTagD
     private final CompletableFuture<HolderLookup.Provider> lookupProviderFuture;
     private final CompletableFuture<Unit> completed;
 
-    public ClientRegistryTagDataProvider(PackOutput packOutput, String modid, CompletableFuture<HolderLookup.Provider> lookupProviderFuture, ResourceKey<? extends Registry<T>> registryKey, ExistingFileHelper existingFileHelper) {
-        super(packOutput, modid, new ExistingFileHelper.ResourceType(PackType.CLIENT_RESOURCES, ".json", ClientTagManager.PATH + Utils.namespacedLocation(registryKey)), existingFileHelper, TrimmedClientApi.getInstance().getRegistryKeyResolver(registryKey));
+    public ClientRegistryTagDataProvider(PackOutput packOutput, String modid, ResourceKey<? extends Registry<T>> registryKey, CompletableFuture<HolderLookup.Provider> lookupProviderFuture, ExistingFileHelper existingFileHelper) {
+        super(packOutput, modid, TrimmedClientApi.getInstance().getRegistryKeyResolver(registryKey), existingFileHelper);
         this.lookupProviderFuture = lookupProviderFuture;
         this.completed = new CompletableFuture<>();
     }

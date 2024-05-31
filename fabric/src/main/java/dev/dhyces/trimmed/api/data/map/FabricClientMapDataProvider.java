@@ -8,6 +8,6 @@ import net.minecraft.data.PackOutput;
 
 public abstract class FabricClientMapDataProvider<K, R extends KeyResolver<K>> extends BaseMapDataProvider<K, R> {
     public FabricClientMapDataProvider(PackOutput packOutput, String modid, R keyResolver) {
-        super(packOutput, PackOutput.Target.RESOURCE_PACK, modid, ClientMapManager.PATH + Utils.namespacedPath(TrimmedClientApi.getInstance().getId(keyResolver)), keyResolver);
+        super(packOutput, PackOutput.Target.RESOURCE_PACK, modid, ClientMapManager.PATH + '/' + Utils.namespacedPath(TrimmedClientApi.getInstance().getId(keyResolver)), keyResolver);
     }
 }

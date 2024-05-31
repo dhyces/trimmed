@@ -18,9 +18,9 @@ import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import java.nio.file.Path;
 import java.util.concurrent.CompletableFuture;
 
-public abstract class ClientMapDataProvider<K> extends NeoBaseMapDataProvider<K, KeyResolver<K>> {
+public abstract class ClientMapDataProvider<K> extends NeoClientMapDataProvider<K, KeyResolver<K>> {
     public ClientMapDataProvider(PackOutput packOutput, String modid, KeyResolver<K> keyResolver, ExistingFileHelper existingFileHelper) {
-        super(packOutput, modid, keyResolver, new ExistingFileHelper.ResourceType(PackType.CLIENT_RESOURCES, ".json", ClientMapManager.PATH + Utils.namespacedPath(KeyResolvers.getId(keyResolver))), existingFileHelper);
+        super(packOutput, modid, keyResolver, existingFileHelper);
     }
 
     public <V> ClientMapAppender<K, V> map(MapKey<K, V> mapKey) {

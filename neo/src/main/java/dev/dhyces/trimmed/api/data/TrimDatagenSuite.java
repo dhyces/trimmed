@@ -77,7 +77,7 @@ public class TrimDatagenSuite extends BaseTrimDatagenSuite {
             }
         });
 
-        generator.addProvider(event.includeClient(), new ClientTagDataProvider<>(packOutput, modid, event.getExistingFileHelper(), ClientKeyResolvers.TEXTURE) {
+        generator.addProvider(event.includeClient(), new ClientTagDataProvider<>(packOutput, modid, ClientKeyResolvers.TEXTURE, event.getExistingFileHelper()) {
             @Override
             protected void addTags() {
                 if (!patternTextures.isEmpty()) {

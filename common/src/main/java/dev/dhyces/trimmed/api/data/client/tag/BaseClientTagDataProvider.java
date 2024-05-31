@@ -23,7 +23,7 @@ public abstract class BaseClientTagDataProvider<T, R extends KeyResolver<T>> imp
     public BaseClientTagDataProvider(PackOutput packOutput, String modid, R keyResolver) {
         this.packOutput = packOutput;
         this.modid = modid;
-        this.pathProvider = packOutput.createPathProvider(PackOutput.Target.RESOURCE_PACK, ClientTagManager.PATH + Utils.namespacedPath(TrimmedClientApi.getInstance().getId(keyResolver)));
+        this.pathProvider = packOutput.createPathProvider(PackOutput.Target.RESOURCE_PACK, ClientTagManager.PATH + '/' + Utils.namespacedPath(TrimmedClientApi.getInstance().getId(keyResolver)));
         this.keyResolver = keyResolver;
     }
 

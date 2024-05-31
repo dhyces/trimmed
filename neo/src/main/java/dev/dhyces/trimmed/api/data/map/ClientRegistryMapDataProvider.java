@@ -6,17 +6,13 @@ import com.mojang.serialization.JsonOps;
 import dev.dhyces.trimmed.api.KeyResolver;
 import dev.dhyces.trimmed.api.client.TrimmedClientApi;
 import dev.dhyces.trimmed.api.data.client.map.appenders.ClientRegistryMapAppender;
-import dev.dhyces.trimmed.api.data.tag.NeoClientMapDataProvider;
-import dev.dhyces.trimmed.api.util.Utils;
 import dev.dhyces.trimmed.api.maps.MapKey;
-import dev.dhyces.trimmed.impl.client.maps.manager.ClientMapManager;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Registry;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.server.packs.PackType;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 
 import java.nio.file.Path;
