@@ -90,7 +90,7 @@ public class TrimDatagenSuite extends BaseTrimDatagenSuite {
                 return "TrimDatagenSuite / " + super.getName();
             }
         });
-        generator.addProvider(event.includeClient(), new ClientMapDataProvider<ResourceLocation>(packOutput, modid, event.getExistingFileHelper()) {
+        generator.addProvider(event.includeClient(), new ClientMapDataProvider<ResourceLocation>(packOutput, modid, ClientKeyResolvers.TEXTURE, event.getExistingFileHelper()) {
             @Override
             protected void addMaps() {
                 if (!materialTexturePermutations.isEmpty()) {

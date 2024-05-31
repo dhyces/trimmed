@@ -4,6 +4,7 @@ import com.google.gson.JsonElement;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.JsonOps;
 import dev.dhyces.trimmed.api.KeyResolver;
+import dev.dhyces.trimmed.api.data.client.tag.BaseClientTagDataProvider;
 import dev.dhyces.trimmed.api.data.client.tag.ClientTagFile;
 import dev.dhyces.trimmed.api.data.client.tag.appenders.ClientTagAppender;
 import dev.dhyces.trimmed.api.client.tag.ClientTagKey;
@@ -17,9 +18,9 @@ import net.minecraft.data.PackOutput;
 import java.nio.file.Path;
 import java.util.concurrent.CompletableFuture;
 
-public abstract class ClientTagDataProvider<T> extends FabricBaseClientTagDataProvider<T, KeyResolver<T>> {
+public abstract class ClientTagDataProvider<T> extends BaseClientTagDataProvider<T, KeyResolver<T>> {
     public ClientTagDataProvider(PackOutput packOutput, String modid, KeyResolver<T> keyResolver) {
-        super(packOutput, modid, ClientTagManager.PATH + Utils.namespacedPath(KeyResolvers.getId(keyResolver), '/'), keyResolver);
+        super(packOutput, modid, keyResolver);
     }
 
     protected abstract void addTags();

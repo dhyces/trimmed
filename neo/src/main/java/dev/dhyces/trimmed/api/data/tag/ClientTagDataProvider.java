@@ -20,10 +20,8 @@ import java.nio.file.Path;
 import java.util.concurrent.CompletableFuture;
 
 public abstract class ClientTagDataProvider<T> extends NeoBaseClientTagDataProvider<T, KeyResolver<T>> {
-
-
     public ClientTagDataProvider(PackOutput packOutput, String modid, ExistingFileHelper existingFileHelper, KeyResolver<T> keyResolver) {
-        super(packOutput, modid, new ExistingFileHelper.ResourceType(PackType.CLIENT_RESOURCES, ".json", ClientTagManager.PATH + Utils.namespacedPath(KeyResolvers.getId(keyResolver), '/')), existingFileHelper, keyResolver);
+        super(packOutput, modid, new ExistingFileHelper.ResourceType(PackType.CLIENT_RESOURCES, ".json", ClientTagManager.PATH + Utils.namespacedPath(KeyResolvers.getId(keyResolver))), existingFileHelper, keyResolver);
     }
 
     protected abstract void addTags();

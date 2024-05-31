@@ -12,7 +12,7 @@ public abstract class NeoBaseClientTagDataProvider<T, R extends KeyResolver<T>> 
     protected final ExistingFileHelper.IResourceType resourceType;
 
     public NeoBaseClientTagDataProvider(PackOutput packOutput, String modid, ExistingFileHelper.IResourceType resourceType, ExistingFileHelper existingFileHelper, R keyResolver) {
-        super(packOutput, modid, resourceType.getPrefix(), keyResolver);
+        super(packOutput, modid, keyResolver);
         this.existingFileHelper = existingFileHelper;
         this.resourceType = resourceType;
     }

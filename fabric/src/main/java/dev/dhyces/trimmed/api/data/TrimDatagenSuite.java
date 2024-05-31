@@ -98,7 +98,7 @@ public class TrimDatagenSuite extends BaseTrimDatagenSuite {
         );
 
         pack.addProvider((FabricDataOutput output) ->
-            new ClientMapDataProvider<ResourceLocation>(output, modid) {
+            new ClientMapDataProvider<ResourceLocation>(output, modid, ClientKeyResolvers.TEXTURE) {
                 @Override
                 protected void addMaps() {
                     if (!materialTexturePermutations.isEmpty()) {

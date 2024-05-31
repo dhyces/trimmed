@@ -4,6 +4,7 @@ import com.google.gson.JsonElement;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.JsonOps;
 import dev.dhyces.trimmed.api.KeyResolver;
+import dev.dhyces.trimmed.api.data.client.tag.BaseClientTagDataProvider;
 import dev.dhyces.trimmed.api.data.client.tag.ClientTagEntry;
 import dev.dhyces.trimmed.api.data.client.tag.ClientTagFile;
 import dev.dhyces.trimmed.api.data.client.tag.appenders.ClientRegistryTagAppender;
@@ -23,12 +24,12 @@ import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
-public abstract class ClientRegistryTagDataProvider<T> extends FabricBaseClientTagDataProvider<T, KeyResolver.RegistryWrapper<T>> {
+public abstract class ClientRegistryTagDataProvider<T> extends BaseClientTagDataProvider<T, KeyResolver.RegistryWrapper<T>> {
     private final CompletableFuture<HolderLookup.Provider> lookupProviderFuture;
     private final CompletableFuture<Unit> completed;
 
     public ClientRegistryTagDataProvider(PackOutput packOutput, String modid, CompletableFuture<HolderLookup.Provider> lookupProviderFuture, KeyResolver.RegistryWrapper<T> keyResolver) {
-        super(packOutput, modid, ClientTagManager.PATH + Utils.namespacedLocation(keyResolver.registryKey()), keyResolver);
+        super(packOutput, modid, keyResolver);
         this.lookupProviderFuture = lookupProviderFuture;
         this.completed = new CompletableFuture<>();
     }
