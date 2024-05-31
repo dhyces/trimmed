@@ -60,7 +60,7 @@ public class ClientMapManager implements PreparableReloadListener {
         REGISTRY.values().forEach(MapHandler::clear);
 
         for (Map.Entry<MapKey<?, ?>, MapHandler<?, ?>> entry : REGISTRY.entrySet()) {
-            ResourceLocation resolverPath = entry.getKey().getMapId().withPrefix("trimmed/maps/" + Utils.namespacedPath(KeyResolvers.getId(entry.getKey().getType().getKeyResolver()), '/') + "/");
+            ResourceLocation resolverPath = entry.getKey().getMapId().withPrefix("trimmed/maps/" + Utils.namespacedPath(KeyResolvers.getId(entry.getKey().getType().getKeyResolver())) + "/");
 
             FileToIdConverter converter = FileToIdConverter.json(resolverPath.getPath());
             try {

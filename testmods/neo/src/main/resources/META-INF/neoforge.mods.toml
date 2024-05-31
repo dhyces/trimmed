@@ -17,27 +17,3 @@ modId = "trimmed"
 versionRange = "[0,)"
 type = "required"
 ordering = "AFTER"
-
-[[accessTransformers]]
-file = "META-INF/accesstransformer.cfg"
-
-[[mods]]
-modId = "trimmed"
-displayName = "Trimmed"
-authors = "dhyces"
-version = "2.1.4"
-displayURL = "https://modrinth.com/mod/trimmed/"
-sourcesUrl = "https://github.com/dhyces/trimmed/"
-logoFile = "logo.png"
-description = "Better item overrides! Better trim support! Override it all!"
-
-[[dependencies.trimmed]]
-modId = "neoforge"
-versionRange = "[20.6,21.0)"
-type = "required"
-
-[[mixins]]
-config = "trimmed.mixins.json"
-
-[[mixins]]
-config = "trimmed.neo.mixins.json"

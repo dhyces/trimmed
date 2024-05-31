@@ -10,10 +10,14 @@ public final class Utils {
      * should have a parent directory with the mod's namespace
      */
     public static <T> String namespacedLocation(ResourceKey<? extends Registry<T>> registryResourceKey) {
-        return namespacedPath(registryResourceKey.location(), '/');
+        return delimitIfDefault(registryResourceKey.location(), '/');
     }
 
-    public static String namespacedPath(ResourceLocation location, char delimiter) {
+    public static String namespacedPath(ResourceLocation location) {
+        return delimitIfDefault(location, '/');
+    }
+
+    public static String delimitIfDefault(ResourceLocation location, char delimiter) {
         return location.getNamespace().equals("minecraft") ? location.getPath() : location.getNamespace() + delimiter + location.getPath();
     }
 

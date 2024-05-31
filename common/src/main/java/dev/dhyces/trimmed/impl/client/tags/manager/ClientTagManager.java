@@ -75,7 +75,7 @@ public class ClientTagManager implements PreparableReloadListener {
     }
 
     private <T> void resolveTags(ResourceLocation registryId, KeyResolver<T> keyResolver, ResourceManager resourceManager) {
-        String resolverPath = PATH + Utils.namespacedPath(registryId, '/');
+        String resolverPath = PATH + Utils.namespacedPath(registryId);
         FileToIdConverter converter = FileToIdConverter.json(resolverPath);
         Map<ResourceLocation, Set<ClientTagEntry<T>>> unresolved = Utils.unsafeCast(readMap(converter, resourceManager, keyResolver));
         DependencySorter<ResourceLocation, TagSetEntry<T>> sorter = new DependencySorter<>();

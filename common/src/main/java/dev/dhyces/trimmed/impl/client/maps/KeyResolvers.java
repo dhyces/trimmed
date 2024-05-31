@@ -221,6 +221,7 @@ public final class KeyResolvers {
         return (KeyResolver.RegistryWrapper<T>) RESOLVERS.get(key.location());
     }
 
+    @Nullable
     public static <T> ResourceLocation getId(KeyResolver<T> key) {
         return RESOLVERS.inverse().get(key);
     }
