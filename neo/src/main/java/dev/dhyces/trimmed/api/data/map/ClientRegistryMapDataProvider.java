@@ -4,6 +4,7 @@ import com.google.gson.JsonElement;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.JsonOps;
 import dev.dhyces.trimmed.api.KeyResolver;
+import dev.dhyces.trimmed.api.client.TrimmedClientApi;
 import dev.dhyces.trimmed.api.data.client.map.appenders.ClientRegistryMapAppender;
 import dev.dhyces.trimmed.api.data.tag.NeoClientMapDataProvider;
 import dev.dhyces.trimmed.api.util.Utils;
@@ -24,8 +25,8 @@ import java.util.concurrent.CompletableFuture;
 public abstract class ClientRegistryMapDataProvider<K> extends NeoClientMapDataProvider<K, KeyResolver.RegistryWrapper<K>> {
     private final CompletableFuture<HolderLookup.Provider> lookupProviderFuture;
 
-    public ClientRegistryMapDataProvider(PackOutput packOutput, String modid, KeyResolver.RegistryWrapper<K> keyResolver, CompletableFuture<HolderLookup.Provider> lookupProviderFuture, ExistingFileHelper existingFileHelper) {
-        super(packOutput, modid, keyResolver, existingFileHelper);
+    public ClientRegistryMapDataProvider(PackOutput packOutput, String modid, ResourceKey<? extends Registry<K>> registryKey, CompletableFuture<HolderLookup.Provider> lookupProviderFuture, ExistingFileHelper existingFileHelper) {
+        super(packOutput, modid, TrimmedClientApi.getInstance().getRegistryKeyResolver(registryKey), existingFileHelper);
         this.lookupProviderFuture = lookupProviderFuture;
     }
 

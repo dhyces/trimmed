@@ -4,6 +4,7 @@ import com.google.gson.JsonElement;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.JsonOps;
 import dev.dhyces.trimmed.api.KeyResolver;
+import dev.dhyces.trimmed.api.client.TrimmedClientApi;
 import dev.dhyces.trimmed.api.data.client.tag.ClientTagEntry;
 import dev.dhyces.trimmed.api.data.client.tag.ClientTagFile;
 import dev.dhyces.trimmed.api.data.client.tag.appenders.ClientRegistryTagAppender;
@@ -12,9 +13,11 @@ import dev.dhyces.trimmed.api.client.tag.ClientTagKey;
 import dev.dhyces.trimmed.impl.client.tags.manager.ClientTagManager;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.Registry;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.util.Unit;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
@@ -29,8 +32,8 @@ public abstract class ClientRegistryTagDataProvider<T> extends NeoBaseClientTagD
     private final CompletableFuture<HolderLookup.Provider> lookupProviderFuture;
     private final CompletableFuture<Unit> completed;
 
-    public ClientRegistryTagDataProvider(PackOutput packOutput, String modid, CompletableFuture<HolderLookup.Provider> lookupProviderFuture, KeyResolver.RegistryWrapper<T> keyResolver, ExistingFileHelper existingFileHelper) {
-        super(packOutput, modid, new ExistingFileHelper.ResourceType(PackType.CLIENT_RESOURCES, ".json", ClientTagManager.PATH + Utils.namespacedLocation(keyResolver.registryKey())), existingFileHelper, keyResolver);
+    public ClientRegistryTagDataProvider(PackOutput packOutput, String modid, CompletableFuture<HolderLookup.Provider> lookupProviderFuture, ResourceKey<? extends Registry<T>> registryKey, ExistingFileHelper existingFileHelper) {
+        super(packOutput, modid, new ExistingFileHelper.ResourceType(PackType.CLIENT_RESOURCES, ".json", ClientTagManager.PATH + Utils.namespacedLocation(registryKey)), existingFileHelper, TrimmedClientApi.getInstance().getRegistryKeyResolver(registryKey));
         this.lookupProviderFuture = lookupProviderFuture;
         this.completed = new CompletableFuture<>();
     }

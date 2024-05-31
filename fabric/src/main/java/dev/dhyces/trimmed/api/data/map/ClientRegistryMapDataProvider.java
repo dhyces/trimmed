@@ -5,11 +5,13 @@ import com.mojang.datafixers.util.Unit;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.JsonOps;
 import dev.dhyces.trimmed.api.KeyResolver;
+import dev.dhyces.trimmed.api.client.TrimmedClientApi;
 import dev.dhyces.trimmed.api.data.client.map.appenders.ClientRegistryMapAppender;
 import dev.dhyces.trimmed.api.util.Utils;
 import dev.dhyces.trimmed.api.maps.MapKey;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.Registry;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
 import net.minecraft.resources.ResourceKey;
@@ -22,8 +24,8 @@ public abstract class ClientRegistryMapDataProvider<K> extends FabricClientMapDa
     private final CompletableFuture<HolderLookup.Provider> lookupProviderFuture;
     private final CompletableFuture<Unit> delayedContent;
 
-    public ClientRegistryMapDataProvider(FabricDataOutput packOutput, String modid, CompletableFuture<HolderLookup.Provider> lookupProviderFuture, KeyResolver.RegistryWrapper<K> keyResolver) {
-        super(packOutput, modid, keyResolver);
+    public ClientRegistryMapDataProvider(FabricDataOutput packOutput, String modid, CompletableFuture<HolderLookup.Provider> lookupProviderFuture, ResourceKey<? extends Registry<K>> registryKey) {
+        super(packOutput, modid, TrimmedClientApi.getInstance().getRegistryKeyResolver(registryKey));
         this.lookupProviderFuture = lookupProviderFuture;
         this.delayedContent = new CompletableFuture<>();
     }
