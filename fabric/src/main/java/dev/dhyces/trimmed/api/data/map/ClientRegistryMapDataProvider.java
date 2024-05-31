@@ -51,9 +51,8 @@ public abstract class ClientRegistryMapDataProvider<K> extends FabricClientMapDa
                 }
 
                 var codec = MapFile.codec(entry.getKey().getType().getKeyResolver().getCodec(), entry.getKey().getType().getValueCodec());
-                DataResult<JsonElement> element = codec.encodeStart(JsonOps.INSTANCE, Utils.unsafeCast(entry.getValue().build()));
                 Path path = pathProvider.json(entry.getKey().getMapId());
-                return DataProvider.saveStable(pOutput, element.getOrThrow(), path);
+                return DataProvider.saveStable(pOutput, provider, codec, Utils.unsafeCast(entry.getValue().build()), path);
             }).toArray(CompletableFuture[]::new));
         });
     }

@@ -7,6 +7,7 @@ import dev.dhyces.trimmed.api.KeyResolver;
 import dev.dhyces.trimmed.api.client.TrimmedClientApi;
 import dev.dhyces.trimmed.api.data.client.map.appenders.ClientRegistryMapAppender;
 import dev.dhyces.trimmed.api.maps.MapKey;
+import dev.dhyces.trimmed.api.util.Utils;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Registry;
 import net.minecraft.data.CachedOutput;
@@ -46,16 +47,10 @@ public abstract class ClientRegistryMapDataProvider<K> extends NeoClientMapDataP
                     throw new IllegalStateException("Element %s does not exist in %s".formatted(entry.getKey(), keyResolver.registryKey()));
                 }
                 var codec = MapFile.codec(entry.getKey().getType().getKeyResolver().getCodec(), entry.getKey().getType().getValueCodec());
-
-                DataResult<JsonElement> element = codec.encodeStart(JsonOps.INSTANCE, cast(entry.getValue().build()));
                 Path path = pathProvider.json(entry.getKey().getMapId());
-                return DataProvider.saveStable(pOutput, element.getOrThrow(), path);
+                return DataProvider.saveStable(pOutput, provider, codec, Utils.unsafeCast(entry.getValue().build()), path);
             }).toArray(CompletableFuture[]::new));
         });
-    }
-
-    private static <T> T cast(Object o) {
-        return (T) o;
     }
 
     protected boolean exists(HolderLookup.RegistryLookup<K> firstLookup, ResourceKey<K> resourceKey) {
