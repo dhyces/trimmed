@@ -6,11 +6,10 @@ plugins {
 	alias(libs.plugins.curseforgegradle)
 	alias(libs.plugins.minotaur)
 	alias(libs.plugins.archloom)
-	id("consumer.conventions")
 }
 
 base {
-	archivesName = "${properties["mod_name"]}-neo-${libs.versions.minecraft.release.get()}"
+	archivesName = "${properties["mod_id"]}-neo-${libs.versions.minecraft.release.get()}"
 }
 
 val neoJava: Configuration by configurations.creating {
@@ -50,6 +49,7 @@ loom {
 }
 
 repositories {
+	mavenLocal()
 	maven {
 		name = "Neo"
 		url = uri("https://maven.neoforged.net/releases")
@@ -64,10 +64,11 @@ dependencies {
 		parchment("org.parchmentmc.data:parchment-${libs.versions.parchment.mc.get()}:${libs.versions.parchment.release.get()}@zip")
 	})
 
-	compileOnly(project(":common"))
-	compileOnly(project(":neo"))
-	neoJava(project(path = ":neo", configuration = "neoJava"))
-	neoResources(project(path = ":neo", configuration = "neoResources"))
+	implementation("dev.dhyces.trimmed:Trimmed-neo-1.20.6:2.1.4")
+//	compileOnly(project(":common"))
+//	compileOnly(project(":neo"))
+//	neoJava(project(path = ":neo", configuration = "neoJava"))
+//	neoResources(project(path = ":neo", configuration = "neoResources"))
 }
 
 tasks.named<JavaCompile>("compileJava") {
@@ -80,7 +81,7 @@ tasks.processResources {
 
 publishing {
 	publications {
-		create<MavenPublication>("mavenJava") {
+		create<MavenPublication>("testMavenJava") {
 			groupId = properties["maven_group"] as String
 			artifactId = base.archivesName.get()
 			version = properties["mod_version"] as String
