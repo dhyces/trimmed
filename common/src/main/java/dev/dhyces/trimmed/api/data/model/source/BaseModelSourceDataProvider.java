@@ -12,6 +12,7 @@ import dev.dhyces.trimmed.impl.client.models.source.ModelSource;
 import dev.dhyces.trimmed.impl.client.models.source.ModelSourceRegistry;
 import dev.dhyces.trimmed.impl.client.models.source.TrimModelSource;
 import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
+import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
@@ -46,8 +47,20 @@ public abstract class BaseModelSourceDataProvider implements DataProvider {
         addTwoLayerTrimsSource(id, id, materialId);
     }
 
+    public void addTwoLayerTrimsSource(Holder<ArmorMaterial> armorMaterial) {
+        ResourceLocation materialId = armorMaterial.unwrapKey().orElseThrow().location();
+        ResourceLocation id = materialId.withSuffix("_armor");
+        addTwoLayerTrimsSource(id, id, materialId);
+    }
+
     public void addThreeLayerTrimsSource(ArmorMaterial armorMaterial) {
         ResourceLocation materialId = BuiltInRegistries.ARMOR_MATERIAL.getResourceKey(armorMaterial).orElseThrow().location();
+        ResourceLocation id = materialId.withSuffix("_armor");
+        addThreeLayerTrimsSource(id, id, materialId);
+    }
+
+    public void addThreeLayerTrimsSource(Holder<ArmorMaterial> armorMaterial) {
+        ResourceLocation materialId = armorMaterial.unwrapKey().orElseThrow().location();
         ResourceLocation id = materialId.withSuffix("_armor");
         addThreeLayerTrimsSource(id, id, materialId);
     }
