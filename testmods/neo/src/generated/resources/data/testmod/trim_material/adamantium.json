@@ -5,5 +5,8 @@
     "translate": "trim_pattern.testmod.adamantium"
   },
   "ingredient": "testmod:adamantium",
-  "item_model_index": -1.0
+  "item_model_index": -1.0,
+  "override_armor_materials": {
+    "testmod:adamantium": "testmod_adamantium_darker"
+  }
 }

@@ -1,0 +1,8 @@
+{
+  "values": {
+    "testmod:item/adamantium_boots": "minecraft:trims/items/boots_trim",
+    "testmod:item/adamantium_chestplate": "minecraft:trims/items/chestplate_trim",
+    "testmod:item/adamantium_helmet": "minecraft:trims/items/helmet_trim",
+    "testmod:item/adamantium_leggings": "minecraft:trims/items/leggings_trim"
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "type": "trimmed:trims",
+  "override_textures": "testmod:trim_material_overrides/adamantium",
+  "template": "trimmed:item/two_layer_trim",
+  "textures": "testmod:trim_overlays/adamantium_armor"
+}

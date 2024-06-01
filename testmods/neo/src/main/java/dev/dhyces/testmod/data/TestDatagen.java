@@ -1,5 +1,7 @@
 package dev.dhyces.testmod.data;
 
+import dev.dhyces.testmod.data.trimmed.TestModelSourceProvider;
+import dev.dhyces.testmod.registry.ModArmorMaterials;
 import dev.dhyces.testmod.registry.ModItems;
 import dev.dhyces.testmod.ModTrimMaterials;
 import dev.dhyces.testmod.ModTrimPatterns;
@@ -47,15 +49,16 @@ public class TestDatagen {
                 .makeMaterial(ModTrimMaterials.SHELL, Items.NAUTILUS_SHELL, 0xD17E7E)
                 .makeMaterial(ModTrimMaterials.PRISMARINE, Items.PRISMARINE_CRYSTALS, 0xB2D5C8)
                 .makeMaterial(ModTrimMaterials.GLOW, Items.GLOW_INK_SAC, 0x7EFCBE)
-                .makeMaterial(ModTrimMaterials.ADAMANTIUM, ModItems.ADAMANTIUM.asItem(), 0x9d2638)
+                .makeMaterial(ModTrimMaterials.ADAMANTIUM, ModItems.ADAMANTIUM.asItem(), 0x9d2638, materialConfig -> materialConfig.armorOverride(ModArmorMaterials.ADAMANTIUM, "testmod_adamantium_darker"))
                 .makePattern(ModTrimPatterns.SPIRAL, ModItems.SPIRAL_PATTERN.asItem(), false, patternConfig -> patternConfig.createCopyRecipe(Items.NAUTILUS_SHELL));
 
 //        new TestTrimDatagenSuite(event, TrimmedTest.MODID, langProvider::add);
 
         generator.addProvider(event.includeClient(), langProvider);
-        generator.addProvider(event.includeClient(), new TestModelProvider(packOutput, TrimmedTest.MODID, event.getExistingFileHelper()));
+        generator.addProvider(event.includeClient(), new TestModelProvider(packOutput, event.getExistingFileHelper()));
 
         generator.addProvider(event.includeClient(), new TestItemOverrideProvider(packOutput));
+        generator.addProvider(event.includeClient(), new TestModelSourceProvider(packOutput, event.getExistingFileHelper()));
         generator.addProvider(event.includeClient(), new TestClientTagProvider(packOutput, event.getExistingFileHelper()));
         generator.addProvider(event.includeClient(), new TestClientItemTagProvider(packOutput, lookupProvider, event.getExistingFileHelper()));
         generator.addProvider(event.includeClient(), new TestClientCustomObjTagProvider(packOutput, lookupProvider, event.getExistingFileHelper()));

@@ -17,6 +17,6 @@ public class ModArmorMaterials {
 
     public static final Holder<ArmorMaterial> ADAMANTIUM = REGISTER.register("adamantium", () -> new ArmorMaterial(
             Util.make(new Object2IntOpenHashMap<>(), map -> map.defaultReturnValue(4)),
-            2, SoundEvents.ARMOR_EQUIP_DIAMOND, () -> Ingredient.of(ModItems.ADAMANTIUM.get()), List.of(), 3, 5
+            2, SoundEvents.ARMOR_EQUIP_DIAMOND, () -> Ingredient.of(ModItems.ADAMANTIUM.get()), List.of(new ArmorMaterial.Layer(TrimmedTest.id("adamantium"))), 3, 5
     ));
 }
