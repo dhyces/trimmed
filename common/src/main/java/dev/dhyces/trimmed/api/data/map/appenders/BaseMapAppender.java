@@ -37,25 +37,21 @@ public abstract class BaseMapAppender<K, V> {
         return self();
     }
 
-    @Deprecated
     public <S extends BaseMapAppender<K, V>> S append(ResourceLocation clientMapKey) {
         builder.append(clientMapKey);
         return self();
     }
 
-    @Deprecated
     public <S extends BaseMapAppender<K, V>> S append(MapKey<K, V> mapKey) {
         builder.append(mapKey.getMapId());
         return self();
     }
 
-    @Deprecated
     public <S extends BaseMapAppender<K, V>> S appendOptional(ResourceLocation clientMapKey) {
         builder.appendOptional(clientMapKey);
         return self();
     }
 
-    @Deprecated
     public <S extends BaseMapAppender<K, V>> S appendOptional(MapKey<K, V> mapKey) {
         builder.appendOptional(mapKey.getMapId());
         return self();
