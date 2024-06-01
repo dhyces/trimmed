@@ -1,10 +1,9 @@
 package dev.dhyces.trimmed.api.data;
 
-import it.unimi.dsi.fastutil.objects.Object2ObjectArrayMap;
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import it.unimi.dsi.fastutil.objects.Reference2ObjectArrayMap;
+import it.unimi.dsi.fastutil.objects.*;
 import net.minecraft.Util;
 import net.minecraft.advancements.critereon.InventoryChangeTrigger;
+import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.ShapedRecipeBuilder;
@@ -14,6 +13,7 @@ import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.ItemTags;
+import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.armortrim.TrimMaterial;
 import net.minecraft.world.item.armortrim.TrimPattern;
@@ -202,7 +202,7 @@ public abstract class BaseTrimDatagenSuite {
         materialConfigConsumer.accept(config);
 
         String translationKey = Util.makeDescriptionId("trim_pattern", materialKey.location());
-        materials.put(materialKey, new TrimMaterial(config.assetName, materialItem.asItem().builtInRegistryHolder(), -1.0f, Map.of(), Component.translatable(translationKey).withStyle(config.materialStyle)));
+        materials.put(materialKey, new TrimMaterial(config.assetName, materialItem.asItem().builtInRegistryHolder(), -1.0f, config.overrides, Component.translatable(translationKey).withStyle(config.materialStyle)));
 
         if (mainTranslationConsumer != null) {
             String translation;
@@ -232,7 +232,7 @@ public abstract class BaseTrimDatagenSuite {
     public static class PatternConfig {
         protected final ItemLike templateItem;
         protected String mainTranslation;
-        protected Set<AltTranslation> altTranslations = new HashSet<>();
+        protected Set<AltTranslation> altTranslations = new ObjectOpenHashSet<>();
         protected ResourceLocation mainTexture;
         protected ResourceLocation leggingsTexture;
         protected ShapedRecipeBuilder copyRecipe;
@@ -301,9 +301,10 @@ public abstract class BaseTrimDatagenSuite {
 
     public static class MaterialConfig {
         protected final ResourceKey<TrimMaterial> materialKey;
+        protected final Set<AltTranslation> altTranslations = new ObjectOpenHashSet<>();
+        protected final Map<Holder<ArmorMaterial>, String> overrides = new Reference2ObjectOpenHashMap<>();
         protected Style materialStyle;
         protected String mainTranslation;
-        protected Set<AltTranslation> altTranslations = new HashSet<>();
         protected ResourceLocation paletteTexture;
         protected String assetName;
 
@@ -358,6 +359,21 @@ public abstract class BaseTrimDatagenSuite {
          */
         public MaterialConfig assetName(String name) {
             assetName = name;
+            return this;
+        }
+
+        public MaterialConfig armorOverride(Holder<ArmorMaterial> armorMaterial, String assetNameOverride) {
+            this.overrides.put(armorMaterial, assetNameOverride);
+            return this;
+        }
+
+        public MaterialConfig armorOverride(ArmorMaterial armorMaterial, String assetNameOverride) {
+            this.armorOverride(BuiltInRegistries.ARMOR_MATERIAL.getResourceKey(armorMaterial).flatMap(BuiltInRegistries.ARMOR_MATERIAL::getHolder).orElseThrow(), assetNameOverride);
+            return this;
+        }
+
+        public MaterialConfig armorOverride(ResourceKey<ArmorMaterial> armorMaterial, String assetNameOverride) {
+            this.armorOverride(BuiltInRegistries.ARMOR_MATERIAL.getHolderOrThrow(armorMaterial), assetNameOverride);
             return this;
         }
     }
