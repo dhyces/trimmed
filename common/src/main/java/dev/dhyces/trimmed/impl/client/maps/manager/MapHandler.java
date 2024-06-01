@@ -60,7 +60,7 @@ public final class MapHandler<K, V> {
 
         DependencySorter<ResourceLocation, Entry<K, V>> dependencySorter = new DependencySorter<>();
         dependencySorter.addEntry(baseKey.getMapId(), new Entry<>(base));
-        children.forEach((resourceLocation, vMapFile) -> dependencySorter.addEntry(resourceLocation.withPrefix(baseKey.getMapId().getPath() + "/"), new Entry<>(vMapFile)));
+        children.forEach((resourceLocation, vMapFile) -> dependencySorter.addEntry(resourceLocation, new Entry<>(vMapFile)));
         dependencySorter.orderByDependencies((resourceLocation, vEntry) -> {
             MapKey<K, V> key = baseKey.getMapId().equals(resourceLocation) ? baseKey : MapKey.fromBase(baseKey, resourceLocation.withPath(s -> s.substring(s.indexOf('/')+1)));
             ClientMapHolder<K, V, Map<K, V>> holder = getOrCreateHolder(key);
@@ -74,7 +74,7 @@ public final class MapHandler<K, V> {
                     .map(kMapValueEntry -> Map.entry(kMapValueEntry.getKey(), kMapValueEntry.getValue().value()))
                     .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (v, v2) -> v, baseKey.getType()::createMap));
             for (MapAppendElement element : vEntry.file().appendElements()) {
-                MapKey<K, V> subKey = MapKey.fromBase(baseKey, element.mapId().withPath(s -> s.substring(s.indexOf('/')+1)));
+                MapKey<K, V> subKey = MapKey.fromBase(baseKey, element.mapId());
                 MapHolder<K, V> mapHolder = getOrCreateHolder(subKey);
                 if (mapHolder.isBound()) {
                     finishedMap.putAll(mapHolder.getMap());

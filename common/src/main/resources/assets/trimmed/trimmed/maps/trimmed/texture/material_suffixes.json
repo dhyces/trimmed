@@ -12,6 +12,6 @@
     "minecraft:trims/color_palettes/amethyst": "amethyst"
   },
   "append": [
-    "trimmed:material_suffixes/darker_material_suffixes"
+    "trimmed:darker_material_suffixes"
   ]
 }
