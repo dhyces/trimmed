@@ -1,4 +1,5 @@
 {
+  "__comment": "This map represents the armor item textures and their corresponding trim overlay textures. Used for model generators",
   "values": {},
   "append": [
     "trimmed:iron_armor",

@@ -1,4 +1,5 @@
 {
+  "__comment": "This map represents a mapping of a trim color palette texture that does not appear well on the armor texture to another texture that should be used instead",
   "values": {},
   "append": [
     "trimmed:iron",

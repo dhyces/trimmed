@@ -1,4 +1,5 @@
 {
+  "__comment": "This is a map which represents the actual texture locations and their corresponding generated texture suffix. It is highly recommended that mods prefix their suffixes with the modid, ie \"modid_adamantite\"",
   "values": {
     "minecraft:trims/color_palettes/quartz": "quartz",
     "minecraft:trims/color_palettes/iron": "iron",
@@ -11,6 +12,7 @@
     "minecraft:trims/color_palettes/lapis": "lapis",
     "minecraft:trims/color_palettes/amethyst": "amethyst"
   },
+  "__comment_2": "Use the darker map for any textures that are specialized for only certain cases",
   "append": [
     "trimmed:darker_material_suffixes"
   ]
