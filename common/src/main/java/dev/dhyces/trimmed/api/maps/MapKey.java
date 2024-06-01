@@ -1,5 +1,6 @@
 package dev.dhyces.trimmed.api.maps;
 
+import com.google.common.base.Preconditions;
 import com.google.common.collect.Interner;
 import com.google.common.collect.Interners;
 import com.mojang.serialization.Codec;
@@ -9,6 +10,7 @@ import dev.dhyces.trimmed.api.client.map.ClientMapTypes;
 import dev.dhyces.trimmed.api.maps.types.MapType;
 import dev.dhyces.trimmed.api.util.CodecUtil;
 import net.minecraft.resources.ResourceLocation;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
 
@@ -26,18 +28,32 @@ public final class MapKey<K, V> {
     private static final Interner<MapKey<?, ?>> INTERNER = Interners.newWeakInterner();
 
     private final MapType<K, V> type;
+    @Nullable
+    private final MapKey<K, V> baseKey;
     private final ResourceLocation id;
-    private final boolean isSubKey;
 
-    private MapKey(MapType<K, V> mapType, ResourceLocation id) {
+    private MapKey(MapType<K, V> mapType, @Nullable MapKey<K, V> baseKey, ResourceLocation id) {
         this.type = mapType;
+        this.baseKey = baseKey;
         this.id = id;
-        this.isSubKey = id.getPath().contains("/");
     }
 
     @SuppressWarnings("unchecked")
+    public static <K, V> MapKey<K, V> baseKeyOf(MapType<K, V> mapType, ResourceLocation id) {
+        return (MapKey<K, V>) INTERNER.intern(new MapKey<>(mapType, null, id));
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <K, V> MapKey<K, V> fromBase(MapKey<K, V> baseKey, ResourceLocation id) {
+        return (MapKey<K, V>) INTERNER.intern(new MapKey<>(baseKey.type, baseKey, id));
+    }
+
     public static <K, V> MapKey<K, V> of(MapType<K, V> mapType, ResourceLocation id) {
-        return (MapKey<K, V>) INTERNER.intern(new MapKey<>(mapType, id));
+        if (id.getPath().contains("/")) {
+            int slashIndex = id.getPath().indexOf('/');
+            return fromBase(MapKey.baseKeyOf(mapType, id.withPath(s -> s.substring(0, slashIndex))), id.withPath(s -> s.substring(slashIndex+1)));
+        }
+        return baseKeyOf(mapType, id);
     }
 
     public MapType<K, V> getType() {
@@ -48,29 +64,34 @@ public final class MapKey<K, V> {
         return id;
     }
 
-    public MapKey<K, V> makeSubKey(String subId) {
-        return of(getType(), getMapId().withSuffix("/" + subId));
-    }
-
-    public MapKey<K, V> makeSubKeyFromPath(ResourceLocation subId) {
-        return makeSubKey(subId.getPath().replace(id.getPath(), ""));
+    public MapKey<K, V> makeSubKey(ResourceLocation subId) {
+        return fromBase(baseKey == null ? this : baseKey, subId);
     }
 
     public MapKey<K, V> getParentKey() {
-        return of(type, id.withPath(s -> s.substring(0, s.lastIndexOf("/"))));
+        Preconditions.checkArgument(baseKey != null, "This map key is the base key");
+        return fromBase(baseKey, id.withPath(s -> s.substring(0, s.lastIndexOf("/"))));
     }
 
     public MapKey<K, V> getBaseKey() {
-        return of(type, id.withPath(s -> s.substring(0, s.indexOf("/"))));
+        Preconditions.checkArgument(baseKey != null, "This map key is the base key");
+        return baseKey;
     }
 
     public boolean isSubKey() {
-        return isSubKey;
+        return baseKey != null;
+    }
+
+    public ResourceLocation compilePathAndIdNamespace() {
+        if (baseKey == null) {
+            return getMapId();
+        }
+        return id.withPrefix(baseKey.getMapId().getPath() + '/');
     }
 
     @Override
     public String toString() {
-        return "MapKey[type: "+ type + ", id: " + id + "]";
+        return "MapKey[type: "+ type + ", id: " + compilePathAndIdNamespace() + "]";
     }
 
     @Override

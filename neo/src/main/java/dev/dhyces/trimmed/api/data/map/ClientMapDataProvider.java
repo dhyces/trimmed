@@ -37,7 +37,7 @@ public abstract class ClientMapDataProvider<K> extends NeoClientMapDataProvider<
             var codec = MapFile.codec(entry.getKey().getType().getKeyResolver().getCodec(), entry.getKey().getType().getValueCodec());
 
             DataResult<JsonElement> elementResult = codec.encodeStart(JsonOps.INSTANCE, Utils.unsafeCast(entry.getValue().build()));
-            Path path = pathProvider.json(entry.getKey().getMapId());
+            Path path = pathProvider.json(entry.getKey().compilePathAndIdNamespace());
             return DataProvider.saveStable(pOutput, elementResult.getOrThrow(), path);
         }).toArray(CompletableFuture[]::new));
     }

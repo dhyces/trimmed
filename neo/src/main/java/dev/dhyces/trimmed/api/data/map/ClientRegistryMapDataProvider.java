@@ -47,7 +47,7 @@ public abstract class ClientRegistryMapDataProvider<K> extends NeoClientMapDataP
                     throw new IllegalStateException("Element %s does not exist in %s".formatted(entry.getKey(), keyResolver.registryKey()));
                 }
                 var codec = MapFile.codec(entry.getKey().getType().getKeyResolver().getCodec(), entry.getKey().getType().getValueCodec());
-                Path path = pathProvider.json(entry.getKey().getMapId());
+                Path path = pathProvider.json(entry.getKey().compilePathAndIdNamespace());
                 return DataProvider.saveStable(pOutput, provider, codec, Utils.unsafeCast(entry.getValue().build()), path);
             }).toArray(CompletableFuture[]::new));
         });
