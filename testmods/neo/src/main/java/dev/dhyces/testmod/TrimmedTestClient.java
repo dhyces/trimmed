@@ -19,10 +19,10 @@ import java.util.Optional;
 @Mod(value = TrimmedTest.MODID, dist = Dist.CLIENT)
 public class TrimmedTestClient {
     public TrimmedTestClient() {
-        NeoForge.EVENT_BUS.addListener(TrimmedTestClient::loggedIn);
+        NeoForge.EVENT_BUS.addListener(this::loggedIn);
     }
 
-    private static void loggedIn(final PlayerEvent.PlayerLoggedInEvent event) {
+    private void loggedIn(final PlayerEvent.PlayerLoggedInEvent event) {
         var t = "minecraft:textures/models/armor/test_layer_1/trimmed_test";
         TrimmedClientTagApi.getInstance().getTag(TestClientTags.TEST_TAG).getSet().forEach(id -> TrimmedTest.LOGGER.info(id.toString()));
         TrimmedClientTagApi.getInstance().getTag(TestClientTags.TEST_ITEM_TAG).getSet().forEach(item -> TrimmedTest.LOGGER.info(item.toString()));

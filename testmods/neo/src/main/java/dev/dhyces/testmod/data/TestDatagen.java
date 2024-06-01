@@ -20,18 +20,23 @@ import net.minecraft.data.DataGenerator;
 import net.minecraft.data.PackOutput;
 import net.minecraft.world.item.Items;
 import net.neoforged.bus.api.IEventBus;
+import net.neoforged.fml.common.Mod;
 import net.neoforged.neoforge.common.data.LanguageProvider;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
+import net.neoforged.neoforge.data.loading.DatagenModLoader;
 
 import java.util.concurrent.CompletableFuture;
 
+@Mod(TrimmedTest.MODID)
 public class TestDatagen {
 
-    public static void init(IEventBus modBus) {
-        modBus.addListener(TestDatagen::gatherDataEvent);
+    public TestDatagen(IEventBus modBus) {
+        if (DatagenModLoader.isRunningDataGen()) {
+            modBus.addListener(this::gatherDataEvent);
+        }
     }
 
-    private static void gatherDataEvent(final GatherDataEvent event) {
+    private void gatherDataEvent(final GatherDataEvent event) {
         DataGenerator generator = event.getGenerator();
         PackOutput packOutput = generator.getPackOutput();
         CompletableFuture<HolderLookup.Provider> lookupProvider = event.getLookupProvider();
