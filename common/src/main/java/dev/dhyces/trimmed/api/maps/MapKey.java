@@ -6,6 +6,7 @@ import com.google.common.collect.Interners;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import dev.dhyces.trimmed.Trimmed;
 import dev.dhyces.trimmed.api.client.map.ClientMapTypes;
 import dev.dhyces.trimmed.api.maps.types.MapType;
 import dev.dhyces.trimmed.api.util.CodecUtil;
@@ -22,7 +23,7 @@ public final class MapKey<K, V> {
             ).apply(instance, MapKey::of)
     );
     public static <K, V> Codec<MapKey<K, V>> codec(MapType<K, V> mapType) {
-        return ResourceLocation.CODEC.xmap(resourceLocation -> MapKey.of(mapType, resourceLocation), MapKey::getMapId);
+        return ResourceLocation.CODEC.xmap(resourceLocation -> MapKey.of(mapType, resourceLocation), MapKey::compilePathAndIdNamespace);
     }
 
     private static final Interner<MapKey<?, ?>> INTERNER = Interners.newWeakInterner();
@@ -50,8 +51,18 @@ public final class MapKey<K, V> {
 
     public static <K, V> MapKey<K, V> of(MapType<K, V> mapType, ResourceLocation id) {
         if (id.getPath().contains("/")) {
-            int slashIndex = id.getPath().indexOf('/');
-            return fromBase(MapKey.baseKeyOf(mapType, id.withPath(s -> s.substring(0, slashIndex))), id.withPath(s -> s.substring(slashIndex+1)));
+            int firstSlashIndex = id.getPath().indexOf('/');
+            int secondSlashIndex = id.getPath().indexOf('/', firstSlashIndex+1);
+            ResourceLocation baseKey;
+            ResourceLocation subKey;
+            if (secondSlashIndex == -1) {
+                baseKey = Trimmed.id(id.getPath().substring(0, firstSlashIndex));
+                subKey = id.withPath(s -> s.substring(firstSlashIndex+1));
+            } else {
+                baseKey = new ResourceLocation(id.getPath().substring(0, firstSlashIndex), id.getPath().substring(firstSlashIndex+1, secondSlashIndex));
+                subKey = id.withPath(s -> s.substring(secondSlashIndex+1));
+            }
+            return fromBase(MapKey.baseKeyOf(mapType, baseKey), subKey);
         }
         return baseKeyOf(mapType, id);
     }
@@ -99,11 +110,11 @@ public final class MapKey<K, V> {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         MapKey<?, ?> mapKey = (MapKey<?, ?>) o;
-        return Objects.equals(type, mapKey.type) && Objects.equals(id, mapKey.id);
+        return Objects.equals(type, mapKey.type) && Objects.equals(baseKey, mapKey.baseKey) && Objects.equals(id, mapKey.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(type, id);
+        return Objects.hash(type, baseKey, id);
     }
 }
