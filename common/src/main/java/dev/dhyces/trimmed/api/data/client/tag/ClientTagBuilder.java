@@ -1,18 +1,15 @@
 package dev.dhyces.trimmed.api.data.client.tag;
 
-import dev.dhyces.trimmed.api.KeyResolver;
 import dev.dhyces.trimmed.api.client.tag.ClientTagKey;
 import it.unimi.dsi.fastutil.objects.ObjectLinkedOpenHashSet;
 
 import java.util.Set;
 
 public class ClientTagBuilder<T> {
-    private final KeyResolver<T> keyResolver;
     private final Set<ClientTagEntry<T>> elements;
     private boolean replaces;
 
-    public ClientTagBuilder(KeyResolver<T> keyResolver) {
-        this.keyResolver = keyResolver;
+    public ClientTagBuilder() {
         this.elements = new ObjectLinkedOpenHashSet<>();
     }
 

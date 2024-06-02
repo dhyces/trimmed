@@ -30,7 +30,7 @@ public abstract class BaseClientTagDataProvider<T, R extends KeyResolver<T>> imp
     protected ClientTagBuilder<T> getOrCreateBuilder(ClientTagKey<T> clientTagKey) {
         return this.builders.computeIfAbsent(clientTagKey.getTagId(), resourceLocation -> {
             onBuilderCreation(resourceLocation);
-            return new ClientTagBuilder<>(clientTagKey.getKeyResolver());
+            return new ClientTagBuilder<>();
         });
     }
 
