@@ -64,11 +64,11 @@ dependencies {
 		parchment("org.parchmentmc.data:parchment-${libs.versions.parchment.mc.get()}:${libs.versions.parchment.release.get()}@zip")
 	})
 
-	implementation("dev.dhyces.trimmed:trimmed-neo-1.20.6:2.1.4")
-//	compileOnly(project(":common"))
-//	compileOnly(project(":neo"))
-//	neoJava(project(path = ":neo", configuration = "neoJava"))
-//	neoResources(project(path = ":neo", configuration = "neoResources"))
+//	implementation("dev.dhyces.trimmed:trimmed-neo-1.20.6:2.1.4")
+	compileOnly(project(":common"))
+	compileOnly(project(":neo"))
+	neoJava(project(path = ":neo", configuration = "neoJava"))
+	neoResources(project(path = ":neo", configuration = "neoResources"))
 }
 
 tasks.named<JavaCompile>("compileJava") {
