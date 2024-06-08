@@ -18,22 +18,22 @@ public abstract class BaseMapAppender<K, V> {
     }
 
     public <S extends BaseMapAppender<K, V>> S put(K key, V value) {
-        builder.put(key, value);
+        builder.addEntry(key, value);
         return self();
     }
 
     public <S extends BaseMapAppender<K, V>> S putOptional(K key, V value) {
-        builder.putOptional(key, value);
+        builder.addOptionalEntry(key, value);
         return self();
     }
 
     public <S extends BaseMapAppender<K, V>> S putAll(Map<K, V> map) {
-        map.forEach(builder::put);
+        map.forEach(builder::addEntry);
         return self();
     }
 
     public <S extends BaseMapAppender<K, V>> S putAllOptional(Map<K, V> map) {
-        map.forEach(builder::putOptional);
+        map.forEach(builder::addOptionalEntry);
         return self();
     }
 
@@ -58,7 +58,7 @@ public abstract class BaseMapAppender<K, V> {
     }
 
     public <S extends BaseMapAppender<K, V>> S replaces() {
-        builder.setReplace(true);
+        builder.replaces();
         return self();
     }
 }

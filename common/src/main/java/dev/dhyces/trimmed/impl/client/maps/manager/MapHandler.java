@@ -2,8 +2,10 @@ package dev.dhyces.trimmed.impl.client.maps.manager;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
+import com.mojang.serialization.JsonOps;
 import dev.dhyces.trimmed.Trimmed;
 import dev.dhyces.trimmed.api.data.map.MapAppendElement;
+import dev.dhyces.trimmed.api.data.map.MapBuilder;
 import dev.dhyces.trimmed.api.data.map.MapFile;
 import dev.dhyces.trimmed.api.maps.MapHolder;
 import dev.dhyces.trimmed.api.maps.types.MapType;
@@ -98,7 +100,7 @@ public final class MapHandler<K, V> {
 
     private MapFile<K, V> readStack(ResourceLocation fileName, List<Resource> resourceStack) {
         MapType<K, V> mapType = baseKey.getType();
-        MapFile.Builder<K, V> builder = new MapFile.Builder<>();
+        MapBuilder<K, V> builder = new MapBuilder<>();
         for (Resource resource : resourceStack) {
             try (BufferedReader reader = resource.openAsReader()) {
                 JsonObject json = GsonHelper.parse(reader);
@@ -109,7 +111,7 @@ public final class MapHandler<K, V> {
                 }
                 MapFile<K, V> mapFile = result.get();
                 if (mapFile.shouldReplace()) {
-                    builder = new MapFile.Builder<>();
+                    builder = new MapBuilder<>();
                 }
                 builder.merge(mapFile);
             } catch (JsonParseException | IOException e) {
