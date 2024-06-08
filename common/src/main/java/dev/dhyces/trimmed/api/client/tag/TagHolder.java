@@ -15,6 +15,12 @@ public interface TagHolder<T> {
     @Nullable
     ClientTagKey<T> unwrapKey();
     Set<T> getSet();
+    default boolean contains(T element) {
+        if (!isBound()) {
+            return false;
+        }
+        return getSet().contains(element);
+    }
     boolean isRequired(T element);
     boolean isBound();
 
@@ -28,6 +34,11 @@ public interface TagHolder<T> {
             @Override
             public Set<T> getSet() {
                 return set;
+            }
+
+            @Override
+            public boolean contains(T element) {
+                return set.contains(element);
             }
 
             @Override
