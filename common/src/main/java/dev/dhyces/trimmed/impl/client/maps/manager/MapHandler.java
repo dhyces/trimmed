@@ -104,7 +104,7 @@ public final class MapHandler<K, V> {
         for (Resource resource : resourceStack) {
             try (BufferedReader reader = resource.openAsReader()) {
                 JsonObject json = GsonHelper.parse(reader);
-                Optional<MapFile<K, V>> result = Services.PLATFORM_HELPER.decodeWithConditions(MapFile.codec(mapType.getKeyResolver().getCodec(), mapType.getValueCodec()), json);
+                Optional<MapFile<K, V>> result = Services.PLATFORM_HELPER.decodeWithConditions(MapFile.codec(mapType.getKeyResolver().getCodec(), mapType.getValueCodec()), JsonOps.INSTANCE, json);
                 if (result.isEmpty()) {
                     Trimmed.LOGGER.debug("Skipping loading client map {} as its conditions were not met", fileName);
                     continue;

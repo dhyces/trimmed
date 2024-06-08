@@ -1,9 +1,11 @@
 package dev.dhyces.trimmed.modhelper.services.helpers;
 
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
+import com.mojang.serialization.DynamicOps;
 import com.mojang.serialization.JsonOps;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.fabric.api.resource.conditions.v1.ResourceCondition;
@@ -53,9 +55,9 @@ public final class FabricPlatformHelper implements PlatformHelper {
     }
 
     @Override
-    public <T> Optional<T> decodeWithConditions(Codec<T> codec, JsonObject jsonObject) {
+    public <T> Optional<T> decodeWithConditions(Codec<T> codec, DynamicOps<JsonElement> jsonOps, JsonObject jsonObject) {
         if (jsonObject.has(ResourceConditions.CONDITIONS_KEY)) {
-            DataResult<ResourceCondition> conditions = ResourceCondition.CONDITION_CODEC.parse(JsonOps.INSTANCE, jsonObject.get(ResourceConditions.CONDITIONS_KEY));
+            DataResult<ResourceCondition> conditions = ResourceCondition.CONDITION_CODEC.parse(jsonOps, jsonObject.get(ResourceConditions.CONDITIONS_KEY));
 
             if (conditions.isSuccess() && !conditions.getOrThrow().test(null)) {
                 return Optional.empty();

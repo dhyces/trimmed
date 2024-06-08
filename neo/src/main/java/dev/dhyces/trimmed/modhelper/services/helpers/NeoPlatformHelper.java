@@ -1,7 +1,9 @@
 package dev.dhyces.trimmed.modhelper.services.helpers;
 
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.DynamicOps;
 import com.mojang.serialization.JsonOps;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
@@ -48,8 +50,8 @@ public final class NeoPlatformHelper implements PlatformHelper {
     }
 
     @Override
-    public <T> Optional<T> decodeWithConditions(Codec<T> codec, JsonObject jsonObject) {
-        return ICondition.getConditionally(codec, JsonOps.INSTANCE, jsonObject);
+    public <T> Optional<T> decodeWithConditions(Codec<T> codec, DynamicOps<JsonElement> jsonOps, JsonObject jsonObject) {
+        return ICondition.getConditionally(codec, jsonOps, jsonObject);
     }
 
     @Override

@@ -2,8 +2,11 @@ package dev.dhyces.trimmed.impl.client.tags.manager;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
+import com.mojang.serialization.DynamicOps;
+import com.mojang.serialization.JsonOps;
 import dev.dhyces.trimmed.api.client.tag.TagHolder;
 import dev.dhyces.trimmed.api.KeyResolver;
 import dev.dhyces.trimmed.api.data.client.tag.ClientTagEntry;
@@ -14,6 +17,7 @@ import dev.dhyces.trimmed.modhelper.services.Services;
 import dev.dhyces.trimmed.Trimmed;
 import dev.dhyces.trimmed.api.util.Utils;
 import it.unimi.dsi.fastutil.objects.*;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.FileToIdConverter;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.PreparableReloadListener;
@@ -32,12 +36,14 @@ import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.stream.StreamSupport;
 
 public class ClientTagManager implements PreparableReloadListener {
     public static final String PATH = "trimmed/tags/";
     private static final Logger LOGGER = LoggerFactory.getLogger("Trimmed / Client Tags");
     private static final Map<ClientTagKey<?>, ClientTagHolder<?>> REGISTRY = new Reference2ObjectOpenHashMap<>();
+    private static final List<Consumer<RegistryAccess>> DELAYED = new ObjectArrayList<>();
 
     public static <T> TagHolder<T> getHolder(ClientTagKey<T> clientTagKey) {
         return getOrCreateHolder(clientTagKey);
@@ -54,11 +60,11 @@ public class ClientTagManager implements PreparableReloadListener {
         return (ClientTagHolder<T>) REGISTRY.get(clientTagKey);
     }
 
-//    public static void updateDatapacksSynced(RegistryAccess registryAccess) {
-//        for (DatapackTagHandler<?> handler : REGISTRY.values()) {
-//            handler.update(registryAccess);
-//        }
-//    }
+    public static void updateDatapacksSynced(RegistryAccess registryAccess) {
+        for (Consumer<RegistryAccess> consumer : DELAYED) {
+            consumer.accept(registryAccess);
+        }
+    }
 
     @Override
     public CompletableFuture<Void> reload(PreparationBarrier pPreparationBarrier, ResourceManager pResourceManager, ProfilerFiller pPreparationsProfiler, ProfilerFiller pReloadProfiler, Executor pBackgroundExecutor, Executor pGameExecutor) {
@@ -67,17 +73,26 @@ public class ClientTagManager implements PreparableReloadListener {
 
     private CompletableFuture<Void> load(ResourceManager resourceManager) {
         REGISTRY.values().forEach(ClientTagHolder::reset);
+        DELAYED.clear();
 
-        return CompletableFuture.allOf(
-                StreamSupport.stream(KeyResolvers.getEntries().spliterator(), true)
-                        .map(entry -> CompletableFuture.runAsync(() -> resolveTags(entry.getKey(), entry.getValue(), resourceManager))).toArray(CompletableFuture[]::new)
+        return CompletableFuture.allOf(StreamSupport.stream(KeyResolvers.getEntries().spliterator(), false)
+                .map(entry -> CompletableFuture.runAsync(() -> {
+                    if (entry.getValue().requiresActiveWorld()) {
+                        DELAYED.add(registryAccess -> {
+                            resolveTags(entry.getKey(), entry.getValue(), resourceManager, registryAccess.createSerializationContext(JsonOps.INSTANCE));
+                        });
+                    } else {
+                        resolveTags(entry.getKey(), entry.getValue(), resourceManager, JsonOps.INSTANCE);
+                    }
+                }))
+                .toArray(CompletableFuture[]::new)
         );
     }
 
-    private <T> void resolveTags(ResourceLocation registryId, KeyResolver<T> keyResolver, ResourceManager resourceManager) {
+    private <T> void resolveTags(ResourceLocation registryId, KeyResolver<T> keyResolver, ResourceManager resourceManager, DynamicOps<JsonElement> jsonOps) {
         String resolverPath = PATH + Utils.namespacedPath(registryId);
         FileToIdConverter converter = FileToIdConverter.json(resolverPath);
-        Map<ResourceLocation, Set<ClientTagEntry<T>>> unresolved = Utils.unsafeCast(readMap(converter, resourceManager, keyResolver));
+        Map<ResourceLocation, Set<ClientTagEntry<T>>> unresolved = Utils.unsafeCast(readMap(converter, resourceManager, keyResolver, jsonOps));
         DependencySorter<ResourceLocation, TagSetEntry<T>> sorter = new DependencySorter<>();
         unresolved.forEach((resourceLocation, entries) -> sorter.addEntry(resourceLocation, new TagSetEntry<>(entries)));
         sorter.orderByDependencies((resourceLocation, tagEntrySet) -> {
@@ -89,12 +104,12 @@ public class ClientTagManager implements PreparableReloadListener {
         });
     }
 
-    private <T> Map<ResourceLocation, Set<ClientTagEntry<T>>> readMap(FileToIdConverter converter, ResourceManager resourceManager, KeyResolver<T> keyResolver) {
+    private <T> Map<ResourceLocation, Set<ClientTagEntry<T>>> readMap(FileToIdConverter converter, ResourceManager resourceManager, KeyResolver<T> keyResolver, DynamicOps<JsonElement> jsonOps) {
         ImmutableMap.Builder<ResourceLocation, Set<ClientTagEntry<T>>> builder = ImmutableMap.builder();
         for (Map.Entry<ResourceLocation, List<Resource>> entry : converter.listMatchingResourceStacks(resourceManager).entrySet()) {
             ResourceLocation id = converter.fileToId(entry.getKey());
             try {
-                builder.put(id, readResources(id, entry.getValue(), keyResolver));
+                builder.put(id, readResources(id, entry.getValue(), keyResolver, jsonOps));
             } catch (IllegalStateException e) {
                 LOGGER.error("Failed to parse client tag", e);
             }
@@ -102,12 +117,12 @@ public class ClientTagManager implements PreparableReloadListener {
         return builder.build();
     }
 
-    private <T> Set<ClientTagEntry<T>> readResources(ResourceLocation fileName, List<Resource> resourceStack, KeyResolver<T> keyResolver) {
+    private <T> Set<ClientTagEntry<T>> readResources(ResourceLocation fileName, List<Resource> resourceStack, KeyResolver<T> keyResolver, DynamicOps<JsonElement> jsonOps) {
         ImmutableSet.Builder<ClientTagEntry<T>> setBuilder = ImmutableSet.builder();
         for (Resource resource : resourceStack) {
             try (BufferedReader reader = resource.openAsReader()) {
                 JsonObject json = GsonHelper.parse(reader);
-                Optional<ClientTagFile<T>> result = Services.PLATFORM_HELPER.decodeWithConditions(ClientTagFile.codec(keyResolver), json);
+                Optional<ClientTagFile<T>> result = Services.PLATFORM_HELPER.decodeWithConditions(ClientTagFile.codec(keyResolver), jsonOps, json);
                 if (result.isEmpty()) {
                     LOGGER.debug("Skipping loading client tag {} as its conditions were not met", fileName);
                     continue;
@@ -128,7 +143,7 @@ public class ClientTagManager implements PreparableReloadListener {
         ClientTagKey<T> key = ClientTagKey.of(resolver, id);
         Set<T> set;
         Set<T> optionalSet;
-        if (resolver instanceof KeyResolver.RegistryWrapper<T>) {
+        if (resolver instanceof KeyResolver.RegistryWrapper<?>) {
             set = new ReferenceLinkedOpenHashSet<>();
             optionalSet = new ReferenceLinkedOpenHashSet<>();
         } else {

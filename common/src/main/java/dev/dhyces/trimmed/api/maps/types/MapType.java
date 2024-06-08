@@ -21,7 +21,7 @@ public sealed interface MapType<K, V> permits SimpleMapType, AdvancedMapType {
     boolean isDataPackSynced();
 
     default Map<K, V> createMap() {
-        if (getKeyResolver() instanceof KeyResolver.RegistryWrapper<K>) {
+        if (getKeyResolver() instanceof KeyResolver.RegistryWrapper<?>) {
             return new Reference2ObjectLinkedOpenHashMap<>();
         } else {
             return new Object2ObjectLinkedOpenHashMap<>();

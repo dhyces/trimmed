@@ -1,7 +1,9 @@
 package dev.dhyces.trimmed.modhelper.services.helpers;
 
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.DynamicOps;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceKey;
@@ -17,6 +19,6 @@ public interface PlatformHelper {
 
     String resolveRegistryPath(ResourceKey<? extends Registry<?>> resourceKey);
     <T> boolean modRegistryExists(ResourceKey<? extends Registry<T>> mod);
-    <T> Optional<T> decodeWithConditions(Codec<T> codec, JsonObject jsonObject);
+    <T> Optional<T> decodeWithConditions(Codec<T> codec, DynamicOps<JsonElement> jsonOps, JsonObject jsonObject);
     <T> T getRegistryValue(@Nullable RegistryAccess registryAccess, ResourceKey<? extends Registry<T>> registry, ResourceLocation valueKey);
 }

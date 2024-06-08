@@ -2,6 +2,7 @@ package dev.dhyces.trimmed.impl.client.models.override;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
+import com.mojang.serialization.JsonOps;
 import dev.dhyces.trimmed.api.data.model.override.ItemOverrideFile;
 import dev.dhyces.trimmed.modhelper.services.Services;
 import dev.dhyces.trimmed.api.client.override.provider.ItemOverrideProvider;
@@ -51,7 +52,7 @@ public class ItemOverrideReloadListener extends SimplePreparableReloadListener<M
             ObjectSet<ItemOverrideProvider> combined = new ObjectOpenHashSet<>();
             try {
                 for (JsonObject json : entry.getValue()) {
-                    Optional<ItemOverrideFile> result = Services.PLATFORM_HELPER.decodeWithConditions(ItemOverrideFile.CODEC, json);
+                    Optional<ItemOverrideFile> result = Services.PLATFORM_HELPER.decodeWithConditions(ItemOverrideFile.CODEC, JsonOps.INSTANCE, json);
                     if (result.isEmpty()) {
                         LOGGER.debug("Skipping loading item overrides from {} as its conditions were not met", entry.getKey());
                         continue;

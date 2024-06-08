@@ -1,6 +1,7 @@
 package dev.dhyces.trimmed.api;
 
 import com.mojang.serialization.Codec;
+import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
@@ -14,15 +15,18 @@ public interface KeyResolver<T> {
     StreamCodec<RegistryFriendlyByteBuf, T> getStreamCodec();
     boolean requiresActiveWorld();
 
-    record RegistryWrapper<T>(ResourceKey<? extends Registry<T>> registryKey, Codec<T> byNameCodec, boolean requiresActiveWorld) implements KeyResolver<T> {
-        public static <T> RegistryWrapper<T> createStatic(Registry<T> registry) {
-            return new RegistryWrapper<>(registry.key(), registry.byNameCodec(), false);
-        }
+    interface RegistryResolver<T> extends KeyResolver<T> {
+        ResourceKey<? extends Registry<T>> getKey();
+    }
 
+    record RegistryWrapper<T>(ResourceKey<? extends Registry<T>> registryKey, Codec<Holder<T>> holderByNameCodec, boolean requiresActiveWorld) implements RegistryResolver<T> {
+        public static <T> RegistryWrapper<T> createStatic(Registry<T> registry) {
+            return new RegistryWrapper<>(registry.key(), registry.holderByNameCodec(), false);
+        }
 
         @Override
         public Codec<T> getCodec() {
-            return byNameCodec;
+            return holderByNameCodec.xmap(Holder::value, t -> {throw new UnsupportedOperationException("Does not support encoding values");});
         }
 
         @Override
@@ -33,6 +37,11 @@ public interface KeyResolver<T> {
         @Override
         public boolean requiresActiveWorld() {
             return requiresActiveWorld;
+        }
+
+        @Override
+        public ResourceKey<? extends Registry<T>> getKey() {
+            return registryKey;
         }
     }
 }
