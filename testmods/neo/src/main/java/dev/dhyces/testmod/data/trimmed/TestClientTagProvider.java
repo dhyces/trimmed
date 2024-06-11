@@ -18,6 +18,6 @@ public class TestClientTagProvider extends ClientTagDataProvider<ResourceLocatio
 
     @Override
     protected void addTags() {
-        clientTag(TEST_TAG).add(TrimmedTest.id("unreallll")).add(TrimmedTest.id("nahhhh"));
+        tag(TEST_TAG).add(TrimmedTest.id("unreallll")).add(TrimmedTest.id("nahhhh"));
     }
 }

@@ -27,7 +27,7 @@ public abstract class NeoBaseClientTagDataProvider<T, R extends KeyResolver<T>> 
     }
 
     @Override
-    protected boolean doesTagExist(ClientTagKey<T> clientTagKey) {
-        return super.doesTagExist(clientTagKey) || existingFileHelper.exists(clientTagKey.getTagId(), resourceType);
+    protected boolean doesTagExist(ResourceLocation clientTagKey) {
+        return super.doesTagExist(clientTagKey) || existingFileHelper.exists(clientTagKey, resourceType);
     }
 }

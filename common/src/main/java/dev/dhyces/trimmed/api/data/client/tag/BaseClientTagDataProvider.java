@@ -36,7 +36,7 @@ public abstract class BaseClientTagDataProvider<T, R extends KeyResolver<T>> imp
 
     protected void onBuilderCreation(ResourceLocation id) {}
 
-    protected boolean doesTagExist(ClientTagKey<T> clientTagKey) {
-        return builders.get(clientTagKey.getTagId()) != null;
+    protected boolean doesTagExist(ResourceLocation clientTagId) {
+        return builders.get(clientTagId) != null;
     }
 }

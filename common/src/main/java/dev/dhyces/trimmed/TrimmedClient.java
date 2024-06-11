@@ -43,8 +43,8 @@ public class TrimmedClient {
 
     public static void initApi() {
         TrimmedClientApiEntrypoint.TrimmedClientRegistration registration = new TrimmedClientRegistrationImpl();
-        for (ModApiConsumer<TrimmedClientApiEntrypoint> entrypoint : Services.CLIENT_HELPER.getClientApiConsumers()) {
-            entrypoint.entrypoint().registration(registration);
+        for (ModApiConsumer<TrimmedClientApiEntrypoint> consumer : Services.CLIENT_HELPER.getClientApiConsumers()) {
+            consumer.entrypoint().registration(registration);
         }
     }
 
@@ -63,6 +63,7 @@ public class TrimmedClient {
 //                Minecraft.getInstance().getToasts().addToast(InfoToast.reloadClientInfo());
 //            }
             ClientTagManager.updateDatapacksSynced(registryAccess);
+            ClientMapManager.updateDatapacksSynced(registryAccess);
         }
     }
 

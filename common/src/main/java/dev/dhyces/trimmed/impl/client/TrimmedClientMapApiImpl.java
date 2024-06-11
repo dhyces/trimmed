@@ -45,7 +45,7 @@ public final class TrimmedClientMapApiImpl implements TrimmedClientMapApi {
     }
 
     @Override
-    public @Nullable <T> KeyResolver.RegistryWrapper<T> getRegistryKeyResolver(ResourceKey<? extends Registry<T>> key) {
+    public @Nullable <T> KeyResolver.RegistryResolver<T> getRegistryKeyResolver(ResourceKey<? extends Registry<T>> key) {
         return KeyResolvers.getRegistryResolver(key);
     }
 }

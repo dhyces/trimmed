@@ -6,12 +6,12 @@ import net.minecraft.data.PackOutput;
 import net.minecraft.server.packs.PackType;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 
-public abstract class NeoBaseMapDataProvider<K, R extends KeyResolver<K>> extends BaseMapDataProvider<K, R> {
+public abstract class NeoBaseMapDataProvider<K> extends BaseMapDataProvider<K> {
     protected final ExistingFileHelper existingFileHelper;
     protected final ExistingFileHelper.IResourceType resourceType;
 
-    public NeoBaseMapDataProvider(PackOutput packOutput, String modid, R keyResolver, ExistingFileHelper.IResourceType resourceType, ExistingFileHelper existingFileHelper) {
-        super(packOutput, convertToTarget(resourceType.getPackType()), modid, resourceType.getPrefix(), keyResolver);
+    public NeoBaseMapDataProvider(PackOutput packOutput, String modid, ExistingFileHelper.IResourceType resourceType, ExistingFileHelper existingFileHelper) {
+        super(packOutput, convertToTarget(resourceType.getPackType()), modid, resourceType.getPrefix());
         this.existingFileHelper = existingFileHelper;
         this.resourceType = resourceType;
     }

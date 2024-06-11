@@ -19,7 +19,7 @@ public class TrimmedClientApiImpl implements TrimmedClientApi {
 
     @Nullable
     @Override
-    public <T> KeyResolver.RegistryWrapper<T> getRegistryKeyResolver(ResourceKey<? extends Registry<T>> key) {
+    public <T> KeyResolver.RegistryResolver<T> getRegistryKeyResolver(ResourceKey<? extends Registry<T>> key) {
         return KeyResolvers.getRegistryResolver(key);
     }
 

@@ -2,23 +2,26 @@ package dev.dhyces.trimmed.api.data.client.tag.appenders;
 
 import dev.dhyces.trimmed.api.client.tag.ClientTagKey;
 import dev.dhyces.trimmed.api.data.client.tag.ClientTagBuilder;
+import net.minecraft.resources.ResourceLocation;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.function.Function;
 
 public class ClientTagAppender<T> {
-    private final ClientTagBuilder<T> builder;
+    protected final ClientTagBuilder<T> builder;
 
     public ClientTagAppender(ClientTagBuilder<T> builder) {
         this.builder = builder;
     }
 
-    public ClientTagAppender<T> add(T element) {
+    public ClientTagAppender<T> add(ResourceLocation element) {
         builder.add(element, true);
         return this;
     }
 
-    @SafeVarargs
-    public final ClientTagAppender<T> add(T... elements) {
-        for (T element : elements) {
-            builder.add(element, true);
+    public final ClientTagAppender<T> add(ResourceLocation... elements) {
+        for (ResourceLocation element : elements) {
+            add(element);
         }
         return this;
     }
@@ -31,20 +34,19 @@ public class ClientTagAppender<T> {
     @SafeVarargs
     public final ClientTagAppender<T> addTags(ClientTagKey<T>... tagKeys) {
         for (ClientTagKey<T> key : tagKeys) {
-            builder.addTag(key, true);
+            addTag(key);
         }
         return this;
     }
 
-    public ClientTagAppender<T> addOptional(T element) {
+    public ClientTagAppender<T> addOptional(ResourceLocation element) {
         builder.add(element, false);
         return this;
     }
 
-    @SafeVarargs
-    public final ClientTagAppender<T> addOptional(T... elements) {
-        for (T elem : elements) {
-            builder.add(elem, false);
+    public final ClientTagAppender<T> addOptional(ResourceLocation... elements) {
+        for (ResourceLocation elem : elements) {
+            addOptional(elem);
         }
         return this;
     }
@@ -57,8 +59,27 @@ public class ClientTagAppender<T> {
     @SafeVarargs
     public final ClientTagAppender<T> addOptionalTags(ClientTagKey<T>... tagKeys) {
         for (ClientTagKey<T> key : tagKeys) {
-            builder.addTag(key, false);
+            addOptionalTag(key);
         }
         return this;
+    }
+
+    public static class Mapped<T> extends ClientTagAppender<T> implements MappedTagExtension<T, Mapped<T>> {
+        protected final Function<T, @Nullable ResourceLocation> encoder;
+
+        public Mapped(ClientTagBuilder<T> builder, Function<T, @Nullable ResourceLocation> encoder) {
+            super(builder);
+            this.encoder = encoder;
+        }
+
+        @Override
+        public Function<T, @Nullable ResourceLocation> getEncoder() {
+            return encoder;
+        }
+
+        @Override
+        public Mapped<T> getSelf() {
+            return this;
+        }
     }
 }

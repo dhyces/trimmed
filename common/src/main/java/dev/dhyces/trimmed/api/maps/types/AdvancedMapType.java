@@ -49,7 +49,7 @@ public final class AdvancedMapType<K, V, M extends Map<K, V>> implements MapType
 
     @Override
     public boolean isDataPackSynced() {
-        return dataPackSynced;
+        return dataPackSynced || keyResolver.requiresActiveWorld();
     }
 
     @Override

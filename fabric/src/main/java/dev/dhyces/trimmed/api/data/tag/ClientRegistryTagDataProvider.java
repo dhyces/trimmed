@@ -1,33 +1,30 @@
 package dev.dhyces.trimmed.api.data.tag;
 
-import com.google.gson.JsonElement;
-import com.mojang.serialization.DataResult;
-import com.mojang.serialization.JsonOps;
 import dev.dhyces.trimmed.api.KeyResolver;
 import dev.dhyces.trimmed.api.client.TrimmedClientApi;
 import dev.dhyces.trimmed.api.data.client.tag.BaseClientTagDataProvider;
 import dev.dhyces.trimmed.api.data.client.tag.ClientTagEntry;
 import dev.dhyces.trimmed.api.data.client.tag.ClientTagFile;
 import dev.dhyces.trimmed.api.data.client.tag.appenders.ClientRegistryTagAppender;
-import dev.dhyces.trimmed.api.util.Utils;
 import dev.dhyces.trimmed.api.client.tag.ClientTagKey;
-import dev.dhyces.trimmed.impl.client.tags.manager.ClientTagManager;
-import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Registry;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Unit;
+import org.jetbrains.annotations.Nullable;
 
 import java.nio.file.Path;
 import java.util.List;
-import java.util.Set;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-public abstract class ClientRegistryTagDataProvider<T> extends BaseClientTagDataProvider<T, KeyResolver.RegistryWrapper<T>> {
+public abstract class ClientRegistryTagDataProvider<T> extends BaseClientTagDataProvider<T, KeyResolver.RegistryResolver<T>> {
     private final CompletableFuture<HolderLookup.Provider> lookupProviderFuture;
     private final CompletableFuture<Unit> completed;
 
@@ -40,7 +37,11 @@ public abstract class ClientRegistryTagDataProvider<T> extends BaseClientTagData
     protected abstract void addTags(HolderLookup.Provider lookupProvider);
 
     public ClientRegistryTagAppender<T> tag(ClientTagKey<T> clientTagKey, HolderLookup.Provider lookupProvider) {
-        return new ClientRegistryTagAppender<>(getOrCreateBuilder(clientTagKey), lookupProvider.lookupOrThrow(keyResolver.registryKey()));
+        return new ClientRegistryTagAppender<>(getOrCreateBuilder(clientTagKey), lookupProvider.lookupOrThrow(keyResolver.getKey()));
+    }
+
+    public ClientRegistryTagAppender.Mapped<T> tag(ClientTagKey<T> clientTagKey, HolderLookup.Provider lookupProvider, Function<T, @Nullable ResourceLocation> encoder) {
+        return new ClientRegistryTagAppender.Mapped<>(getOrCreateBuilder(clientTagKey), lookupProvider.lookupOrThrow(keyResolver.getKey()), encoder);
     }
 
     protected CompletableFuture<HolderLookup.Provider> createContentProvider() {
@@ -56,20 +57,20 @@ public abstract class ClientRegistryTagDataProvider<T> extends BaseClientTagData
             this.completed.complete(Unit.INSTANCE);
             return provider;
         }).thenCompose(provider -> {
-                    Set<T> registrySet = provider.lookup(keyResolver.registryKey()).orElseThrow(() ->
-                        new IllegalStateException("Vanilla registry " + keyResolver.registryKey().location() + " is not present.")
-                    ).listElements().map(Holder.Reference::value).collect(Collectors.toUnmodifiableSet());
+                    Predicate<ResourceLocation> registryCheck = id -> provider.lookup(keyResolver.getKey()).orElseThrow(() ->
+                        new IllegalStateException("Vanilla registry " + keyResolver.getKey().location() + " is not present.")
+                    ).get(ResourceKey.create(keyResolver.getKey(), id)).isPresent();
 
                     return CompletableFuture.allOf(builders.entrySet().stream().map(entry -> {
-                        ClientTagFile<T> tagFile = entry.getValue().build();
-                        List<ClientTagEntry<T>> errors = tagFile.entries().stream().filter(tagEntry ->
-                            !tagEntry.verifyExists(registrySet::contains, this::doesTagExist)
+                        ClientTagFile tagFile = entry.getValue().build();
+                        List<ClientTagEntry> errors = tagFile.entries().stream().filter(tagEntry ->
+                            !tagEntry.verifyExists(registryCheck, this::doesTagExist)
                         ).toList();
                         if (!errors.isEmpty()) {
-                            throw new IllegalStateException("Tag entries [%s] were not found for registry %s".formatted(errors.stream().map(Object::toString).collect(Collectors.joining(",")), keyResolver.registryKey()));
+                            throw new IllegalStateException("Tag entries [%s] were not found for registry %s".formatted(errors.stream().map(Object::toString).collect(Collectors.joining(",")), keyResolver.getKey()));
                         } else {
                             Path filePath = pathProvider.json(entry.getKey());
-                            return DataProvider.saveStable(pOutput, provider, ClientTagFile.codec(keyResolver), tagFile, filePath);
+                            return DataProvider.saveStable(pOutput, provider, ClientTagFile.CODEC, tagFile, filePath);
                         }
                     }).toArray(CompletableFuture[]::new));
                 });
@@ -77,6 +78,6 @@ public abstract class ClientRegistryTagDataProvider<T> extends BaseClientTagData
 
     @Override
     public String getName() {
-        return "ClientRegistryTagProvider<" + keyResolver.registryKey().location() + "> for " + modid;
+        return "ClientRegistryTagProvider<" + keyResolver.getKey().location() + "> for " + modid;
     }
 }

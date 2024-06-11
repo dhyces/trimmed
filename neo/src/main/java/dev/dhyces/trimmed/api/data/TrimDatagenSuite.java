@@ -81,7 +81,7 @@ public class TrimDatagenSuite extends BaseTrimDatagenSuite {
             @Override
             protected void addTags() {
                 if (!patternTextures.isEmpty()) {
-                    clientTag(ClientTags.TRIM_PATTERN_TEXTURES).add(patternTextures.toArray(ResourceLocation[]::new));
+                    tag(ClientTags.TRIM_PATTERN_TEXTURES).add(patternTextures.toArray(ResourceLocation[]::new));
                 }
             }
 
@@ -90,7 +90,7 @@ public class TrimDatagenSuite extends BaseTrimDatagenSuite {
                 return "TrimDatagenSuite / " + super.getName();
             }
         });
-        generator.addProvider(event.includeClient(), new ClientMapDataProvider<ResourceLocation>(packOutput, modid, ClientKeyResolvers.TEXTURE, event.getExistingFileHelper()) {
+        generator.addProvider(event.includeClient(), new ClientMapDataProvider<ResourceLocation>(packOutput, modid, event.getExistingFileHelper()) {
             @Override
             protected void addMaps() {
                 if (!materialTexturePermutations.isEmpty()) {

@@ -1,6 +1,5 @@
 package dev.dhyces.testmod.data.trimmed.registrytags;
 
-import dev.dhyces.testmod.TestKeyResolvers;
 import dev.dhyces.testmod.TrimmedTest;
 import dev.dhyces.testmod.client.TestClientTags;
 import dev.dhyces.testmod.registry.custom.CustomObj;

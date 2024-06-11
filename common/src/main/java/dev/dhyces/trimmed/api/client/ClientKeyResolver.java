@@ -1,16 +1,18 @@
 package dev.dhyces.trimmed.api.client;
 
-import com.mojang.serialization.Codec;
+import com.mojang.serialization.DynamicOps;
 import dev.dhyces.trimmed.api.KeyResolver;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
 
-public record ClientKeyResolver<T>(Codec<T> codec) implements KeyResolver<T> {
+import java.util.function.BiFunction;
 
+public record ClientKeyResolver<T>(BiFunction<ResourceLocation, DynamicOps<?>, T> decoder) implements KeyResolver<T> {
     @Override
-    public Codec<T> getCodec() {
-        return codec;
+    public @Nullable T decode(ResourceLocation resourceLocation, DynamicOps<?> ops) {
+        return decoder.apply(resourceLocation, ops);
     }
 
     @Override

@@ -104,88 +104,88 @@ import java.util.Map;
 public final class KeyResolvers {
     private static final BiMap<ResourceLocation, KeyResolver<?>> RESOLVERS = HashBiMap.create();
 
-    public static final KeyResolver.RegistryWrapper<Activity> ACTIVITY = registerStaticRegistry(BuiltInRegistries.ACTIVITY);
-    public static final KeyResolver.RegistryWrapper<Attribute> ATTRIBUTE = registerStaticRegistry(BuiltInRegistries.ATTRIBUTE);
-    public static final KeyResolver.RegistryWrapper<BannerPattern> BANNER_PATTERN = registerDynamicRegistry(Registries.BANNER_PATTERN);
-    public static final KeyResolver.RegistryWrapper<MapCodec<? extends BiomeSource>> BIOME_SOURCE = registerStaticRegistry(BuiltInRegistries.BIOME_SOURCE);
-    public static final KeyResolver.RegistryWrapper<Block> BLOCK = registerStaticRegistry(BuiltInRegistries.BLOCK);
-    public static final KeyResolver.RegistryWrapper<MapCodec<? extends Block>> BLOCK_TYPE = registerStaticRegistry(BuiltInRegistries.BLOCK_TYPE);
-    public static final KeyResolver.RegistryWrapper<BlockEntityType<?>> BLOCK_ENTITY_TYPE = registerStaticRegistry(BuiltInRegistries.BLOCK_ENTITY_TYPE);
-    public static final KeyResolver.RegistryWrapper<BlockPredicateType<?>> BLOCK_PREDICATE_TYPE = registerStaticRegistry(BuiltInRegistries.BLOCK_PREDICATE_TYPE);
-    public static final KeyResolver.RegistryWrapper<BlockStateProviderType<?>> BLOCK_STATE_PROVIDER_TYPE = registerStaticRegistry(BuiltInRegistries.BLOCKSTATE_PROVIDER_TYPE);
-    public static final KeyResolver.RegistryWrapper<WorldCarver<?>> CARVER = registerStaticRegistry(BuiltInRegistries.CARVER);
-    public static final KeyResolver.RegistryWrapper<CatVariant> CAT_VARIANT = registerStaticRegistry(BuiltInRegistries.CAT_VARIANT);
-    public static final KeyResolver.RegistryWrapper<WolfVariant> WOLF_VARIANT = registerDynamicRegistry(Registries.WOLF_VARIANT);
-    public static final KeyResolver.RegistryWrapper<MapCodec<? extends ChunkGenerator>> CHUNK_GENERATOR = registerStaticRegistry(BuiltInRegistries.CHUNK_GENERATOR);
-    public static final KeyResolver.RegistryWrapper<ChunkStatus> CHUNK_STATUS = registerStaticRegistry(BuiltInRegistries.CHUNK_STATUS);
-    public static final KeyResolver.RegistryWrapper<ArgumentTypeInfo<?, ?>> COMMAND_ARGUMENT_TYPE = registerStaticRegistry(BuiltInRegistries.COMMAND_ARGUMENT_TYPE);
-    public static final KeyResolver.RegistryWrapper<CreativeModeTab> CREATIVE_MODE_TAB = registerStaticRegistry(BuiltInRegistries.CREATIVE_MODE_TAB);
-    public static final KeyResolver.RegistryWrapper<ResourceLocation> CUSTOM_STAT = registerStaticRegistry(BuiltInRegistries.CUSTOM_STAT);
-    public static final KeyResolver.RegistryWrapper<DamageType> DAMAGE_TYPE = registerDynamicRegistry(Registries.DAMAGE_TYPE);
-    public static final KeyResolver.RegistryWrapper<MapCodec<? extends DensityFunction>> DENSITY_FUNCTION_TYPE = registerStaticRegistry(BuiltInRegistries.DENSITY_FUNCTION_TYPE);
-    public static final KeyResolver.RegistryWrapper<Enchantment> ENCHANTMENT = registerStaticRegistry(BuiltInRegistries.ENCHANTMENT);
-    public static final KeyResolver.RegistryWrapper<EntityType<?>> ENTITY_TYPE = registerStaticRegistry(BuiltInRegistries.ENTITY_TYPE);
-    public static final KeyResolver.RegistryWrapper<Feature<?>> FEATURE = registerStaticRegistry(BuiltInRegistries.FEATURE);
-    public static final KeyResolver.RegistryWrapper<FeatureSizeType<?>> FEATURE_SIZE_TYPE = registerStaticRegistry(BuiltInRegistries.FEATURE_SIZE_TYPE);
-    public static final KeyResolver.RegistryWrapper<FloatProviderType<?>> FLOAT_PROVIDER_TYPE = registerStaticRegistry(BuiltInRegistries.FLOAT_PROVIDER_TYPE);
-    public static final KeyResolver.RegistryWrapper<Fluid> FLUID = registerStaticRegistry(BuiltInRegistries.FLUID);
-    public static final KeyResolver.RegistryWrapper<FoliagePlacerType<?>> FOLIAGE_PLACER_TYPE = registerStaticRegistry(BuiltInRegistries.FOLIAGE_PLACER_TYPE);
-    public static final KeyResolver.RegistryWrapper<FrogVariant> FROG_VARIANT = registerStaticRegistry(BuiltInRegistries.FROG_VARIANT);
-    public static final KeyResolver.RegistryWrapper<GameEvent> GAME_EVENT = registerStaticRegistry(BuiltInRegistries.GAME_EVENT);
-    public static final KeyResolver.RegistryWrapper<HeightProviderType<?>> HEIGHT_PROVIDER_TYPE = registerStaticRegistry(BuiltInRegistries.HEIGHT_PROVIDER_TYPE);
-    public static final KeyResolver.RegistryWrapper<Instrument> INSTRUMENT = registerStaticRegistry(BuiltInRegistries.INSTRUMENT);
-    public static final KeyResolver.RegistryWrapper<IntProviderType<?>> INT_PROVIDER_TYPE = registerStaticRegistry(BuiltInRegistries.INT_PROVIDER_TYPE);
-    public static final KeyResolver.RegistryWrapper<Item> ITEM = registerStaticRegistry(BuiltInRegistries.ITEM);
-    public static final KeyResolver.RegistryWrapper<LootItemConditionType> LOOT_CONDITION_TYPE = registerStaticRegistry(BuiltInRegistries.LOOT_CONDITION_TYPE);
-    public static final KeyResolver.RegistryWrapper<LootItemFunctionType<?>> LOOT_FUNCTION_TYPE = registerStaticRegistry(BuiltInRegistries.LOOT_FUNCTION_TYPE);
-    public static final KeyResolver.RegistryWrapper<LootNbtProviderType> LOOT_NBT_PROVIDER_TYPE = registerStaticRegistry(BuiltInRegistries.LOOT_NBT_PROVIDER_TYPE);
-    public static final KeyResolver.RegistryWrapper<LootNumberProviderType> LOOT_NUMBER_PROVIDER_TYPE = registerStaticRegistry(BuiltInRegistries.LOOT_NUMBER_PROVIDER_TYPE);
-    public static final KeyResolver.RegistryWrapper<LootPoolEntryType> LOOT_POOL_ENTRY_TYPE = registerStaticRegistry(BuiltInRegistries.LOOT_POOL_ENTRY_TYPE);
-    public static final KeyResolver.RegistryWrapper<LootScoreProviderType> LOOT_SCORE_PROVIDER_TYPE = registerStaticRegistry(BuiltInRegistries.LOOT_SCORE_PROVIDER_TYPE);
-    public static final KeyResolver.RegistryWrapper<MapCodec<? extends SurfaceRules.ConditionSource>> MATERIAL_CONDITION = registerStaticRegistry(BuiltInRegistries.MATERIAL_CONDITION);
-    public static final KeyResolver.RegistryWrapper<MapCodec<? extends SurfaceRules.RuleSource>> MATERIAL_RULE = registerStaticRegistry(BuiltInRegistries.MATERIAL_RULE);
-    public static final KeyResolver.RegistryWrapper<MemoryModuleType<?>> MEMORY_MODULE_TYPE = registerStaticRegistry(BuiltInRegistries.MEMORY_MODULE_TYPE);
-    public static final KeyResolver.RegistryWrapper<MenuType<?>> MENU = registerStaticRegistry(BuiltInRegistries.MENU);
-    public static final KeyResolver.RegistryWrapper<MobEffect> MOB_EFFECT = registerStaticRegistry(BuiltInRegistries.MOB_EFFECT);
-    public static final KeyResolver.RegistryWrapper<PaintingVariant> PAINTING_VARIANT = registerStaticRegistry(BuiltInRegistries.PAINTING_VARIANT);
-    public static final KeyResolver.RegistryWrapper<ParticleType<?>> PARTICLE_TYPE = registerStaticRegistry(BuiltInRegistries.PARTICLE_TYPE);
-    public static final KeyResolver.RegistryWrapper<PlacementModifierType<?>> PLACEMENT_MODIFIER_TYPE = registerStaticRegistry(BuiltInRegistries.PLACEMENT_MODIFIER_TYPE);
-    public static final KeyResolver.RegistryWrapper<PoiType> POINT_OF_INTEREST_TYPE = registerStaticRegistry(BuiltInRegistries.POINT_OF_INTEREST_TYPE);
-    public static final KeyResolver.RegistryWrapper<PositionSourceType<?>> POSITION_SOURCE_TYPE = registerStaticRegistry(BuiltInRegistries.POSITION_SOURCE_TYPE);
-    public static final KeyResolver.RegistryWrapper<PosRuleTestType<?>> POS_RULE_TEST = registerStaticRegistry(BuiltInRegistries.POS_RULE_TEST);
-    public static final KeyResolver.RegistryWrapper<Potion> POTION = registerStaticRegistry(BuiltInRegistries.POTION);
-    public static final KeyResolver.RegistryWrapper<RecipeSerializer<?>> RECIPE_SERIALIZER = registerStaticRegistry(BuiltInRegistries.RECIPE_SERIALIZER);
-    public static final KeyResolver.RegistryWrapper<RecipeType<?>> RECIPE_TYPE = registerStaticRegistry(BuiltInRegistries.RECIPE_TYPE);
-    public static final KeyResolver.RegistryWrapper<RootPlacerType<?>> ROOT_PLACER_TYPE = registerStaticRegistry(BuiltInRegistries.ROOT_PLACER_TYPE);
-    public static final KeyResolver.RegistryWrapper<RuleTestType<?>> RULE_TEST = registerStaticRegistry(BuiltInRegistries.RULE_TEST);
-    public static final KeyResolver.RegistryWrapper<RuleBlockEntityModifierType<?>> RULE_BLOCK_ENTITY_MODIFIER = registerStaticRegistry(BuiltInRegistries.RULE_BLOCK_ENTITY_MODIFIER);
-    public static final KeyResolver.RegistryWrapper<Schedule> SCHEDULE = registerStaticRegistry(BuiltInRegistries.SCHEDULE);
-    public static final KeyResolver.RegistryWrapper<SensorType<?>> SENSOR_TYPE = registerStaticRegistry(BuiltInRegistries.SENSOR_TYPE);
-    public static final KeyResolver.RegistryWrapper<SoundEvent> SOUND_EVENT = registerStaticRegistry(BuiltInRegistries.SOUND_EVENT);
-    public static final KeyResolver.RegistryWrapper<StatType<?>> STAT_TYPE = registerStaticRegistry(BuiltInRegistries.STAT_TYPE);
-    public static final KeyResolver.RegistryWrapper<StructurePieceType> STRUCTURE_PIECE = registerStaticRegistry(BuiltInRegistries.STRUCTURE_PIECE);
-    public static final KeyResolver.RegistryWrapper<StructurePlacementType<?>> STRUCTURE_PLACEMENT = registerStaticRegistry(BuiltInRegistries.STRUCTURE_PLACEMENT);
-    public static final KeyResolver.RegistryWrapper<StructurePoolElementType<?>> STRUCTURE_POOL_ELEMENT = registerStaticRegistry(BuiltInRegistries.STRUCTURE_POOL_ELEMENT);
-    public static final KeyResolver.RegistryWrapper<MapCodec<? extends PoolAliasBinding>> POOL_ALIAS_BINDING = registerStaticRegistry(BuiltInRegistries.POOL_ALIAS_BINDING_TYPE);
-    public static final KeyResolver.RegistryWrapper<StructureProcessorType<?>> STRUCTURE_PROCESSOR = registerStaticRegistry(BuiltInRegistries.STRUCTURE_PROCESSOR);
-    public static final KeyResolver.RegistryWrapper<StructureType<?>> STRUCTURE_TYPE = registerStaticRegistry(BuiltInRegistries.STRUCTURE_TYPE);
-    public static final KeyResolver.RegistryWrapper<TreeDecoratorType<?>> TREE_DECORATOR_TYPE = registerStaticRegistry(BuiltInRegistries.TREE_DECORATOR_TYPE);
-    public static final KeyResolver.RegistryWrapper<TrunkPlacerType<?>> TRUNK_PLACER_TYPE = registerStaticRegistry(BuiltInRegistries.TRUNK_PLACER_TYPE);
-    public static final KeyResolver.RegistryWrapper<VillagerProfession> VILLAGER_PROFESSION = registerStaticRegistry(BuiltInRegistries.VILLAGER_PROFESSION);
-    public static final KeyResolver.RegistryWrapper<VillagerType> VILLAGER_TYPE = registerStaticRegistry(BuiltInRegistries.VILLAGER_TYPE);
-    public static final KeyResolver.RegistryWrapper<String> DECORATED_POT_PATTERNS = registerStaticRegistry(BuiltInRegistries.DECORATED_POT_PATTERNS);
-    public static final KeyResolver.RegistryWrapper<NumberFormatType<?>> NUMBER_FORMAT_TYPE = registerStaticRegistry(BuiltInRegistries.NUMBER_FORMAT_TYPE);
-    public static final KeyResolver.RegistryWrapper<ArmorMaterial> ARMOR_MATERIAL = registerStaticRegistry(BuiltInRegistries.ARMOR_MATERIAL);
-    public static final KeyResolver.RegistryWrapper<DataComponentType<?>> DATA_COMPONENT_TYPE = registerStaticRegistry(BuiltInRegistries.DATA_COMPONENT_TYPE);
-    public static final KeyResolver.RegistryWrapper<MapCodec<? extends EntitySubPredicate>> ENTITY_SUB_PREDICATE_TYPE = registerStaticRegistry(BuiltInRegistries.ENTITY_SUB_PREDICATE_TYPE);
-    public static final KeyResolver.RegistryWrapper<ItemSubPredicate.Type<?>> ITEM_SUB_PREDICATE_TYPE = registerStaticRegistry(BuiltInRegistries.ITEM_SUB_PREDICATE_TYPE);
-    public static final KeyResolver.RegistryWrapper<MapDecorationType> MAP_DECORATION_TYPE = registerStaticRegistry(BuiltInRegistries.MAP_DECORATION_TYPE);
-    public static final KeyResolver.RegistryWrapper<Biome> BIOME = registerDynamicRegistry(Registries.BIOME);
-    public static final KeyResolver.RegistryWrapper<ChatType> CHAT_TYPE = registerDynamicRegistry(Registries.CHAT_TYPE);
-    public static final KeyResolver.RegistryWrapper<DimensionType> DIMENSION_TYPE = registerDynamicRegistry(Registries.DIMENSION_TYPE);
-    public static final KeyResolver.RegistryWrapper<CriterionTrigger<?>> TRIGGER_TYPE = registerStaticRegistry(BuiltInRegistries.TRIGGER_TYPES);
-    public static final KeyResolver.RegistryWrapper<TrimMaterial> TRIM_MATERIAL = registerDynamicRegistry(Registries.TRIM_MATERIAL);
-    public static final KeyResolver.RegistryWrapper<TrimPattern> TRIM_PATTERN = registerDynamicRegistry(Registries.TRIM_PATTERN);
+    public static final KeyResolver.Static<Activity> ACTIVITY = registerStaticRegistry(BuiltInRegistries.ACTIVITY);
+    public static final KeyResolver.Static<Attribute> ATTRIBUTE = registerStaticRegistry(BuiltInRegistries.ATTRIBUTE);
+    public static final KeyResolver.Dynamic<BannerPattern> BANNER_PATTERN = registerDynamicRegistry(Registries.BANNER_PATTERN);
+    public static final KeyResolver.Static<MapCodec<? extends BiomeSource>> BIOME_SOURCE = registerStaticRegistry(BuiltInRegistries.BIOME_SOURCE);
+    public static final KeyResolver.Static<Block> BLOCK = registerStaticRegistry(BuiltInRegistries.BLOCK);
+    public static final KeyResolver.Static<MapCodec<? extends Block>> BLOCK_TYPE = registerStaticRegistry(BuiltInRegistries.BLOCK_TYPE);
+    public static final KeyResolver.Static<BlockEntityType<?>> BLOCK_ENTITY_TYPE = registerStaticRegistry(BuiltInRegistries.BLOCK_ENTITY_TYPE);
+    public static final KeyResolver.Static<BlockPredicateType<?>> BLOCK_PREDICATE_TYPE = registerStaticRegistry(BuiltInRegistries.BLOCK_PREDICATE_TYPE);
+    public static final KeyResolver.Static<BlockStateProviderType<?>> BLOCK_STATE_PROVIDER_TYPE = registerStaticRegistry(BuiltInRegistries.BLOCKSTATE_PROVIDER_TYPE);
+    public static final KeyResolver.Static<WorldCarver<?>> CARVER = registerStaticRegistry(BuiltInRegistries.CARVER);
+    public static final KeyResolver.Static<CatVariant> CAT_VARIANT = registerStaticRegistry(BuiltInRegistries.CAT_VARIANT);
+    public static final KeyResolver.Dynamic<WolfVariant> WOLF_VARIANT = registerDynamicRegistry(Registries.WOLF_VARIANT);
+    public static final KeyResolver.Static<MapCodec<? extends ChunkGenerator>> CHUNK_GENERATOR = registerStaticRegistry(BuiltInRegistries.CHUNK_GENERATOR);
+    public static final KeyResolver.Static<ChunkStatus> CHUNK_STATUS = registerStaticRegistry(BuiltInRegistries.CHUNK_STATUS);
+    public static final KeyResolver.Static<ArgumentTypeInfo<?, ?>> COMMAND_ARGUMENT_TYPE = registerStaticRegistry(BuiltInRegistries.COMMAND_ARGUMENT_TYPE);
+    public static final KeyResolver.Static<CreativeModeTab> CREATIVE_MODE_TAB = registerStaticRegistry(BuiltInRegistries.CREATIVE_MODE_TAB);
+    public static final KeyResolver.Static<ResourceLocation> CUSTOM_STAT = registerStaticRegistry(BuiltInRegistries.CUSTOM_STAT);
+    public static final KeyResolver.Dynamic<DamageType> DAMAGE_TYPE = registerDynamicRegistry(Registries.DAMAGE_TYPE);
+    public static final KeyResolver.Static<MapCodec<? extends DensityFunction>> DENSITY_FUNCTION_TYPE = registerStaticRegistry(BuiltInRegistries.DENSITY_FUNCTION_TYPE);
+    public static final KeyResolver.Static<Enchantment> ENCHANTMENT = registerStaticRegistry(BuiltInRegistries.ENCHANTMENT);
+    public static final KeyResolver.Static<EntityType<?>> ENTITY_TYPE = registerStaticRegistry(BuiltInRegistries.ENTITY_TYPE);
+    public static final KeyResolver.Static<Feature<?>> FEATURE = registerStaticRegistry(BuiltInRegistries.FEATURE);
+    public static final KeyResolver.Static<FeatureSizeType<?>> FEATURE_SIZE_TYPE = registerStaticRegistry(BuiltInRegistries.FEATURE_SIZE_TYPE);
+    public static final KeyResolver.Static<FloatProviderType<?>> FLOAT_PROVIDER_TYPE = registerStaticRegistry(BuiltInRegistries.FLOAT_PROVIDER_TYPE);
+    public static final KeyResolver.Static<Fluid> FLUID = registerStaticRegistry(BuiltInRegistries.FLUID);
+    public static final KeyResolver.Static<FoliagePlacerType<?>> FOLIAGE_PLACER_TYPE = registerStaticRegistry(BuiltInRegistries.FOLIAGE_PLACER_TYPE);
+    public static final KeyResolver.Static<FrogVariant> FROG_VARIANT = registerStaticRegistry(BuiltInRegistries.FROG_VARIANT);
+    public static final KeyResolver.Static<GameEvent> GAME_EVENT = registerStaticRegistry(BuiltInRegistries.GAME_EVENT);
+    public static final KeyResolver.Static<HeightProviderType<?>> HEIGHT_PROVIDER_TYPE = registerStaticRegistry(BuiltInRegistries.HEIGHT_PROVIDER_TYPE);
+    public static final KeyResolver.Static<Instrument> INSTRUMENT = registerStaticRegistry(BuiltInRegistries.INSTRUMENT);
+    public static final KeyResolver.Static<IntProviderType<?>> INT_PROVIDER_TYPE = registerStaticRegistry(BuiltInRegistries.INT_PROVIDER_TYPE);
+    public static final KeyResolver.Static<Item> ITEM = registerStaticRegistry(BuiltInRegistries.ITEM);
+    public static final KeyResolver.Static<LootItemConditionType> LOOT_CONDITION_TYPE = registerStaticRegistry(BuiltInRegistries.LOOT_CONDITION_TYPE);
+    public static final KeyResolver.Static<LootItemFunctionType<?>> LOOT_FUNCTION_TYPE = registerStaticRegistry(BuiltInRegistries.LOOT_FUNCTION_TYPE);
+    public static final KeyResolver.Static<LootNbtProviderType> LOOT_NBT_PROVIDER_TYPE = registerStaticRegistry(BuiltInRegistries.LOOT_NBT_PROVIDER_TYPE);
+    public static final KeyResolver.Static<LootNumberProviderType> LOOT_NUMBER_PROVIDER_TYPE = registerStaticRegistry(BuiltInRegistries.LOOT_NUMBER_PROVIDER_TYPE);
+    public static final KeyResolver.Static<LootPoolEntryType> LOOT_POOL_ENTRY_TYPE = registerStaticRegistry(BuiltInRegistries.LOOT_POOL_ENTRY_TYPE);
+    public static final KeyResolver.Static<LootScoreProviderType> LOOT_SCORE_PROVIDER_TYPE = registerStaticRegistry(BuiltInRegistries.LOOT_SCORE_PROVIDER_TYPE);
+    public static final KeyResolver.Static<MapCodec<? extends SurfaceRules.ConditionSource>> MATERIAL_CONDITION = registerStaticRegistry(BuiltInRegistries.MATERIAL_CONDITION);
+    public static final KeyResolver.Static<MapCodec<? extends SurfaceRules.RuleSource>> MATERIAL_RULE = registerStaticRegistry(BuiltInRegistries.MATERIAL_RULE);
+    public static final KeyResolver.Static<MemoryModuleType<?>> MEMORY_MODULE_TYPE = registerStaticRegistry(BuiltInRegistries.MEMORY_MODULE_TYPE);
+    public static final KeyResolver.Static<MenuType<?>> MENU = registerStaticRegistry(BuiltInRegistries.MENU);
+    public static final KeyResolver.Static<MobEffect> MOB_EFFECT = registerStaticRegistry(BuiltInRegistries.MOB_EFFECT);
+    public static final KeyResolver.Static<PaintingVariant> PAINTING_VARIANT = registerStaticRegistry(BuiltInRegistries.PAINTING_VARIANT);
+    public static final KeyResolver.Static<ParticleType<?>> PARTICLE_TYPE = registerStaticRegistry(BuiltInRegistries.PARTICLE_TYPE);
+    public static final KeyResolver.Static<PlacementModifierType<?>> PLACEMENT_MODIFIER_TYPE = registerStaticRegistry(BuiltInRegistries.PLACEMENT_MODIFIER_TYPE);
+    public static final KeyResolver.Static<PoiType> POINT_OF_INTEREST_TYPE = registerStaticRegistry(BuiltInRegistries.POINT_OF_INTEREST_TYPE);
+    public static final KeyResolver.Static<PositionSourceType<?>> POSITION_SOURCE_TYPE = registerStaticRegistry(BuiltInRegistries.POSITION_SOURCE_TYPE);
+    public static final KeyResolver.Static<PosRuleTestType<?>> POS_RULE_TEST = registerStaticRegistry(BuiltInRegistries.POS_RULE_TEST);
+    public static final KeyResolver.Static<Potion> POTION = registerStaticRegistry(BuiltInRegistries.POTION);
+    public static final KeyResolver.Static<RecipeSerializer<?>> RECIPE_SERIALIZER = registerStaticRegistry(BuiltInRegistries.RECIPE_SERIALIZER);
+    public static final KeyResolver.Static<RecipeType<?>> RECIPE_TYPE = registerStaticRegistry(BuiltInRegistries.RECIPE_TYPE);
+    public static final KeyResolver.Static<RootPlacerType<?>> ROOT_PLACER_TYPE = registerStaticRegistry(BuiltInRegistries.ROOT_PLACER_TYPE);
+    public static final KeyResolver.Static<RuleTestType<?>> RULE_TEST = registerStaticRegistry(BuiltInRegistries.RULE_TEST);
+    public static final KeyResolver.Static<RuleBlockEntityModifierType<?>> RULE_BLOCK_ENTITY_MODIFIER = registerStaticRegistry(BuiltInRegistries.RULE_BLOCK_ENTITY_MODIFIER);
+    public static final KeyResolver.Static<Schedule> SCHEDULE = registerStaticRegistry(BuiltInRegistries.SCHEDULE);
+    public static final KeyResolver.Static<SensorType<?>> SENSOR_TYPE = registerStaticRegistry(BuiltInRegistries.SENSOR_TYPE);
+    public static final KeyResolver.Static<SoundEvent> SOUND_EVENT = registerStaticRegistry(BuiltInRegistries.SOUND_EVENT);
+    public static final KeyResolver.Static<StatType<?>> STAT_TYPE = registerStaticRegistry(BuiltInRegistries.STAT_TYPE);
+    public static final KeyResolver.Static<StructurePieceType> STRUCTURE_PIECE = registerStaticRegistry(BuiltInRegistries.STRUCTURE_PIECE);
+    public static final KeyResolver.Static<StructurePlacementType<?>> STRUCTURE_PLACEMENT = registerStaticRegistry(BuiltInRegistries.STRUCTURE_PLACEMENT);
+    public static final KeyResolver.Static<StructurePoolElementType<?>> STRUCTURE_POOL_ELEMENT = registerStaticRegistry(BuiltInRegistries.STRUCTURE_POOL_ELEMENT);
+    public static final KeyResolver.Static<MapCodec<? extends PoolAliasBinding>> POOL_ALIAS_BINDING = registerStaticRegistry(BuiltInRegistries.POOL_ALIAS_BINDING_TYPE);
+    public static final KeyResolver.Static<StructureProcessorType<?>> STRUCTURE_PROCESSOR = registerStaticRegistry(BuiltInRegistries.STRUCTURE_PROCESSOR);
+    public static final KeyResolver.Static<StructureType<?>> STRUCTURE_TYPE = registerStaticRegistry(BuiltInRegistries.STRUCTURE_TYPE);
+    public static final KeyResolver.Static<TreeDecoratorType<?>> TREE_DECORATOR_TYPE = registerStaticRegistry(BuiltInRegistries.TREE_DECORATOR_TYPE);
+    public static final KeyResolver.Static<TrunkPlacerType<?>> TRUNK_PLACER_TYPE = registerStaticRegistry(BuiltInRegistries.TRUNK_PLACER_TYPE);
+    public static final KeyResolver.Static<VillagerProfession> VILLAGER_PROFESSION = registerStaticRegistry(BuiltInRegistries.VILLAGER_PROFESSION);
+    public static final KeyResolver.Static<VillagerType> VILLAGER_TYPE = registerStaticRegistry(BuiltInRegistries.VILLAGER_TYPE);
+    public static final KeyResolver.Static<String> DECORATED_POT_PATTERNS = registerStaticRegistry(BuiltInRegistries.DECORATED_POT_PATTERNS);
+    public static final KeyResolver.Static<NumberFormatType<?>> NUMBER_FORMAT_TYPE = registerStaticRegistry(BuiltInRegistries.NUMBER_FORMAT_TYPE);
+    public static final KeyResolver.Static<ArmorMaterial> ARMOR_MATERIAL = registerStaticRegistry(BuiltInRegistries.ARMOR_MATERIAL);
+    public static final KeyResolver.Static<DataComponentType<?>> DATA_COMPONENT_TYPE = registerStaticRegistry(BuiltInRegistries.DATA_COMPONENT_TYPE);
+    public static final KeyResolver.Static<MapCodec<? extends EntitySubPredicate>> ENTITY_SUB_PREDICATE_TYPE = registerStaticRegistry(BuiltInRegistries.ENTITY_SUB_PREDICATE_TYPE);
+    public static final KeyResolver.Static<ItemSubPredicate.Type<?>> ITEM_SUB_PREDICATE_TYPE = registerStaticRegistry(BuiltInRegistries.ITEM_SUB_PREDICATE_TYPE);
+    public static final KeyResolver.Static<MapDecorationType> MAP_DECORATION_TYPE = registerStaticRegistry(BuiltInRegistries.MAP_DECORATION_TYPE);
+    public static final KeyResolver.Dynamic<Biome> BIOME = registerDynamicRegistry(Registries.BIOME);
+    public static final KeyResolver.Dynamic<ChatType> CHAT_TYPE = registerDynamicRegistry(Registries.CHAT_TYPE);
+    public static final KeyResolver.Dynamic<DimensionType> DIMENSION_TYPE = registerDynamicRegistry(Registries.DIMENSION_TYPE);
+    public static final KeyResolver.Static<CriterionTrigger<?>> TRIGGER_TYPE = registerStaticRegistry(BuiltInRegistries.TRIGGER_TYPES);
+    public static final KeyResolver.Dynamic<TrimMaterial> TRIM_MATERIAL = registerDynamicRegistry(Registries.TRIM_MATERIAL);
+    public static final KeyResolver.Dynamic<TrimPattern> TRIM_PATTERN = registerDynamicRegistry(Registries.TRIM_PATTERN);
 
     @ApiStatus.Internal
     public static <T> void register(ResourceLocation key, KeyResolver<T> resolver) {
@@ -194,14 +194,14 @@ public final class KeyResolvers {
         }
     }
 
-    private static <T> KeyResolver.RegistryWrapper<T> registerStaticRegistry(final Registry<T> registry) {
-        var resolver = KeyResolver.RegistryWrapper.createStatic(registry);
+    private static <T> KeyResolver.Static<T> registerStaticRegistry(final Registry<T> registry) {
+        var resolver = new KeyResolver.Static<>(registry);
         register(registry.key().location(), resolver);
         return resolver;
     }
 
-    private static <T> KeyResolver.RegistryWrapper<T> registerDynamicRegistry(final ResourceKey<? extends Registry<T>> registryKey) {
-        var resolver = new KeyResolver.RegistryWrapper<>(registryKey, RegistryFixedCodec.create(registryKey), true);
+    private static <T> KeyResolver.Dynamic<T> registerDynamicRegistry(final ResourceKey<? extends Registry<T>> registryKey) {
+        var resolver = new KeyResolver.Dynamic<>(registryKey);
         register(registryKey.location(), resolver);
         return resolver;
     }
@@ -217,8 +217,8 @@ public final class KeyResolvers {
     }
 
     @Nullable
-    public static <T> KeyResolver.RegistryWrapper<T> getRegistryResolver(ResourceKey<? extends Registry<T>> key) {
-        return (KeyResolver.RegistryWrapper<T>) RESOLVERS.get(key.location());
+    public static <T> KeyResolver.RegistryResolver<T> getRegistryResolver(ResourceKey<? extends Registry<T>> key) {
+        return (KeyResolver.RegistryResolver<T>) RESOLVERS.get(key.location());
     }
 
     @Nullable

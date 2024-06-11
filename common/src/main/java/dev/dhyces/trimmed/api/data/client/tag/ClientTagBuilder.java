@@ -2,18 +2,19 @@ package dev.dhyces.trimmed.api.data.client.tag;
 
 import dev.dhyces.trimmed.api.client.tag.ClientTagKey;
 import it.unimi.dsi.fastutil.objects.ObjectLinkedOpenHashSet;
+import net.minecraft.resources.ResourceLocation;
 
 import java.util.Set;
 
 public class ClientTagBuilder<T> {
-    private final Set<ClientTagEntry<T>> elements;
+    private final Set<ClientTagEntry> elements;
     private boolean replaces;
 
     public ClientTagBuilder() {
         this.elements = new ObjectLinkedOpenHashSet<>();
     }
 
-    public ClientTagBuilder<T> add(T element, boolean isRequired) {
+    public ClientTagBuilder<T> add(ResourceLocation element, boolean isRequired) {
         this.elements.add(ClientTagEntry.element(element, isRequired));
         return this;
     }
@@ -28,7 +29,7 @@ public class ClientTagBuilder<T> {
         return this;
     }
 
-    public ClientTagFile<T> build() {
-        return new ClientTagFile<>(elements, replaces);
+    public ClientTagFile build() {
+        return new ClientTagFile(elements, replaces);
     }
 }

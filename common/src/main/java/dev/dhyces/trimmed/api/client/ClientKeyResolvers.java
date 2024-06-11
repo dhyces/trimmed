@@ -6,5 +6,5 @@ import net.minecraft.resources.ResourceLocation;
 public final class ClientKeyResolvers {
     private ClientKeyResolvers() {}
 
-    public static final KeyResolver<ResourceLocation> TEXTURE = new ClientKeyResolver<>(ResourceLocation.CODEC);
+    public static final KeyResolver<ResourceLocation> TEXTURE = new ClientKeyResolver<>((resourceLocation, dynamicOps) -> resourceLocation);
 }

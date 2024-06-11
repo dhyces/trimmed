@@ -10,20 +10,18 @@ import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 
-public abstract class BaseMapDataProvider<K, R extends KeyResolver<K>> implements DataProvider {
+public abstract class BaseMapDataProvider<K> implements DataProvider {
     protected final PackOutput packOutput;
     protected final PackOutput.PathProvider pathProvider;
     protected final String modid;
-    protected final Map<MapKey<K, ?>, MapBuilder<K, ?>> builders;
-    protected final R keyResolver;
+    protected final Map<MapKey<K, ?>, MapBuilder<?>> builders;
     protected final CompletableFuture<MapLookup<K>> futureLookup;
 
-    public BaseMapDataProvider(PackOutput packOutput, PackOutput.Target target, String modid, String prefix, R keyResolver) {
+    public BaseMapDataProvider(PackOutput packOutput, PackOutput.Target target, String modid, String prefix) {
         this.packOutput = packOutput;
         this.pathProvider = packOutput.createPathProvider(target, prefix);
         this.modid = modid;
         this.builders = new Reference2ObjectOpenHashMap<>();
-        this.keyResolver = keyResolver;
         this.futureLookup = new CompletableFuture<>();
     }
 
@@ -36,8 +34,8 @@ public abstract class BaseMapDataProvider<K, R extends KeyResolver<K>> implement
     }
 
     @SuppressWarnings("unchecked")
-    protected <V> MapBuilder<K, V> getOrCreateBuilder(MapKey<K, V> mapKey) {
-        return (MapBuilder<K, V>) this.builders.computeIfAbsent(mapKey, resourceLocation -> {
+    protected <V> MapBuilder<V> getOrCreateBuilder(MapKey<K, V> mapKey) {
+        return (MapBuilder<V>) this.builders.computeIfAbsent(mapKey, resourceLocation -> {
             onBuilderCreation(mapKey);
             return new MapBuilder<>();
         });
@@ -45,7 +43,7 @@ public abstract class BaseMapDataProvider<K, R extends KeyResolver<K>> implement
 
     protected <V> void onBuilderCreation(MapKey<K, V> mapKey) {}
 
-    public interface MapLookup<K> extends Function<MapKey<K, ?>, MapBuilder<K, ?>> {
+    public interface MapLookup<K> extends Function<MapKey<K, ?>, MapBuilder<?>> {
         default boolean containsKey(MapKey<K, ?> mapKey) {
             return apply(mapKey) != null;
         }

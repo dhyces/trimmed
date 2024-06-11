@@ -13,11 +13,14 @@ import dev.dhyces.trimmed.impl.client.tags.manager.ClientTagManager;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.PackType;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
+import org.jetbrains.annotations.Nullable;
 
 import java.nio.file.Path;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Function;
 
 public abstract class ClientTagDataProvider<T> extends NeoBaseClientTagDataProvider<T, KeyResolver<T>> {
     public ClientTagDataProvider(PackOutput packOutput, String modid, KeyResolver<T> keyResolver, ExistingFileHelper existingFileHelper) {
@@ -26,8 +29,12 @@ public abstract class ClientTagDataProvider<T> extends NeoBaseClientTagDataProvi
 
     protected abstract void addTags();
 
-    public ClientTagAppender<T> clientTag(ClientTagKey<T> clientTagKey) {
+    public ClientTagAppender<T> tag(ClientTagKey<T> clientTagKey) {
         return new ClientTagAppender<>(getOrCreateBuilder(clientTagKey));
+    }
+
+    public ClientTagAppender.Mapped<T> tag(ClientTagKey<T> clientTagKey, Function<T, @Nullable ResourceLocation> encoder) {
+        return new ClientTagAppender.Mapped<>(getOrCreateBuilder(clientTagKey), encoder);
     }
 
     @Override
@@ -35,7 +42,7 @@ public abstract class ClientTagDataProvider<T> extends NeoBaseClientTagDataProvi
         // TODO: Still need to add future dependency as well as tag verification
         this.addTags();
         return CompletableFuture.allOf(builders.entrySet().stream().map(entry -> {
-            DataResult<JsonElement> jsonResult = ClientTagFile.codec(keyResolver).encodeStart(JsonOps.INSTANCE, entry.getValue().build());
+            DataResult<JsonElement> jsonResult = ClientTagFile.CODEC.encodeStart(JsonOps.INSTANCE, entry.getValue().build());
             JsonElement json = jsonResult.getOrThrow();
             Path filePath = pathProvider.json(entry.getKey());
             return DataProvider.saveStable(pOutput, json, filePath);

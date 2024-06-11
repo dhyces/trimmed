@@ -86,7 +86,7 @@ public class TrimDatagenSuite extends BaseTrimDatagenSuite {
                 @Override
                 protected void addTags() {
                     if (!patternTextures.isEmpty()) {
-                        clientTag(ClientTags.TRIM_PATTERN_TEXTURES).add(patternTextures.toArray(ResourceLocation[]::new));
+                        tag(ClientTags.TRIM_PATTERN_TEXTURES).add(patternTextures.toArray(ResourceLocation[]::new));
                     }
                 }
 
@@ -98,7 +98,7 @@ public class TrimDatagenSuite extends BaseTrimDatagenSuite {
         );
 
         pack.addProvider((FabricDataOutput output) ->
-            new ClientMapDataProvider<ResourceLocation>(output, modid, ClientKeyResolvers.TEXTURE) {
+            new ClientMapDataProvider<ResourceLocation>(output, modid) {
                 @Override
                 protected void addMaps() {
                     if (!materialTexturePermutations.isEmpty()) {

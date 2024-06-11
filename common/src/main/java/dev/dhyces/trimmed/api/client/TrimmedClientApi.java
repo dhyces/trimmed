@@ -15,7 +15,7 @@ public interface TrimmedClientApi {
     @Nullable
     <T> KeyResolver<T> getKeyResolver(ResourceLocation id);
     @Nullable
-    <T> KeyResolver.RegistryWrapper<T> getRegistryKeyResolver(ResourceKey<? extends Registry<T>> key);
+    <T> KeyResolver.RegistryResolver<T> getRegistryKeyResolver(ResourceKey<? extends Registry<T>> key);
     @Nullable
     <T> ResourceLocation getId(KeyResolver<T> keyResolver);
 }

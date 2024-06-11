@@ -7,8 +7,8 @@ import net.minecraft.resources.ResourceLocation;
 import java.util.List;
 import java.util.Map;
 
-public final class MapBuilder<K, V> {
-    private ImmutableMap.Builder<K, MapValue<V>> mapBuilder;
+public final class MapBuilder<V> {
+    private ImmutableMap.Builder<ResourceLocation, MapValue<V>> mapBuilder;
     private ImmutableList.Builder<MapAppendElement> appendBuilder;
     private boolean shouldReplace = false;
 
@@ -17,38 +17,38 @@ public final class MapBuilder<K, V> {
         appendBuilder = ImmutableList.builder();
     }
 
-    public MapBuilder<K, V> addEntry(K key, V value) {
+    public MapBuilder<V> addEntry(ResourceLocation key, V value) {
         mapBuilder.put(key, new MapValue<>(value, true));
         return this;
     }
 
-    public MapBuilder<K, V> addOptionalEntry(K key, V value) {
+    public MapBuilder<V> addOptionalEntry(ResourceLocation key, V value) {
         mapBuilder.put(key, new MapValue<>(value, false));
         return this;
     }
 
-    public MapBuilder<K, V> addAll(Map<K, MapValue<V>> map) {
+    public MapBuilder<V> addAll(Map<ResourceLocation, MapValue<V>> map) {
         mapBuilder.putAll(map);
         return this;
     }
 
-    public MapBuilder<K, V> append(ResourceLocation mapId) {
+    public MapBuilder<V> append(ResourceLocation mapId) {
         appendBuilder.add(new MapAppendElement(mapId, true));
         return this;
     }
 
-    public MapBuilder<K, V> appendOptional(ResourceLocation mapId) {
+    public MapBuilder<V> appendOptional(ResourceLocation mapId) {
         appendBuilder.add(new MapAppendElement(mapId, false));
         return this;
     }
 
-    public MapBuilder<K, V> appendAll(List<MapAppendElement> list) {
+    public MapBuilder<V> appendAll(List<MapAppendElement> list) {
         appendBuilder.addAll(list);
         return this;
     }
 
     // Ignores "replaces"
-    public MapBuilder<K, V> merge(MapFile<K, V> mapFile) {
+    public MapBuilder<V> merge(MapFile<V> mapFile) {
         if (!mapFile.map().isEmpty()) {
             addAll(mapFile.map());
         }
@@ -58,12 +58,12 @@ public final class MapBuilder<K, V> {
         return this;
     }
 
-    public MapBuilder<K, V> replaces() {
+    public MapBuilder<V> replaces() {
         shouldReplace = true;
         return this;
     }
 
-    public MapFile<K, V> build() {
+    public MapFile<V> build() {
         return new MapFile<>(mapBuilder.buildKeepingLast(), appendBuilder.build(), shouldReplace);
     }
 }

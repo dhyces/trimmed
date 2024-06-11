@@ -19,6 +19,6 @@ public class ClientBlockProvider extends ClientRegistryMapDataProvider<Block> {
 
     @Override
     protected void addMaps(HolderLookup.Provider lookupProvider) {
-        map(TestClientMapKeys.DATAGEN_TEST_BLOCK_MAP, lookupProvider).put(Blocks.FIRE, "Hello!");
+        map(TestClientMapKeys.DATAGEN_TEST_BLOCK_MAP, lookupProvider).put(Blocks.FIRE.builtInRegistryHolder(), "Hello!");
     }
 }

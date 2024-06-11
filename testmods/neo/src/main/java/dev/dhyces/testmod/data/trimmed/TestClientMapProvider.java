@@ -11,7 +11,7 @@ import net.neoforged.neoforge.common.data.ExistingFileHelper;
 
 public class TestClientMapProvider extends ClientMapDataProvider<ResourceLocation> {
     public TestClientMapProvider(PackOutput packOutput, ExistingFileHelper existingFileHelper) {
-        super(packOutput, TrimmedTest.MODID, TestClientKeyResolvers.TEST, existingFileHelper);
+        super(packOutput, TrimmedTest.MODID, existingFileHelper);
     }
 
     @Override

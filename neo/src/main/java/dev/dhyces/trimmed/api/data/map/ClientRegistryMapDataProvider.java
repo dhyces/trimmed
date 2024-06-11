@@ -1,8 +1,7 @@
 package dev.dhyces.trimmed.api.data.map;
 
-import dev.dhyces.trimmed.api.KeyResolver;
 import dev.dhyces.trimmed.api.client.TrimmedClientApi;
-import dev.dhyces.trimmed.api.data.client.map.appenders.ClientRegistryMapAppender;
+import dev.dhyces.trimmed.api.data.map.appenders.RegistryMapAppender;
 import dev.dhyces.trimmed.api.maps.MapKey;
 import dev.dhyces.trimmed.api.util.Utils;
 import net.minecraft.core.HolderLookup;
@@ -11,21 +10,30 @@ import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
+import org.jetbrains.annotations.Nullable;
 
 import java.nio.file.Path;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Function;
 
-public abstract class ClientRegistryMapDataProvider<K> extends NeoClientMapDataProvider<K, KeyResolver.RegistryWrapper<K>> {
-    private final CompletableFuture<HolderLookup.Provider> lookupProviderFuture;
+public abstract class ClientRegistryMapDataProvider<K> extends NeoClientMapDataProvider<K> {
+    protected final ResourceKey<? extends Registry<K>> registryKey;
+    protected final CompletableFuture<HolderLookup.Provider> lookupProviderFuture;
 
     public ClientRegistryMapDataProvider(PackOutput packOutput, String modid, ResourceKey<? extends Registry<K>> registryKey, CompletableFuture<HolderLookup.Provider> lookupProviderFuture, ExistingFileHelper existingFileHelper) {
-        super(packOutput, modid, TrimmedClientApi.getInstance().getRegistryKeyResolver(registryKey), existingFileHelper);
+        super(packOutput, modid, existingFileHelper);
+        this.registryKey = registryKey;
         this.lookupProviderFuture = lookupProviderFuture;
     }
 
-    public <V> ClientRegistryMapAppender<K, V> map(MapKey<K, V> mapKey, HolderLookup.Provider lookupProvider) {
-        return new ClientRegistryMapAppender<>(getOrCreateBuilder(mapKey), lookupProvider.lookupOrThrow(keyResolver.registryKey()));
+    public <V> RegistryMapAppender<K, V> map(MapKey<K, V> mapKey, HolderLookup.Provider lookupProvider) {
+        return new RegistryMapAppender<>(getOrCreateBuilder(mapKey), lookupProvider.lookupOrThrow(registryKey));
+    }
+
+    public <V> RegistryMapAppender.Mapped<K, V> map(MapKey<K, V> mapKey, HolderLookup.Provider lookupProvider, Function<K, @Nullable ResourceLocation> encoder) {
+        return new RegistryMapAppender.Mapped<>(getOrCreateBuilder(mapKey), lookupProvider.lookupOrThrow(registryKey), encoder);
     }
 
     protected abstract void addMaps(HolderLookup.Provider lookupProvider);
@@ -37,14 +45,14 @@ public abstract class ClientRegistryMapDataProvider<K> extends NeoClientMapDataP
             complete();
             return provider;
         }).thenCompose(provider -> {
-            HolderLookup.RegistryLookup<K> registryLookup = provider.lookupOrThrow(keyResolver.registryKey());
+            HolderLookup.RegistryLookup<K> registryLookup = provider.lookupOrThrow(registryKey);
 
             return CompletableFuture.allOf(builders.entrySet().stream().map(entry -> {
-                if (exists(registryLookup, ResourceKey.create(keyResolver.registryKey(), entry.getKey().getMapId()))) {
-                    throw new IllegalStateException("Element %s does not exist in %s".formatted(entry.getKey(), keyResolver.registryKey()));
+                if (exists(registryLookup, ResourceKey.create(registryKey, entry.getKey().getMapId()))) {
+                    throw new IllegalStateException("Element %s does not exist in %s".formatted(entry.getKey(), registryKey));
                 }
-                var codec = MapFile.codec(entry.getKey().getType().getKeyResolver().getCodec(), entry.getKey().getType().getValueCodec());
-                Path path = pathProvider.json(entry.getKey().compilePathAndIdNamespace());
+                var codec = MapFile.codec(entry.getKey().getType().getValueCodec());
+                Path path = pathProvider.json(entry.getKey().compilePathAndIdNamespace().withPrefix(Utils.namespacedLocation(registryKey) + '/'));
                 return DataProvider.saveStable(pOutput, provider, codec, Utils.unsafeCast(entry.getValue().build()), path);
             }).toArray(CompletableFuture[]::new));
         });
@@ -56,6 +64,6 @@ public abstract class ClientRegistryMapDataProvider<K> extends NeoClientMapDataP
 
     @Override
     public String getName() {
-        return "ClientRegistryMapDataProvider<" + keyResolver.registryKey().location() + "> for " + modid;
+        return "ClientRegistryMapDataProvider<" + registryKey.location() + "> for " + modid;
     }
 }

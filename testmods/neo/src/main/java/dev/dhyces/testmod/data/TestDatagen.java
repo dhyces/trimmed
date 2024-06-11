@@ -1,6 +1,8 @@
 package dev.dhyces.testmod.data;
 
 import dev.dhyces.testmod.data.trimmed.TestModelSourceProvider;
+import dev.dhyces.testmod.data.trimmed.registrymaps.ClientDamageTypeProvider;
+import dev.dhyces.testmod.data.trimmed.registrytags.BiomeClientTagProvider;
 import dev.dhyces.testmod.registry.ModArmorMaterials;
 import dev.dhyces.testmod.registry.ModItems;
 import dev.dhyces.testmod.ModTrimMaterials;
@@ -10,7 +12,6 @@ import dev.dhyces.testmod.data.trimmed.TestClientMapProvider;
 import dev.dhyces.testmod.data.trimmed.TestClientTagProvider;
 import dev.dhyces.testmod.data.trimmed.TestItemOverrideProvider;
 import dev.dhyces.testmod.data.trimmed.registrymaps.ClientBlockProvider;
-import dev.dhyces.testmod.data.trimmed.registrymaps.ClientDamageTypeProvider;
 import dev.dhyces.testmod.data.trimmed.registrymaps.EntityToEntityProvider;
 import dev.dhyces.testmod.data.trimmed.registrytags.TestClientCustomObjTagProvider;
 import dev.dhyces.testmod.data.trimmed.registrytags.TestClientItemTagProvider;
@@ -67,9 +68,10 @@ public class TestDatagen {
         generator.addProvider(event.includeClient(), new TestClientTagProvider(packOutput, event.getExistingFileHelper()));
         generator.addProvider(event.includeClient(), new TestClientItemTagProvider(packOutput, lookupProvider, event.getExistingFileHelper()));
         generator.addProvider(event.includeClient(), new TestClientCustomObjTagProvider(packOutput, lookupProvider, event.getExistingFileHelper()));
+        generator.addProvider(event.includeClient(), new BiomeClientTagProvider(packOutput, lookupProvider, event.getExistingFileHelper()));
         generator.addProvider(event.includeClient(), new TestClientMapProvider(packOutput, event.getExistingFileHelper()));
         generator.addProvider(event.includeClient(), new ClientBlockProvider(packOutput, lookupProvider, event.getExistingFileHelper()));
-//        generator.addProvider(event.includeClient(), new ClientDamageTypeProvider(packOutput, lookupProvider, event.getExistingFileHelper()));
+        generator.addProvider(event.includeClient(), new ClientDamageTypeProvider(packOutput, lookupProvider, event.getExistingFileHelper()));
         generator.addProvider(event.includeClient(), new EntityToEntityProvider(packOutput, lookupProvider, event.getExistingFileHelper()));
     }
 }

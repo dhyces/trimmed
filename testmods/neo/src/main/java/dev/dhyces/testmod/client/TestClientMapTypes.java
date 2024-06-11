@@ -8,8 +8,10 @@ import dev.dhyces.trimmed.api.maps.types.MapType;
 import dev.dhyces.trimmed.impl.client.maps.KeyResolvers;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.Block;
 
 public class TestClientMapTypes {
@@ -18,5 +20,6 @@ public class TestClientMapTypes {
     public static final MapType<Item, String> ITEM_TEST = MapType.simple(KeyResolvers.ITEM, Codec.STRING);
     public static final MapType<Block, String> BLOCK_TEST = MapType.simple(KeyResolvers.BLOCK, Codec.STRING);
     public static final AdvancedMapType<EntityType<?>, EntityType<?>, BiMap<EntityType<?>, EntityType<?>>> ENTITY_CONVERSION = MapType.advancedCollection(KeyResolvers.ENTITY_TYPE, BuiltInRegistries.ENTITY_TYPE.byNameCodec(), HashBiMap::create);
-//    public static final MapType<Biome, Integer> BIOME_TEST = MapType.simple(KeyResolvers.BIOME, Codec.INT);
+    public static final MapType<Biome, Integer> BIOME_TEST = MapType.simple(KeyResolvers.BIOME, Codec.INT);
+    public static final MapType<DamageType, Integer> DAMAGE_TYPE_TEST = MapType.simple(KeyResolvers.DAMAGE_TYPE, Codec.INT);
 }

@@ -1,12 +1,15 @@
 package dev.dhyces.trimmed.impl.client.maps.manager;
 
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
-import com.mojang.serialization.JsonOps;
+import com.mojang.datafixers.util.Pair;
+import com.mojang.serialization.DynamicOps;
 import dev.dhyces.trimmed.Trimmed;
 import dev.dhyces.trimmed.api.data.map.MapAppendElement;
 import dev.dhyces.trimmed.api.data.map.MapBuilder;
 import dev.dhyces.trimmed.api.data.map.MapFile;
+import dev.dhyces.trimmed.api.data.map.MapValue;
 import dev.dhyces.trimmed.api.maps.MapHolder;
 import dev.dhyces.trimmed.api.maps.types.MapType;
 import dev.dhyces.trimmed.api.maps.MapKey;
@@ -51,30 +54,36 @@ public final class MapHandler<K, V> {
         return holders.computeIfAbsent(key, ClientMapHolder::new);
     }
 
-    void parse(ResourceLocation resolverPath, FileToIdConverter converter, ResourceManager resourceManager) {
-        MapFile<K, V> base = readStack(baseKey.getMapId(), resourceManager.getResourceStack(resolverPath.withSuffix(".json")));
+    void parse(ResourceLocation resolverPath, FileToIdConverter converter, ResourceManager resourceManager, DynamicOps<JsonElement> jsonOps) {
+        MapFile<V> base = readStack(baseKey.getMapId(), resourceManager.getResourceStack(resolverPath.withSuffix(".json")), jsonOps);
         // TODO: look back into this, I believe this will try to parse from any pack, not just the one with this namespace
-        Map<ResourceLocation, MapFile<K, V>> children = readResources(converter, resourceManager);
+        Map<ResourceLocation, MapFile<V>> children = readResources(converter, resourceManager, jsonOps);
         if (base.map().isEmpty() && base.appendElements().isEmpty() && children.isEmpty()) {
             Trimmed.LOGGER.debug("No maps to read, skipping %s".formatted(resolverPath));
             return;
         }
 
-        DependencySorter<ResourceLocation, Entry<K, V>> dependencySorter = new DependencySorter<>();
+        DependencySorter<ResourceLocation, Entry<V>> dependencySorter = new DependencySorter<>();
         dependencySorter.addEntry(baseKey.getMapId(), new Entry<>(base));
         children.forEach((resourceLocation, vMapFile) -> dependencySorter.addEntry(resourceLocation, new Entry<>(vMapFile)));
         dependencySorter.orderByDependencies((resourceLocation, vEntry) -> {
             MapKey<K, V> key = baseKey.getMapId().equals(resourceLocation) ? baseKey : MapKey.fromBase(baseKey, resourceLocation.withPath(s -> s.substring(s.indexOf('/')+1)));
             ClientMapHolder<K, V, Map<K, V>> holder = getOrCreateHolder(key);
             Set<K> optionalElements = new ObjectOpenHashSet<>();
-            Map<K, V> finishedMap = vEntry.file().map().entrySet().stream()
-                    .peek(kvEntry -> {
-                        if (!kvEntry.getValue().isRequired()) {
-                            optionalElements.add(kvEntry.getKey());
-                        }
-                    })
-                    .map(kMapValueEntry -> Map.entry(kMapValueEntry.getKey(), kMapValueEntry.getValue().value()))
-                    .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (v, v2) -> v, baseKey.getType()::createMap));
+            Map<K, V> finishedMap = baseKey.getType().createMap();
+            for (Map.Entry<ResourceLocation, MapValue<V>> entry : vEntry.file().map().entrySet()) {
+                K keyVal = baseKey.getType().getKeyResolver().decode(entry.getKey(), jsonOps);
+                if (keyVal == null) {
+                    if (entry.getValue().isRequired()) {
+                        throw new IllegalStateException("Could not parse required element for \"%s\"".formatted(entry.getKey()));
+                    }
+                } else {
+                    finishedMap.put(keyVal, entry.getValue().value());
+                    if (!entry.getValue().isRequired()) {
+                        optionalElements.add(keyVal);
+                    }
+                }
+            }
             for (MapAppendElement element : vEntry.file().appendElements()) {
                 MapKey<K, V> subKey = MapKey.fromBase(baseKey, element.mapId());
                 MapHolder<K, V> mapHolder = getOrCreateHolder(subKey);
@@ -90,26 +99,26 @@ public final class MapHandler<K, V> {
         });
     }
 
-    private Map<ResourceLocation, MapFile<K, V>> readResources(FileToIdConverter converter, ResourceManager resourceManager) {
+    private Map<ResourceLocation, MapFile<V>> readResources(FileToIdConverter converter, ResourceManager resourceManager, DynamicOps<JsonElement> jsonOps) {
         return converter.listMatchingResourceStacks(resourceManager).entrySet().stream()
                 .map(entry -> {
                     ResourceLocation id = converter.fileToId(entry.getKey());
-                    return Map.entry(id, readStack(id, entry.getValue()));
+                    return Map.entry(id, readStack(id, entry.getValue(), jsonOps));
                 }).collect(Util.toMap());
     }
 
-    private MapFile<K, V> readStack(ResourceLocation fileName, List<Resource> resourceStack) {
+    private MapFile<V> readStack(ResourceLocation fileName, List<Resource> resourceStack, DynamicOps<JsonElement> jsonOps) {
         MapType<K, V> mapType = baseKey.getType();
-        MapBuilder<K, V> builder = new MapBuilder<>();
+        MapBuilder<V> builder = new MapBuilder<>();
         for (Resource resource : resourceStack) {
             try (BufferedReader reader = resource.openAsReader()) {
                 JsonObject json = GsonHelper.parse(reader);
-                Optional<MapFile<K, V>> result = Services.PLATFORM_HELPER.decodeWithConditions(MapFile.codec(mapType.getKeyResolver().getCodec(), mapType.getValueCodec()), JsonOps.INSTANCE, json);
+                Optional<MapFile<V>> result = Services.PLATFORM_HELPER.decodeWithConditions(MapFile.codec(mapType.getValueCodec()), jsonOps, json);
                 if (result.isEmpty()) {
                     Trimmed.LOGGER.debug("Skipping loading client map {} as its conditions were not met", fileName);
                     continue;
                 }
-                MapFile<K, V> mapFile = result.get();
+                MapFile<V> mapFile = result.get();
                 if (mapFile.shouldReplace()) {
                     builder = new MapBuilder<>();
                 }
@@ -121,7 +130,7 @@ public final class MapHandler<K, V> {
         return builder.build();
     }
 
-    private record Entry<K, V>(MapFile<K, V> file) implements DependencySorter.Entry<ResourceLocation> {
+    private record Entry<V>(MapFile<V> file) implements DependencySorter.Entry<ResourceLocation> {
         @Override
         public void visitRequiredDependencies(Consumer<ResourceLocation> visitor) {
             file.appendElements().forEach(mapAppendElement -> {

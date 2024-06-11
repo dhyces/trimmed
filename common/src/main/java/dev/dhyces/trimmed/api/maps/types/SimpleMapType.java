@@ -45,7 +45,7 @@ public final class SimpleMapType<K, V> implements MapType<K, V> {
 
     @Override
     public boolean isDataPackSynced() {
-        return dataPackSynced;
+        return dataPackSynced || keyResolver.requiresActiveWorld();
     }
 
     @Override
