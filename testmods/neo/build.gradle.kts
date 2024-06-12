@@ -2,7 +2,6 @@ plugins {
 	idea
 	java
 	`maven-publish`
-	alias(libs.plugins.mdg)
 	alias(libs.plugins.curseforgegradle)
 	alias(libs.plugins.minotaur)
 	alias(libs.plugins.archloom)
