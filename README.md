@@ -10,7 +10,7 @@ repositories {
 }
 
 dependencies {
-    implementation("maven.modrinth:trimmed:1.20.6-3.0.0+neoforge")
+    implementation("maven.modrinth:trimmed:1.21-3.0.0+neoforge")
 }
 ```
 
@@ -24,25 +24,7 @@ repositories {
 }
 
 dependencies {
-    modImplementation("maven.modrinth:trimmed:1.20.6-3.0.0+fabric")
-}
-```
-
-Forge version depends on: [MixinExtras 0.3.6](https://github.com/LlamaLad7/MixinExtras)
-## Forge Only
-```groovy
-repositories {
-    mavenCentral()
-    maven {
-        name = "Modrinth"
-        url = "https://api.modrinth.com/maven"
-    }
-}
-
-dependencies {
-    runtimeOnly("io.github.llamalad7:mixinextras-common:0.3.6")
-    runtimeOnly("io.github.llamalad7:mixinextras-forge:0.3.6")
-    implementation fg.deobf("maven.modrinth:trimmed:1.20.6-3.0.0+forge")
+    modImplementation("maven.modrinth:trimmed:1.21-3.0.0+fabric")
 }
 ```
 
@@ -67,25 +49,18 @@ repositories {
 ```groovy
 dependencies {
     runtimeOnly("io.github.llamalad7:mixinextras-common:0.3.6")
-    implementation("dev.dhyces.trimmed:trimmed-common-1.20.6-3.0.0")
+    implementation("dev.dhyces.trimmed:trimmed-common-1.21-3.0.0")
 }
 ```
 ### Neo
 ```groovy
 dependencies {
-    implementation fg.deobf("dev.dhyces.trimmed:trimmed-neoforge-1.20.6-3.0.0")
+    implementation fg.deobf("dev.dhyces.trimmed:trimmed-neoforge-1.21-3.0.0")
 }
 ```
 ### Fabric
 ```groovy
 dependencies {
-    modImplementation("dev.dhyces.trimmed:trimmed-fabric-1.20.6-3.0.0")
-}
-```
-### Forge
-```groovy
-dependencies {
-    runtimeOnly("io.github.llamalad7:mixinextras-forge:0.3.6")
-    implementation fg.deobf("dev.dhyces.trimmed:trimmed-forge-1.20.6-3.0.0")
+    modImplementation("dev.dhyces.trimmed:trimmed-fabric-1.21-3.0.0")
 }
 ```
