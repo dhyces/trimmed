@@ -29,6 +29,7 @@ import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.DependencySorter;
 import net.minecraft.util.GsonHelper;
+import net.minecraft.util.Unit;
 import net.minecraft.util.profiling.ProfilerFiller;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
@@ -72,17 +73,13 @@ public class ClientTagManager implements PreparableReloadListener {
         return load(pResourceManager, TrimmedClient.getStaticHolder(), false).thenCompose(pPreparationBarrier::wait).thenRun(() -> Trimmed.logInDev("Client tags loaded!"));
     }
 
-    private static CompletableFuture<Void> load(ResourceManager resourceManager, GameRegistryHolder registryHolder, boolean onlyLoadSynced) {
-        return CompletableFuture.allOf(StreamSupport.stream(KeyResolvers.getEntries().spliterator(), false)
-                .map(entry -> CompletableFuture.runAsync(() -> {
-                    // if onlyLoadSynced, only resolveTags if isSynced and requiresActiveWorld
-                    // otherwise, load if not requiresActiveWorld or isSynced
-                    if (onlyLoadSynced ? entry.getValue().requiresActiveWorld() && registryHolder.isSynced() : !entry.getValue().requiresActiveWorld() || registryHolder.isSynced()) {
-                        resolveTags(entry.getKey(), entry.getValue(), resourceManager, registryHolder.registryAccess().createSerializationContext(JsonOps.INSTANCE));
-                    }
-                }))
-                .toArray(CompletableFuture[]::new)
-        );
+    private static CompletableFuture<Unit> load(ResourceManager resourceManager, GameRegistryHolder registryHolder, boolean onlyLoadSynced) {
+        for (Map.Entry<ResourceLocation, KeyResolver<?>> entry : KeyResolvers.getEntries())  {
+            if (onlyLoadSynced ? entry.getValue().requiresActiveWorld() && registryHolder.isSynced() : !entry.getValue().requiresActiveWorld() || registryHolder.isSynced()) {
+                resolveTags(entry.getKey(), entry.getValue(), resourceManager, registryHolder.registryAccess().createSerializationContext(JsonOps.INSTANCE));
+            }
+        }
+        return CompletableFuture.completedFuture(Unit.INSTANCE);
     }
 
     private static <T> void resolveTags(ResourceLocation registryId, KeyResolver<T> keyResolver, ResourceManager resourceManager, DynamicOps<JsonElement> jsonOps) {
