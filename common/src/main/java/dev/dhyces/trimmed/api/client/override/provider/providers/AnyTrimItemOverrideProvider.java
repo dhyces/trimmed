@@ -40,9 +40,9 @@ public class AnyTrimItemOverrideProvider extends SimpleItemOverrideProvider {
     }
 
     @Override
-    public Optional<ModelResourceLocation> getModelLocation(ItemStack itemStack, @Nullable ClientLevel world, @Nullable LivingEntity entity, int seed) {
+    public ModelPair getModelLocation(ItemStack itemStack, @Nullable ClientLevel world, @Nullable LivingEntity entity, int seed) {
         if (!(itemStack.getItem() instanceof ArmorItem armorItem)) {
-            return Optional.empty();
+            return ModelPair.EMPTY;
         }
 
         Optional<ResourceLocation> materialIdOptional = Optional.ofNullable(itemStack.get(DataComponents.TRIM))
@@ -55,10 +55,11 @@ public class AnyTrimItemOverrideProvider extends SimpleItemOverrideProvider {
                 } else {
                     return null;
                 }
-            })).withPath(s -> s.substring(s.indexOf("/")+1));
-            return Optional.of(new ModelResourceLocation(id, "inventory"));
+            }));
+            // TODO: Fabric is silly and forces custom models to be saved in top level as namespace:resource_id#fabric_resource
+            return new ModelPair(id, new ModelResourceLocation(id.withPath(s -> s.substring(s.indexOf("/")+1)), "inventory"));
         }
-        return Optional.empty();
+        return ModelPair.EMPTY;
     }
 
     @Override

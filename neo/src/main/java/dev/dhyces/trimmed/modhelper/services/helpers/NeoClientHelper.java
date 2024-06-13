@@ -3,6 +3,10 @@ package dev.dhyces.trimmed.modhelper.services.helpers;
 import dev.dhyces.trimmed.api.TrimmedClientApiConsumer;
 import dev.dhyces.trimmed.api.client.TrimmedClientApiEntrypoint;
 import dev.dhyces.trimmed.impl.ModApiConsumer;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.client.resources.model.ModelResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 import net.neoforged.fml.ModList;
 
 import java.lang.annotation.ElementType;
@@ -33,5 +37,10 @@ public class NeoClientHelper implements ClientHelper {
                     }
                     return new ModApiConsumer<>(modid, apiEntrypoint);
                 }).toList();
+    }
+
+    @Override
+    public BakedModel getModel(ResourceLocation resourceId) {
+        return Minecraft.getInstance().getModelManager().getModel(ModelResourceLocation.standalone(resourceId));
     }
 }

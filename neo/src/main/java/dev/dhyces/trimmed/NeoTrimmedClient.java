@@ -19,7 +19,7 @@ import java.util.Set;
 @SuppressWarnings("unused")
 @Mod(value = Trimmed.MODID, dist = Dist.CLIENT)
 public class NeoTrimmedClient {
-    private static Set<ModelResourceLocation> additionalGeneratedModels;
+    private static Set<ResourceLocation> additionalGeneratedModels;
 
     public NeoTrimmedClient(IEventBus modBus, ModContainer container) {
         TrimmedClient.init();
@@ -44,7 +44,7 @@ public class NeoTrimmedClient {
     }
 
     private void addModels(final ModelEvent.RegisterAdditional event) {
-        additionalGeneratedModels.forEach(event::register);
+        additionalGeneratedModels.forEach(resourceId -> event.register(ModelResourceLocation.standalone(resourceId)));
     }
 
     private void tagsSynced(final TagsUpdatedEvent event) {
@@ -59,7 +59,7 @@ public class NeoTrimmedClient {
         TrimmedClient.resetSyncedStatus();
     }
 
-    public static void setModels(Set<ModelResourceLocation> models) {
+    public static void setModels(Set<ResourceLocation> models) {
         additionalGeneratedModels = models;
     }
 }

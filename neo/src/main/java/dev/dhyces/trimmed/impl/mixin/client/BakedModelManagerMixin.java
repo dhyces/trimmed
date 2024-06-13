@@ -29,12 +29,12 @@ public abstract class BakedModelManagerMixin {
         return original.thenCombineAsync(TrimmedClient.startGeneratingModels(resourceManager, executor),
                 (originalMap, generatedModels) -> {
                     Object2ObjectMap<ResourceLocation, BlockModel> newMap = new Object2ObjectOpenHashMap<>();
-                    Set<ModelResourceLocation> generatedModelIds = new ObjectOpenHashSet<>();
+                    Set<ResourceLocation> generatedModelIds = new ObjectOpenHashSet<>();
                     generatedModels.forEach(namedModel -> {
                         ResourceLocation path = namedModel.id().withPrefix("models/").withSuffix(".json");
                         if (!originalMap.containsKey(path)) {
                             newMap.put(path, namedModel.model().get());
-                            generatedModelIds.add(namedModel.modelId());
+                            generatedModelIds.add(namedModel.id());
                         }
                     });
                     NeoTrimmedClient.setModels(generatedModelIds);

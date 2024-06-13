@@ -39,9 +39,7 @@ public class FabricTrimmedClient implements ClientModInitializer {
                 (data, pluginContext) -> {
                     Map<ResourceLocation, NamedModel> modelMapByFileId = new Object2ObjectOpenHashMap<>();
                     for (NamedModel namedModel : data) {
-                        // Need to add as ModelResourceLocations
                         pluginContext.addModels(namedModel.id());
-                        // But the context ids are in regular ResourceLocations
                         modelMapByFileId.put(namedModel.id(), namedModel);
                     }
                     pluginContext.resolveModel().register(context -> {

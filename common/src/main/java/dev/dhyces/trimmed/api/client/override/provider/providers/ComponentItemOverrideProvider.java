@@ -34,25 +34,25 @@ public final class ComponentItemOverrideProvider extends SimpleItemOverrideProvi
     }
 
     @Override
-    public Optional<ModelResourceLocation> getModelLocation(ItemStack itemStack, @Nullable ClientLevel world, @Nullable LivingEntity entity, int seed) {
+    public ModelPair getModelLocation(ItemStack itemStack, @Nullable ClientLevel world, @Nullable LivingEntity entity, int seed) {
         if (!itemStack.getComponentsPatch().isEmpty()) {
             DataComponentPatch stackPatch = itemStack.getComponentsPatch();
             for (Map.Entry<DataComponentType<?>, Optional<?>> entry : componentPatch.entrySet()) {
                 Optional<?> stackData = stackPatch.get(entry.getKey());
                 Optional<?> testData = componentPatch.get(entry.getKey());
                 if ((stackData == null) != (testData == null)) {
-                    return Optional.empty();
+                    return ModelPair.EMPTY;
                 }
                 if (stackData.isEmpty() != testData.isEmpty()) {
-                    return Optional.empty();
+                    return ModelPair.EMPTY;
                 }
                 if (stackData.isPresent() && testData.isPresent() && !stackData.get().equals(testData.get())) {
-                    return Optional.empty();
+                    return ModelPair.EMPTY;
                 }
             }
-            return Optional.of(model);
+            return new ModelPair(null, model);
         }
-        return Optional.empty();
+        return ModelPair.EMPTY;
     }
 
     @Override
