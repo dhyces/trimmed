@@ -4,7 +4,7 @@ minecraft_range = "[1.21,1.22)"
 publish_range = "1.21"
 
 neoforge_release = "21.0.0-beta"
-neoforge_range = "[21.0,22.0)"
+neoforge_range = "[21.0-beta,22.0)"
 
 fabric_loader = "0.15.11"
 fabric_api = "0.100.1+1.21"
