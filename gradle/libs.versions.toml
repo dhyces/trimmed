@@ -1,9 +1,9 @@
 [versions]
-minecraft_release = "1.21-rc1"
+minecraft_release = "1.21"
 minecraft_range = "[1.21,1.22)"
 publish_range = "1.21"
 
-neoforge_release = "21.0.0-alpha.1.21-rc1.20240612.183440"
+neoforge_release = "21.0.0-beta"
 neoforge_range = "[21.0,22.0)"
 
 fabric_loader = "0.15.11"
