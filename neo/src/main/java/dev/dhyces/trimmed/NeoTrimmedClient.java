@@ -5,10 +5,13 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
+import net.neoforged.neoforge.client.event.ClientPlayerNetworkEvent;
 import net.neoforged.neoforge.client.event.ModelEvent;
 import net.neoforged.neoforge.client.event.RegisterClientReloadListenersEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.TagsUpdatedEvent;
+import net.neoforged.neoforge.event.server.ServerStoppingEvent;
+
 import java.util.Set;
 
 @SuppressWarnings("unused")
@@ -22,6 +25,8 @@ public class NeoTrimmedClient {
         modBus.addListener(this::addModels);
 
         NeoForge.EVENT_BUS.addListener(this::tagsSynced);
+        NeoForge.EVENT_BUS.addListener(this::onShutdown);
+        NeoForge.EVENT_BUS.addListener(this::onLogout);
 
         TrimmedClient.initApi();
     }
@@ -37,6 +42,14 @@ public class NeoTrimmedClient {
 
     private void tagsSynced(final TagsUpdatedEvent event) {
         TrimmedClient.onTagsSynced(event.getRegistryAccess(), event.shouldUpdateStaticData());
+    }
+
+    private void onShutdown(final ServerStoppingEvent event) {
+        TrimmedClient.resetSyncedStatus();
+    }
+
+    private void onLogout(final ClientPlayerNetworkEvent.LoggingOut event) {
+        TrimmedClient.resetSyncedStatus();
     }
 
     public static void setModels(Set<ResourceLocation> models) {

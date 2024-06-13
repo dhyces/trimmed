@@ -1,18 +1,15 @@
 package dev.dhyces.trimmed;
 
-import dev.dhyces.trimmed.api.client.TrimmedClientApiEntrypoint;
 import dev.dhyces.trimmed.impl.ModelBakeryHelper;
-import dev.dhyces.trimmed.impl.client.models.source.ModelSourceLoader;
 import dev.dhyces.trimmed.impl.client.models.source.NamedModel;
-import dev.dhyces.trimmed.impl.client.models.template.ModelTemplateManager;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.model.loading.v1.PreparableModelLoadingPlugin;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.CommonLifecycleEvents;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.resource.IdentifiableResourceReloadListener;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
-import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.client.renderer.block.model.BlockModel;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.resources.PreparableReloadListener;
@@ -48,6 +45,9 @@ public class FabricTrimmedClient implements ClientModInitializer {
                         return null;
                     });
         });
+
+        ServerLifecycleEvents.SERVER_STOPPING.register(server -> TrimmedClient.resetSyncedStatus());
+        ClientPlayConnectionEvents.DISCONNECT.register((handler, client) -> TrimmedClient.resetSyncedStatus());
 
         CommonLifecycleEvents.TAGS_LOADED.register(TrimmedClient::onTagsSynced);
 

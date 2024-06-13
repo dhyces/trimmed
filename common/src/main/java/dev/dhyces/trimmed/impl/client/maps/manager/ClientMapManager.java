@@ -2,9 +2,11 @@ package dev.dhyces.trimmed.impl.client.maps.manager;
 
 import com.mojang.serialization.JsonOps;
 import dev.dhyces.trimmed.Trimmed;
+import dev.dhyces.trimmed.TrimmedClient;
 import dev.dhyces.trimmed.api.maps.MapHolder;
 import dev.dhyces.trimmed.api.util.Utils;
 import dev.dhyces.trimmed.api.maps.MapKey;
+import dev.dhyces.trimmed.impl.client.GameRegistryHolder;
 import dev.dhyces.trimmed.impl.client.maps.KeyResolvers;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
@@ -30,8 +32,6 @@ public class ClientMapManager implements PreparableReloadListener {
     public static final String PATH = "trimmed/maps";
     private static CompletableFuture<Unit> completable = new CompletableFuture<>();
     private static final Map<MapKey<?, ?>, MapHandler<?, ?>> REGISTRY = new Reference2ObjectOpenHashMap<>();
-    private static RegistryAccess syncedAccess;
-    private static final List<Consumer<RegistryAccess>> REQUIRE_SYNC = new ObjectArrayList<>();
 
     public static <K, V> void registerBaseKey(MapKey<K, V> key) {
         if (key.isSubKey()) {
@@ -53,11 +53,8 @@ public class ClientMapManager implements PreparableReloadListener {
         return completable;
     }
 
-    public static void updateDatapacksSynced(RegistryAccess registryAccess) {
-        syncedAccess = registryAccess;
-        for (Consumer<RegistryAccess> consumer : REQUIRE_SYNC) {
-            consumer.accept(registryAccess);
-        }
+    public static void updateDatapacksSynced(GameRegistryHolder registryHolder) {
+        load(Minecraft.getInstance().getResourceManager(), registryHolder, true);
     }
 
     private static void finishReload() {
@@ -68,28 +65,18 @@ public class ClientMapManager implements PreparableReloadListener {
 
     @Override
     public CompletableFuture<Void> reload(PreparationBarrier pPreparationBarrier, ResourceManager pResourceManager, ProfilerFiller pPreparationsProfiler, ProfilerFiller pReloadProfiler, Executor pBackgroundExecutor, Executor pGameExecutor) {
-        return load(pResourceManager).thenApply(completable::complete).thenCompose(pPreparationBarrier::wait).thenRun(ClientMapManager::finishReload);
+        REGISTRY.values().forEach(MapHandler::clear);
+        return load(pResourceManager, TrimmedClient.getStaticHolder(), false).thenApply(completable::complete).thenCompose(pPreparationBarrier::wait).thenRun(ClientMapManager::finishReload);
     }
 
-    private CompletableFuture<Unit> load(ResourceManager resourceManager) {
-        REGISTRY.values().forEach(MapHandler::clear);
-        REQUIRE_SYNC.clear();
-
+    private static CompletableFuture<Unit> load(ResourceManager resourceManager, GameRegistryHolder registryHolder, boolean onlyLoadSynced) {
         for (Map.Entry<MapKey<?, ?>, MapHandler<?, ?>> entry : REGISTRY.entrySet()) {
             ResourceLocation resolverPath = entry.getKey().getMapId().withPrefix("trimmed/maps/" + Utils.namespacedPath(KeyResolvers.getId(entry.getKey().getType().getKeyResolver())) + "/");
 
             FileToIdConverter converter = FileToIdConverter.json(resolverPath.getPath());
             try {
-                if (entry.getKey().getType().isDataPackSynced()) {
-                    REQUIRE_SYNC.add(registryAccess ->
-                            entry.getValue().parse(resolverPath, converter, resourceManager, registryAccess.createSerializationContext(JsonOps.INSTANCE))
-                    );
-                }
-
-                if (!entry.getKey().getType().isDataPackSynced()) {
-                    entry.getValue().parse(resolverPath, converter, resourceManager, JsonOps.INSTANCE);
-                } else if (syncedAccess != null) {
-                    entry.getValue().parse(resolverPath, converter, resourceManager, syncedAccess.createSerializationContext(JsonOps.INSTANCE));
+                if (onlyLoadSynced ? entry.getKey().getType().isDataPackSynced() && registryHolder.isSynced() : !entry.getKey().getType().isDataPackSynced() || registryHolder.isSynced()) {
+                    entry.getValue().parse(resolverPath, converter, resourceManager, registryHolder.registryAccess().createSerializationContext(JsonOps.INSTANCE));
                 }
             } catch (RuntimeException e) {
                 Trimmed.LOGGER.error("Could not read map", e);

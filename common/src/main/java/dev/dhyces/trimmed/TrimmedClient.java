@@ -5,6 +5,7 @@ import dev.dhyces.trimmed.api.client.ClientKeyResolvers;
 import dev.dhyces.trimmed.api.client.map.ClientMapKeys;
 import dev.dhyces.trimmed.api.client.map.ClientMapTypes;
 import dev.dhyces.trimmed.impl.ModApiConsumer;
+import dev.dhyces.trimmed.impl.client.GameRegistryHolder;
 import dev.dhyces.trimmed.impl.client.TrimmedClientRegistrationImpl;
 import dev.dhyces.trimmed.impl.client.atlas.TrimmedSpriteSourceTypes;
 import dev.dhyces.trimmed.impl.client.maps.KeyResolvers;
@@ -20,6 +21,7 @@ import dev.dhyces.trimmed.impl.client.maps.manager.ClientMapManager;
 import dev.dhyces.trimmed.modhelper.services.Services;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.server.packs.resources.PreparableReloadListener;
 import net.minecraft.server.packs.resources.ResourceManager;
 
@@ -29,6 +31,16 @@ import java.util.concurrent.Executor;
 import java.util.function.BiConsumer;
 
 public class TrimmedClient {
+    private static GameRegistryHolder staticAccess;
+    public static GameRegistryHolder getStaticHolder() {
+        if (staticAccess == null) {
+            staticAccess = new GameRegistryHolder(RegistryAccess.fromRegistryOfRegistries(BuiltInRegistries.REGISTRY), false);
+        }
+        return staticAccess;
+    }
+    public static boolean isSyncedAccess() {
+        return getStaticHolder().isSynced();
+    }
 
     public static void init() {
         KeyResolvers.register(Trimmed.id("texture"), ClientKeyResolvers.TEXTURE);
@@ -58,13 +70,18 @@ public class TrimmedClient {
     }
 
     public static void onTagsSynced(RegistryAccess registryAccess, boolean shouldUpdateStatic) {
+        staticAccess = new GameRegistryHolder(registryAccess, true);
         if (shouldUpdateStatic) { //TODO: Disabled the toast for now. Use toast later when a datapack registry queued
 //            if (Minecraft.getInstance().player != null) {
 //                Minecraft.getInstance().getToasts().addToast(InfoToast.reloadClientInfo());
 //            }
-            ClientTagManager.updateDatapacksSynced(registryAccess);
-            ClientMapManager.updateDatapacksSynced(registryAccess);
+            ClientTagManager.updateDatapacksSynced(staticAccess);
+            ClientMapManager.updateDatapacksSynced(staticAccess);
         }
+    }
+
+    public static void resetSyncedStatus() {
+        staticAccess = null;
     }
 
     public static CompletableFuture<Collection<NamedModel>> startGeneratingModels(ResourceManager resourceManager, Executor executor) {

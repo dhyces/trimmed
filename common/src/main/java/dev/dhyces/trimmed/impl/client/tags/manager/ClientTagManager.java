@@ -1,5 +1,6 @@
 package dev.dhyces.trimmed.impl.client.tags.manager;
 
+import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.gson.JsonElement;
@@ -7,16 +8,19 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.mojang.serialization.DynamicOps;
 import com.mojang.serialization.JsonOps;
+import dev.dhyces.trimmed.TrimmedClient;
 import dev.dhyces.trimmed.api.client.tag.TagHolder;
 import dev.dhyces.trimmed.api.KeyResolver;
 import dev.dhyces.trimmed.api.data.client.tag.ClientTagEntry;
 import dev.dhyces.trimmed.api.data.client.tag.ClientTagFile;
+import dev.dhyces.trimmed.impl.client.GameRegistryHolder;
 import dev.dhyces.trimmed.impl.client.maps.KeyResolvers;
 import dev.dhyces.trimmed.api.client.tag.ClientTagKey;
 import dev.dhyces.trimmed.modhelper.services.Services;
 import dev.dhyces.trimmed.Trimmed;
 import dev.dhyces.trimmed.api.util.Utils;
 import it.unimi.dsi.fastutil.objects.*;
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.FileToIdConverter;
 import net.minecraft.resources.ResourceLocation;
@@ -42,9 +46,6 @@ public class ClientTagManager implements PreparableReloadListener {
     public static final String PATH = "trimmed/tags/";
     private static final Logger LOGGER = LoggerFactory.getLogger("Trimmed / Client Tags");
     private static final Map<ClientTagKey<?>, ClientTagHolder<?>> REGISTRY = new Reference2ObjectOpenHashMap<>();
-    // TODO: Probably need to make these weak or figure out another solution
-    private static RegistryAccess syncedAccess;
-    private static final List<Consumer<RegistryAccess>> REQUIRE_SYNC = new ObjectArrayList<>();
 
     public static <T> TagHolder<T> getHolder(ClientTagKey<T> clientTagKey) {
         return getOrCreateHolder(clientTagKey);
@@ -61,41 +62,30 @@ public class ClientTagManager implements PreparableReloadListener {
         return (ClientTagHolder<T>) REGISTRY.get(clientTagKey);
     }
 
-    public static void updateDatapacksSynced(RegistryAccess registryAccess) {
-        syncedAccess = registryAccess;
-        for (Consumer<RegistryAccess> consumer : REQUIRE_SYNC) {
-            consumer.accept(registryAccess);
-        }
+    public static void updateDatapacksSynced(GameRegistryHolder registryHolder) {
+        load(Minecraft.getInstance().getResourceManager(), registryHolder, true);
     }
 
     @Override
     public CompletableFuture<Void> reload(PreparationBarrier pPreparationBarrier, ResourceManager pResourceManager, ProfilerFiller pPreparationsProfiler, ProfilerFiller pReloadProfiler, Executor pBackgroundExecutor, Executor pGameExecutor) {
-        return load(pResourceManager).thenCompose(pPreparationBarrier::wait).thenRun(() -> Trimmed.logInDev("Client tags loaded!"));
+        REGISTRY.values().forEach(ClientTagHolder::reset);
+        return load(pResourceManager, TrimmedClient.getStaticHolder(), false).thenCompose(pPreparationBarrier::wait).thenRun(() -> Trimmed.logInDev("Client tags loaded!"));
     }
 
-    private CompletableFuture<Void> load(ResourceManager resourceManager) {
-        REGISTRY.values().forEach(ClientTagHolder::reset);
-        REQUIRE_SYNC.clear();
-
+    private static CompletableFuture<Void> load(ResourceManager resourceManager, GameRegistryHolder registryHolder, boolean onlyLoadSynced) {
         return CompletableFuture.allOf(StreamSupport.stream(KeyResolvers.getEntries().spliterator(), false)
                 .map(entry -> CompletableFuture.runAsync(() -> {
-                    if (entry.getValue().requiresActiveWorld()) {
-                        REQUIRE_SYNC.add(registryAccess ->
-                                resolveTags(entry.getKey(), entry.getValue(), resourceManager, registryAccess.createSerializationContext(JsonOps.INSTANCE))
-                        );
-                    }
-
-                    if (!entry.getValue().requiresActiveWorld()) {
-                        resolveTags(entry.getKey(), entry.getValue(), resourceManager, JsonOps.INSTANCE);
-                    } else if (syncedAccess != null) {
-                        resolveTags(entry.getKey(), entry.getValue(), resourceManager, syncedAccess.createSerializationContext(JsonOps.INSTANCE));
+                    // if onlyLoadSynced, only resolveTags if isSynced and requiresActiveWorld
+                    // otherwise, load if not requiresActiveWorld or isSynced
+                    if (onlyLoadSynced ? entry.getValue().requiresActiveWorld() && registryHolder.isSynced() : !entry.getValue().requiresActiveWorld() || registryHolder.isSynced()) {
+                        resolveTags(entry.getKey(), entry.getValue(), resourceManager, registryHolder.registryAccess().createSerializationContext(JsonOps.INSTANCE));
                     }
                 }))
                 .toArray(CompletableFuture[]::new)
         );
     }
 
-    private <T> void resolveTags(ResourceLocation registryId, KeyResolver<T> keyResolver, ResourceManager resourceManager, DynamicOps<JsonElement> jsonOps) {
+    private static <T> void resolveTags(ResourceLocation registryId, KeyResolver<T> keyResolver, ResourceManager resourceManager, DynamicOps<JsonElement> jsonOps) {
         String resolverPath = PATH + Utils.namespacedPath(registryId);
         FileToIdConverter converter = FileToIdConverter.json(resolverPath);
         Map<ResourceLocation, Set<ClientTagEntry>> unresolved = Utils.unsafeCast(readMap(converter, resourceManager, keyResolver, jsonOps));
@@ -110,7 +100,7 @@ public class ClientTagManager implements PreparableReloadListener {
         });
     }
 
-    private <T> Map<ResourceLocation, Set<ClientTagEntry>> readMap(FileToIdConverter converter, ResourceManager resourceManager, KeyResolver<T> keyResolver, DynamicOps<JsonElement> jsonOps) {
+    private static <T> Map<ResourceLocation, Set<ClientTagEntry>> readMap(FileToIdConverter converter, ResourceManager resourceManager, KeyResolver<T> keyResolver, DynamicOps<JsonElement> jsonOps) {
         ImmutableMap.Builder<ResourceLocation, Set<ClientTagEntry>> builder = ImmutableMap.builder();
         for (Map.Entry<ResourceLocation, List<Resource>> entry : converter.listMatchingResourceStacks(resourceManager).entrySet()) {
             ResourceLocation id = converter.fileToId(entry.getKey());
@@ -123,7 +113,7 @@ public class ClientTagManager implements PreparableReloadListener {
         return builder.build();
     }
 
-    private <T> Set<ClientTagEntry> readResources(ResourceLocation fileName, List<Resource> resourceStack, KeyResolver<T> keyResolver, DynamicOps<JsonElement> jsonOps) {
+    private static <T> Set<ClientTagEntry> readResources(ResourceLocation fileName, List<Resource> resourceStack, KeyResolver<T> keyResolver, DynamicOps<JsonElement> jsonOps) {
         ImmutableSet.Builder<ClientTagEntry> setBuilder = ImmutableSet.builder();
         for (Resource resource : resourceStack) {
             try (BufferedReader reader = resource.openAsReader()) {
@@ -145,7 +135,7 @@ public class ClientTagManager implements PreparableReloadListener {
         return setBuilder.build();
     }
 
-    private <T> void resolveEntry(ResourceLocation id, TagSetEntry<T> tagSetEntry, KeyResolver<T> resolver, DynamicOps<JsonElement> jsonOps) {
+    private static <T> void resolveEntry(ResourceLocation id, TagSetEntry<T> tagSetEntry, KeyResolver<T> resolver, DynamicOps<JsonElement> jsonOps) {
         ClientTagKey<T> key = ClientTagKey.of(resolver, id);
         Set<T> set;
         Set<T> optionalSet;
