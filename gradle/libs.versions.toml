@@ -1,13 +1,13 @@
 [versions]
-minecraft_release = "1.20.6"
-minecraft_range = "[1.20.5,1.21)"
-publish_range = "1.20.5"
+minecraft_release = "1.21-rc1"
+minecraft_range = "[1.21,1.22)"
+publish_range = "1.21"
 
-neoforge_release = "20.6.116"
-neoforge_range = "[20.6,21.0)"
+neoforge_release = "21.0.0-alpha.1.21-rc1.20240612.183440"
+neoforge_range = "[21.0,22.0)"
 
 fabric_loader = "0.15.11"
-fabric_api = "0.100.0+1.20.6"
+fabric_api = "0.100.1+1.21"
 
 forge = "1.20.4-49.0.11"
 
