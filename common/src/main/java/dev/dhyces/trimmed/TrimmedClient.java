@@ -1,5 +1,6 @@
 package dev.dhyces.trimmed;
 
+import com.mojang.serialization.MapCodec;
 import dev.dhyces.trimmed.api.client.TrimmedClientApiEntrypoint;
 import dev.dhyces.trimmed.api.client.ClientKeyResolvers;
 import dev.dhyces.trimmed.api.client.map.ClientMapKeys;
@@ -7,6 +8,7 @@ import dev.dhyces.trimmed.api.client.map.ClientMapTypes;
 import dev.dhyces.trimmed.impl.ModApiConsumer;
 import dev.dhyces.trimmed.impl.client.GameRegistryHolder;
 import dev.dhyces.trimmed.impl.client.TrimmedClientRegistrationImpl;
+import dev.dhyces.trimmed.impl.client.atlas.OpenPalettedPermutations;
 import dev.dhyces.trimmed.impl.client.atlas.TrimmedSpriteSourceTypes;
 import dev.dhyces.trimmed.impl.client.maps.KeyResolvers;
 import dev.dhyces.trimmed.impl.client.models.override.ItemOverrideReloadListener;
@@ -20,8 +22,11 @@ import dev.dhyces.trimmed.impl.mixin.client.ReloadableResourceManagerImplAccesso
 import dev.dhyces.trimmed.impl.client.maps.manager.ClientMapManager;
 import dev.dhyces.trimmed.modhelper.services.Services;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.texture.atlas.SpriteSource;
+import net.minecraft.client.renderer.texture.atlas.SpriteSourceType;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.PreparableReloadListener;
 import net.minecraft.server.packs.resources.ResourceManager;
 
@@ -29,6 +34,7 @@ import java.util.Collection;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 import java.util.function.BiConsumer;
+import java.util.function.BiFunction;
 
 public class TrimmedClient {
     private static GameRegistryHolder staticAccess;
@@ -38,9 +44,6 @@ public class TrimmedClient {
         }
         return staticAccess;
     }
-    public static boolean isSyncedAccess() {
-        return getStaticHolder().isSynced();
-    }
 
     public static void init() {
         KeyResolvers.register(Trimmed.id("texture"), ClientKeyResolvers.TEXTURE);
@@ -49,7 +52,6 @@ public class TrimmedClient {
         ClientMapManager.registerBaseKey(ClientMapKeys.TRIM_MATERIAL_OVERRIDES);
         ClientMapManager.registerBaseKey(ClientMapKeys.TRIM_OVERLAYS);
         ModelSourceRegistry.init();
-        TrimmedSpriteSourceTypes.bootstrap();
         ItemOverrideProviderRegistry.init();
     }
 
@@ -58,6 +60,10 @@ public class TrimmedClient {
         for (ModApiConsumer<TrimmedClientApiEntrypoint> consumer : Services.CLIENT_HELPER.getClientApiConsumers()) {
             consumer.entrypoint().registration(registration);
         }
+    }
+
+    public static void registerSpriteSourceTypes(BiFunction<ResourceLocation, MapCodec<? extends SpriteSource>, SpriteSourceType> registrar) {
+        TrimmedSpriteSourceTypes.bootstrap(registrar);
     }
 
     public static void registerClientReloadListener(BiConsumer<String, PreparableReloadListener> eventConsumer) {

@@ -1,5 +1,6 @@
 package dev.dhyces.trimmed;
 
+import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
@@ -8,6 +9,7 @@ import net.neoforged.fml.common.Mod;
 import net.neoforged.neoforge.client.event.ClientPlayerNetworkEvent;
 import net.neoforged.neoforge.client.event.ModelEvent;
 import net.neoforged.neoforge.client.event.RegisterClientReloadListenersEvent;
+import net.neoforged.neoforge.client.event.RegisterSpriteSourceTypesEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.TagsUpdatedEvent;
 import net.neoforged.neoforge.event.server.ServerStoppingEvent;
@@ -17,10 +19,11 @@ import java.util.Set;
 @SuppressWarnings("unused")
 @Mod(value = Trimmed.MODID, dist = Dist.CLIENT)
 public class NeoTrimmedClient {
-    private static Set<ResourceLocation> additionalGeneratedModels;
+    private static Set<ModelResourceLocation> additionalGeneratedModels;
 
     public NeoTrimmedClient(IEventBus modBus, ModContainer container) {
         TrimmedClient.init();
+        modBus.addListener(this::registerSpriteSourceTypes);
         modBus.addListener(this::registerClientReloadListener);
         modBus.addListener(this::addModels);
 
@@ -29,6 +32,10 @@ public class NeoTrimmedClient {
         NeoForge.EVENT_BUS.addListener(this::onLogout);
 
         TrimmedClient.initApi();
+    }
+
+    private void registerSpriteSourceTypes(final RegisterSpriteSourceTypesEvent event) {
+        TrimmedClient.registerSpriteSourceTypes(event::register);
     }
 
     private void registerClientReloadListener(final RegisterClientReloadListenersEvent event) {
@@ -52,7 +59,7 @@ public class NeoTrimmedClient {
         TrimmedClient.resetSyncedStatus();
     }
 
-    public static void setModels(Set<ResourceLocation> models) {
+    public static void setModels(Set<ModelResourceLocation> models) {
         additionalGeneratedModels = models;
     }
 }

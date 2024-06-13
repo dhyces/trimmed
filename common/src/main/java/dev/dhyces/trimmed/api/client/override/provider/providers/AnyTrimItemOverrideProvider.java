@@ -49,7 +49,7 @@ public class AnyTrimItemOverrideProvider extends SimpleItemOverrideProvider {
                 .map(ArmorTrim::material)
                 .flatMap(holder -> holder.unwrapKey().map(key -> key.location().withPath(holder.value().overrideArmorMaterials().getOrDefault(armorItem.getMaterial(), holder.value().assetName()))));
         if (materialIdOptional.isPresent()) {
-            ResourceLocation id = new ResourceLocation(modelIdTemplate.process(s -> {
+            ResourceLocation id = ResourceLocation.parse(modelIdTemplate.process(s -> {
                 if (s.equals("material_suffix")) {
                     return materialIdOptional.get().getPath();
                 } else {

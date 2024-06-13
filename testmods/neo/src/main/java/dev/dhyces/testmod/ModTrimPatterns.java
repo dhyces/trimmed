@@ -9,6 +9,6 @@ public class ModTrimPatterns {
     public static final ResourceKey<TrimPattern> SPIRAL = registryKey("spiral");
 
     private static ResourceKey<TrimPattern> registryKey(String id) {
-        return ResourceKey.create(Registries.TRIM_PATTERN, new ResourceLocation(TrimmedTest.MODID, id));
+        return ResourceKey.create(Registries.TRIM_PATTERN, TrimmedTest.id(id));
     }
 }

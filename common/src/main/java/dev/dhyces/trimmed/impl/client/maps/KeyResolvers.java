@@ -57,6 +57,7 @@ import net.minecraft.world.level.biome.BiomeSource;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BannerPattern;
 import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.entity.DecoratedPotPattern;
 import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.chunk.status.ChunkStatus;
 import net.minecraft.world.level.dimension.DimensionType;
@@ -123,7 +124,7 @@ public final class KeyResolvers {
     public static final KeyResolver.Static<ResourceLocation> CUSTOM_STAT = registerStaticRegistry(BuiltInRegistries.CUSTOM_STAT);
     public static final KeyResolver.Dynamic<DamageType> DAMAGE_TYPE = registerDynamicRegistry(Registries.DAMAGE_TYPE);
     public static final KeyResolver.Static<MapCodec<? extends DensityFunction>> DENSITY_FUNCTION_TYPE = registerStaticRegistry(BuiltInRegistries.DENSITY_FUNCTION_TYPE);
-    public static final KeyResolver.Static<Enchantment> ENCHANTMENT = registerStaticRegistry(BuiltInRegistries.ENCHANTMENT);
+    public static final KeyResolver.Dynamic<Enchantment> ENCHANTMENT = registerDynamicRegistry(Registries.ENCHANTMENT);
     public static final KeyResolver.Static<EntityType<?>> ENTITY_TYPE = registerStaticRegistry(BuiltInRegistries.ENTITY_TYPE);
     public static final KeyResolver.Static<Feature<?>> FEATURE = registerStaticRegistry(BuiltInRegistries.FEATURE);
     public static final KeyResolver.Static<FeatureSizeType<?>> FEATURE_SIZE_TYPE = registerStaticRegistry(BuiltInRegistries.FEATURE_SIZE_TYPE);
@@ -147,7 +148,7 @@ public final class KeyResolvers {
     public static final KeyResolver.Static<MemoryModuleType<?>> MEMORY_MODULE_TYPE = registerStaticRegistry(BuiltInRegistries.MEMORY_MODULE_TYPE);
     public static final KeyResolver.Static<MenuType<?>> MENU = registerStaticRegistry(BuiltInRegistries.MENU);
     public static final KeyResolver.Static<MobEffect> MOB_EFFECT = registerStaticRegistry(BuiltInRegistries.MOB_EFFECT);
-    public static final KeyResolver.Static<PaintingVariant> PAINTING_VARIANT = registerStaticRegistry(BuiltInRegistries.PAINTING_VARIANT);
+    public static final KeyResolver.Dynamic<PaintingVariant> PAINTING_VARIANT = registerDynamicRegistry(Registries.PAINTING_VARIANT);
     public static final KeyResolver.Static<ParticleType<?>> PARTICLE_TYPE = registerStaticRegistry(BuiltInRegistries.PARTICLE_TYPE);
     public static final KeyResolver.Static<PlacementModifierType<?>> PLACEMENT_MODIFIER_TYPE = registerStaticRegistry(BuiltInRegistries.PLACEMENT_MODIFIER_TYPE);
     public static final KeyResolver.Static<PoiType> POINT_OF_INTEREST_TYPE = registerStaticRegistry(BuiltInRegistries.POINT_OF_INTEREST_TYPE);
@@ -173,7 +174,7 @@ public final class KeyResolvers {
     public static final KeyResolver.Static<TrunkPlacerType<?>> TRUNK_PLACER_TYPE = registerStaticRegistry(BuiltInRegistries.TRUNK_PLACER_TYPE);
     public static final KeyResolver.Static<VillagerProfession> VILLAGER_PROFESSION = registerStaticRegistry(BuiltInRegistries.VILLAGER_PROFESSION);
     public static final KeyResolver.Static<VillagerType> VILLAGER_TYPE = registerStaticRegistry(BuiltInRegistries.VILLAGER_TYPE);
-    public static final KeyResolver.Static<String> DECORATED_POT_PATTERNS = registerStaticRegistry(BuiltInRegistries.DECORATED_POT_PATTERNS);
+    public static final KeyResolver.Static<DecoratedPotPattern> DECORATED_POT_PATTERNS = registerStaticRegistry(BuiltInRegistries.DECORATED_POT_PATTERN);
     public static final KeyResolver.Static<NumberFormatType<?>> NUMBER_FORMAT_TYPE = registerStaticRegistry(BuiltInRegistries.NUMBER_FORMAT_TYPE);
     public static final KeyResolver.Static<ArmorMaterial> ARMOR_MATERIAL = registerStaticRegistry(BuiltInRegistries.ARMOR_MATERIAL);
     public static final KeyResolver.Static<DataComponentType<?>> DATA_COMPONENT_TYPE = registerStaticRegistry(BuiltInRegistries.DATA_COMPONENT_TYPE);

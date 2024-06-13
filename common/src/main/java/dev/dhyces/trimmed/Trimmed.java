@@ -8,7 +8,7 @@ import org.slf4j.LoggerFactory;
 public class Trimmed {
     public static final String MODID = "trimmed";
     public static ResourceLocation id(String id) {
-        return new ResourceLocation(MODID, id);
+        return ResourceLocation.fromNamespaceAndPath(MODID, id);
     }
 
     public static final Logger LOGGER = LoggerFactory.getLogger("Trimmed");

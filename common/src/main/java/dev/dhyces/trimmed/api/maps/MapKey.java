@@ -59,7 +59,7 @@ public final class MapKey<K, V> {
                 baseKey = Trimmed.id(id.getPath().substring(0, firstSlashIndex));
                 subKey = id.withPath(s -> s.substring(firstSlashIndex+1));
             } else {
-                baseKey = new ResourceLocation(id.getPath().substring(0, firstSlashIndex), id.getPath().substring(firstSlashIndex+1, secondSlashIndex));
+                baseKey = ResourceLocation.fromNamespaceAndPath(id.getPath().substring(0, firstSlashIndex), id.getPath().substring(firstSlashIndex+1, secondSlashIndex));
                 subKey = id.withPath(s -> s.substring(secondSlashIndex+1));
             }
             return fromBase(MapKey.baseKeyOf(mapType, baseKey), subKey);

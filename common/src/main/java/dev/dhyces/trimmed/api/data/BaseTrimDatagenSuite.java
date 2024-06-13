@@ -124,8 +124,8 @@ public abstract class BaseTrimDatagenSuite {
         config.altTranslations.forEach(altTranslation -> altTranslation.finish(translationKey));
 
         if (config.mainTexture == null) {
-            patternTextures.add(new ResourceLocation(patternKey.location().getNamespace(), "trims/models/armor/" + patternKey.location().getPath()));
-            patternTextures.add(new ResourceLocation(patternKey.location().getNamespace(), "trims/models/armor/" + patternKey.location().getPath() + "_leggings"));
+            patternTextures.add(ResourceLocation.fromNamespaceAndPath(patternKey.location().getNamespace(), "trims/models/armor/" + patternKey.location().getPath()));
+            patternTextures.add(ResourceLocation.fromNamespaceAndPath(patternKey.location().getNamespace(), "trims/models/armor/" + patternKey.location().getPath() + "_leggings"));
         } else {
             patternTextures.add(config.mainTexture);
             patternTextures.add(config.leggingsTexture);

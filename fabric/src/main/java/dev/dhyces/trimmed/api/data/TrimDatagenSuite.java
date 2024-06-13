@@ -31,7 +31,7 @@ public class TrimDatagenSuite extends BaseTrimDatagenSuite {
     public TrimDatagenSuite(FabricDataGenerator.Pack pack, String modid, @Nullable String mainLanguageCode) {
         super(modid, (key, translation) -> {
             if (mainLanguageCode != null) {
-                TRANSLATIONS.put(new ResourceLocation(modid, mainLanguageCode), Pair.of(key, translation));
+                TRANSLATIONS.put(ResourceLocation.fromNamespaceAndPath(modid, mainLanguageCode), Pair.of(key, translation));
             }
         });
         pack.addProvider((output, registriesFuture) ->
@@ -127,6 +127,6 @@ public class TrimDatagenSuite extends BaseTrimDatagenSuite {
      * translations themselves.
      */
     public void resolveTranslationsFor(String languageCode, FabricLanguageProvider.TranslationBuilder builder) {
-        TRANSLATIONS.get(new ResourceLocation(modid, languageCode)).forEach(pair -> builder.add(pair.getFirst(), pair.getSecond()));
+        TRANSLATIONS.get(ResourceLocation.fromNamespaceAndPath(modid, languageCode)).forEach(pair -> builder.add(pair.getFirst(), pair.getSecond()));
     }
 }

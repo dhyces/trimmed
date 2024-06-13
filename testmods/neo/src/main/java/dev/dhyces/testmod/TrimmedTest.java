@@ -25,7 +25,7 @@ public class TrimmedTest {
     public static final Logger LOGGER = LoggerFactory.getLogger(MODID);
 
     public static ResourceLocation id(String id) {
-        return new ResourceLocation(MODID, id);
+        return ResourceLocation.fromNamespaceAndPath(MODID, id);
     }
 
     public static final MapHolder<DamageType, Integer> TEST_DELEGATE = TrimmedClientMapApi.getInstance().getSimpleMap(TestClientMapKeys.DATAGEN_TEST_DAMAGE_TYPE_MAP);

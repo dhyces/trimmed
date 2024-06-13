@@ -81,7 +81,7 @@ public class OpenPalettedPermutations implements SpriteSource {
 
     @Override
     public SpriteSourceType type() {
-        return TrimmedSpriteSourceTypes.OPEN_PALETTED_PERMUTATIONS;
+        return TrimmedSpriteSourceTypes.OPEN_PALETTED_PERMUTATIONS.get();
     }
 
     public record OptionalSupplier(boolean isRequired, Supplier<IntUnaryOperator> mapper) {}
@@ -95,7 +95,7 @@ public class OpenPalettedPermutations implements SpriteSource {
                 return new SpriteContents(permutedId, new FrameSize(image.getWidth(), image.getHeight()), image, ResourceMetadata.EMPTY);
             } catch (IOException e) {
                 if (optionalSupplier.isRequired) {
-                    Trimmed.LOGGER.error("Could not create paletted image for " + permutedId);
+                    Trimmed.LOGGER.error("Could not create paletted image for {}", permutedId);
                 }
             } finally {
                 lazyLoadedImage.release();

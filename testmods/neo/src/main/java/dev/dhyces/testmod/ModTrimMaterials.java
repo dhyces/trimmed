@@ -14,6 +14,6 @@ public class ModTrimMaterials {
     public static final ResourceKey<TrimMaterial> ADAMANTIUM = registryKey("adamantium");
 
     private static ResourceKey<TrimMaterial> registryKey(String id) {
-        return ResourceKey.create(Registries.TRIM_MATERIAL, new ResourceLocation(TrimmedTest.MODID, id));
+        return ResourceKey.create(Registries.TRIM_MATERIAL, TrimmedTest.id(id));
     }
 }

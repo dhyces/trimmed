@@ -13,7 +13,7 @@ import net.minecraft.util.FormattedCharSequence;
 import java.util.List;
 
 public class InfoToast implements Toast {
-    public static final ResourceLocation TEXTURE = new ResourceLocation("toast/advancement");
+    public static final ResourceLocation TEXTURE = ResourceLocation.withDefaultNamespace("toast/advancement");
     private static final int MIDDLE_OF_TOAST = 24;
     private final Component title;
     private final List<FormattedCharSequence> messageLines;

@@ -21,15 +21,15 @@ public final class CodecUtil {
                 if (s.contains("#")) {
                     String[] identifierModelSplit = s.split("#");
                     try {
-                        ResourceLocation id = new ResourceLocation(identifierModelSplit[0]);
+                        ResourceLocation id = ResourceLocation.parse(identifierModelSplit[0]);
                         return DataResult.success(new ModelResourceLocation(id, identifierModelSplit[1]));
                     } catch (Exception e) {
                         return DataResult.error(e::getMessage);
                     }
                 }
-                return DataResult.success(new ModelResourceLocation(new ResourceLocation(s), "inventory"));
+                return DataResult.success(new ModelResourceLocation(ResourceLocation.parse(s), "inventory"));
             },
-            modelId -> modelId.getVariant().equals("inventory") ? modelId.getNamespace() + ":" + modelId.getPath() : modelId.toString()
+            modelId -> modelId.getVariant().equals("inventory") ? modelId.id().getNamespace() + ":" + modelId.id().getPath() : modelId.toString()
     );
 
     public static <K, V> LenientUnboundedMapCodec<K, V> lenientMapCodec(Codec<K> keyCodec, Codec<V> valueCodec, BiPredicate<DataResult<K>, V> skipFunction) {

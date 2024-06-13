@@ -18,10 +18,10 @@ public class TestClientMapProvider extends ClientMapDataProvider<ResourceLocatio
     protected void addMaps() {
         map(TestClientMapKeys.DATAGEN_TEST_MAP_2).put(TrimmedTest.id("some/kind/of/key"), "aValue");
         map(TestClientMapKeys.ADAMANTIUM_ARMOR)
-                .put(TrimmedTest.id("item/adamantium_helmet"), new ResourceLocation("trims/items/helmet_trim"))
-                .put(TrimmedTest.id("item/adamantium_chestplate"), new ResourceLocation("trims/items/chestplate_trim"))
-                .put(TrimmedTest.id("item/adamantium_leggings"), new ResourceLocation("trims/items/leggings_trim"))
-                .put(TrimmedTest.id("item/adamantium_boots"), new ResourceLocation("trims/items/boots_trim"));
+                .put(TrimmedTest.id("item/adamantium_helmet"), ResourceLocation.withDefaultNamespace("trims/items/helmet_trim"))
+                .put(TrimmedTest.id("item/adamantium_chestplate"), ResourceLocation.withDefaultNamespace("trims/items/chestplate_trim"))
+                .put(TrimmedTest.id("item/adamantium_leggings"), ResourceLocation.withDefaultNamespace("trims/items/leggings_trim"))
+                .put(TrimmedTest.id("item/adamantium_boots"), ResourceLocation.withDefaultNamespace("trims/items/boots_trim"));
         map(ClientMapKeys.TRIM_OVERLAYS)
                 .append(TestClientMapKeys.ADAMANTIUM_ARMOR);
         map(TestClientMapKeys.ADAMANTIUM_MATERIAL_OVERRIDES)
