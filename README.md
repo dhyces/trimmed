@@ -55,7 +55,7 @@ dependencies {
 ### Neo
 ```groovy
 dependencies {
-    implementation fg.deobf("dev.dhyces.trimmed:trimmed-neoforge-1.21-3.0.0")
+    implementation("dev.dhyces.trimmed:trimmed-neoforge-1.21-3.0.0")
 }
 ```
 ### Fabric
