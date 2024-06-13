@@ -67,7 +67,7 @@ public class OpenPalettedPermutations implements SpriteSource {
         textures.getSet().forEach(texture -> {
             Optional<Resource> imageOptional = pResourceManager.getResource(TEXTURE_ID_CONVERTER.idToFile(texture));
             if (imageOptional.isEmpty() && textures.isRequired(texture)) {
-                Trimmed.LOGGER.error("Cannot locate required " + texture);
+                Trimmed.LOGGER.error("Cannot locate required {}", texture);
             } else if (imageOptional.isPresent()) {
                 LazyLoadedImage lazyloadedimage = new LazyLoadedImage(texture, imageOptional.get(), replacePixelsMap.size());
 
