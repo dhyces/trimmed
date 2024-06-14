@@ -53,7 +53,7 @@ dependencies {
 ### Neo
 ```groovy
 dependencies {
-    implementation("dev.dhyces.trimmed:trimmed-neoforge-1.21:3.0.0")
+    implementation("dev.dhyces.trimmed:trimmed-neo-1.21:3.0.0")
 }
 ```
 ### Fabric
