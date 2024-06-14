@@ -32,6 +32,7 @@ dependencies {
 ### Root
 ```groovy
 repositories {
+    mavenCentral()
     maven {
         name = "GitHubPackages"
         url = uri("https://maven.pkg.github.com/dhyces/trimmed")
@@ -40,27 +41,24 @@ repositories {
             password = project.findProperty("gpr.key") ?: System.getenv("TOKEN")
         }
     }
-    maven {
-        url = "https://jm.gserv.me/repository/maven-public/"
-    }
 }
 ```
 ### Common
 ```groovy
 dependencies {
     runtimeOnly("io.github.llamalad7:mixinextras-common:0.3.6")
-    implementation("dev.dhyces.trimmed:trimmed-common-1.21-3.0.0")
+    implementation("dev.dhyces.trimmed:trimmed-common-1.21:3.0.0")
 }
 ```
 ### Neo
 ```groovy
 dependencies {
-    implementation("dev.dhyces.trimmed:trimmed-neoforge-1.21-3.0.0")
+    implementation("dev.dhyces.trimmed:trimmed-neoforge-1.21:3.0.0")
 }
 ```
 ### Fabric
 ```groovy
 dependencies {
-    modImplementation("dev.dhyces.trimmed:trimmed-fabric-1.21-3.0.0")
+    modImplementation("dev.dhyces.trimmed:trimmed-fabric-1.21:3.0.0")
 }
 ```
