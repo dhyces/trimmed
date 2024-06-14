@@ -53,13 +53,6 @@ repositories {
 		name = "Neo"
 		url = uri("https://maven.neoforged.net/releases")
 	}
-	maven {
-		name = "Maven for PR #1076" // https://github.com/neoforged/NeoForge/pull/1076
-		url = uri("https://prmaven.neoforged.net/NeoForge/pr1076")
-		content {
-			includeModule("net.neoforged", "neoforge")
-		}
-	}
 }
 
 dependencies {
