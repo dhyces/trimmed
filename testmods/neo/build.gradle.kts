@@ -63,7 +63,7 @@ dependencies {
 		parchment("org.parchmentmc.data:parchment-${libs.versions.parchment.mc.get()}:${libs.versions.parchment.release.get()}@zip")
 	})
 
-	implementation("dev.dhyces.trimmed:trimmed-neo-1.20.6:2.1.4")
+	implementation("dev.dhyces.trimmed:trimmed-neo-1.21:3.0.0")
 //	compileOnly(project(":common"))
 //	compileOnly(project(":neo"))
 //	neoJava(project(path = ":neo", configuration = "neoJava"))
