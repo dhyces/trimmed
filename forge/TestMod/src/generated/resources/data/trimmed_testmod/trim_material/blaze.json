@@ -1,9 +1,0 @@
-{
-  "asset_name": "trimmed_testmod-blaze",
-  "description": {
-    "color": "#FCA100",
-    "translate": "trim_pattern.trimmed_testmod.blaze"
-  },
-  "ingredient": "minecraft:blaze_powder",
-  "item_model_index": -1.0
-}
