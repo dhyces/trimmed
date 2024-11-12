@@ -28,9 +28,8 @@ public abstract class ModelManagerMixin {
                     Object2ObjectMap<ResourceLocation, UnbakedModel> newMap = new Object2ObjectOpenHashMap<>();
                     Set<ResourceLocation> generatedModelIds = new ObjectOpenHashSet<>();
                     generatedModels.forEach(namedModel -> {
-                        ResourceLocation path = namedModel.id().withPrefix("models/").withSuffix(".json");
-                        if (!originalMap.containsKey(path)) {
-                            newMap.put(path, namedModel.model().get());
+                        if (!originalMap.containsKey(namedModel.id())) {
+                            newMap.put(namedModel.id(), namedModel.model().get());
                             generatedModelIds.add(namedModel.id());
                         }
                     });
