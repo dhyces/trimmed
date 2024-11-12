@@ -3,6 +3,7 @@ package dev.dhyces.trimmed.impl.client.models.override;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.mojang.serialization.JsonOps;
+import dev.dhyces.trimmed.api.TrimmedReference;
 import dev.dhyces.trimmed.api.data.model.override.ItemOverrideFile;
 import dev.dhyces.trimmed.modhelper.services.Services;
 import dev.dhyces.trimmed.api.client.override.provider.ItemOverrideProvider;
@@ -24,8 +25,7 @@ import java.util.*;
 public class ItemOverrideReloadListener extends SimplePreparableReloadListener<Map<ResourceLocation, List<JsonObject>>> {
     private static final Logger LOGGER = LoggerFactory.getLogger("Trimmed/Item Model Overrides");
 
-    public static final String OVERRIDES_DIRECTORY = "trimmed/item_model_overrides";
-    private static final FileToIdConverter OVERRIDES_FINDER = FileToIdConverter.json(OVERRIDES_DIRECTORY);
+    private static final FileToIdConverter OVERRIDES_FINDER = FileToIdConverter.json(TrimmedReference.OVERRIDES_DIRECTORY);
 
     @Override
     protected Map<ResourceLocation, List<JsonObject>> prepare(ResourceManager resourceManager, ProfilerFiller profiler) {

@@ -29,15 +29,17 @@ base {
 //}
 
 sourceSets {
-    main
+    api {
+        compileClasspath += main.compileClasspath
+    }
+    main {
+        compileClasspath += api.compileClasspath + api.output
+        runtimeClasspath += api.runtimeClasspath + api.output
+    }
     datagen {
         compileClasspath += main.compileClasspath + main.output
         runtimeClasspath += main.runtimeClasspath + main.output
     }
-}
-
-configurations {
-
 }
 
 neoForge {
@@ -49,9 +51,11 @@ neoForge {
 
     mods {
         create("trimmed") {
+            sourceSet(sourceSets.api)
             sourceSet(sourceSets.main)
         }
         create("trimmeddatagen") {
+            sourceSet(sourceSets.api)
             sourceSet(sourceSets.main)
             sourceSet(sourceSets.datagen)
         }

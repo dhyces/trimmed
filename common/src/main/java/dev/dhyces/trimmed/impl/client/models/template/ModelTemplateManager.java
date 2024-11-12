@@ -2,6 +2,7 @@ package dev.dhyces.trimmed.impl.client.models.template;
 
 import com.google.gson.JsonObject;
 import dev.dhyces.trimmed.Trimmed;
+import dev.dhyces.trimmed.api.client.models.template.StringTemplate;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.resources.FileToIdConverter;
 import net.minecraft.resources.ResourceLocation;

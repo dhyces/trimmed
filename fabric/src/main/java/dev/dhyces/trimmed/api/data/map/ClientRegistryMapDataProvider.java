@@ -1,8 +1,6 @@
 package dev.dhyces.trimmed.api.data.map;
 
 import com.mojang.datafixers.util.Unit;
-import dev.dhyces.trimmed.api.KeyResolver;
-import dev.dhyces.trimmed.api.client.TrimmedClientApi;
 import dev.dhyces.trimmed.api.data.map.appenders.RegistryMapAppender;
 import dev.dhyces.trimmed.api.util.Utils;
 import dev.dhyces.trimmed.api.maps.MapKey;
@@ -16,7 +14,6 @@ import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
 
 import java.nio.file.Path;
-import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 

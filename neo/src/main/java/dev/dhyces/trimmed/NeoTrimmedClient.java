@@ -1,7 +1,6 @@
 package dev.dhyces.trimmed;
 
 import net.minecraft.client.resources.model.ModelResourceLocation;
-import net.minecraft.resources.ResourceLocation;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
@@ -14,10 +13,8 @@ import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.TagsUpdatedEvent;
 import net.neoforged.neoforge.event.server.ServerStoppingEvent;
 
-import java.util.Set;
-
 @SuppressWarnings("unused")
-@Mod(value = Trimmed.MODID, dist = Dist.CLIENT)
+@Mod(value = TrimmedReference.MODID, dist = Dist.CLIENT)
 public class NeoTrimmedClient {
     public NeoTrimmedClient(IEventBus modBus, ModContainer container) {
         TrimmedClient.init();

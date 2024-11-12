@@ -7,7 +7,7 @@ import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
 
-@Mod(Trimmed.MODID)
+@Mod(TrimmedReference.MODID)
 public class TrimmedDatagen {
     public TrimmedDatagen(IEventBus modBus) {
         modBus.addListener(this::setupDatagen);

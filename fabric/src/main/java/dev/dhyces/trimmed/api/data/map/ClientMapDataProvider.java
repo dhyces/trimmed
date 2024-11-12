@@ -3,7 +3,6 @@ package dev.dhyces.trimmed.api.data.map;
 import com.google.gson.JsonElement;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.JsonOps;
-import dev.dhyces.trimmed.api.KeyResolver;
 import dev.dhyces.trimmed.api.client.TrimmedClientApi;
 import dev.dhyces.trimmed.api.data.map.appenders.MapAppender;
 import dev.dhyces.trimmed.api.data.map.appenders.MappedMapAppender;

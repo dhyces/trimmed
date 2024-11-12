@@ -1,6 +1,6 @@
 package dev.dhyces.trimmed.impl.client.atlas;
 
-import dev.dhyces.trimmed.Trimmed;
+import dev.dhyces.trimmed.api.TrimmedReference;
 import net.minecraft.client.renderer.texture.atlas.SpriteSourceType;
 import net.minecraft.resources.ResourceLocation;
 
@@ -10,6 +10,6 @@ public class TrimmedSpriteSourceTypes {
     public static final SpriteSourceType OPEN_PALETTED_PERMUTATIONS = new SpriteSourceType(OpenPalettedPermutations.CODEC);
 
     public static void bootstrap(BiConsumer<ResourceLocation, SpriteSourceType> registrar) {
-        registrar.accept(Trimmed.id("open_paletted_permutations"), OPEN_PALETTED_PERMUTATIONS);
+        registrar.accept(TrimmedReference.id("open_paletted_permutations"), OPEN_PALETTED_PERMUTATIONS);
     }
 }

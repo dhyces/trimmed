@@ -7,23 +7,18 @@ import dev.dhyces.trimmed.api.maps.MapHolder;
 import dev.dhyces.trimmed.api.util.Utils;
 import dev.dhyces.trimmed.api.maps.MapKey;
 import dev.dhyces.trimmed.impl.client.GameRegistryHolder;
-import dev.dhyces.trimmed.impl.client.maps.KeyResolvers;
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import dev.dhyces.trimmed.api.maps.KeyResolvers;
 import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
 import net.minecraft.client.Minecraft;
-import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.FileToIdConverter;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.PreparableReloadListener;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.Unit;
-import net.minecraft.util.profiling.ProfilerFiller;
 
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
-import java.util.function.Consumer;
 
 // Maps have types, which determine key and value. Then there can be many of those maps which can be accessed via key.
 // Getting a map from a key before maps have been loaded should return the MapAccess which is then later filled when

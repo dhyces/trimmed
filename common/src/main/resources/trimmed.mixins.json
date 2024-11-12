@@ -10,7 +10,11 @@
   "client": [
     "client.BakedOverridesMixin",
     "client.ModelManagerMixin",
-    "client.ReloadableResourceManagerAccessor"
+    "client.ReloadableResourceManagerAccessor",
+    "client.api.ItemOverrideProviderMixin",
+    "client.api.TrimmedClientApiMixin",
+    "client.api.TrimmedClientMapApiMixin",
+    "client.api.TrimmedClientTagApiMixin"
   ],
   "injectors": {
     "defaultRequire": 1

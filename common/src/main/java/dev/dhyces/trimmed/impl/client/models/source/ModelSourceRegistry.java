@@ -4,12 +4,9 @@ import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
-import dev.dhyces.trimmed.Trimmed;
+import dev.dhyces.trimmed.api.TrimmedReference;
 import dev.dhyces.trimmed.api.util.CodecUtil;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
-
-import java.util.Map;
 
 public class ModelSourceRegistry {
     private static final BiMap<ResourceLocation, MapCodec<? extends ModelSource>> REGISTRY = HashBiMap.create();
@@ -22,6 +19,6 @@ public class ModelSourceRegistry {
     }
 
     public static void init() {
-        register(Trimmed.id("trims"), TrimModelSource.CODEC);
+        register(TrimmedReference.id("trims"), TrimModelSource.CODEC);
     }
 }

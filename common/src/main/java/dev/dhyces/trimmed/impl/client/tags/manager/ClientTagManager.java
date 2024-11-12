@@ -1,6 +1,5 @@
 package dev.dhyces.trimmed.impl.client.tags.manager;
 
-import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.google.gson.JsonElement;
@@ -14,14 +13,13 @@ import dev.dhyces.trimmed.api.KeyResolver;
 import dev.dhyces.trimmed.api.data.client.tag.ClientTagEntry;
 import dev.dhyces.trimmed.api.data.client.tag.ClientTagFile;
 import dev.dhyces.trimmed.impl.client.GameRegistryHolder;
-import dev.dhyces.trimmed.impl.client.maps.KeyResolvers;
+import dev.dhyces.trimmed.api.maps.KeyResolvers;
 import dev.dhyces.trimmed.api.client.tag.ClientTagKey;
 import dev.dhyces.trimmed.modhelper.services.Services;
 import dev.dhyces.trimmed.Trimmed;
 import dev.dhyces.trimmed.api.util.Utils;
 import it.unimi.dsi.fastutil.objects.*;
 import net.minecraft.client.Minecraft;
-import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.FileToIdConverter;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.PreparableReloadListener;
@@ -30,7 +28,6 @@ import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.DependencySorter;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.util.Unit;
-import net.minecraft.util.profiling.ProfilerFiller;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,7 +38,6 @@ import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 import java.util.function.Consumer;
-import java.util.stream.StreamSupport;
 
 public class ClientTagManager implements PreparableReloadListener {
     public static final String PATH = "trimmed/tags/";

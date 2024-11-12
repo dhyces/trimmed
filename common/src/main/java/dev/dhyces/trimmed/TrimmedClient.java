@@ -1,5 +1,6 @@
 package dev.dhyces.trimmed;
 
+import dev.dhyces.trimmed.api.TrimmedReference;
 import dev.dhyces.trimmed.api.client.TrimmedClientApiEntrypoint;
 import dev.dhyces.trimmed.api.client.ClientKeyResolvers;
 import dev.dhyces.trimmed.api.client.map.ClientMapKeys;
@@ -8,7 +9,7 @@ import dev.dhyces.trimmed.impl.ModApiConsumer;
 import dev.dhyces.trimmed.impl.client.GameRegistryHolder;
 import dev.dhyces.trimmed.impl.client.TrimmedClientRegistrationImpl;
 import dev.dhyces.trimmed.impl.client.atlas.TrimmedSpriteSourceTypes;
-import dev.dhyces.trimmed.impl.client.maps.KeyResolvers;
+import dev.dhyces.trimmed.api.maps.KeyResolvers;
 import dev.dhyces.trimmed.impl.client.models.override.ItemOverrideReloadListener;
 import dev.dhyces.trimmed.impl.client.models.override.provider.ItemOverrideProviderRegistry;
 import dev.dhyces.trimmed.impl.client.models.source.ModelSourceLoader;
@@ -45,8 +46,8 @@ public class TrimmedClient {
 
     static Set<ResourceLocation> additionalGeneratedModels;
 
-    public static void init() {
-        KeyResolvers.register(Trimmed.id("texture"), ClientKeyResolvers.TEXTURE);
+    static void init() {
+        KeyResolvers.register(TrimmedReference.id("texture"), ClientKeyResolvers.TEXTURE);
         ClientMapTypes.init();
         ClientMapManager.registerBaseKey(ClientMapKeys.MATERIAL_SUFFIXES);
         ClientMapManager.registerBaseKey(ClientMapKeys.TRIM_MATERIAL_OVERRIDES);
@@ -55,18 +56,18 @@ public class TrimmedClient {
         ItemOverrideProviderRegistry.init();
     }
 
-    public static void initApi() {
+    static void initApi() {
         TrimmedClientApiEntrypoint.TrimmedClientRegistration registration = new TrimmedClientRegistrationImpl();
         for (ModApiConsumer<TrimmedClientApiEntrypoint> consumer : Services.CLIENT_HELPER.getClientApiConsumers()) {
             consumer.entrypoint().registration(registration);
         }
     }
 
-    public static void registerSpriteSourceTypes(BiConsumer<ResourceLocation, SpriteSourceType> registrar) {
+    static void registerSpriteSourceTypes(BiConsumer<ResourceLocation, SpriteSourceType> registrar) {
         TrimmedSpriteSourceTypes.bootstrap(registrar);
     }
 
-    public static void registerClientReloadListener(BiConsumer<String, PreparableReloadListener> eventConsumer) {
+    static void registerClientReloadListener(BiConsumer<String, PreparableReloadListener> eventConsumer) {
         eventConsumer.accept("item_model_overrides", new ItemOverrideReloadListener());
     }
 
@@ -75,7 +76,7 @@ public class TrimmedClient {
         ((ReloadableResourceManagerAccessor)Minecraft.getInstance().getResourceManager()).getListeners().add(0, new ClientTagManager());
     }
 
-    public static void onTagsSynced(HolderLookup.Provider lookupProvider, boolean shouldUpdateStatic) {
+    static void onTagsSynced(HolderLookup.Provider lookupProvider, boolean shouldUpdateStatic) {
         staticAccess = new GameRegistryHolder(lookupProvider, true);
         if (shouldUpdateStatic) { //TODO: Disabled the toast for now. Use toast later when a datapack registry queued
 //            if (Minecraft.getInstance().player != null) {
@@ -86,7 +87,7 @@ public class TrimmedClient {
         }
     }
 
-    public static void resetSyncedStatus() {
+    static void resetSyncedStatus() {
         staticAccess = null;
     }
 

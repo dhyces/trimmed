@@ -1,11 +1,11 @@
 package dev.dhyces.trimmed.impl.client;
 
+import com.mojang.serialization.MapCodec;
 import dev.dhyces.trimmed.api.client.TrimmedClientApiEntrypoint;
 import dev.dhyces.trimmed.api.client.override.provider.ItemOverrideProvider;
-import dev.dhyces.trimmed.api.client.override.provider.ItemOverrideProviderType;
 import dev.dhyces.trimmed.api.maps.MapKey;
 import dev.dhyces.trimmed.api.KeyResolver;
-import dev.dhyces.trimmed.impl.client.maps.KeyResolvers;
+import dev.dhyces.trimmed.api.maps.KeyResolvers;
 import dev.dhyces.trimmed.impl.client.maps.manager.ClientMapManager;
 import dev.dhyces.trimmed.impl.client.models.override.provider.ItemOverrideProviderRegistry;
 import net.minecraft.resources.ResourceLocation;
@@ -14,7 +14,7 @@ import java.util.function.Supplier;
 
 public final class TrimmedClientRegistrationImpl implements TrimmedClientApiEntrypoint.TrimmedClientRegistration {
     @Override
-    public <T extends ItemOverrideProvider> ItemOverrideProviderType<T> registerItemOverrideType(ResourceLocation id, ItemOverrideProviderType<T> providerType) {
+    public <T extends ItemOverrideProvider> MapCodec<T> registerItemOverrideType(ResourceLocation id, MapCodec<T> providerType) {
         ItemOverrideProviderRegistry.register(id, providerType);
         return providerType;
     }

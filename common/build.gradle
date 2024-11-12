@@ -25,6 +25,17 @@ modsDotGroovy {
     }
 }
 
+sourceSets {
+    api {
+        compileClasspath += main.compileClasspath
+    }
+    main {
+        compileClasspath += api.compileClasspath + api.output
+        runtimeClasspath += api.runtimeClasspath + api.output
+        resources.srcDir 'src/generated/resources'
+    }
+}
+
 configurations {
     commonJava {
         canBeResolved = false
@@ -51,6 +62,12 @@ neoForge {
     }
 }
 
+java {
+    registerFeature("api") {
+        usingSourceSet(sourceSets.api)
+    }
+}
+
 dependencies {
     compileOnly libs.mixin
     annotationProcessor libs.mixinextras.common
@@ -59,15 +76,8 @@ dependencies {
 
 artifacts {
     commonJava sourceSets.main.java.sourceDirectories.singleFile
+    commonJava sourceSets.api.java.sourceDirectories.singleFile
     sourceSets.main.resources.sourceDirectories.forEach {
         commonResources it
-    }
-}
-
-sourceSets.main.resources.srcDir 'src/generated/resources'
-
-idea {
-    module {
-        inheritOutputDirs = false
     }
 }

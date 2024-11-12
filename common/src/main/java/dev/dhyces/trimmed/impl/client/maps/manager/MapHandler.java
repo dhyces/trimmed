@@ -3,7 +3,6 @@ package dev.dhyces.trimmed.impl.client.maps.manager;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
-import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.DynamicOps;
 import dev.dhyces.trimmed.Trimmed;
 import dev.dhyces.trimmed.api.data.map.MapAppendElement;
@@ -28,7 +27,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.*;
 import java.util.function.Consumer;
-import java.util.stream.Collectors;
 
 public final class MapHandler<K, V> {
     private final MapKey<K, V> baseKey;

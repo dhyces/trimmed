@@ -24,7 +24,7 @@ public class FabricTrimmedClient implements ClientModInitializer {
         TrimmedClient.init();
         TrimmedClient.registerSpriteSourceTypes(AtlasSourceTypeRegistry::register);
         TrimmedClient.registerClientReloadListener((id, listener) -> {
-            ResourceManagerHelper.get(PackType.CLIENT_RESOURCES).registerReloadListener(new WrappedReloadListener(Trimmed.id(id), listener));
+            ResourceManagerHelper.get(PackType.CLIENT_RESOURCES).registerReloadListener(new WrappedReloadListener(TrimmedReference.id(id), listener));
         });
         PreparableModelLoadingPlugin.register(TrimmedClient::startGeneratingModels,
                 (data, pluginContext) -> {

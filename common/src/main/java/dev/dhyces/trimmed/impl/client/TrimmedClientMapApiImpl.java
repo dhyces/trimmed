@@ -8,7 +8,7 @@ import dev.dhyces.trimmed.api.KeyResolver;
 import dev.dhyces.trimmed.api.maps.types.AdvancedMapType;
 import dev.dhyces.trimmed.api.maps.types.MapType;
 import dev.dhyces.trimmed.api.maps.MapKey;
-import dev.dhyces.trimmed.impl.client.maps.KeyResolvers;
+import dev.dhyces.trimmed.api.maps.KeyResolvers;
 import dev.dhyces.trimmed.impl.client.maps.manager.ClientMapManager;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
