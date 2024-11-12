@@ -3,7 +3,7 @@ package dev.dhyces.trimmed.api.data;
 import it.unimi.dsi.fastutil.objects.*;
 import net.minecraft.Util;
 import net.minecraft.advancements.critereon.InventoryChangeTrigger;
-import net.minecraft.core.Holder;
+import net.minecraft.core.HolderSet;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.ShapedRecipeBuilder;
@@ -13,11 +13,10 @@ import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.ItemTags;
-import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.armortrim.TrimMaterial;
-import net.minecraft.world.item.armortrim.TrimPattern;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.equipment.trim.TrimMaterial;
+import net.minecraft.world.item.equipment.trim.TrimPattern;
 import net.minecraft.world.level.ItemLike;
 import org.jetbrains.annotations.Nullable;
 
@@ -147,8 +146,8 @@ public abstract class BaseTrimDatagenSuite {
     protected SmithingTrimRecipeBuilder makeTrimRecipe(ItemLike templateItem) {
         return SmithingTrimRecipeBuilder.smithingTrim(
                         Ingredient.of(templateItem),
-                        Ingredient.of(ItemTags.TRIMMABLE_ARMOR),
-                        Ingredient.of(ItemTags.TRIM_MATERIALS),
+                        Ingredient.of(HolderSet.emptyNamed(BuiltInRegistries.ITEM, ItemTags.TRIMMABLE_ARMOR)),
+                        Ingredient.of(HolderSet.emptyNamed(BuiltInRegistries.ITEM, ItemTags.TRIM_MATERIALS)),
                         RecipeCategory.MISC
                 )
                 .unlocks("has_smithing_trim_template", InventoryChangeTrigger.TriggerInstance.hasItems(templateItem));
@@ -276,7 +275,7 @@ public abstract class BaseTrimDatagenSuite {
          * ###    S = templateItem
          */
         public PatternConfig createCopyRecipe(ItemLike baseItem) {
-            copyRecipe = ShapedRecipeBuilder.shaped(RecipeCategory.MISC, templateItem, 2)
+            copyRecipe = ShapedRecipeBuilder.shaped(BuiltInRegistries.ITEM, RecipeCategory.MISC, templateItem, 2)
                     .define('#', Items.DIAMOND)
                     .define('C', baseItem)
                     .define('S', templateItem)
@@ -302,7 +301,7 @@ public abstract class BaseTrimDatagenSuite {
     public static class MaterialConfig {
         protected final ResourceKey<TrimMaterial> materialKey;
         protected final Set<AltTranslation> altTranslations = new ObjectOpenHashSet<>();
-        protected final Map<Holder<ArmorMaterial>, String> overrides = new Reference2ObjectOpenHashMap<>();
+        protected final Map<ResourceLocation, String> overrides = new Object2ObjectOpenHashMap<>();
         protected Style materialStyle;
         protected String mainTranslation;
         protected ResourceLocation paletteTexture;
@@ -362,18 +361,8 @@ public abstract class BaseTrimDatagenSuite {
             return this;
         }
 
-        public MaterialConfig armorOverride(Holder<ArmorMaterial> armorMaterial, String assetNameOverride) {
+        public MaterialConfig armorOverride(ResourceLocation armorMaterial, String assetNameOverride) {
             this.overrides.put(armorMaterial, assetNameOverride);
-            return this;
-        }
-
-        public MaterialConfig armorOverride(ArmorMaterial armorMaterial, String assetNameOverride) {
-            this.armorOverride(BuiltInRegistries.ARMOR_MATERIAL.getResourceKey(armorMaterial).flatMap(BuiltInRegistries.ARMOR_MATERIAL::getHolder).orElseThrow(), assetNameOverride);
-            return this;
-        }
-
-        public MaterialConfig armorOverride(ResourceKey<ArmorMaterial> armorMaterial, String assetNameOverride) {
-            this.armorOverride(BuiltInRegistries.ARMOR_MATERIAL.getHolderOrThrow(armorMaterial), assetNameOverride);
             return this;
         }
     }

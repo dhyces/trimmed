@@ -14,7 +14,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.armortrim.ArmorTrim;
+import net.minecraft.world.item.equipment.trim.ArmorTrim;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
@@ -41,13 +41,13 @@ public class AnyTrimItemOverrideProvider extends SimpleItemOverrideProvider {
 
     @Override
     public ModelPair getModelLocation(ItemStack itemStack, @Nullable ClientLevel world, @Nullable LivingEntity entity, int seed) {
-        if (!(itemStack.getItem() instanceof ArmorItem armorItem)) {
+        if (!itemStack.has(DataComponents.EQUIPPABLE)) {
             return ModelPair.EMPTY;
         }
 
         Optional<ResourceLocation> materialIdOptional = Optional.ofNullable(itemStack.get(DataComponents.TRIM))
                 .map(ArmorTrim::material)
-                .flatMap(holder -> holder.unwrapKey().map(key -> key.location().withPath(holder.value().overrideArmorMaterials().getOrDefault(armorItem.getMaterial(), holder.value().assetName()))));
+                .flatMap(holder -> holder.unwrapKey().map(key -> key.location().withPath(itemStack.get(DataComponents.EQUIPPABLE).model().map(model -> holder.value().overrideArmorMaterials().get(model)).orElse(holder.value().assetName()))));
         if (materialIdOptional.isPresent()) {
             ResourceLocation id = ResourceLocation.parse(modelIdTemplate.process(s -> {
                 if (s.equals("material_suffix")) {

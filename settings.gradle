@@ -11,23 +11,11 @@ pluginManagement {
             url  = uri("https://maven.fabricmc.net/")
         }
         maven {
-            name = "Forge"
-            url  = uri("https://maven.minecraftforge.net/")
-        }
-        maven {
-            name = "Quilt (Release)"
-            url  = uri("https://maven.quiltmc.org/repository/release/")
-        }
-        maven {
             name = "Sponge Snapshots"
             url  = uri("https://repo.spongepowered.org/repository/maven-public/")
         }
         maven {
             url  = uri("https://maven.parchmentmc.org")
-        }
-        maven {
-            name = "Architectury"
-            url  = uri("https://maven.architectury.dev/")
         }
     }
 }
@@ -37,4 +25,4 @@ plugins {
 }
 
 rootProject.name = "trimmed"
-include("common", "neo", /*"forge",*/ "fabric", "testmods:neo") // "quilt"
+include("common", "neo", "fabric", /*"testmods:neo"*/)

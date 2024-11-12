@@ -1,0 +1,124 @@
+import org.groovymc.modsdotgroovy.gradle.tasks.AbstractGatherPlatformDetailsTask
+
+plugins {
+    id 'idea'
+    id 'maven-publish'
+    id "consumer.conventions"
+//    alias(libs.plugins.mdg)
+    alias(libs.plugins.moddev)
+    alias(libs.plugins.curseforgegradle)
+    alias(libs.plugins.minotaur)
+}
+
+base {
+    archivesName = "${mod_name}-neoforge-${libs.versions.minecraft.release.get()}"
+}
+
+//modsDotGroovy {
+//    platform(org.groovymc.modsdotgroovy.types.core.Platform.NEOFORGE)
+//    inferGather.set(false)
+//    multiplatform {
+//        from(":common")
+//    }
+//    apply()
+//}
+//
+//tasks.named("gatherNeoForgePlatformDetails", AbstractGatherPlatformDetailsTask).configure {
+//    minecraftVersion = libs.versions.minecraft.release
+//    platformVersion = libs.versions.neoforge.release
+//}
+
+sourceSets {
+    main
+    datagen {
+        compileClasspath += main.compileClasspath + main.output
+        runtimeClasspath += main.runtimeClasspath + main.output
+    }
+}
+
+configurations {
+
+}
+
+neoForge {
+    version = version = libs.neoforge.get().version
+
+    if (Boolean.parseBoolean(at_enabled)) {
+        accessTransformers.from(project(":common").file("src/main/resources/META-INF/accesstransformer.cfg"))
+    }
+
+    mods {
+        create("trimmed") {
+            sourceSet(sourceSets.main)
+        }
+        create("trimmeddatagen") {
+            sourceSet(sourceSets.main)
+            sourceSet(sourceSets.datagen)
+        }
+    }
+
+    runs {
+        client {
+            client()
+            ideName = "Neo Client"
+        }
+        server {
+            server()
+            ideName = "Neo Server"
+        }
+        data {
+            data()
+            ideName = "Neo Data"
+
+            programArgument("'--mod', ${mod_id}, '--all', '--output', ${project(":common").dependencyProject.file('src/generated/resources/')}, '--existing', ${file('src/main/resources/')}")
+
+
+            loadedMods = [mods.trimmeddatagen]
+        }
+    }
+}
+
+repositories {
+    maven {
+        name = 'Neo'
+        url = 'https://maven.neoforged.net/releases'
+    }
+}
+
+if (hasProperty("modrinth_write_version_pat")) {
+    modrinth {
+        token = findProperty("modrinth_write_version_pat") as String
+        projectId = properties["modrinth_project_id"] as String
+        versionName = "Fabric-${libs.versions.minecraft.release.get()}-${properties["mod_version"]}"
+        versionNumber = "${libs.versions.minecraft.release.get()}-${properties["mod_version"]}+neoforge"
+        versionType = properties["publish_type"] as String
+        uploadFile.set(tasks.jar)
+        gameVersions = List.of(libs.versions.publish.range.get().split(","))
+        loaders = List.of("neoforge")
+        changelog = rootProject.file("changelog.md").text
+        additionalFiles = List.of(tasks.named("sourcesJar"), tasks.named("javadocJar"))
+        detectLoaders = false
+        debugMode = properties["publish_debug"].toString().toBoolean()
+    }
+}
+
+if (hasProperty("curseforge_publishing_token")) {
+    tasks.register("curseforge", net.darkhax.curseforgegradle.TaskPublishCurseForge) {
+        group = "publishing"
+
+        disableVersionDetection()
+        apiToken = findProperty("curseforge_publishing_token")
+        def projectId = properties["curseforge_project_id"]
+        def mainFile = upload(projectId, tasks.jar)
+        mainFile.displayName = "NeoForge-${libs.versions.minecraft.release.get()}-${properties["mod_version"]}"
+        mainFile.releaseType = properties["publish_type"]
+        mainFile.changelog = rootProject.file("changelog.md").text
+        mainFile.changelogType = "markdown"
+        mainFile.addModLoader("NeoForge")
+        mainFile.addJavaVersion("Java ${java.toolchain.languageVersion.get()}")
+        mainFile.addGameVersion(libs.versions.minecraft.release.get())
+        debugMode = properties["publish_debug"].toString().toBoolean()
+
+        dependsOn(tasks.remapJar)
+    }
+}

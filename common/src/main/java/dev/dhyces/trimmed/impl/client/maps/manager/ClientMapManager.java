@@ -64,7 +64,7 @@ public class ClientMapManager implements PreparableReloadListener {
     }
 
     @Override
-    public CompletableFuture<Void> reload(PreparationBarrier pPreparationBarrier, ResourceManager pResourceManager, ProfilerFiller pPreparationsProfiler, ProfilerFiller pReloadProfiler, Executor pBackgroundExecutor, Executor pGameExecutor) {
+    public CompletableFuture<Void> reload(PreparationBarrier pPreparationBarrier, ResourceManager pResourceManager, Executor pBackgroundExecutor, Executor pGameExecutor) {
         REGISTRY.values().forEach(MapHandler::clear);
         return load(pResourceManager, TrimmedClient.getStaticHolder(), false).thenApply(completable::complete).thenCompose(pPreparationBarrier::wait).thenRun(ClientMapManager::finishReload);
     }
@@ -76,7 +76,7 @@ public class ClientMapManager implements PreparableReloadListener {
             FileToIdConverter converter = FileToIdConverter.json(resolverPath.getPath());
             try {
                 if (onlyLoadSynced ? entry.getKey().getType().isDataPackSynced() && registryHolder.isSynced() : !entry.getKey().getType().isDataPackSynced() || registryHolder.isSynced()) {
-                    entry.getValue().parse(resolverPath, converter, resourceManager, registryHolder.registryAccess().createSerializationContext(JsonOps.INSTANCE));
+                    entry.getValue().parse(resolverPath, converter, resourceManager, registryHolder.lookupProvider().createSerializationContext(JsonOps.INSTANCE));
                 }
             } catch (RuntimeException e) {
                 Trimmed.LOGGER.error("Could not read map", e);

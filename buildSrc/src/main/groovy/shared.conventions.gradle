@@ -1,0 +1,110 @@
+plugins {
+    id "java"
+    id "maven-publish"
+}
+
+def versionCatalog = {
+    extensions.getByType(VersionCatalogsExtension).named("libs")
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+    withSourcesJar()
+    withJavadocJar()
+}
+
+version = properties["mod_version"] as String
+
+tasks.jar {
+    from(rootProject.file("LICENSE")) {
+        rename { "${it}_${properties["mod_name"]}" }
+    }
+    manifest {
+        attributes([
+                'Specification-Title'     : mod_name,
+                'Specification-Vendor'    : authors,
+                'Specification-Version'   : project.jar.archiveVersion,
+                'Implementation-Title'    : project.name,
+                'Implementation-Version'  : project.jar.archiveVersion,
+                'Implementation-Vendor'   : authors,
+                'Implementation-Timestamp': new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
+                'Timestamp'               : System.currentTimeMillis(),
+                'Built-On-Java'           : "${System.getProperty('java.vm.version')} (${System.getProperty('java.vm.vendor')})",
+                'Built-On-Minecraft'      : libs.versions.minecraft.release.get()
+        ])
+    }
+}
+
+repositories {
+    mavenCentral()
+    mavenLocal()
+
+    maven {
+        name = "Sponge / Mixin"
+        url = uri("https://repo.spongepowered.org/repository/maven-public/")
+    }
+}
+
+dependencies {
+    compileOnly(versionCatalog().findLibrary("jetbrains.annotations").get())
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = "UTF-8"
+    options.release = 21
+}
+
+sourcesJar {
+    from(rootProject.file("LICENSE")) {
+        rename { "${it}_${mod_name}" }
+    }
+}
+
+if (hasProperty("publisher")) {
+    publishing {
+        repositories {
+            maven {
+                name = "Local"
+                url  = uri("file://" + findProperty("local_maven"))
+            }
+        }
+        publications {
+            mavenJava(MavenPublication) {
+                groupId project.group
+                artifactId project.archivesBaseName
+                version project.version
+                from components.java
+            }
+        }
+    }
+    publishing {
+        repositories {
+            maven {
+                name = "Local"
+                url  = uri("file://" + findProperty("local_maven"))
+            }
+            if (hasProperty("mavenUrl")) {
+                maven {
+                    name = "Maven"
+                    url  = findProperty("mavenUrl")
+                    credentials(PasswordCredentials.class) {
+                        username = findProperty("mavenUsername").toString()
+                        password = findProperty("mavenPassword").toString()
+                    }
+                }
+            }
+            if (hasProperty("trimmedGithubPackages")) {
+                maven {
+                    name = "GitHubPackages"
+                    url  = findProperty("trimmedGithubPackages")
+                    credentials {
+                        username = (project.findProperty("gpr.user") ?: System.getenv("USERNAME")) as String
+                        password = (project.findProperty("gpr.key") ?: System.getenv("TOKEN")) as String
+                    }
+                }
+            }
+        }
+    }
+}

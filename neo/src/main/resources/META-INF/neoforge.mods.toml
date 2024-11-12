@@ -1,0 +1,28 @@
+modLoader = "javafml"
+loaderVersion = "[3,)"
+license = "MIT"
+issueTrackerURL = "https://github.com/dhyces/trimmed/issues/"
+
+[[accessTransformers]]
+file = "META-INF/accesstransformer.cfg"
+
+[[mods]]
+modId = "trimmed"
+displayName = "Trimmed"
+authors = "dhyces"
+version = "3.0.0"
+displayURL = "https://modrinth.com/mod/trimmed/"
+sourcesUrl = "https://github.com/dhyces/trimmed/"
+logoFile = "icon.png"
+description = "Better item overrides! Better trim support! Override it all!"
+
+[[dependencies.trimmed]]
+modId = "neoforge"
+versionRange = "[21.3.16-beta,21.4-beta)"
+type = "required"
+
+[[mixins]]
+config = "trimmed.mixins.json"
+
+[[mixins]]
+config = "trimmed.neo.mixins.json"

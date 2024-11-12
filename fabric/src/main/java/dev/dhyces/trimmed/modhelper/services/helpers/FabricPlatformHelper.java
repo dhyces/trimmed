@@ -69,8 +69,8 @@ public final class FabricPlatformHelper implements PlatformHelper {
     @Override
     public <T> T getRegistryValue(@Nullable RegistryAccess registryAccess, ResourceKey<? extends Registry<T>> registryKey, ResourceLocation valueKey) {
         if (registryAccess != null) {
-            return registryAccess.registry(registryKey).map(reg -> reg.get(valueKey)).orElse(null);
+            return registryAccess.lookup(registryKey).map(reg -> reg.getValue(valueKey)).orElse(null);
         }
-        return (T)BuiltInRegistries.REGISTRY.get(registryKey.location()).get(valueKey);
+        return (T)BuiltInRegistries.REGISTRY.getValue(registryKey.location()).getValue(valueKey);
     }
 }

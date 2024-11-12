@@ -1,6 +1,5 @@
 package dev.dhyces.trimmed;
 
-import com.mojang.serialization.MapCodec;
 import dev.dhyces.trimmed.api.client.TrimmedClientApiEntrypoint;
 import dev.dhyces.trimmed.api.client.ClientKeyResolvers;
 import dev.dhyces.trimmed.api.client.map.ClientMapKeys;
@@ -8,7 +7,6 @@ import dev.dhyces.trimmed.api.client.map.ClientMapTypes;
 import dev.dhyces.trimmed.impl.ModApiConsumer;
 import dev.dhyces.trimmed.impl.client.GameRegistryHolder;
 import dev.dhyces.trimmed.impl.client.TrimmedClientRegistrationImpl;
-import dev.dhyces.trimmed.impl.client.atlas.OpenPalettedPermutations;
 import dev.dhyces.trimmed.impl.client.atlas.TrimmedSpriteSourceTypes;
 import dev.dhyces.trimmed.impl.client.maps.KeyResolvers;
 import dev.dhyces.trimmed.impl.client.models.override.ItemOverrideReloadListener;
@@ -18,12 +16,12 @@ import dev.dhyces.trimmed.impl.client.models.source.ModelSourceRegistry;
 import dev.dhyces.trimmed.impl.client.models.source.NamedModel;
 import dev.dhyces.trimmed.impl.client.models.template.ModelTemplateManager;
 import dev.dhyces.trimmed.impl.client.tags.manager.ClientTagManager;
-import dev.dhyces.trimmed.impl.mixin.client.ReloadableResourceManagerImplAccessor;
+import dev.dhyces.trimmed.impl.mixin.client.ReloadableResourceManagerAccessor;
 import dev.dhyces.trimmed.impl.client.maps.manager.ClientMapManager;
 import dev.dhyces.trimmed.modhelper.services.Services;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.texture.atlas.SpriteSource;
 import net.minecraft.client.renderer.texture.atlas.SpriteSourceType;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
@@ -31,10 +29,10 @@ import net.minecraft.server.packs.resources.PreparableReloadListener;
 import net.minecraft.server.packs.resources.ResourceManager;
 
 import java.util.Collection;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 import java.util.function.BiConsumer;
-import java.util.function.BiFunction;
 
 public class TrimmedClient {
     private static GameRegistryHolder staticAccess;
@@ -44,6 +42,8 @@ public class TrimmedClient {
         }
         return staticAccess;
     }
+
+    static Set<ResourceLocation> additionalGeneratedModels;
 
     public static void init() {
         KeyResolvers.register(Trimmed.id("texture"), ClientKeyResolvers.TEXTURE);
@@ -62,7 +62,7 @@ public class TrimmedClient {
         }
     }
 
-    public static void registerSpriteSourceTypes(BiFunction<ResourceLocation, MapCodec<? extends SpriteSource>, SpriteSourceType> registrar) {
+    public static void registerSpriteSourceTypes(BiConsumer<ResourceLocation, SpriteSourceType> registrar) {
         TrimmedSpriteSourceTypes.bootstrap(registrar);
     }
 
@@ -71,12 +71,12 @@ public class TrimmedClient {
     }
 
     public static void injectListenersAtBeginning() {
-        ((ReloadableResourceManagerImplAccessor)Minecraft.getInstance().getResourceManager()).getListeners().add(0, new ClientMapManager());
-        ((ReloadableResourceManagerImplAccessor)Minecraft.getInstance().getResourceManager()).getListeners().add(0, new ClientTagManager());
+        ((ReloadableResourceManagerAccessor)Minecraft.getInstance().getResourceManager()).getListeners().add(0, new ClientMapManager());
+        ((ReloadableResourceManagerAccessor)Minecraft.getInstance().getResourceManager()).getListeners().add(0, new ClientTagManager());
     }
 
-    public static void onTagsSynced(RegistryAccess registryAccess, boolean shouldUpdateStatic) {
-        staticAccess = new GameRegistryHolder(registryAccess, true);
+    public static void onTagsSynced(HolderLookup.Provider lookupProvider, boolean shouldUpdateStatic) {
+        staticAccess = new GameRegistryHolder(lookupProvider, true);
         if (shouldUpdateStatic) { //TODO: Disabled the toast for now. Use toast later when a datapack registry queued
 //            if (Minecraft.getInstance().player != null) {
 //                Minecraft.getInstance().getToasts().addToast(InfoToast.reloadClientInfo());
@@ -93,5 +93,9 @@ public class TrimmedClient {
     public static CompletableFuture<Collection<NamedModel>> startGeneratingModels(ResourceManager resourceManager, Executor executor) {
         return ModelTemplateManager.load(resourceManager, executor)
                 .thenComposeAsync(templateManager -> ModelSourceLoader.load(templateManager, resourceManager, executor));
+    }
+
+    public static void setModels(Set<ResourceLocation> models) {
+        additionalGeneratedModels = models;
     }
 }

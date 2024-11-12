@@ -15,6 +15,7 @@ import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.RecipeProvider;
 import net.minecraft.data.tags.ItemTagsProvider;
 import net.minecraft.data.tags.TagsProvider;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.Item;
@@ -36,6 +37,7 @@ public class TrimDatagenSuite extends BaseTrimDatagenSuite {
         super(modid, translationConsumer);
         DataGenerator generator = event.getGenerator();
         PackOutput packOutput = event.getGenerator().getPackOutput();
+        CompletableFuture<HolderLookup.Provider> lookup = event.getLookupProvider();
         RegistrySetBuilder builder = new RegistrySetBuilder()
                 .add(Registries.TRIM_PATTERN, pContext -> {
                     patterns.forEach(pContext::register);
@@ -43,24 +45,30 @@ public class TrimDatagenSuite extends BaseTrimDatagenSuite {
                 .add(Registries.TRIM_MATERIAL, pContext -> {
                     materials.forEach(pContext::register);
                 });
-        generator.addProvider(event.includeServer(), (DataProvider.Factory<? extends DataProvider>) pOutput -> new DatapackBuiltinEntriesProvider(packOutput, event.getLookupProvider(), builder, Set.of(modid)) {
+        lookup = generator.addProvider(event.includeServer(), (DataProvider.Factory<? extends DatapackBuiltinEntriesProvider>) pOutput -> new DatapackBuiltinEntriesProvider(packOutput, event.getLookupProvider(), builder, Set.of(modid)) {
             @Override
             public String getName() {
                 return "TrimDatagenSuite / " + super.getName() + " " + modid;
             }
-        });
-        generator.addProvider(event.includeServer(), new RecipeProvider(packOutput, event.getLookupProvider()) {
+        }).getRegistryProvider();
+        generator.addProvider(event.includeServer(), new RecipeProvider.Runner(packOutput, lookup) {
             @Override
-            protected void buildRecipes(RecipeOutput output) {
-                trimRecipes.forEach((id, smithingTrimRecipeBuilder) -> smithingTrimRecipeBuilder.save(output, id));
-                copyRecipes.forEach((id, smithingTrimRecipeBuilder) -> smithingTrimRecipeBuilder.save(output));
+            protected RecipeProvider createRecipeProvider(HolderLookup.Provider lookupProvider, RecipeOutput output) {
+                return new RecipeProvider(lookupProvider, output) {
+                    @Override
+                    protected void buildRecipes() {
+                        trimRecipes.forEach((id, smithingTrimRecipeBuilder) -> smithingTrimRecipeBuilder.save(output, ResourceKey.create(Registries.RECIPE, id)));
+                        copyRecipes.forEach((id, smithingTrimRecipeBuilder) -> smithingTrimRecipeBuilder.save(output));
+                    }
+                };
             }
 
+            @Override
             public String getName() {
-                return "TrimDatagenSuite / " + super.getName() + ": " + modid;
+                return "TrimDatagenSuite / Recipes: " + modid;
             }
         });
-        generator.addProvider(event.includeServer(), new ItemTagsProvider(packOutput, event.getLookupProvider(), CompletableFuture.completedFuture(TagsProvider.TagLookup.empty()), modid, event.getExistingFileHelper()) {
+        generator.addProvider(event.includeServer(), new ItemTagsProvider(packOutput, lookup, CompletableFuture.completedFuture(TagsProvider.TagLookup.empty()), modid, event.getExistingFileHelper()) {
             @Override
             protected void addTags(HolderLookup.Provider pProvider) {
                 if (!patterns.isEmpty()) {

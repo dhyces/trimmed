@@ -68,7 +68,7 @@ public class ClientTagManager implements PreparableReloadListener {
     }
 
     @Override
-    public CompletableFuture<Void> reload(PreparationBarrier pPreparationBarrier, ResourceManager pResourceManager, ProfilerFiller pPreparationsProfiler, ProfilerFiller pReloadProfiler, Executor pBackgroundExecutor, Executor pGameExecutor) {
+    public CompletableFuture<Void> reload(PreparationBarrier pPreparationBarrier, ResourceManager pResourceManager, Executor pBackgroundExecutor, Executor pGameExecutor) {
         REGISTRY.values().forEach(ClientTagHolder::reset);
         return load(pResourceManager, TrimmedClient.getStaticHolder(), false).thenCompose(pPreparationBarrier::wait).thenRun(() -> Trimmed.logInDev("Client tags loaded!"));
     }
@@ -76,7 +76,7 @@ public class ClientTagManager implements PreparableReloadListener {
     private static CompletableFuture<Unit> load(ResourceManager resourceManager, GameRegistryHolder registryHolder, boolean onlyLoadSynced) {
         for (Map.Entry<ResourceLocation, KeyResolver<?>> entry : KeyResolvers.getEntries())  {
             if (onlyLoadSynced ? entry.getValue().requiresActiveWorld() && registryHolder.isSynced() : !entry.getValue().requiresActiveWorld() || registryHolder.isSynced()) {
-                resolveTags(entry.getKey(), entry.getValue(), resourceManager, registryHolder.registryAccess().createSerializationContext(JsonOps.INSTANCE));
+                resolveTags(entry.getKey(), entry.getValue(), resourceManager, registryHolder.lookupProvider().createSerializationContext(JsonOps.INSTANCE));
             }
         }
         return CompletableFuture.completedFuture(Unit.INSTANCE);

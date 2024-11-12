@@ -12,13 +12,12 @@ import dev.dhyces.trimmed.impl.client.models.source.ModelSource;
 import dev.dhyces.trimmed.impl.client.models.source.ModelSourceRegistry;
 import dev.dhyces.trimmed.impl.client.models.source.TrimModelSource;
 import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
-import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.ArmorMaterial;
+import net.minecraft.world.item.equipment.ArmorMaterial;
 
 import java.nio.file.Path;
 import java.util.Map;
@@ -41,28 +40,14 @@ public abstract class BaseModelSourceDataProvider implements DataProvider {
 
     protected abstract void addModelSources();
 
-    public void addTwoLayerTrimsSource(ArmorMaterial armorMaterial) {
-        ResourceLocation materialId = BuiltInRegistries.ARMOR_MATERIAL.getResourceKey(armorMaterial).orElseThrow().location();
-        ResourceLocation id = materialId.withSuffix("_armor");
-        addTwoLayerTrimsSource(id, id, materialId);
+    public void addTwoLayerTrimsSource(ResourceLocation armorMaterial) {
+        ResourceLocation id = armorMaterial.withSuffix("_armor");
+        addTwoLayerTrimsSource(id, id, armorMaterial);
     }
 
-    public void addTwoLayerTrimsSource(Holder<ArmorMaterial> armorMaterial) {
-        ResourceLocation materialId = armorMaterial.unwrapKey().orElseThrow().location();
-        ResourceLocation id = materialId.withSuffix("_armor");
-        addTwoLayerTrimsSource(id, id, materialId);
-    }
-
-    public void addThreeLayerTrimsSource(ArmorMaterial armorMaterial) {
-        ResourceLocation materialId = BuiltInRegistries.ARMOR_MATERIAL.getResourceKey(armorMaterial).orElseThrow().location();
-        ResourceLocation id = materialId.withSuffix("_armor");
-        addThreeLayerTrimsSource(id, id, materialId);
-    }
-
-    public void addThreeLayerTrimsSource(Holder<ArmorMaterial> armorMaterial) {
-        ResourceLocation materialId = armorMaterial.unwrapKey().orElseThrow().location();
-        ResourceLocation id = materialId.withSuffix("_armor");
-        addThreeLayerTrimsSource(id, id, materialId);
+    public void addThreeLayerTrimsSource(ResourceLocation armorMaterial) {
+        ResourceLocation id = armorMaterial.withSuffix("_armor");
+        addThreeLayerTrimsSource(id, id, armorMaterial);
     }
 
     public void addTwoLayerTrimsSource(ResourceLocation id, ResourceLocation overlayTextures, ResourceLocation overrideTextures) {

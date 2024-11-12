@@ -14,9 +14,12 @@ import net.fabricmc.fabric.api.datagen.v1.provider.FabricDynamicRegistryProvider
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricLanguageProvider;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.data.recipes.RecipeOutput;
+import net.minecraft.data.recipes.RecipeProvider;
 import net.minecraft.data.tags.ItemTagsProvider;
 import net.minecraft.data.tags.TagsProvider;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.Item;
@@ -50,15 +53,21 @@ public class TrimDatagenSuite extends BaseTrimDatagenSuite {
         );
 
         pack.addProvider((FabricDataOutput output, CompletableFuture<HolderLookup.Provider> registriesFuture) -> new FabricRecipeProvider(output, registriesFuture) {
+
             @Override
-            public void buildRecipes(RecipeOutput output) {
-                trimRecipes.forEach((id, smithingTrimRecipeBuilder) -> smithingTrimRecipeBuilder.save(output, id));
-                copyRecipes.forEach((id, smithingTrimRecipeBuilder) -> smithingTrimRecipeBuilder.save(output));
+            protected RecipeProvider createRecipeProvider(HolderLookup.Provider registryLookup, RecipeOutput exporter) {
+                return new RecipeProvider(registryLookup, exporter) {
+                    @Override
+                    public void buildRecipes() {
+                        trimRecipes.forEach((id, smithingTrimRecipeBuilder) -> smithingTrimRecipeBuilder.save(output, ResourceKey.create(Registries.RECIPE, id)));
+                        copyRecipes.forEach((id, smithingTrimRecipeBuilder) -> smithingTrimRecipeBuilder.save(output));
+                    }
+                };
             }
 
             @Override
             public String getName() {
-                return "TrimDatagenSuite / " + super.getName() + ": " + modid;
+                return "TrimDatagenSuite / Recipes: " + modid;
             }
         });
 

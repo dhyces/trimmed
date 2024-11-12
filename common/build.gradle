@@ -1,0 +1,73 @@
+plugins {
+    id 'idea'
+    id "shared.conventions"
+    alias(libs.plugins.mdg)
+    alias(libs.plugins.moddev)
+}
+
+base {
+    archivesName = "${mod_name}-common-${libs.versions.minecraft.release.get()}"
+}
+
+modsDotGroovy {
+    multiplatform {
+        gather {
+            projectProperty("mod_id")
+            projectProperty("mod_name")
+            projectProperty("authors")
+            projectProperty("version")
+            projectProperty("at_enabled")
+            projectProperty("common_mixin_enabled")
+            projectProperty("fabric_mixin_enabled")
+            projectProperty("neoforge_mixin_enabled")
+        }
+        expose()
+    }
+}
+
+configurations {
+    commonJava {
+        canBeResolved = false
+        canBeConsumed = true
+    }
+    commonResources {
+        canBeResolved = false
+        canBeConsumed = true
+    }
+    testCompileOnly.extendsFrom(compileOnly)
+}
+
+neoForge {
+    // https://projects.neoforged.net/neoforged/neoform
+    neoFormVersion = "1.21.3-20241023.131943"
+
+    parchment {
+        minecraftVersion = libs.versions.parchment.minecraft.get()
+        mappingsVersion = libs.versions.parchment.release.get()
+    }
+
+    if (file("src/main/resources/META-INF/accesstransformer.cfg").exists()) {
+        accessTransformers.from file("src/main/resources/META-INF/accesstransformer.cfg")
+    }
+}
+
+dependencies {
+    compileOnly libs.mixin
+    annotationProcessor libs.mixinextras.common
+    compileOnly libs.mixinextras.common
+}
+
+artifacts {
+    commonJava sourceSets.main.java.sourceDirectories.singleFile
+    sourceSets.main.resources.sourceDirectories.forEach {
+        commonResources it
+    }
+}
+
+sourceSets.main.resources.srcDir 'src/generated/resources'
+
+idea {
+    module {
+        inheritOutputDirs = false
+    }
+}

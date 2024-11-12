@@ -1,58 +1,45 @@
 [versions]
-minecraft_release = "1.21"
-minecraft_range = "[1.21,1.22)"
-publish_range = "1.21"
+minecraft_release = "1.21.3"
+minecraft_range = "[1.21.3,1.21.4)"
+publish_range = "1.21.3"
 
-neoforge_release = "21.0.0-beta"
-neoforge_range = "[21.0-beta,22.0)"
+parchment_release = "2024.07.28"
+parchment_minecraft = "1.21"
 
-fabric_loader = "0.15.11"
-fabric_api = "0.100.1+1.21"
+javafml_range = "[3,)"
+neoforge_release = "21.3.16-beta"
+neoforge_range = "[21.3.16-beta,21.4-beta)"
 
-forge = "1.20.4-49.0.11"
+fabric_loader = "0.16.9"
+fabric_api_release = "0.107.3+1.21.3"
+fabric_api_range = "[0.107.3,)"
 
-#quilt_loader = "0.20.2"
-#quilt_qsl = "6.2.1"
-#quilt_fabric = "7.2.1+0.88.1"
-
-parchment_release = "2024.06.02"
-parchment_mc = "1.20.6"
-
-mixin = "0.8.5"
-mixinextras = "0.3.6"
+mixin = "0.8.7"
+mixinextras = "0.4.1"
 
 jetbrains_annotations = "24.1.0"
 
-mdg_release = "2.0.0-beta.28"
-archloom = "1.6.397"
+moddev = "2.0.42-beta"
+loom = "1.8.+"
+mdg_release = "2.0.0-beta.30"
 
-forgegradle = "[6.0.16,6.2)"
-librarian = "1.+"
-mixingradle = "0.7-SNAPSHOT"
-
-curseforgegradle = "1.1.18"
+curseforgegradle = "1.1.25"
 minotaur = "2.+"
 
 [libraries]
 minecraft = { module = "com.mojang:minecraft", version.ref = "minecraft_release" }
 neoforge = { module = "net.neoforged:neoforge", version.ref = "neoforge_release" }
-fabric_api = { module = "net.fabricmc.fabric-api:fabric-api", version.ref = "fabric_api" }
+fabric_api = { module = "net.fabricmc.fabric-api:fabric-api", version.ref = "fabric_api_release" }
 fabric_loader = { module = "net.fabricmc:fabric-loader", version.ref = "fabric_loader" }
-forge = { module = "net.minecraftforge:forge", version.ref = "forge" }
-#quilt_loader = { module = "org.quiltmc:quilt-loader", version.ref = "quilt_loader" }
 
-sponge_mixin = { module = "org.spongepowered:mixin", version.ref = "mixin" }
+mixin = { module = "org.spongepowered:mixin", version.ref = "mixin" }
 mixinextras_common = { module = "io.github.llamalad7:mixinextras-common", version.ref = "mixinextras" }
-mixinextras_forge = { module = "io.github.llamalad7:mixinextras-forge", version.ref = "mixinextras" }
 
 jetbrains_annotations = { module = "org.jetbrains:annotations", version.ref = "jetbrains_annotations" }
 
 [plugins]
 mdg = { id = "org.groovymc.modsdotgroovy", version.ref = "mdg_release" }
-archloom = { id = "dev.architectury.loom", version.ref = "archloom" }
+moddev = { id = "net.neoforged.moddev", version.ref = "moddev" }
+loom = { id = "fabric-loom", version.ref = "loom" }
 curseforgegradle = { id = "net.darkhax.curseforgegradle", version.ref = "curseforgegradle" }
 minotaur = { id = "com.modrinth.minotaur", version.ref = "minotaur" }
-
-forgegradle = { id = "net.minecraftforge.gradle", version.ref = "forgegradle" }
-librarian = { id = "org.parchmentmc.librarian.forgegradle", version.ref = "librarian" }
-mixingradle = { id = "org.spongepowered.mixin", version.ref = "mixingradle" }

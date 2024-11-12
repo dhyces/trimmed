@@ -8,9 +8,9 @@
     "TagEntryAccessor"
   ],
   "client": [
-    "client.AtlasSourceManagerAccessor",
-    "client.ModelOverrideListMixin",
-    "client.ReloadableResourceManagerImplAccessor"
+    "client.BakedOverridesMixin",
+    "client.ModelManagerMixin",
+    "client.ReloadableResourceManagerAccessor"
   ],
   "injectors": {
     "defaultRequire": 1

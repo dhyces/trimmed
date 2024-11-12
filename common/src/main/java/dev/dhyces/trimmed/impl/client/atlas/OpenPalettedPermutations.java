@@ -81,7 +81,7 @@ public class OpenPalettedPermutations implements SpriteSource {
 
     @Override
     public SpriteSourceType type() {
-        return TrimmedSpriteSourceTypes.OPEN_PALETTED_PERMUTATIONS.get();
+        return TrimmedSpriteSourceTypes.OPEN_PALETTED_PERMUTATIONS;
     }
 
     public record OptionalSupplier(boolean isRequired, Supplier<IntUnaryOperator> mapper) {}

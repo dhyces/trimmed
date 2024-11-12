@@ -3,34 +3,34 @@ MultiplatformModsDotGroovy.make {
 
     modLoader = "javafml"
     onNeoForge {
-        loaderVersion = "[3,)"
-    }
-    onForge {
-        def majorForgeVersion = (libs.versions.forge as String).split("-")[1].split("\\.")[0]
-        loaderVersion = "[${majorForgeVersion},)"
+        loaderVersion = libs.versions.get("javafml_range")
     }
 
     license = "MIT"
     issueTrackerUrl = "https://github.com/dhyces/trimmed/issues/"
 
     onFabric {
-        accessWidener = "trimmed.accesswidener"
+        if (Boolean.parseBoolean(buildProperties["at_enabled"] as String)) {
+            accessWidener = "${modid}.accesswidener"
+        }
     }
     onNeoForge {
         accessTransformers {
-            accessTransformer("META-INF/accesstransformer.cfg")
+            if (Boolean.parseBoolean(buildProperties["at_enabled"] as String)) {
+                accessTransformer("META-INF/accesstransformer.cfg")
+            }
         }
     }
 
     mod {
         modId = modid
         displayName = buildProperties["mod_name"]
-        authors = [buildProperties["mod_author"] as String]
+        authors = [(buildProperties["authors"] as String)]
         version = environmentInfo.version
 
         displayUrl = "https://modrinth.com/mod/trimmed/"
         sourcesUrl = "https://github.com/dhyces/trimmed/"
-        logoFile = "logo.png"
+        logoFile = "icon.png"
         description = "Better item overrides! Better trim support! Override it all!"
 
         onFabric {
@@ -40,53 +40,42 @@ MultiplatformModsDotGroovy.make {
             }
         }
 
-        onQuilt {
-            entrypoints {
-                init = "dev.dhyces.trimmed.QuiltTrimmed"
-                client_init = "dev.dhyces.trimmed.QuiltTrimmedClient"
-            }
-            intermediateMappings = "net.fabricmc:intermediary"
-        }
-
         dependencies {
             onNeoForge {
                 mod("neoforge") {
                     versionRange = "${libs.versions.get("neoforge_range")}"
                 }
             }
-            onForge {
-                minecraft = "${libs.versions.get("minecraft_range")}"
-                forge = "[${majorForgeVersion},)"
-            }
             onFabric {
                 minecraft = "${libs.versions.get("minecraft_range")}"
                 fabricloader = ">=${libs.versions.get("fabric_loader")}"
-                mod {
-                    modId = 'fabric-api'
-                    versionRange = ">=${(libs.versions.get("fabric_api") as String).split("\\+")[0]}"
+                mod("fabric-api") {
+                    versionRange = libs.versions.get("fabric_api_range")
                 }
-            }
-            onQuilt {
-                minecraft = "${libs.versions.get("minecraft_range")}"
-                quilt_loader = ">=${this.quiltLoaderVersion}"
-                quilted_fabric_api = ">=${libs.versions.quilt.fabric}"
-                quilt_base = ">=${libs.versions.quilt.qsl}"
             }
         }
     }
 
-    onNeoForge {
+    if (Boolean.parseBoolean(buildProperties["common_mixin_enabled"] as String)) {
         mixins {
             mixin("${modid}.mixins.json")
-            mixin("${modid}.neo.mixins.json")
+        }
+    }
+
+    onNeoForge {
+        if (Boolean.parseBoolean(buildProperties["neoforge_mixin_enabled"] as String)) {
+            mixins {
+                mixin("${modid}.neo.mixins.json")
+            }
         }
     }
 
     onFabric {
         environment = Environment.ANY
-        mixins {
-            mixin("${modid}.mixins.json")
-            mixin("${modid}.fabric.mixins.json")
+        if (Boolean.parseBoolean(buildProperties["fabric_mixin_enabled"] as String)) {
+            mixins {
+                mixin("${modid}.fabric.mixins.json")
+            }
         }
     }
 }

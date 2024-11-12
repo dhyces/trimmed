@@ -1,0 +1,4 @@
+plugins {
+    alias(libs.plugins.mdg) apply(false)
+    alias(libs.plugins.moddev) apply(false)
+}

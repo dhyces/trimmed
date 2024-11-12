@@ -61,7 +61,7 @@ public interface KeyResolver<T> {
 
         @Override
         public @Nullable T decode(ResourceLocation resourceLocation, DynamicOps<?> ops) {
-            return registry.get(resourceLocation);
+            return registry.getValue(resourceLocation);
         }
 
         @Override
