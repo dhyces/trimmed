@@ -259,7 +259,7 @@ public abstract class BaseTrimDatagenSuite {
         }
 
         /**
-         * The generated paths are "modid:trims/models/armor/pattern" and "modid:trims/models/armor/pattern_leggings".
+         * The generated paths are "modid:trims/entity/humanoid/{pattern}" and "modid:trims/entity/humanoid_leggings/{pattern}".
          * This method can be used if the textures are located elsewhere.
          */
         public PatternConfig textureLocations(ResourceLocation main, ResourceLocation leggings) {
