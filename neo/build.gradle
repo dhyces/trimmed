@@ -1,3 +1,4 @@
+import net.darkhax.curseforgegradle.TaskPublishCurseForge
 import org.groovymc.modsdotgroovy.gradle.tasks.AbstractGatherPlatformDetailsTask
 
 plugins {
@@ -95,6 +96,10 @@ java {
     }
 }
 
+tasks.named("compileJava", JavaCompile) {
+    source(sourceSets.api.allJava)
+}
+
 if (hasProperty("modrinth_write_version_pat")) {
     modrinth {
         token = findProperty("modrinth_write_version_pat") as String
@@ -113,7 +118,7 @@ if (hasProperty("modrinth_write_version_pat")) {
 }
 
 if (hasProperty("curseforge_publishing_token")) {
-    tasks.register("curseforge", net.darkhax.curseforgegradle.TaskPublishCurseForge) {
+    tasks.register("curseforge", TaskPublishCurseForge) {
         group = "publishing"
 
         disableVersionDetection()
