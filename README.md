@@ -10,7 +10,7 @@ repositories {
 }
 
 dependencies {
-    implementation("maven.modrinth:trimmed:1.21-3.0.0+neoforge")
+    implementation("maven.modrinth:trimmed:1.21.3-4.0.0+neoforge")
 }
 ```
 
@@ -24,7 +24,7 @@ repositories {
 }
 
 dependencies {
-    modImplementation("maven.modrinth:trimmed:1.21-3.0.0+fabric")
+    modImplementation("maven.modrinth:trimmed:1.21.3-4.0.0+fabric")
 }
 ```
 
@@ -46,19 +46,19 @@ repositories {
 ### Common
 ```groovy
 dependencies {
-    runtimeOnly("io.github.llamalad7:mixinextras-common:0.3.6")
-    implementation("dev.dhyces.trimmed:trimmed-common-1.21:3.0.0")
+    runtimeOnly("io.github.llamalad7:mixinextras-common:0.4.1")
+    implementation("dev.dhyces.trimmed:trimmed-common-1.21.3:4.0.0")
 }
 ```
 ### Neo
 ```groovy
 dependencies {
-    implementation("dev.dhyces.trimmed:trimmed-neo-1.21:3.0.0")
+    implementation("dev.dhyces.trimmed:trimmed-neo-1.21.3:4.0.0")
 }
 ```
 ### Fabric
 ```groovy
 dependencies {
-    modImplementation("dev.dhyces.trimmed:trimmed-fabric-1.21:3.0.0")
+    modImplementation("dev.dhyces.trimmed:trimmed-fabric-1.21.3:4.0.0")
 }
 ```
