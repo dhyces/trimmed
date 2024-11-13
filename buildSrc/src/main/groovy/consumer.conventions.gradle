@@ -12,9 +12,10 @@ configurations {
 }
 
 dependencies {
+    compileOnly project(":common")
     compileOnly(project(":common")) {
         capabilities {
-            requireCapability("dev.dhyces.trimmed:common:api")
+            requireFeature("api")
         }
     }
     commonJava project(path: ":common", configuration: "commonJava")

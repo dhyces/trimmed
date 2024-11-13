@@ -28,6 +28,16 @@ tasks.named("gatherFabricPlatformDetails", AbstractGatherPlatformDetailsTask).co
     platformVersion = libs.versions.fabric.loader
 }
 
+sourceSets {
+    api {
+        compileClasspath += main.compileClasspath
+    }
+    main {
+        compileClasspath += api.compileClasspath + api.output
+        runtimeClasspath += api.runtimeClasspath + api.output
+    }
+}
+
 loom {
     if (Boolean.parseBoolean(at_enabled)) {
         accessWidenerPath = file("src/main/resources/${mod_id}.accesswidener")
@@ -72,6 +82,12 @@ dependencies {
     modImplementation libs.fabric.loader
     modImplementation(libs.fabric.api) {
         exclude(module: "fabric-models-v0")
+    }
+}
+
+java {
+    registerFeature("api") {
+        usingSourceSet(sourceSets.api)
     }
 }
 

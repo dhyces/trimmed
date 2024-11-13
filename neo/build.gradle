@@ -89,6 +89,12 @@ repositories {
     }
 }
 
+java {
+    registerFeature("api") {
+        usingSourceSet(sourceSets.api)
+    }
+}
+
 if (hasProperty("modrinth_write_version_pat")) {
     modrinth {
         token = findProperty("modrinth_write_version_pat") as String
