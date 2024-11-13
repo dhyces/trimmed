@@ -15,11 +15,9 @@ java {
     withJavadocJar()
 }
 
-version = properties["mod_version"] as String
-
 tasks.jar {
     from(rootProject.file("LICENSE")) {
-        rename { "${it}_${properties["mod_name"]}" }
+        rename { "${it}_${mod_name}" }
     }
     manifest {
         attributes([
@@ -37,6 +35,10 @@ tasks.jar {
     }
 }
 
+tasks.javadoc {
+    failOnError = false
+}
+
 repositories {
     mavenCentral()
     mavenLocal()
@@ -51,6 +53,10 @@ dependencies {
     compileOnly(versionCatalog().findLibrary("jetbrains.annotations").get())
 }
 
+processResources {
+    exclude("mods.groovy")
+}
+
 tasks.withType(JavaCompile).configureEach {
     options.encoding = "UTF-8"
     options.release = 21
@@ -63,22 +69,6 @@ sourcesJar {
 }
 
 if (hasProperty("publisher")) {
-    publishing {
-        repositories {
-            maven {
-                name = "Local"
-                url  = uri("file://" + findProperty("local_maven"))
-            }
-        }
-        publications {
-            mavenJava(MavenPublication) {
-                groupId project.group
-                artifactId project.archivesBaseName
-                version project.version
-                from components.java
-            }
-        }
-    }
     publishing {
         repositories {
             maven {
@@ -104,6 +94,14 @@ if (hasProperty("publisher")) {
                         password = (project.findProperty("gpr.key") ?: System.getenv("TOKEN")) as String
                     }
                 }
+            }
+        }
+        publications {
+            mavenJava(MavenPublication) {
+                groupId project.group
+                artifactId "${mod_id}-${project.base.archivesName.get()}-${libs.versions.minecraft.release.get()}"
+                version project.version
+                from components.java
             }
         }
     }

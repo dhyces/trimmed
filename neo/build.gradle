@@ -4,29 +4,29 @@ plugins {
     id 'idea'
     id 'maven-publish'
     id "consumer.conventions"
-//    alias(libs.plugins.mdg)
+    alias(libs.plugins.mdg)
     alias(libs.plugins.moddev)
     alias(libs.plugins.curseforgegradle)
     alias(libs.plugins.minotaur)
 }
 
 base {
-    archivesName = "${mod_name}-neoforge-${libs.versions.minecraft.release.get()}"
+    archivesName = "${mod_id}-neoforge-${libs.versions.minecraft.release.get()}"
 }
 
-//modsDotGroovy {
-//    platform(org.groovymc.modsdotgroovy.types.core.Platform.NEOFORGE)
-//    inferGather.set(false)
-//    multiplatform {
-//        from(":common")
-//    }
-//    apply()
-//}
-//
-//tasks.named("gatherNeoForgePlatformDetails", AbstractGatherPlatformDetailsTask).configure {
-//    minecraftVersion = libs.versions.minecraft.release
-//    platformVersion = libs.versions.neoforge.release
-//}
+modsDotGroovy {
+    platform(org.groovymc.modsdotgroovy.types.core.Platform.NEOFORGE)
+    inferGather.set(false)
+    multiplatform {
+        from(":common")
+    }
+    apply()
+}
+
+tasks.named("gatherNeoForgePlatformDetails", AbstractGatherPlatformDetailsTask).configure {
+    minecraftVersion = libs.versions.minecraft.release
+    platformVersion = libs.versions.neoforge.release
+}
 
 sourceSets {
     api {

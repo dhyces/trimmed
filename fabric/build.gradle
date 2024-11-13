@@ -11,7 +11,7 @@ plugins {
 }
 
 base {
-    archivesName = "${mod_name}-fabric-${libs.versions.minecraft.release.get()}"
+    archivesName = "${mod_id}-fabric-${libs.versions.minecraft.release.get()}"
 }
 
 modsDotGroovy {
