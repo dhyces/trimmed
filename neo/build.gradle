@@ -104,7 +104,7 @@ if (hasProperty("modrinth_write_version_pat")) {
     modrinth {
         token = findProperty("modrinth_write_version_pat") as String
         projectId = modrinth_project_id
-        versionName = "Fabric-${libs.versions.minecraft.release.get()}-${version}"
+        versionName = "NeoForge-${libs.versions.minecraft.release.get()}-${version}"
         versionNumber = "${libs.versions.minecraft.release.get()}-${version}+neoforge"
         versionType = publish_type
         uploadFile.set(tasks.jar)
