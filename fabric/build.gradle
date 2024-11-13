@@ -109,7 +109,7 @@ if (hasProperty("modrinth_write_version_pat")) {
         versionType = publish_type
         uploadFile.set(tasks.remapJar)
         gameVersions = List.of(libs.versions.publish.range.get().split(","))
-        loaders = List.of("fabric")
+        loaders = List.of("fabric", "quilt")
         changelog = rootProject.file("changelog.md").text
         additionalFiles = List.of(tasks.named("sourcesJar"), tasks.named("javadocJar"))
         detectLoaders = false
@@ -130,6 +130,7 @@ if (hasProperty("curseforge_publishing_token")) {
         mainFile.changelog = rootProject.file("changelog.md").text
         mainFile.changelogType = "markdown"
         mainFile.addModLoader("Fabric")
+        mainFile.addModLoader("Quilt")
         mainFile.addJavaVersion("Java ${java.toolchain.languageVersion.get()}")
         mainFile.addGameVersion(libs.versions.minecraft.release.get())
         debugMode = publish_debug.toBoolean()
