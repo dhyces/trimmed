@@ -103,17 +103,17 @@ tasks.named("compileJava", JavaCompile) {
 if (hasProperty("modrinth_write_version_pat")) {
     modrinth {
         token = findProperty("modrinth_write_version_pat") as String
-        projectId = properties["modrinth_project_id"] as String
-        versionName = "Fabric-${libs.versions.minecraft.release.get()}-${properties["mod_version"]}"
-        versionNumber = "${libs.versions.minecraft.release.get()}-${properties["mod_version"]}+fabric"
-        versionType = properties["publish_type"] as String
+        projectId = modrinth_project_id
+        versionName = "Fabric-${libs.versions.minecraft.release.get()}-${version}"
+        versionNumber = "${libs.versions.minecraft.release.get()}-${version}+fabric"
+        versionType = publish_type
         uploadFile.set(tasks.remapJar)
         gameVersions = List.of(libs.versions.publish.range.get().split(","))
         loaders = List.of("fabric")
         changelog = rootProject.file("changelog.md").text
         additionalFiles = List.of(tasks.named("sourcesJar"), tasks.named("javadocJar"))
         detectLoaders = false
-        debugMode = properties["publish_debug"].toString().toBoolean()
+        debugMode = publish_debug.toBoolean()
     }
 }
 
@@ -123,16 +123,16 @@ if (hasProperty("curseforge_publishing_token")) {
 
         disableVersionDetection()
         apiToken = findProperty("curseforge_publishing_token")
-        def projectId = properties["curseforge_project_id"]
+        def projectId = curseforge_project_id
         def mainFile = upload(projectId, tasks.remapJar)
-        mainFile.displayName = "Fabric-${libs.versions.minecraft.release.get()}-${properties["mod_version"]}"
-        mainFile.releaseType = properties["publish_type"]
+        mainFile.displayName = "Fabric-${libs.versions.minecraft.release.get()}-${version}"
+        mainFile.releaseType = publish_type
         mainFile.changelog = rootProject.file("changelog.md").text
         mainFile.changelogType = "markdown"
         mainFile.addModLoader("Fabric")
         mainFile.addJavaVersion("Java ${java.toolchain.languageVersion.get()}")
         mainFile.addGameVersion(libs.versions.minecraft.release.get())
-        debugMode = properties["publish_debug"].toString().toBoolean()
+        debugMode = publish_debug.toBoolean()
 
         dependsOn(tasks.remapJar)
     }
