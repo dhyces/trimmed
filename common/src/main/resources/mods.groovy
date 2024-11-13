@@ -30,7 +30,7 @@ MultiplatformModsDotGroovy.make {
 
         displayUrl = "https://modrinth.com/mod/trimmed/"
         sourcesUrl = "https://github.com/dhyces/trimmed/"
-        logoFile = "icon.png"
+        logoFile = "assets/trimmed/icon.png"
         description = "Better item overrides! Better trim support! Override it all!"
 
         onFabric {
