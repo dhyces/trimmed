@@ -14,8 +14,8 @@ import dev.dhyces.trimmed.impl.client.models.override.ItemOverrideReloadListener
 import dev.dhyces.trimmed.impl.client.models.override.provider.ItemOverrideProviderRegistry;
 import dev.dhyces.trimmed.impl.client.models.source.ModelSourceLoader;
 import dev.dhyces.trimmed.impl.client.models.source.ModelSourceRegistry;
-import dev.dhyces.trimmed.impl.client.models.source.NamedModel;
-import dev.dhyces.trimmed.impl.client.models.template.ModelTemplateManager;
+import dev.dhyces.trimmed.api.client.models.source.NamedModel;
+import dev.dhyces.trimmed.impl.client.models.template.ModelTemplateManagerImpl;
 import dev.dhyces.trimmed.impl.client.tags.manager.ClientTagManager;
 import dev.dhyces.trimmed.impl.mixin.client.ReloadableResourceManagerAccessor;
 import dev.dhyces.trimmed.impl.client.maps.manager.ClientMapManager;
@@ -92,7 +92,7 @@ public class TrimmedClient {
     }
 
     public static CompletableFuture<Collection<NamedModel>> startGeneratingModels(ResourceManager resourceManager, Executor executor) {
-        return ModelTemplateManager.load(resourceManager, executor)
+        return ModelTemplateManagerImpl.load(resourceManager, executor)
                 .thenComposeAsync(templateManager -> ModelSourceLoader.load(templateManager, resourceManager, executor));
     }
 

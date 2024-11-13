@@ -1,0 +1,7 @@
+{
+  "__comment": "Set of armor pattern texture locations to permute with trim materials",
+  "values": [
+    "chunkedpattern:trims/entity/humanoid/chunked",
+    "chunkedpattern:trims/entity/humanoid_leggings/chunked"
+  ]
+}

@@ -1,4 +1,4 @@
-package dev.dhyces.trimmed.api.client.override.provider.providers;
+package dev.dhyces.trimmed.api.client.override.provider.types;
 
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;

@@ -8,6 +8,7 @@ import com.google.gson.JsonParseException;
 import com.mojang.serialization.DynamicOps;
 import com.mojang.serialization.JsonOps;
 import dev.dhyces.trimmed.TrimmedClient;
+import dev.dhyces.trimmed.api.TrimmedReference;
 import dev.dhyces.trimmed.api.client.tag.TagHolder;
 import dev.dhyces.trimmed.api.KeyResolver;
 import dev.dhyces.trimmed.api.data.client.tag.ClientTagEntry;
@@ -40,7 +41,6 @@ import java.util.concurrent.Executor;
 import java.util.function.Consumer;
 
 public class ClientTagManager implements PreparableReloadListener {
-    public static final String PATH = "trimmed/tags/";
     private static final Logger LOGGER = LoggerFactory.getLogger("Trimmed / Client Tags");
     private static final Map<ClientTagKey<?>, ClientTagHolder<?>> REGISTRY = new Reference2ObjectOpenHashMap<>();
 
@@ -79,7 +79,7 @@ public class ClientTagManager implements PreparableReloadListener {
     }
 
     private static <T> void resolveTags(ResourceLocation registryId, KeyResolver<T> keyResolver, ResourceManager resourceManager, DynamicOps<JsonElement> jsonOps) {
-        String resolverPath = PATH + Utils.namespacedPath(registryId);
+        String resolverPath = TrimmedReference.TAGS_DIRECTORY + '/' + Utils.namespacedPath(registryId);
         FileToIdConverter converter = FileToIdConverter.json(resolverPath);
         Map<ResourceLocation, Set<ClientTagEntry>> unresolved = Utils.unsafeCast(readMap(converter, resourceManager, keyResolver, jsonOps));
         DependencySorter<ResourceLocation, TagSetEntry<T>> sorter = new DependencySorter<>();

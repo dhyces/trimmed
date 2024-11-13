@@ -2,6 +2,8 @@ package dev.dhyces.trimmed.impl.client.models.template;
 
 import com.google.gson.JsonObject;
 import dev.dhyces.trimmed.Trimmed;
+import dev.dhyces.trimmed.api.TrimmedReference;
+import dev.dhyces.trimmed.api.client.models.source.ModelTemplateManager;
 import dev.dhyces.trimmed.api.client.models.template.StringTemplate;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.resources.FileToIdConverter;
@@ -18,12 +20,12 @@ import java.util.concurrent.Executor;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-public final class ModelTemplateManager {
-    private static final FileToIdConverter TEMPLATE_CONVERTER = new FileToIdConverter("trimmed/model_templates", ".json");
+public final class ModelTemplateManagerImpl implements ModelTemplateManager {
+    private static final FileToIdConverter TEMPLATE_CONVERTER = new FileToIdConverter(TrimmedReference.MODEL_TEMPLATES_DIRECTORY, ".json");
 
     private final Map<ResourceLocation, StringTemplate> templates;
 
-    private ModelTemplateManager() {
+    private ModelTemplateManagerImpl() {
         this.templates = new Object2ObjectOpenHashMap<>();
     }
 
@@ -43,9 +45,9 @@ public final class ModelTemplateManager {
         return GsonHelper.parse(process(id, replacer), true);
     }
 
-    public static CompletableFuture<ModelTemplateManager> load(ResourceManager resourceManager, Executor executor) {
+    public static CompletableFuture<ModelTemplateManagerImpl> load(ResourceManager resourceManager, Executor executor) {
         return CompletableFuture.supplyAsync(() -> {
-            ModelTemplateManager manager = new ModelTemplateManager();
+            ModelTemplateManagerImpl manager = new ModelTemplateManagerImpl();
             for (Map.Entry<ResourceLocation, Resource> entry : TEMPLATE_CONVERTER.listMatchingResources(resourceManager).entrySet()) {
                 try (BufferedReader reader = entry.getValue().openAsReader()) {
                     ResourceLocation id = TEMPLATE_CONVERTER.fileToId(entry.getKey());

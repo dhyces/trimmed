@@ -14,10 +14,7 @@ import java.util.Set;
 import java.util.function.Function;
 
 public interface ItemOverrideProvider {
-    static Codec<MapCodec<? extends ItemOverrideProvider>> getRegistryCodec() {
-        throw new AssertionError("Implemented via Mixin");
-    }
-    Codec<ItemOverrideProvider> CODEC = getRegistryCodec().dispatch(ItemOverrideProvider::getCodec, Function.identity());
+    Codec<ItemOverrideProvider> CODEC = CodecUtil.ITEM_OVERRIDE_PROVIDER_REGISTRY.dispatch(ItemOverrideProvider::getCodec, Function.identity());
     MapCodec<Set<ItemOverrideProvider>> SET_MAP_CODEC = CodecUtil.setOf(CODEC).fieldOf("values");
     Codec<Set<ItemOverrideProvider>> SET_MAP_CODEC_CODEC = SET_MAP_CODEC.codec();
 

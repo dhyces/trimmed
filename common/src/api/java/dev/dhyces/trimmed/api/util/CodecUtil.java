@@ -2,18 +2,22 @@ package dev.dhyces.trimmed.api.util;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
+import com.mojang.serialization.MapCodec;
 import dev.dhyces.trimmed.api.TrimmedReference;
+import dev.dhyces.trimmed.api.client.models.source.ModelSource;
+import dev.dhyces.trimmed.api.client.override.provider.ItemOverrideProvider;
 import dev.dhyces.trimmed.api.codec.SetCodec;
+import dev.dhyces.trimmed.api.services.ApiServices;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.resources.ResourceLocation;
 
-public final class CodecUtil {
-    public static final Codec<ResourceLocation> TRIMMED_IDENTIFIER = Codec.STRING.xmap(
+public interface CodecUtil {
+    Codec<ResourceLocation> TRIMMED_IDENTIFIER = Codec.STRING.xmap(
             s -> ResourceLocation.tryParse(s.contains(":") ? s : TrimmedReference.MODID + ":" + s),
             ResourceLocation::toString
     );
 
-    public static final Codec<ModelResourceLocation> MODEL_IDENTIFIER_CODEC = Codec.STRING.comapFlatMap(
+    Codec<ModelResourceLocation> MODEL_IDENTIFIER_CODEC = Codec.STRING.comapFlatMap(
             s -> {
                 if (s.contains("#")) {
                     String[] identifierModelSplit = s.split("#");
@@ -29,7 +33,11 @@ public final class CodecUtil {
             modelId -> modelId.getVariant().equals("inventory") ? modelId.id().getNamespace() + ":" + modelId.id().getPath() : modelId.toString()
     );
 
-    public static <T> SetCodec<T> setOf(Codec<T> elementCodec) {
+    Codec<ModelSource> MODEL_SOURCE_REGISTRY = ApiServices.INTERNAL_CODECS.getModelSourceRegistryCodec();
+
+    Codec<MapCodec<? extends ItemOverrideProvider>> ITEM_OVERRIDE_PROVIDER_REGISTRY = ApiServices.INTERNAL_CODECS.getItemOverrideProviderRegistryCodec();
+
+    static <T> SetCodec<T> setOf(Codec<T> elementCodec) {
         return new SetCodec<>(elementCodec);
     }
 }

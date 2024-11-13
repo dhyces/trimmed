@@ -8,7 +8,7 @@ import dev.dhyces.trimmed.api.data.client.tag.BaseClientTagDataProvider;
 import dev.dhyces.trimmed.api.data.client.tag.ClientTagFile;
 import dev.dhyces.trimmed.api.data.client.tag.appenders.ClientTagAppender;
 import dev.dhyces.trimmed.api.client.tag.ClientTagKey;
-import dev.dhyces.trimmed.impl.client.maps.KeyResolvers;
+import dev.dhyces.trimmed.api.maps.KeyResolvers;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;

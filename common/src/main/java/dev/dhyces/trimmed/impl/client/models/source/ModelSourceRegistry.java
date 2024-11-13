@@ -5,6 +5,8 @@ import com.google.common.collect.HashBiMap;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import dev.dhyces.trimmed.api.TrimmedReference;
+import dev.dhyces.trimmed.api.client.models.source.ModelSource;
+import dev.dhyces.trimmed.api.client.models.source.types.TrimModelSource;
 import dev.dhyces.trimmed.api.util.CodecUtil;
 import net.minecraft.resources.ResourceLocation;
 

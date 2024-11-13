@@ -1,6 +1,7 @@
 package dev.dhyces.trimmed.api.data.tag;
 
 import dev.dhyces.trimmed.api.KeyResolver;
+import dev.dhyces.trimmed.api.TrimmedReference;
 import dev.dhyces.trimmed.api.client.TrimmedClientApi;
 import dev.dhyces.trimmed.api.client.tag.ClientTagKey;
 import dev.dhyces.trimmed.api.data.client.tag.BaseClientTagDataProvider;
@@ -18,7 +19,7 @@ public abstract class NeoBaseClientTagDataProvider<T, R extends KeyResolver<T>> 
     public NeoBaseClientTagDataProvider(PackOutput packOutput, String modid, R keyResolver, ExistingFileHelper existingFileHelper) {
         super(packOutput, modid, keyResolver);
         this.existingFileHelper = existingFileHelper;
-        this.resourceType = new ExistingFileHelper.ResourceType(PackType.CLIENT_RESOURCES, ".json", ClientTagManager.PATH + '/' + Utils.namespacedPath(TrimmedClientApi.getInstance().getId(keyResolver)));
+        this.resourceType = new ExistingFileHelper.ResourceType(PackType.CLIENT_RESOURCES, ".json", TrimmedReference.TAGS_DIRECTORY + '/' + Utils.namespacedPath(TrimmedClientApi.getInstance().getId(keyResolver)));
     }
 
     @Override

@@ -1,8 +1,8 @@
 package dev.dhyces.trimmed.impl.client.models.override.provider;
 
 import dev.dhyces.trimmed.api.TrimmedReference;
-import dev.dhyces.trimmed.api.client.override.provider.providers.AnyTrimItemOverrideProvider;
-import dev.dhyces.trimmed.api.client.override.provider.providers.ComponentItemOverrideProvider;
+import dev.dhyces.trimmed.api.client.override.provider.types.AnyTrimItemOverrideProvider;
+import dev.dhyces.trimmed.api.client.override.provider.types.ComponentItemOverrideProvider;
 
 public interface ItemOverrideProviders {
     static void bootstrap() {

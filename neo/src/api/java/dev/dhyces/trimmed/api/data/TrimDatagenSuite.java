@@ -9,7 +9,6 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.core.RegistrySetBuilder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.DataGenerator;
-import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.RecipeProvider;
@@ -36,8 +35,8 @@ public class TrimDatagenSuite extends BaseTrimDatagenSuite {
     public TrimDatagenSuite(GatherDataEvent event, String modid, @Nullable BiConsumer<String, String> translationConsumer) {
         super(modid, translationConsumer);
         DataGenerator generator = event.getGenerator();
-        PackOutput packOutput = event.getGenerator().getPackOutput();
         CompletableFuture<HolderLookup.Provider> lookup = event.getLookupProvider();
+        PackOutput packOutput = event.getGenerator().getPackOutput();
         RegistrySetBuilder builder = new RegistrySetBuilder()
                 .add(Registries.TRIM_PATTERN, pContext -> {
                     patterns.forEach(pContext::register);
@@ -45,7 +44,7 @@ public class TrimDatagenSuite extends BaseTrimDatagenSuite {
                 .add(Registries.TRIM_MATERIAL, pContext -> {
                     materials.forEach(pContext::register);
                 });
-        lookup = generator.addProvider(event.includeServer(), (DataProvider.Factory<? extends DatapackBuiltinEntriesProvider>) pOutput -> new DatapackBuiltinEntriesProvider(packOutput, event.getLookupProvider(), builder, Set.of(modid)) {
+        lookup = generator.addProvider(event.includeServer(), new DatapackBuiltinEntriesProvider(packOutput, event.getLookupProvider(), builder, Set.of(modid)) {
             @Override
             public String getName() {
                 return "TrimDatagenSuite / " + super.getName() + " " + modid;
@@ -89,7 +88,7 @@ public class TrimDatagenSuite extends BaseTrimDatagenSuite {
             @Override
             protected void addTags() {
                 if (!patternTextures.isEmpty()) {
-                    tag(ClientTags.TRIM_PATTERN_TEXTURES).add(patternTextures.toArray(ResourceLocation[]::new));
+                    tag(ClientTags.ARMOR_TRIM_PATTERNS_TEXTURES).add(patternTextures.toArray(ResourceLocation[]::new));
                 }
             }
 

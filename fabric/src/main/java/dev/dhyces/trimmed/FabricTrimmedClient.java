@@ -1,6 +1,7 @@
 package dev.dhyces.trimmed;
 
-import dev.dhyces.trimmed.impl.client.models.source.NamedModel;
+import dev.dhyces.trimmed.api.TrimmedReference;
+import dev.dhyces.trimmed.api.client.models.source.NamedModel;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.model.loading.v1.PreparableModelLoadingPlugin;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;

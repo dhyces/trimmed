@@ -1,4 +1,4 @@
-package dev.dhyces.trimmed.impl.client.models.source;
+package dev.dhyces.trimmed.api.client.models.source;
 
 import net.minecraft.client.resources.model.UnbakedModel;
 import net.minecraft.resources.ResourceLocation;

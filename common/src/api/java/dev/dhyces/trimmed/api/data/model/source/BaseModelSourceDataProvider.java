@@ -3,29 +3,27 @@ package dev.dhyces.trimmed.api.data.model.source;
 import com.google.common.base.Preconditions;
 import com.google.gson.JsonElement;
 import com.mojang.serialization.JsonOps;
-import dev.dhyces.trimmed.Trimmed;
+import dev.dhyces.trimmed.api.TrimmedReference;
 import dev.dhyces.trimmed.api.client.TrimmedClientMapApi;
 import dev.dhyces.trimmed.api.client.map.ClientMapKeys;
 import dev.dhyces.trimmed.api.client.map.ClientMapTypes;
+import dev.dhyces.trimmed.api.client.models.source.ModelSource;
+import dev.dhyces.trimmed.api.client.models.source.types.TrimModelSource;
 import dev.dhyces.trimmed.api.maps.MapKey;
-import dev.dhyces.trimmed.impl.client.models.source.ModelSource;
-import dev.dhyces.trimmed.impl.client.models.source.ModelSourceRegistry;
-import dev.dhyces.trimmed.impl.client.models.source.TrimModelSource;
+import dev.dhyces.trimmed.api.services.ApiServices;
 import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.equipment.ArmorMaterial;
 
 import java.nio.file.Path;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
 public abstract class BaseModelSourceDataProvider implements DataProvider {
-    private static final ResourceLocation TWO_LAYER_TEMPLATE = Trimmed.id("item/two_layer_trim");
-    private static final ResourceLocation THREE_LAYER_TEMPLATE = Trimmed.id("item/three_layer_trim");
+    private static final ResourceLocation TWO_LAYER_TEMPLATE = TrimmedReference.id("item/two_layer_trim");
+    private static final ResourceLocation THREE_LAYER_TEMPLATE = TrimmedReference.id("item/three_layer_trim");
     protected final PackOutput packOutput;
     protected final PackOutput.PathProvider pathProvider;
     protected final String modid;
@@ -33,7 +31,7 @@ public abstract class BaseModelSourceDataProvider implements DataProvider {
 
     public BaseModelSourceDataProvider(PackOutput packOutput, String modid) {
         this.packOutput = packOutput;
-        this.pathProvider = packOutput.createPathProvider(PackOutput.Target.RESOURCE_PACK, "trimmed/model_generators");
+        this.pathProvider = packOutput.createPathProvider(PackOutput.Target.RESOURCE_PACK, TrimmedReference.MODEL_GENERATORS_DIRECTORY);
         this.modid = modid;
         this.modelSources = new Object2ObjectLinkedOpenHashMap<>();
     }
@@ -75,6 +73,10 @@ public abstract class BaseModelSourceDataProvider implements DataProvider {
         modelSources.put(id, modelSource);
     }
 
+    /**
+     * Used in the Neo specific provider for adding to existing files
+     * @param id
+     */
     protected void onAdd(ResourceLocation id) {}
 
     @Override
@@ -82,7 +84,7 @@ public abstract class BaseModelSourceDataProvider implements DataProvider {
         addModelSources();
         return CompletableFuture.allOf(
                 modelSources.entrySet().stream().map((entry) -> {
-                    JsonElement jsonElement = ModelSourceRegistry.CODEC.encodeStart(JsonOps.INSTANCE, entry.getValue()).getOrThrow();
+                    JsonElement jsonElement = ApiServices.INTERNAL_CODECS.getModelSourceRegistryCodec().encodeStart(JsonOps.INSTANCE, entry.getValue()).getOrThrow();
                     Path path = pathProvider.json(entry.getKey());
                     return DataProvider.saveStable(output, jsonElement, path);
                 }).toArray(CompletableFuture[]::new)

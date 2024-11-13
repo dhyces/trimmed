@@ -24,7 +24,6 @@ import java.util.concurrent.Executor;
 // Getting a map from a key before maps have been loaded should return the MapAccess which is then later filled when
 // data is loaded. All map types support groups, where the subdirectories are the same as the names.
 public class ClientMapManager implements PreparableReloadListener {
-    public static final String PATH = "trimmed/maps";
     private static CompletableFuture<Unit> completable = new CompletableFuture<>();
     private static final Map<MapKey<?, ?>, MapHandler<?, ?>> REGISTRY = new Reference2ObjectOpenHashMap<>();
 

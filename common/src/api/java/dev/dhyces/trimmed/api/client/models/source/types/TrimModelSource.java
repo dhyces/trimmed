@@ -1,4 +1,4 @@
-package dev.dhyces.trimmed.impl.client.models.source;
+package dev.dhyces.trimmed.api.client.models.source.types;
 
 import com.google.common.collect.ImmutableList;
 import com.mojang.serialization.MapCodec;
@@ -6,8 +6,10 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import dev.dhyces.trimmed.api.client.TrimmedClientMapApi;
 import dev.dhyces.trimmed.api.client.map.ClientMapKeys;
 import dev.dhyces.trimmed.api.client.map.ClientMapTypes;
+import dev.dhyces.trimmed.api.client.models.source.ModelSource;
+import dev.dhyces.trimmed.api.client.models.source.ModelTemplateManager;
+import dev.dhyces.trimmed.api.client.models.source.NamedModel;
 import dev.dhyces.trimmed.api.maps.MapHolder;
-import dev.dhyces.trimmed.impl.client.models.template.ModelTemplateManager;
 import it.unimi.dsi.fastutil.objects.Object2ObjectArrayMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectFunction;
 import net.minecraft.client.renderer.block.model.BlockModel;

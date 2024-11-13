@@ -1,8 +1,6 @@
-package dev.dhyces.trimmed.impl.client.models.source;
+package dev.dhyces.trimmed.api.client.models.source;
 
 import com.mojang.serialization.MapCodec;
-import dev.dhyces.trimmed.impl.client.models.template.ModelTemplateManager;
-import net.minecraft.client.renderer.block.model.BlockModel;
 import net.minecraft.server.packs.resources.ResourceManager;
 
 import java.util.Collection;

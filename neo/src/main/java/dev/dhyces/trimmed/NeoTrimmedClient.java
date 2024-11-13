@@ -1,5 +1,6 @@
 package dev.dhyces.trimmed;
 
+import dev.dhyces.trimmed.api.TrimmedReference;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;

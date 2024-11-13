@@ -4,11 +4,12 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.mojang.serialization.JsonOps;
 import dev.dhyces.trimmed.Trimmed;
+import dev.dhyces.trimmed.api.TrimmedReference;
+import dev.dhyces.trimmed.api.client.models.source.ModelSource;
+import dev.dhyces.trimmed.api.client.models.source.NamedModel;
 import dev.dhyces.trimmed.impl.client.maps.manager.ClientMapManager;
-import dev.dhyces.trimmed.impl.client.models.template.ModelTemplateManager;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import dev.dhyces.trimmed.impl.client.models.template.ModelTemplateManagerImpl;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import net.minecraft.client.renderer.block.model.BlockModel;
 import net.minecraft.resources.FileToIdConverter;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.Resource;
@@ -24,10 +25,10 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 
 public final class ModelSourceLoader {
-    private static final FileToIdConverter MODEL_SOURCE_CONVERTER = new FileToIdConverter("trimmed/model_generators", ".json");
+    private static final FileToIdConverter MODEL_SOURCE_CONVERTER = FileToIdConverter.json(TrimmedReference.MODEL_GENERATORS_DIRECTORY);
     private ModelSourceLoader() {}
 
-    public static CompletableFuture<Collection<NamedModel>> load(ModelTemplateManager templateManager, ResourceManager resourceManager, Executor executor) {
+    public static CompletableFuture<Collection<NamedModel>> load(ModelTemplateManagerImpl templateManager, ResourceManager resourceManager, Executor executor) {
         return ClientMapManager.future().thenApplyAsync(unit -> {
             List<NamedModel> models = new ObjectArrayList<>();
             for (Map.Entry<ResourceLocation, Resource> entry : MODEL_SOURCE_CONVERTER.listMatchingResources(resourceManager).entrySet()) {

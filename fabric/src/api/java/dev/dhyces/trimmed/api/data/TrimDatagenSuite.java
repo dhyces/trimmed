@@ -95,7 +95,7 @@ public class TrimDatagenSuite extends BaseTrimDatagenSuite {
                 @Override
                 protected void addTags() {
                     if (!patternTextures.isEmpty()) {
-                        tag(ClientTags.TRIM_PATTERN_TEXTURES).add(patternTextures.toArray(ResourceLocation[]::new));
+                        tag(ClientTags.ARMOR_TRIM_PATTERNS_TEXTURES).add(patternTextures.toArray(ResourceLocation[]::new));
                     }
                 }
 

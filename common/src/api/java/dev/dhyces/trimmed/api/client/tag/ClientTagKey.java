@@ -5,7 +5,7 @@ import com.google.common.collect.Interners;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import dev.dhyces.trimmed.api.KeyResolver;
-import dev.dhyces.trimmed.impl.client.maps.KeyResolvers;
+import dev.dhyces.trimmed.api.maps.KeyResolvers;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.Objects;

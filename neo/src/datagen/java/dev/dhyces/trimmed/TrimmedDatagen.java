@@ -1,5 +1,6 @@
 package dev.dhyces.trimmed;
 
+import dev.dhyces.trimmed.api.TrimmedReference;
 import dev.dhyces.trimmed.model.VanillaItemModelOverrideProvider;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.PackOutput;

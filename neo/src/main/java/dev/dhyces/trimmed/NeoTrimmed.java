@@ -1,5 +1,6 @@
 package dev.dhyces.trimmed;
 
+import dev.dhyces.trimmed.api.TrimmedReference;
 import net.neoforged.fml.common.Mod;
 
 @SuppressWarnings("unused")
