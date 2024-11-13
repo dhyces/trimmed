@@ -1,4 +1,3 @@
-4.0.0 - 1.21.3
+4.0.1 - 1.21.3
 
-- Port to 1.21.3
-- Renamed the client texture tag `trimmed:trim_armor_patterns` to `trimmed:armor_trim_patterns`
+- Fix an issue with datagen suite still generating `armor_trim_pattern` tag with old location format
